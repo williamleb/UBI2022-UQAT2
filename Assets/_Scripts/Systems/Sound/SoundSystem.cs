@@ -1,12 +1,12 @@
-﻿﻿using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
-using Utils.Singleton;
+ using Utilities.Singleton;
 
  namespace Systems.Sound
 {
     public class SoundSystem : PersistentSingleton<SoundSystem>
     {
-        private const string SOUNDS_FOLDER_PATH = "Wwise";
+        private const string SoundsFolderPath = "Wwise";
 
         private WwiseObjects wwiseObjects;
         
@@ -20,11 +20,11 @@ using Utils.Singleton;
 
         private void LoadSoundEvents()
         {
-            var soundEvents = Resources.LoadAll<WwiseObjects>(SOUNDS_FOLDER_PATH);
+            var soundEvents = Resources.LoadAll<WwiseObjects>(SoundsFolderPath);
 
-            Debug.Assert(soundEvents.Any(), $"An object of type {nameof(WwiseObjects)} should be in the folder {SOUNDS_FOLDER_PATH}");
+            Debug.Assert(soundEvents.Any(), $"An object of type {nameof(WwiseObjects)} should be in the folder {SoundsFolderPath}");
             if (soundEvents.Length > 1)
-                Debug.LogWarning($"More than one object of type {nameof(WwiseObjects)} was found in the folder {SOUNDS_FOLDER_PATH}. Taking the first one.");
+                Debug.LogWarning($"More than one object of type {nameof(WwiseObjects)} was found in the folder {SoundsFolderPath}. Taking the first one.");
 
             wwiseObjects = soundEvents.First();
         }

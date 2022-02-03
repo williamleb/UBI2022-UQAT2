@@ -1,8 +1,8 @@
-﻿﻿using System;
+﻿using System;
 using UnityEngine;
 using Utils.Extensions;
 
- namespace Utils.Singleton
+ namespace Utilities.Singleton
 {
     public abstract class AbstractSingleton<T> : MonoBehaviour where T : AbstractSingleton<T>
     {
