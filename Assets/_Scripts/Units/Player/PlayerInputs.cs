@@ -19,6 +19,7 @@ namespace Units.Player
         {
             playerInputAction = new PlayerInputAction();
             //Load key bindings
+//            print(playerInputAction.SaveBindingOverridesAsJson());
         }
 
         private void OnEnable()
@@ -34,19 +35,21 @@ namespace Units.Player
             playerInputAction.Player.AltAttack.canceled += OnAltAttack;
             playerInputAction.Player.Dash.canceled += OnDash;
             playerInputAction.Player.Sprint.canceled += OnSprint;
-            #if UNITY_EDITOR //replace with custom if flag
+            
             playerInputAction.Player.Jump.started += DebugKeyPress;
             playerInputAction.Player.Attack.started += DebugKeyPress;
             playerInputAction.Player.AltAttack.started += DebugKeyPress;
             playerInputAction.Player.Dash.started += DebugKeyPress;
             playerInputAction.Player.Sprint.started += DebugKeyPress;
-            #endif
-            
+
+        }
+        
+        private void DebugKeyPress(InputAction.CallbackContext obj)
+        {
+            //TODO use this to detect the input device (we can start on one or the other or ever save the last used device)
+            print($"{obj.action} was pressed from device {obj.control.device.name}");
         }
 
-        #if DEBUG
-        private void DebugKeyPress(InputAction.CallbackContext obj) => print($"{obj.action} was pressed");
-        #endif
         private void OnJump(InputAction.CallbackContext obj) => jump = obj.started;
         private void OnAttack(InputAction.CallbackContext obj) => attack = obj.started;
         private void OnAltAttack(InputAction.CallbackContext obj) => altAttack = obj.started;

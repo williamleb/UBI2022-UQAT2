@@ -8,11 +8,11 @@ namespace Units.Player
     {
         [SerializeField] private PlayerInputs playerInputs;
         [SerializeField] private bool immortal;
-        private GlobalSettings settings;
+        private PlayerSettings data;
 
         private void Awake()
         {
-            settings = SettingsSystem.Instance.Settings;
+            data = SettingsSystem.Instance.PlayerSetting;
             MovementAwake();
         }
 

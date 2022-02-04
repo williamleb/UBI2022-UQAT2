@@ -8,12 +8,11 @@ namespace Units.Player
         [SerializeField] private Transform mainCamera;
 
         private CharacterController cc;
-        private PlayerMovementData moveData;
 
         private Vector3 moveDirection = Vector3.zero;
         private Vector2 lookDelta;
         private Vector3 moveVelocity;
-        private float fallVelocity;
+        private float yVelocity;
 
         private bool jumpInput;
         private bool jumpImpulse;
@@ -23,7 +22,6 @@ namespace Units.Player
 
         private void MovementAwake()
         {
-            moveData = new PlayerMovementData(settings.PlayerMovementConfig);
             if (mainCamera == null) mainCamera = Camera.main.transform;
             cc = GetComponent<CharacterController>();
         }
@@ -54,18 +52,18 @@ namespace Units.Player
             {
                 float targetAngle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                moveVelocity += moveDir * (moveData.Acceleration * Time.deltaTime);
-                moveVelocity = Vector3.ClampMagnitude(moveVelocity, moveData.MaximumSpeed);
+                moveVelocity += moveDir * (data.MoveAcceleration * Time.deltaTime);
+                moveVelocity = Vector3.ClampMagnitude(moveVelocity, data.MoveMaximumSpeed);
 
                 if (!cc.isGrounded)
                 {
-                    moveVelocity += moveDir * (moveData.ApexBonusControl * apexPoint * Time.deltaTime);
+                    moveVelocity += moveDir * (data.MoveAirBonusControl * apexPoint * Time.deltaTime);
                 }
 
             }
             else
             {
-                moveVelocity = Vector3.MoveTowards(moveVelocity, Vector3.zero, moveData.Deceleration * Time.deltaTime);
+                moveVelocity = Vector3.MoveTowards(moveVelocity, Vector3.zero, data.MoveDeceleration * Time.deltaTime);
             }
         }
 
@@ -73,8 +71,8 @@ namespace Units.Player
         {
             if (!cc.isGrounded)
             {
-                apexPoint = Mathf.InverseLerp(moveData.JumpApexThreshold, 0, Mathf.Abs(fallVelocity));
-                fallSpeed = Mathf.Lerp(moveData.MinFallAcceleration, moveData.MaxFallAcceleration, apexPoint);
+                apexPoint = Mathf.InverseLerp(data.JumpApexThreshold, 0, Mathf.Abs(yVelocity));
+                fallSpeed = Mathf.Lerp(data.MinFallAcceleration, data.MaxFallAcceleration, apexPoint);
             }
             else
             {
@@ -86,20 +84,20 @@ namespace Units.Player
         {
             if (cc.isGrounded)
             {
-                if (fallVelocity < 0) fallVelocity = -1;
+                if (yVelocity < 0) yVelocity = -0.1f;
             }
             else
             {
-                if (!jumpInput && fallVelocity > 0)
+                if (!jumpInput && yVelocity > 0)
                 {
-                    fallVelocity -= fallSpeed * moveData.JumpEndEarlyGravityModifier * Time.deltaTime;
+                    yVelocity -= fallSpeed * data.JumpEndEarlyGravityModifier * Time.deltaTime;
                 }
                 else
                 {
-                    fallVelocity -= fallSpeed * Time.deltaTime;
+                    yVelocity -= fallSpeed * Time.deltaTime;
                 }
 
-                if (fallVelocity < moveData.MaxFallSpeed) fallVelocity = moveData.MaxFallSpeed;
+                if (yVelocity < data.MaxFallSpeed) yVelocity = data.MaxFallSpeed;
             }
         }
 
@@ -109,20 +107,20 @@ namespace Units.Player
             {
                 jumpImpulse = false;
                 bufferJump = false;
-                fallVelocity = moveData.JumpHeight;
+                yVelocity = data.JumpHeight;
             }
         }
 
         private void MovePlayer()
         { 
-            cc.Move(new Vector3(moveVelocity.x,fallVelocity,moveVelocity.z) * Time.deltaTime);
+            cc.Move(new Vector3(moveVelocity.x,yVelocity,moveVelocity.z) * Time.deltaTime);
         }
 
         private void RotatePlayer()
         {
             var ori = orientation.eulerAngles;
-            ori.x = Mathf.Clamp(ori.x - lookDelta.y * moveData.MouseSensitivity, 1,75);
-            ori.y += lookDelta.x * moveData.MouseSensitivity;
+            ori.x = Mathf.Clamp(ori.x - lookDelta.y * data.MouseSensitivity, 1,75);
+            ori.y += lookDelta.x * data.MouseSensitivity;
             ori.z = 0;
             orientation.rotation = Quaternion.Euler(ori);
         }
