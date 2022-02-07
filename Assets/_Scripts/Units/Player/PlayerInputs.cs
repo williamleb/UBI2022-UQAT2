@@ -6,7 +6,7 @@ namespace Units.Player
     public class PlayerInputs : MonoBehaviour
     {
         private PlayerInputAction playerInputAction;
-        
+
         public Vector2 move;
         public Vector2 look;
         public bool jump;
@@ -14,6 +14,7 @@ namespace Units.Player
         public bool altAttack;
         public bool dash;
         public bool sprint;
+        private bool showRebind;
 
         private void Awake()
         {
@@ -35,15 +36,14 @@ namespace Units.Player
             playerInputAction.Player.AltAttack.canceled += OnAltAttack;
             playerInputAction.Player.Dash.canceled += OnDash;
             playerInputAction.Player.Sprint.canceled += OnSprint;
-            
+
             playerInputAction.Player.Jump.started += DebugKeyPress;
             playerInputAction.Player.Attack.started += DebugKeyPress;
             playerInputAction.Player.AltAttack.started += DebugKeyPress;
             playerInputAction.Player.Dash.started += DebugKeyPress;
             playerInputAction.Player.Sprint.started += DebugKeyPress;
-
         }
-        
+
         private void DebugKeyPress(InputAction.CallbackContext obj)
         {
             //TODO use this to detect the input device (we can start on one or the other or ever save the last used device)
@@ -63,5 +63,38 @@ namespace Units.Player
         }
 
         private void OnDisable() => playerInputAction.Disable();
+
+        private void OnGUI()
+        {
+            //Allows to display the controls with the associated action.
+            //Allows to rebind a control
+            
+            //TODO rebind vector2D (aka movement)
+            //TODO dispose rebindOperation to avoid memory leak
+            //TODO save rebind to file and reload on start
+            if (!showRebind)
+            {
+                if (GUI.Button(new Rect(0, 0, 100, 20), "Show rebind")) showRebind = true;
+            }
+            else
+            {
+                if (GUI.Button(new Rect(0, 0, 100, 20), "Hide rebind")) showRebind = false;
+                var inputActions = playerInputAction.Player.Get().actions;
+                for (var index = 0; index < inputActions.Count; index++)
+                {
+                    GUI.Button(new Rect(0, 20 * (index + 1), 100, 20), inputActions[index].name);
+                    var controls = inputActions[index].controls;
+                    for (int i = 0; i < controls.Count; i++)
+                    {
+                        if (GUI.Button(new Rect(30 + 75 * (i + 1), 20 * (index + 1), 75, 20), controls[i].displayName))
+                        {
+                            playerInputAction.Disable();
+                            inputActions[index].PerformInteractiveRebinding(i).Start();
+                            playerInputAction.Enable();
+                        }
+                    }
+                }
+            }
+        }
     }
 }
