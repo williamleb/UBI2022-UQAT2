@@ -1,11 +1,14 @@
+using InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.InputSystem.InputSystem;
 
 namespace Units.Player
 {
     public class PlayerInputs : MonoBehaviour
     {
         private PlayerInputAction playerInputAction;
+        private RebindSaveLoad saveLoad;
 
         public Vector2 move;
         public Vector2 look;
@@ -14,40 +17,46 @@ namespace Units.Player
         public bool altAttack;
         public bool dash;
         public bool sprint;
+        public bool isUsingKeyboard = true;
+        
         private bool showRebind;
 
         private void Awake()
         {
             playerInputAction = new PlayerInputAction();
-            //Load key bindings
-//            print(playerInputAction.SaveBindingOverridesAsJson());
+            saveLoad = FindObjectOfType<RebindSaveLoad>();
+            saveLoad?.LoadOverrides(playerInputAction.asset);
         }
 
         private void OnEnable()
         {
             playerInputAction.Enable();
             playerInputAction.Player.Jump.started += OnJump;
-            playerInputAction.Player.Attack.started += OnAttack;
-            playerInputAction.Player.AltAttack.started += OnAltAttack;
-            playerInputAction.Player.Dash.started += OnDash;
-            playerInputAction.Player.Sprint.started += OnSprint;
             playerInputAction.Player.Jump.canceled += OnJump;
+            playerInputAction.Player.Attack.started += OnAttack;
             playerInputAction.Player.Attack.canceled += OnAttack;
+            playerInputAction.Player.AltAttack.started += OnAltAttack;
             playerInputAction.Player.AltAttack.canceled += OnAltAttack;
+            playerInputAction.Player.Dash.started += OnDash;
             playerInputAction.Player.Dash.canceled += OnDash;
+            playerInputAction.Player.Sprint.started += OnSprint;
             playerInputAction.Player.Sprint.canceled += OnSprint;
 
-            playerInputAction.Player.Jump.started += DebugKeyPress;
-            playerInputAction.Player.Attack.started += DebugKeyPress;
-            playerInputAction.Player.AltAttack.started += DebugKeyPress;
-            playerInputAction.Player.Dash.started += DebugKeyPress;
-            playerInputAction.Player.Sprint.started += DebugKeyPress;
+            playerInputAction.Player.Movement.started += DetectKeyboard;
+            playerInputAction.Player.Jump.started += DetectKeyboard;
+            playerInputAction.Player.Attack.started += DetectKeyboard;
+            playerInputAction.Player.AltAttack.started += DetectKeyboard;
+            playerInputAction.Player.Dash.started += DetectKeyboard;
+            playerInputAction.Player.Sprint.started += DetectKeyboard;
         }
 
-        private void DebugKeyPress(InputAction.CallbackContext obj)
+        private void DetectKeyboard(InputAction.CallbackContext obj)
         {
-            //TODO use this to detect the input device (we can start on one or the other or ever save the last used device)
-            print($"{obj.action} was pressed from device {obj.control.device.name}");
+            isUsingKeyboard = obj.control.device.name == "Keyboard";
+            if (isUsingKeyboard)
+                EnableDevice(Mouse.current);
+            else
+                DisableDevice(Mouse.current);
         }
 
         private void OnJump(InputAction.CallbackContext obj) => jump = obj.started;
@@ -62,7 +71,11 @@ namespace Units.Player
             look = playerInputAction.Player.Look.ReadValue<Vector2>();
         }
 
-        private void OnDisable() => playerInputAction.Disable();
+        private void OnDisable()
+        {
+            saveLoad?.SaveOverrides(playerInputAction.asset);
+            playerInputAction.Disable();
+        }
 
         private void OnGUI()
         {
