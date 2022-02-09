@@ -2,11 +2,11 @@
 using Systems.Sound;
 using UnityEngine;
 
-namespace Ingredient.Bababooey
+namespace Ingredients.Bababooey
 {
     public class Bababooey : MonoBehaviour
     {
-        private Coroutine bababooeyCoroutine = null;
+        private Coroutine bababooeyCoroutine;
         
         private void Start()
         {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
- using Utilities.Singleton;
+using Utilities.Singleton;
 
  namespace Systems.Sound
 {
