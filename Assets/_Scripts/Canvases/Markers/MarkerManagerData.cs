@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -8,20 +9,27 @@ using UnityEngine;
 namespace Canvases.Markers
 {
     [CreateAssetMenu(menuName = "Canvases/MarkerManagerData")]
-    public class MarkerManagerData : SerializedScriptableObject
+    public class MarkerManagerData : SerializedScriptableObject, IEnumerable<Type>
     {
         private const string MARKERS_FOLDER_PATH = "Canvases/Markers";
         
         [OdinSerialize] [ReadOnly] [BehaviorDesigner.Runtime.Tasks.Tooltip("This dictionary only accepts types that derive from the Marker class")]
         private Dictionary<Type, MarkerData> markerData = new Dictionary<Type, MarkerData>();
 
-        public MarkerData GetMarkerData<T>()
+        public MarkerData this[Type markerType]
         {
-            var markerType = typeof(T);
-            if (!markerData.ContainsKey(markerType))
-                return null;
+            get
+            {
+                if (!markerData.ContainsKey(markerType))
+                    return null;
 
-            return markerData[markerType];
+                return markerData[markerType];
+            }
+        }
+
+        public MarkerData Get<T>()
+        {
+            return this[typeof(T)];
         }
 
         [Button]
@@ -56,6 +64,16 @@ namespace Canvases.Markers
             {
                 markerData.Remove(invalidEntry);
             }
+        }
+
+        public IEnumerator<Type> GetEnumerator()
+        {
+            return markerData.Keys.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

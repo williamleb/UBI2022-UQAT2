@@ -1,4 +1,5 @@
 ﻿using System;
+using BehaviorDesigner.Runtime.Tasks.Unity.UnityGameObject;
 using UnityEngine;
 
 namespace Canvases.Markers
@@ -7,9 +8,29 @@ namespace Canvases.Markers
     public abstract class Marker : MonoBehaviour
     {
         private RectTransform rectTransform;
-        private Camera camera;
+        private Camera currentCamera;
 
         private Vector3 worldPosition = Vector3.zero;
+
+        private Action<Marker> release = null;
+
+        public bool IsActivated => release != null;
+
+        public void Initialize(Action<Marker> releaseHandle)
+        {
+            release = releaseHandle;
+            gameObject.SetActive(true);
+        }
+
+        public void Release()
+        {
+            if (release == null)
+                return;
+            
+            release.Invoke(this);
+            release = null;
+            gameObject.SetActive(false);
+        }
 
         public Vector3 Position
         {
@@ -17,21 +38,23 @@ namespace Canvases.Markers
             set => worldPosition = value;
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             // This might have to be replaced if we ever decide to switch camera in the middle of the game
-            camera = Camera.main;
-            Debug.Assert(camera, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
+            currentCamera = Camera.main;
+            Debug.Assert(currentCamera, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
+            
+            gameObject.SetActive(false);
         }
 
-        private void Update()
+        protected virtual void Update()
         {
-            var screenPosition = camera.WorldToScreenPoint(worldPosition);
+            var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
             rectTransform.position = screenPosition;
         }
     }
