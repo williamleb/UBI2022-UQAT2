@@ -4,6 +4,8 @@ namespace Canvases.Markers
 {
     public abstract class MarkerReceptor<T> : MonoBehaviour where T : Marker
     {
+        [SerializeField] private float markerScale = 1.0f;
+        
         private T currentMarker = null;
         
         public bool IsActivated => currentMarker != null;
@@ -27,6 +29,7 @@ namespace Canvases.Markers
 
 
             currentMarker = marker;
+            currentMarker.Scale = markerScale;
             OnActivated();
         }
 

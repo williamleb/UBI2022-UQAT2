@@ -19,7 +19,7 @@ namespace Canvases.Markers
         /// </summary>
         public T InitializeMarker<T>() where T : Marker
         {
-            if (markers.ContainsKey(typeof(T)))
+            if (!markers.ContainsKey(typeof(T)))
             {
                 Debug.LogWarning($"Could not find a marker of type {typeof(T)}");
                 return null;
@@ -60,7 +60,7 @@ namespace Canvases.Markers
 
         private void InstantiateTypeMarkers(MarkerData markerData)
         {
-            markers[markerData.GetType()] = new List<Marker>();
+            markers[markerData.MarkerType] = new List<Marker>();
             for (var i = 0; i < markerData.NumberOfInstances; ++i)
             {
                 var markerGameObject = Instantiate(markerData.Prefab, transform);
@@ -70,7 +70,7 @@ namespace Canvases.Markers
                 Debug.Assert(marker, "Marker prefabs should have a marker");
                 Debug.Assert(marker.GetType().IsAssignableFrom(markerData.MarkerType), "Marker prefabs should have a marker of correct type");
                 
-                markers[markerData.GetType()].Add(marker);
+                markers[markerData.MarkerType].Add(marker);
             }
         }
     }

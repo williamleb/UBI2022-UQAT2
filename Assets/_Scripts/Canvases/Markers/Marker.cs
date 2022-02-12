@@ -16,6 +16,18 @@ namespace Canvases.Markers
 
         public bool IsActivated => release != null;
 
+        public Vector3 Position
+        {
+            get => worldPosition;
+            set => worldPosition = value;
+        }
+
+        public float Scale
+        {
+            get => transform.localScale.x;
+            set => transform.localScale = new Vector3(value, value, value);
+        }
+        
         public void Initialize(Action<Marker> releaseHandle)
         {
             release = releaseHandle;
@@ -30,12 +42,6 @@ namespace Canvases.Markers
             release.Invoke(this);
             release = null;
             gameObject.SetActive(false);
-        }
-
-        public Vector3 Position
-        {
-            get => worldPosition;
-            set => worldPosition = value;
         }
 
         protected virtual void Awake()
