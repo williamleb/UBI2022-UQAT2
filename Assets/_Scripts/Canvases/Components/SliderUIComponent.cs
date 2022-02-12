@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace Canvases.Components
     {
         public event Action<float> OnValueChanged;
         
-        [Header("Association")]
+        [Header("Association")] [Required]
         [SerializeField] private Slider slider;
 
         public float Value
@@ -38,6 +39,12 @@ namespace Canvases.Components
         private void OnSliderChanged(float value)
         {
             OnValueChanged?.Invoke(value);
+        }
+
+        private void OnValidate()
+        {
+            if (!slider)
+                slider = GetComponent<Slider>();
         }
     }
 }

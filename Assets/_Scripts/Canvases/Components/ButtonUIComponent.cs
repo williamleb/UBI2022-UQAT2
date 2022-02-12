@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Event = AK.Wwise.Event;
@@ -10,7 +11,7 @@ namespace Canvases.Components
     {
         public event Action OnClick;
         
-        [Header("Association")]
+        [Header("Association")] [Required]
         [SerializeField] private Button button;
 
         [Header("Sound")] 
@@ -31,6 +32,12 @@ namespace Canvases.Components
         {
             onClickSound?.Post(gameObject);
             OnClick?.Invoke();
+        }
+
+        private void OnValidate()
+        {
+            if (!button)
+                button = GetComponent<Button>();
         }
     }
 }

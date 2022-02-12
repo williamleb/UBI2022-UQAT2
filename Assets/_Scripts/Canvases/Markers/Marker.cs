@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Canvases.Markers
 {
     [RequireComponent(typeof(RectTransform))]
-    public class Marker : MonoBehaviour
+    public abstract class Marker : MonoBehaviour
     {
         private RectTransform rectTransform;
         private Camera camera;
@@ -24,6 +24,7 @@ namespace Canvases.Markers
 
         private void Start()
         {
+            // This might have to be replaced if we ever decide to switch camera in the middle of the game
             camera = Camera.main;
             Debug.Assert(camera, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
         }
