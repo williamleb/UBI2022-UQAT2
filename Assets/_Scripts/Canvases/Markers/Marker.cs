@@ -11,6 +11,7 @@ namespace Canvases.Markers
         private Camera currentCamera;
 
         private Vector3 worldPosition = Vector3.zero;
+        private float scale = 1.0f;
 
         private Action<Marker> release = null;
 
@@ -24,8 +25,8 @@ namespace Canvases.Markers
 
         public float Scale
         {
-            get => transform.localScale.x;
-            set => transform.localScale = new Vector3(value, value, value);
+            get => scale;
+            set => scale = value;
         }
         
         public void Initialize(Action<Marker> releaseHandle)
@@ -59,6 +60,32 @@ namespace Canvases.Markers
         }
 
         protected virtual void Update()
+        {
+            AdjustMarkerSizeWithCameraDistance();
+            AdjustMarkerScreenPosition();
+        }
+
+        private void AdjustMarkerSizeWithCameraDistance()
+        {
+            if (CameraIsBehind())
+            {
+                rectTransform.localScale = new Vector3(0f, 0f, 0f);
+                return;
+            }
+            
+            var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
+            var adjustedScale = Math.Abs(cameraDistance) > 0.001f ? scale / cameraDistance : scale;
+            rectTransform.localScale = new Vector3(adjustedScale, adjustedScale, adjustedScale);
+        }
+
+        private bool CameraIsBehind()
+        {
+            var cameraTransform = currentCamera.transform;
+            var cameraToPosition = worldPosition - cameraTransform.position;
+            return Vector3.Dot(cameraToPosition, cameraTransform.forward) < 0;
+        }
+
+        private void AdjustMarkerScreenPosition()
         {
             var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
             rectTransform.position = screenPosition;
