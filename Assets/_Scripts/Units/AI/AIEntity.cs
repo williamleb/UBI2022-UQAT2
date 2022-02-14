@@ -12,6 +12,8 @@ namespace Units.AI
         private NavMeshAgent agent;
         private AIBrain brain = null;
 
+        public NavMeshAgent Agent => agent;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();

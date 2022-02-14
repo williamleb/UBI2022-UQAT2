@@ -30,7 +30,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Unity.UnityNavMeshAgent
                 return TaskStatus.Failure;
             }
 
-            return navMeshAgent.isStopped ? TaskStatus.Success : TaskStatus.Failure;
+            return navMeshAgent.isStopped ? TaskStatus.Success : TaskStatus.Running;
         }
 
         public override void OnReset()

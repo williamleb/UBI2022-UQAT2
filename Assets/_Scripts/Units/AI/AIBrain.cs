@@ -10,6 +10,8 @@ namespace Units.AI
     {
         private AIEntity entity;
         private BehaviorTree tree;
+        
+        public bool IsStopped => entity.Agent.isStopped;
 
         public void AssignEntity(AIEntity assignedEntity)
         {
@@ -19,6 +21,11 @@ namespace Units.AI
         private void Awake()
         {
             tree = GetComponent<BehaviorTree>();
+        }
+
+        public void SetDestination(Vector3 target)
+        {
+            entity.Agent.SetDestination(target);
         }
     }
 }
