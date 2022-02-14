@@ -1,5 +1,4 @@
-﻿using System;
-using Fusion;
+﻿using Fusion;
 using UnityEngine;
 using UnityEngine.AI;
 

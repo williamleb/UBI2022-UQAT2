@@ -14,7 +14,7 @@ namespace Utilities.Event
         public MemoryEvent(MemoryEvent<T> other)
         {
             OnEvent = default;
-            memory = new List<T>(other.memory);
+            memory = other.memory == null ? new List<T>() : new List<T>(other.memory);
             
             if (other.OnEvent != null)
             {
@@ -54,6 +54,17 @@ namespace Utilities.Event
         public void ClearMemory()
         {
             memory.Clear();
+        }
+
+        /// <summary>
+        /// Remove an element from memory that will not be sent to future subscribers
+        /// </summary>
+        public void RemoveFromMemory(T elementToRemove)
+        {
+            if (memory == null)
+                return;
+
+            memory.Remove(elementToRemove);
         }
 
         private void AddAction(Action<T> action)

@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
+using Units.AI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -80,6 +81,7 @@ namespace Systems.Network
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             // Spawn player prefab
+            OnPlayerJoinedEvent.InvokeWithMemory(player);
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -90,6 +92,9 @@ namespace Systems.Network
             //    runner.Despawn(networkObject);
             //    spawnedCharacters.Remove(player);
             //}
+            
+            OnPlayerLeftEvent?.Invoke(player);
+            OnPlayerJoinedEvent.RemoveFromMemory(player);
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)

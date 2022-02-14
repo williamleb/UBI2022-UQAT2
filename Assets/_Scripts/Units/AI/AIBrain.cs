@@ -1,4 +1,5 @@
-﻿using BehaviorDesigner.Runtime;
+﻿using System;
+using BehaviorDesigner.Runtime;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,7 +12,9 @@ namespace Units.AI
         private AIEntity entity;
         private BehaviorTree tree;
         
-        public bool IsStopped => entity.Agent.isStopped;
+        public bool HasReachedItsDestination => !entity.Agent.pathPending &&
+                                                entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&
+                                                (!entity.Agent.hasPath || Math.Abs(entity.Agent.velocity.sqrMagnitude) < 0.01f);
 
         public void AssignEntity(AIEntity assignedEntity)
         {

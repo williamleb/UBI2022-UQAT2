@@ -9,45 +9,37 @@ namespace Units.AI.Actions
     public class WalkForwardRandomly : Action
     {
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The play mode of the animation")]
-        [SerializeField] private AIBrain brain;
+        [SerializeField] private readonly AIBrain brain = null;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The maximum angle that the AI can turn")]
-        [SerializeField] private float maxAngleOfRotation;
+        [SerializeField] private float maxAngleOfRotation = 45f;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The distance the AI has to walk before this action is considered complete")]
-        [SerializeField] private float distanceToWalk;
-
-        private bool hasSetDestination = false;
+        [SerializeField] private float distanceToWalk = 2f;
 
         public override void OnStart()
         {
-            if (!hasSetDestination)
-                SetNewDestination();
+            SetNewDestination();
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (brain == null) {
+            if (brain == null) 
+            {
                 Debug.LogWarning($"{nameof(brain)} is null");
                 return TaskStatus.Failure;
             }
 
-            return brain.IsStopped ? TaskStatus.Success : TaskStatus.Failure;
+            return brain.HasReachedItsDestination ? TaskStatus.Success : TaskStatus.Running;
         }
         
-        public override void OnReset()
-        {
-            hasSetDestination = false;
-        }
-
         private void SetNewDestination()
         {
             if (!brain)
                 return;
 
             var angleRotation = Random.Range(0f, maxAngleOfRotation);
-            var direction = Quaternion.Euler(0f, angleRotation, 0f) * brain.transform.forward;
+            var direction = (Quaternion.Euler(0f, angleRotation, 0f) * brain.transform.forward).normalized;
             var newDestination = transform.position + direction * distanceToWalk;
             brain.SetDestination(newDestination);
-            hasSetDestination = true;
         }
     }
 }

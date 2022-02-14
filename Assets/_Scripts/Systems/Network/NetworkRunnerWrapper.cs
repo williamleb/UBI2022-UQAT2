@@ -1,11 +1,16 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using UnityEngine;
+using Utilities.Event;
 using Utilities.Singleton;
 
 namespace Systems.Network
 {
     public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
     {
+        [NonSerialized] public MemoryEvent<PlayerRef> OnPlayerJoinedEvent;
+        public event Action<PlayerRef> OnPlayerLeftEvent;
+        
         public bool IsConnected => runner != null;
 
         public bool IsHost => IsConnected && runner.GameMode == GameMode.Host;

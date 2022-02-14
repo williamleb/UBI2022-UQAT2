@@ -11,7 +11,8 @@ namespace Dev.William
 
         private void OnDestroy()
         {
-            TestMemoryEventManager.Instance.OnDoTheThing -= ObserveTheThing;
+            if (TestMemoryEventManager.HasInstance)
+                TestMemoryEventManager.Instance.OnDoTheThing -= ObserveTheThing;
         }
 
         private void ObserveTheThing(int theThing)
