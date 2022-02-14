@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
 
-public class NetworkManager : Singleton<NetworkManager>, INetworkRunnerCallbacks
+public class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
 {
     private NetworkRunner runner;
     //[SerializeField] private NetworkPrefabRef playerPrefab;
@@ -25,6 +25,10 @@ public class NetworkManager : Singleton<NetworkManager>, INetworkRunnerCallbacks
             {
                 StartGame(GameMode.Client);
             }
+        }
+        else
+        {
+            GUI.TextField(new Rect(10, 10, 40, 20), runner.GameMode == GameMode.Host ? "Host" : "Client");
         }
     }
 

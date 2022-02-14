@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using Canvases.Markers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Canvases.Markers
+namespace Dev.William
 {
     public class TestMarkerReceptor : MonoBehaviour
     {
