@@ -1,5 +1,4 @@
-﻿using System;
-using Systems.Network;
+﻿using Systems.Network;
 using Fusion;
 using UnityEngine;
 using Utilities.Singleton;
