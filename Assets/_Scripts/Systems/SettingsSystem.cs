@@ -16,10 +16,10 @@ namespace Systems
         {
             base.Awake();
 
-            LoadGlobalSettings();
+            LoadPlayerSettings();
         }
 
-        private void LoadGlobalSettings()
+        private void LoadPlayerSettings()
         {
             var playerSetting = Resources.LoadAll<PlayerSettings>(SettingsFolderPath);
 

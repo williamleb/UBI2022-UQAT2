@@ -1,4 +1,7 @@
 ﻿using System;
+using Systems.Network;
+using Canvases.Markers;
+using Fusion;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -6,20 +9,40 @@ namespace Managers.Interactions
 {
     [RequireComponent(typeof(Collider))]
     [ValidateInput(nameof(ValidateIfHasTag), "An interaction component must be placed on a collider that has the 'Interaction' tag.")]
-    public class Interaction : MonoBehaviour
+    public class Interaction : NetworkBehaviour
     {
         public const string TAG = "Interaction";
         
         public event Action OnInteractedWith;
 
-        [Header("Interaction Type")]
-        [SerializeField] private bool timedInteraction = false;
-        [SerializeField, HideIf(nameof(timedInteraction))] private float secondsOfInteraction = 2f;
+        [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
-        private float currentInteractionTime = 0f;
-        private bool wasInteractedWithThisFrame = false;
+        [Networked(OnChanged = nameof(OnHello))] private int Hello {get; set; }
 
-        public float InteractionProgress => secondsOfInteraction <= 0f ? 1f : currentInteractionTime / secondsOfInteraction;
+        private void Awake()
+        {
+            Hello = 0;
+        }
+
+        private void OnHello()
+        {
+            Debug.Log($"Hello {Id}: {Hello}");
+        }
+
+        private float timer = 0f;
+        private void Update()
+        {
+            timer += Time.deltaTime;
+            if (timer > 1f)
+            {
+                if (NetworkSystem.Instance.IsHost)
+                {
+                    Hello = 0;
+                    Hello++;
+                }
+                timer = 0f;
+            }
+        }
 
         private bool ValidateIfHasTag()
         {
@@ -38,17 +61,9 @@ namespace Managers.Interactions
                 InteractionManager.Instance.UnregisterInteraction(this);
         }
 
-        private void OnInteraction()
+        protected void OnInteraction()
         {
             OnInteractedWith?.Invoke();
-        }
-
-        private void LateUpdate()
-        {
-            if (!wasInteractedWithThisFrame)
-                currentInteractionTime = Math.Max(0f, currentInteractionTime - Time.deltaTime);
-            
-            wasInteractedWithThisFrame = false;
         }
 
         public bool CanInteract(Transform transform)
@@ -57,32 +72,9 @@ namespace Managers.Interactions
             return true;
         }
 
-        public void Interact(float deltaTime = 0f)
+        protected virtual void Interact()
         {
-            wasInteractedWithThisFrame = true;
-
-            if (!timedInteraction)
-            {
-                OnInteraction();
-                return;
-            }
-
-            currentInteractionTime += deltaTime;
-            if (currentInteractionTime > secondsOfInteraction)
-            {
-                currentInteractionTime = 0f;
-                OnInteraction();
-            }
-        }
-
-        public int CompareTo(object obj)
-        {
-            return 0;
-        }
-
-        public int Compare(Interaction x, Interaction y)
-        {
-            return 0;
+            OnInteraction();
         }
     }
 }
