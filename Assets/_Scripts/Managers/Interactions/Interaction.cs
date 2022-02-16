@@ -1,5 +1,4 @@
 ﻿using System;
-using Systems.Network;
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
@@ -14,51 +13,25 @@ namespace Managers.Interactions
         public const string TAG = "Interaction";
         
         public event Action OnInteractedWith;
-
+        
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
-        [Networked(OnChanged = nameof(OnHello))] private int Hello {get; set; }
+        public int InteractionId => Id.GetHashCode();
 
-        private void Awake()
+        public override void Spawned()
         {
-            Hello = 0;
-        }
-
-        private void OnHello()
-        {
-            Debug.Log($"Hello {Id}: {Hello}");
-        }
-
-        private float timer = 0f;
-        private void Update()
-        {
-            timer += Time.deltaTime;
-            if (timer > 1f)
+            if (InteractionManager.HasInstance)
             {
-                if (NetworkSystem.Instance.IsHost)
-                {
-                    Hello = 0;
-                    Hello++;
-                }
-                timer = 0f;
+                InteractionManager.Instance.RegisterInteraction(this);
             }
         }
-
-        private bool ValidateIfHasTag()
-        {
-            return gameObject.CompareTag(TAG);
-        }
-
-        private void OnEnable()
+        
+        public override void Despawned(NetworkRunner runner, bool hasState)
         {
             if (InteractionManager.HasInstance)
-                InteractionManager.Instance.RegisterInteraction(this);
-        }
-
-        private void OnDisable()
-        {
-            if (InteractionManager.HasInstance)
+            {
                 InteractionManager.Instance.UnregisterInteraction(this);
+            }
         }
 
         protected void OnInteraction()
@@ -75,6 +48,11 @@ namespace Managers.Interactions
         protected virtual void Interact()
         {
             OnInteraction();
+        }
+        
+        private bool ValidateIfHasTag()
+        {
+            return gameObject.CompareTag(TAG);
         }
     }
 }
