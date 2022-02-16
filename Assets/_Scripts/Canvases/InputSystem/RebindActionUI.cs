@@ -68,21 +68,21 @@ namespace Canvases.InputSystem
                 string text = !string.IsNullOrEmpty(rebindOperation.expectedControlType)
                     ? $"{partName}Waiting for {rebindOperation.expectedControlType} input..."
                     : $"{partName}Waiting for input...";
-                rebindOverlay.SetText(text);
+                rebindOverlay.Text =text;
             }
 
             // If we have no rebind overlay and no callback but we have a binding text label,
             // temporarily set the binding text label to "<Waiting>".
             if (rebindOverlay == null && mainBindingReferences.text != null)
-                mainBindingReferences.text.SetText("<Waiting...>");
+                mainBindingReferences.text.Text = "<Waiting...>";
 
             rebindOperation.Start();
         }
 
         protected void OnEnable()
         {
-            mainBindingReferences.button.OnClick(() => StartInteractiveRebind(mainBindingReferences.index));
-            altBindingReferences.button.OnClick(() => StartInteractiveRebind(altBindingReferences.index));
+            mainBindingReferences.button.OnClick += () => StartInteractiveRebind(mainBindingReferences.index);
+            altBindingReferences.button.OnClick += () => StartInteractiveRebind(altBindingReferences.index);
         }
 
         protected void OnDisable()
@@ -95,9 +95,9 @@ namespace Canvases.InputSystem
         {
             if (actionLabel == null) return;
 
-            actionLabel.SetText(action.bindings[mainBindingReferences.index].isPartOfComposite
+            actionLabel.Text = action.bindings[mainBindingReferences.index].isPartOfComposite
                 ? action.bindings[mainBindingReferences.index].name.Capitalize()
-                : action.name);
+                : action.name;
         }
 
         public void UpdateBindingDisplay(bool shouldCallEvent = true)
@@ -152,7 +152,7 @@ namespace Canvases.InputSystem
         private void UpdateDuplicateText(RebindReferences reference, string mainDisplayString)
         {
             if (reference.text == null) return;
-            reference.text.SetText(mainDisplayString == "Delta" ? "Mouse" : mainDisplayString);
+            reference.text.Text = mainDisplayString == "Delta" ? "Mouse" : mainDisplayString;
             bool mainDuplicate = CheckDuplicateBindings(reference.index);
             reference.button.Color = mainDuplicate ? Color.red : Color.white;
         }

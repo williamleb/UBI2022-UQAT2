@@ -16,6 +16,11 @@ namespace Canvases.Components
 
         [Header("Sound")] 
         [SerializeField] private Event onClickSound;
+        
+        public Color Color
+        {
+            set => button.image.color = value;
+        }
 
         private void Start()
         {

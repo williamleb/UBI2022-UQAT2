@@ -33,7 +33,7 @@ namespace Canvases.InputSystem
             playerInputs = FindObjectOfType<PlayerInputs>();
             playerInputs.OnInputDeviceChanged += PlayerInputsOnOnInputDeviceChanged;
             playerInputActionRef = playerInputs.PlayerInputAction;
-            resetAllButton.OnClick(OnResetAll);
+            resetAllButton.OnClick += OnResetAll;
         }
 
         private void OnResetAll()
@@ -44,7 +44,7 @@ namespace Canvases.InputSystem
 
         private void AddBindingsButton(string deviceName)
         {
-            currentControlScheme.SetText($"< {deviceName.ToUpper()} >");
+            currentControlScheme.Text = $"< {deviceName.ToUpper()} >";
             ReadOnlyArray<InputAction> inputActions = playerInputActionRef.Player.Get().actions;
             foreach (InputAction inputAction in inputActions)
             {
