@@ -3,18 +3,16 @@ using UnityEngine.InputSystem;
 
 namespace InputSystem
 {
-    public class RebindSaveLoad : MonoBehaviour
+    public static class RebindSaveLoad
     {
-        //MJ - change the save to use the save system if any
-
-        public void LoadOverrides(InputActionAsset actions)
+        public static void LoadOverrides(InputActionAsset actions)
         {
             string rebinds = PlayerPrefs.GetString("rebinds");
             if (!string.IsNullOrEmpty(rebinds))
                 actions.LoadBindingOverridesFromJson(rebinds);
         }
 
-        public void SaveOverrides(InputActionAsset actions)
+        public static void SaveOverrides(InputActionAsset actions)
         {
             string rebinds = actions.SaveBindingOverridesAsJson();
             PlayerPrefs.SetString("rebinds", rebinds);

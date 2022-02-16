@@ -16,16 +16,7 @@ namespace Canvases.Markers
         [OdinSerialize] [ReadOnly] [BehaviorDesigner.Runtime.Tasks.Tooltip("This dictionary only accepts types that derive from the Marker class")]
         private Dictionary<Type, MarkerData> markerData = new Dictionary<Type, MarkerData>();
 
-        public MarkerData this[Type markerType]
-        {
-            get
-            {
-                if (!markerData.ContainsKey(markerType))
-                    return null;
-
-                return markerData[markerType];
-            }
-        }
+        public MarkerData this[Type markerType] => markerData.ContainsKey(markerType) ? markerData[markerType] : null;
 
         public MarkerData Get<T>()
         {

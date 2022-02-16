@@ -7,9 +7,9 @@ namespace Canvases.InputSystem
     [Serializable]
     public class RebindReferences
     {
-        public TextUIComponent text;
-        public ButtonUIComponent button;
-        public ImageUIComponent image;
-        [HideInInspector] public int index = -1;
+        public TextUIComponent Text;
+        public ButtonUIComponent Button;
+        public ImageUIComponent Image;
+        [HideInInspector] public int Index = -1;
     }
 }

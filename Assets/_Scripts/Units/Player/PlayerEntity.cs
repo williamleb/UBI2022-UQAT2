@@ -15,25 +15,9 @@ namespace Units.Player
             MovementAwake();
         }
 
-        private void Start()
-        {
-        }
-
         private void Update()
         {
             MoveUpdate();
-        }
-
-        private void OnDisable()
-        {
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
         }
     }
 }

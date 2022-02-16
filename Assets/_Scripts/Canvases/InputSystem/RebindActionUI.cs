@@ -22,8 +22,8 @@ namespace Canvases.InputSystem
         public void ResetToDefault()
         {
             action.actionMap.Disable();
-            action.RemoveBindingOverride(mainBindingReferences.index);
-            action.RemoveBindingOverride(altBindingReferences.index);
+            action.RemoveBindingOverride(mainBindingReferences.Index);
+            action.RemoveBindingOverride(altBindingReferences.Index);
             UpdateBindingDisplay();
             action.actionMap.Enable();
         }
@@ -73,16 +73,16 @@ namespace Canvases.InputSystem
 
             // If we have no rebind overlay and no callback but we have a binding text label,
             // temporarily set the binding text label to "<Waiting>".
-            if (rebindOverlay == null && mainBindingReferences.text != null)
-                mainBindingReferences.text.Text = "<Waiting...>";
+            if (rebindOverlay == null && mainBindingReferences.Text != null)
+                mainBindingReferences.Text.Text = "<Waiting...>";
 
             rebindOperation.Start();
         }
 
         protected void OnEnable()
         {
-            mainBindingReferences.button.OnClick += () => StartInteractiveRebind(mainBindingReferences.index);
-            altBindingReferences.button.OnClick += () => StartInteractiveRebind(altBindingReferences.index);
+            mainBindingReferences.Button.OnClick += () => StartInteractiveRebind(mainBindingReferences.Index);
+            altBindingReferences.Button.OnClick += () => StartInteractiveRebind(altBindingReferences.Index);
         }
 
         protected void OnDisable()
@@ -95,8 +95,8 @@ namespace Canvases.InputSystem
         {
             if (actionLabel == null) return;
 
-            actionLabel.Text = action.bindings[mainBindingReferences.index].isPartOfComposite
-                ? action.bindings[mainBindingReferences.index].name.Capitalize()
+            actionLabel.Text = action.bindings[mainBindingReferences.Index].isPartOfComposite
+                ? action.bindings[mainBindingReferences.Index].name.Capitalize()
                 : action.name;
         }
 
@@ -110,12 +110,12 @@ namespace Canvases.InputSystem
 
             if (action != null)
             {
-                if (mainBindingReferences.index != -1)
-                    mainDisplayString = action.GetBindingDisplayString(mainBindingReferences.index,
+                if (mainBindingReferences.Index != -1)
+                    mainDisplayString = action.GetBindingDisplayString(mainBindingReferences.Index,
                         out deviceLayoutName,
                         out mainControlPath);
-                if (altBindingReferences.index != -1)
-                    altDisplayString = action.GetBindingDisplayString(altBindingReferences.index, out _,
+                if (altBindingReferences.Index != -1)
+                    altDisplayString = action.GetBindingDisplayString(altBindingReferences.Index, out _,
                         out altControlPath);
             }
 
@@ -138,23 +138,23 @@ namespace Canvases.InputSystem
         {
             if (mainIcon != null)
             {
-                reference.text.Hide();
-                reference.image.Sprite = mainIcon;
-                reference.image.Show();
+                reference.Text.Hide();
+                reference.Image.Sprite = mainIcon;
+                reference.Image.Show();
             }
             else
             {
-                reference.text.Show();
-                reference.image.Hide();
+                reference.Text.Show();
+                reference.Image.Hide();
             }
         }
 
         private void UpdateDuplicateText(RebindReferences reference, string mainDisplayString)
         {
-            if (reference.text == null) return;
-            reference.text.Text = mainDisplayString == "Delta" ? "Mouse" : mainDisplayString;
-            bool mainDuplicate = CheckDuplicateBindings(reference.index);
-            reference.button.Color = mainDuplicate ? Color.red : Color.white;
+            if (reference.Text == null) return;
+            reference.Text.Text = mainDisplayString == "Delta" ? "Mouse" : mainDisplayString;
+            bool mainDuplicate = CheckDuplicateBindings(reference.Index);
+            reference.Button.Color = mainDuplicate ? Color.red : Color.white;
         }
 
         private bool CheckDuplicateBindings(int bindingIndex)
@@ -189,8 +189,8 @@ namespace Canvases.InputSystem
         public void Initialize(int bindingIndex, InputAction inputAction, TextUIComponent overlay,
             Action<string, string> onUpdateBindingUIEvent)
         {
-            mainBindingReferences.index = bindingIndex;
-            altBindingReferences.index = bindingIndex + 1;
+            mainBindingReferences.Index = bindingIndex;
+            altBindingReferences.Index = bindingIndex + 1;
             action = inputAction;
             rebindOverlay = overlay;
             UpdateBindingUIEvent += onUpdateBindingUIEvent;

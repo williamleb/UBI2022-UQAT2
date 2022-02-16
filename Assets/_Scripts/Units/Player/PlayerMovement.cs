@@ -39,10 +39,10 @@ namespace Units.Player
 
         private void GetInput()
         {
-            moveDirection.Set(playerInputs.move.x, 0, playerInputs.move.y);
-            lookDelta = playerInputs.look;
-            if (!jumpInput && playerInputs.jump) jumpImpulse = true;
-            jumpInput = playerInputs.jump;
+            moveDirection.Set(playerInputs.Move.x, 0, playerInputs.Move.y);
+            lookDelta = playerInputs.Look;
+            if (!jumpInput && playerInputs.Jump) jumpImpulse = true;
+            jumpInput = playerInputs.Jump;
             if (jumpImpulse && !cc.isGrounded && cc.velocity.y < 0) bufferJump = true;
         }
 

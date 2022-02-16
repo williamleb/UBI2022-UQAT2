@@ -11,7 +11,7 @@ namespace Canvases.Markers
     {
         [SerializeField, Required] private MarkerManagerData data;
 
-        private Dictionary<Type, List<Marker>> markers = new Dictionary<Type, List<Marker>>();
+        private readonly Dictionary<Type, List<Marker>> markers = new Dictionary<Type, List<Marker>>();
 
         /// <summary>
         /// After calling this method to get a marker, you must release the marker when you no longer need it with
@@ -32,7 +32,7 @@ namespace Canvases.Markers
                 {
                     marker.Initialize(ReleaseMarker);
                     Debug.Log($"Marker of type {marker.GetType()} initialized");
-                    return (T) Convert.ChangeType(marker, typeof(T));;
+                    return (T) Convert.ChangeType(marker, typeof(T));
                 }
             }
 

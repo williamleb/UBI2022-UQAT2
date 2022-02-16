@@ -6,7 +6,7 @@ namespace Canvases.Markers
     {
         [SerializeField] private float markerScale = 1.0f;
         
-        private T currentMarker = null;
+        private T currentMarker;
         
         public bool IsActivated => currentMarker != null;
 

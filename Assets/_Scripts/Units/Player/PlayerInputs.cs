@@ -16,24 +16,21 @@ namespace Units.Player
         public string CurrentDevice => detectDevice.CurrentDevice;
 
         public PlayerInputAction PlayerInputAction { get; private set; }
-        private RebindSaveLoad saveLoad;
         private DetectDevice detectDevice;
 
-        public Vector2 move;
-        public Vector2 look;
-        public bool jump;
-        public bool attack;
-        public bool altAttack;
-        public bool dash;
-        public bool sprint;
+        public Vector2 Move;
+        public Vector2 Look;
+        public bool Jump;
+        public bool Attack;
+        public bool AltAttack;
+        public bool Dash;
+        public bool Sprint;
 
         private void Awake()
         {
             PlayerInputAction = new PlayerInputAction();
             detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
-            saveLoad = FindObjectOfType<RebindSaveLoad>();
-            if (saveLoad != null)
-                saveLoad.LoadOverrides(PlayerInputAction.asset);
+            RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
         }
 
         private void OnEnable()
@@ -51,31 +48,27 @@ namespace Units.Player
             PlayerInputAction.Player.Sprint.canceled += OnSprint;
         }
 
-        private void OnJump(InputAction.CallbackContext obj) => jump = obj.started;
-        private void OnAttack(InputAction.CallbackContext obj) => attack = obj.started;
-        private void OnAltAttack(InputAction.CallbackContext obj) => altAttack = obj.started;
-        private void OnDash(InputAction.CallbackContext obj) => dash = obj.started;
-        private void OnSprint(InputAction.CallbackContext obj) => sprint = obj.started;
+        private void OnJump(InputAction.CallbackContext obj) => Jump = obj.started;
+        private void OnAttack(InputAction.CallbackContext obj) => Attack = obj.started;
+        private void OnAltAttack(InputAction.CallbackContext obj) => AltAttack = obj.started;
+        private void OnDash(InputAction.CallbackContext obj) => Dash = obj.started;
+        private void OnSprint(InputAction.CallbackContext obj) => Sprint = obj.started;
 
         private void Update()
         {
             if (Time.timeScale > 0)
             {
-                move = PlayerInputAction.Player.Movement.ReadValue<Vector2>();
-                look = PlayerInputAction.Player.Look.ReadValue<Vector2>();
+                Move = PlayerInputAction.Player.Movement.ReadValue<Vector2>();
+                Look = PlayerInputAction.Player.Look.ReadValue<Vector2>();
             }
             else
             {
-                move = Vector2.zero;
-                look = Vector2.zero;
+                Move = Vector2.zero;
+                Look = Vector2.zero;
             }
         }
 
-        public void SaveSettings()
-        {
-            if (saveLoad != null)
-                saveLoad.SaveOverrides(PlayerInputAction.asset);
-        }
+        public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
 
         private void OnDisable()
         {

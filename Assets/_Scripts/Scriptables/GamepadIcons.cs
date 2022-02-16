@@ -5,25 +5,25 @@ namespace Scriptables
     [CreateAssetMenu(fileName = "GamepadIcons_", menuName = "AssetPack/GamePad Icons", order = 0)]
     public class GamepadIcons : ScriptableObject
     {
-        public Sprite buttonSouth;
-        public Sprite buttonNorth;
-        public Sprite buttonEast;
-        public Sprite buttonWest;
-        public Sprite startButton;
-        public Sprite selectButton;
-        public Sprite leftTrigger;
-        public Sprite rightTrigger;
-        public Sprite leftShoulder;
-        public Sprite rightShoulder;
-        public Sprite dpad;
-        public Sprite dpadUp;
-        public Sprite dpadDown;
-        public Sprite dpadLeft;
-        public Sprite dpadRight;
-        public Sprite leftStick;
-        public Sprite rightStick;
-        public Sprite leftStickPress;
-        public Sprite rightStickPress;
+        public Sprite ButtonSouth;
+        public Sprite ButtonNorth;
+        public Sprite ButtonEast;
+        public Sprite ButtonWest;
+        public Sprite StartButton;
+        public Sprite SelectButton;
+        public Sprite LeftTrigger;
+        public Sprite RightTrigger;
+        public Sprite LeftShoulder;
+        public Sprite RightShoulder;
+        public Sprite Dpad;
+        public Sprite DpadUp;
+        public Sprite DpadDown;
+        public Sprite DpadLeft;
+        public Sprite DpadRight;
+        public Sprite LeftStick;
+        public Sprite RightStick;
+        public Sprite LeftStickPress;
+        public Sprite RightStickPress;
 
         public Sprite GetSprite(string controlPath)
         {
@@ -31,25 +31,25 @@ namespace Scriptables
             // map from that to the sprites we have for gamepads.
             return controlPath switch
             {
-                "buttonSouth" => buttonSouth,
-                "buttonNorth" => buttonNorth,
-                "buttonEast" => buttonEast,
-                "buttonWest" => buttonWest,
-                "start" => startButton,
-                "select" => selectButton,
-                "leftTrigger" => leftTrigger,
-                "rightTrigger" => rightTrigger,
-                "leftShoulder" => leftShoulder,
-                "rightShoulder" => rightShoulder,
-                "dpad" => dpad,
-                "dpad/up" => dpadUp,
-                "dpad/down" => dpadDown,
-                "dpad/left" => dpadLeft,
-                "dpad/right" => dpadRight,
-                "leftStick" => leftStick,
-                "rightStick" => rightStick,
-                "leftStickPress" => leftStickPress,
-                "rightStickPress" => rightStickPress,
+                "buttonSouth" => ButtonSouth,
+                "buttonNorth" => ButtonNorth,
+                "buttonEast" => ButtonEast,
+                "buttonWest" => ButtonWest,
+                "start" => StartButton,
+                "select" => SelectButton,
+                "leftTrigger" => LeftTrigger,
+                "rightTrigger" => RightTrigger,
+                "leftShoulder" => LeftShoulder,
+                "rightShoulder" => RightShoulder,
+                "dpad" => Dpad,
+                "dpad/up" => DpadUp,
+                "dpad/down" => DpadDown,
+                "dpad/left" => DpadLeft,
+                "dpad/right" => DpadRight,
+                "leftStick" => LeftStick,
+                "rightStick" => RightStick,
+                "leftStickPress" => LeftStickPress,
+                "rightStickPress" => RightStickPress,
                 _ => null
             };
         }
