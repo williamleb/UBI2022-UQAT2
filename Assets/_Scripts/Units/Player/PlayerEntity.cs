@@ -7,7 +7,6 @@ namespace Units.Player
     public partial class PlayerEntity : MonoBehaviour
     {
         [SerializeField] private PlayerInputs playerInputs;
-        [SerializeField] private bool immortal;
         private PlayerSettings data;
 
         private void Awake()
@@ -18,7 +17,6 @@ namespace Units.Player
 
         private void Start()
         {
-            
         }
 
         private void Update()
@@ -28,18 +26,14 @@ namespace Units.Player
 
         private void OnDisable()
         {
-            
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            
         }
 
         private void OnTriggerExit(Collider other)
         {
-            
         }
-
     }
 }

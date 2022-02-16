@@ -22,7 +22,7 @@ namespace Units.Player
 
         private void MovementAwake()
         {
-            if (mainCamera == null) mainCamera = Camera.main.transform;
+            if (mainCamera == null && Camera.main != null) mainCamera = Camera.main.transform;
             cc = GetComponent<CharacterController>();
         }
 
@@ -50,7 +50,8 @@ namespace Units.Player
         {
             if (moveDirection.sqrMagnitude > 0)
             {
-                float targetAngle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
+                float targetAngle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg +
+                                    mainCamera.eulerAngles.y;
                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 moveVelocity += moveDir * (data.MoveAcceleration * Time.deltaTime);
                 moveVelocity = Vector3.ClampMagnitude(moveVelocity, data.MoveMaximumSpeed);
@@ -59,7 +60,6 @@ namespace Units.Player
                 {
                     moveVelocity += moveDir * (data.MoveAirBonusControl * apexPoint * Time.deltaTime);
                 }
-
             }
             else
             {
@@ -112,22 +112,17 @@ namespace Units.Player
         }
 
         private void MovePlayer()
-        { 
-            cc.Move(new Vector3(moveVelocity.x,yVelocity,moveVelocity.z) * Time.deltaTime);
+        {
+            cc.Move(new Vector3(moveVelocity.x, yVelocity, moveVelocity.z) * Time.deltaTime);
         }
 
         private void RotatePlayer()
         {
-            var ori = orientation.eulerAngles;
-            ori.x = Mathf.Clamp(ori.x - lookDelta.y * data.MouseSensitivity, 1,75);
+            Vector3 ori = orientation.eulerAngles;
+            ori.x = Mathf.Clamp(ori.x - lookDelta.y * data.MouseSensitivity, 1, 75);
             ori.y += lookDelta.x * data.MouseSensitivity;
             ori.z = 0;
             orientation.rotation = Quaternion.Euler(ori);
-        }
-
-        private void StopMoving()
-        {
-            cc.Move(Vector3.zero);
         }
     }
 }

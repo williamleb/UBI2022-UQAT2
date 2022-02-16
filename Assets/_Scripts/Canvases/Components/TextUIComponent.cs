@@ -1,5 +1,5 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using TMPro;
 
 namespace Canvases.Components
 {
@@ -18,5 +18,10 @@ namespace Canvases.Components
         public void AddText(string textToAdd) => text.text += textToAdd;
 
         public void HideText() => text.text = string.Empty;
+        
+        private void OnValidate()
+        {
+            if (text == null) text = GetComponent<TMP_Text>();
+        }
     }
 }

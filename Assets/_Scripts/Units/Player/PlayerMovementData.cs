@@ -3,7 +3,7 @@
     public class PlayerMovementData
     {
         #region Movement
-        
+
         public float MaximumSpeed { get; }
         public float Acceleration { get; }
         public float Deceleration { get; }
@@ -17,7 +17,7 @@
         public float MinFallAcceleration { get; }
         public float MaxFallAcceleration { get; }
         public float MaxFallSpeed { get; }
-        public float CoyoteTimeThreshold { get; } 
+        public float CoyoteTimeThreshold { get; }
         public float JumpApexThreshold { get; }
         public float JumpEndEarlyGravityModifier { get; }
         public float MouseSensitivity { get; }
@@ -38,7 +38,6 @@
             CoyoteTimeThreshold = playerMovementConfig[9];
             JumpApexThreshold = playerMovementConfig[10];
             JumpEndEarlyGravityModifier = playerMovementConfig[11];
-
         }
     }
 }

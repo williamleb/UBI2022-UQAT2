@@ -21,5 +21,7 @@ namespace Canvases.Components
         public void OnValueChanged(UnityAction<float> callBack) => slider.onValueChanged.AddListener(callBack);
 
         private void OnDestroy() => slider.onValueChanged?.RemoveAllListeners();
+        
+        private void OnValidate() => slider = GetComponent<Slider>();
     }
 }

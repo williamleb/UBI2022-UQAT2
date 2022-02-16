@@ -10,9 +10,16 @@ namespace Canvases.Components
     public class ButtonUIComponent : UIComponentBase
     {
         [SerializeField] private Button button;
-        
+
+        public Color Color
+        {
+            set => button.image.color = value;
+        }
+
         public void OnClick(UnityAction callback) => button.onClick.AddListener(callback);
         private void OnDestroy() => button.onClick.RemoveAllListeners();
+        
+        private void OnValidate() => button = GetComponent<Button>();
 
 #if AUDIO_EVENT
         [SerializeField] private SimpleAudioEvent _clickSound;
