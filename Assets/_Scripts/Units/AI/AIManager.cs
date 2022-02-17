@@ -5,7 +5,6 @@ using Utilities.Singleton;
 
 namespace Units.AI
 {
-    // ReSharper disable once InconsistentNaming Reason: AI should be uppercase
     public class AIManager : Singleton<AIManager>
     {
         [SerializeField] private NetworkObject entityPrefab;

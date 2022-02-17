@@ -12,14 +12,10 @@ namespace Managers.Interactions
     {
         private List<Interaction> interactionsInReach = new List<Interaction>();
 
-        // TODO PlayerInteracter: grab only nearest + show prompt if active player
-        // TODO AIInteracter: grab whatever (pass an ID)
-
         public List<Interaction> InteractionsInReach => interactionsInReach;
 
         public void InteractWithClosestInteraction()
         {
-            // TODO instant feedback while still managing timed interactions
             var closestInteraction = GetClosestAvailableInteraction();
             if (closestInteraction)
             {
