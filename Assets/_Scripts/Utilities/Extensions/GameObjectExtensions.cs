@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+using UnityEngine;
 
  namespace Utilities.Extensions
 {
@@ -10,5 +10,7 @@
         public static void Show(this GameObject gameObject) => gameObject.SetActive(true);
 
         public static void Hide(this GameObject gameObject) => gameObject.SetActive(false);
+
+        public static bool IsVisible(this GameObject gameObject) => gameObject.activeSelf;
     }
 }

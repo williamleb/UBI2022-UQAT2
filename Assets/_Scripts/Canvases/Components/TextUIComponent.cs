@@ -1,4 +1,3 @@
-﻿using System;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -24,6 +23,7 @@ namespace Canvases.Components
         {
             Debug.Assert(text, $"A {nameof(text)} must be assigned to a {nameof(TextUIComponent)}");
         }
+
 
         public void ResetText() => text.text = initialText;
 
