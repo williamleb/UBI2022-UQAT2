@@ -9,6 +9,8 @@ namespace Systems.Network
 {
     public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
     {
+        public static float DeltaTime => Instance.runner ? Instance.runner.DeltaTime : 0f;
+        
         [NonSerialized] public MemoryEvent<PlayerRef> OnPlayerJoinedEvent;
         public event Action<PlayerRef> OnPlayerLeftEvent;
         

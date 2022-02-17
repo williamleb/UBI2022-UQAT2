@@ -30,7 +30,7 @@ namespace Canvases.InputSystem
 
         private void Start()
         {
-            playerInputs = FindObjectOfType<PlayerInputs>();
+            playerInputs = FindObjectOfType<PlayerInputs>(); // TODO Change because player might not be spawned with its player inputs AND there could be multiple players
             playerInputs.OnInputDeviceChanged += PlayerInputsOnOnInputDeviceChanged;
             playerInputActionRef = playerInputs.PlayerInputAction;
             resetAllButton.OnClick += OnResetAll;
