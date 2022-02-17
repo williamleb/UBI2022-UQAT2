@@ -1,3 +1,4 @@
+using Systems.Network;
 using UnityEngine;
 
 namespace Units.Player
@@ -26,9 +27,9 @@ namespace Units.Player
             cc = GetComponent<CharacterController>();
         }
 
-        private void MoveUpdate()
+        private void MoveUpdate(NetworkInputData inputData)
         {
-            GetInput();
+            GetInput(inputData);
             CalculateMovement();
             CalculateJumpApex();
             CalculateGravity();
@@ -37,12 +38,12 @@ namespace Units.Player
             RotatePlayer();
         }
 
-        private void GetInput()
+        private void GetInput(NetworkInputData inputData)
         {
-            moveDirection.Set(playerInputs.Move.x, 0, playerInputs.Move.y);
-            lookDelta = playerInputs.Look;
-            if (!jumpInput && playerInputs.Jump) jumpImpulse = true;
-            jumpInput = playerInputs.Jump;
+            moveDirection.Set(inputData.Move.x, 0, inputData.Move.y);
+            lookDelta = inputData.Look;
+            if (!jumpInput && inputData.Jump) jumpImpulse = true;
+            jumpInput = inputData.Jump;
             if (jumpImpulse && !cc.isGrounded && cc.velocity.y < 0) bufferJump = true;
         }
 

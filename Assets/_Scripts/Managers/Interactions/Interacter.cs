@@ -30,6 +30,8 @@ namespace Managers.Interactions
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, InvokeLocal = false)]
         private void RPC_Interact(int interactionId)
         {
+            Debug.Log("Interacter.RPC_Interact() =============================="); // TODO Remove
+
             var interaction = GetInteractionFromId(interactionId);
             if (!interaction)
             {
