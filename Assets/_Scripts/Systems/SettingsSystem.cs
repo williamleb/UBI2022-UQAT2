@@ -7,11 +7,10 @@ namespace Systems
 {
     public class SettingsSystem : PersistentSingleton<SettingsSystem>
     {
-        private const string SettingsFolderPath = "Settings";
+        private const string SETTINGS_FOLDER_PATH = "Settings";
 
-        private PlayerSettings playerSettings;
-        public PlayerSettings PlayerSetting => playerSettings;
-        
+        public PlayerSettings PlayerSetting { get; private set; }
+
         protected override void Awake()
         {
             base.Awake();
@@ -21,13 +20,13 @@ namespace Systems
 
         private void LoadPlayerSettings()
         {
-            var playerSetting = Resources.LoadAll<PlayerSettings>(SettingsFolderPath);
+            PlayerSettings[] playerSetting = Resources.LoadAll<PlayerSettings>(SETTINGS_FOLDER_PATH);
 
-            Debug.Assert(playerSetting.Any(), $"An object of type {nameof(PlayerSettings)} should be in the folder {SettingsFolderPath}");
+            Debug.Assert(playerSetting.Any(), $"An object of type {nameof(PlayerSettings)} should be in the folder {SETTINGS_FOLDER_PATH}");
             if (playerSetting.Length > 1)
-                Debug.LogWarning($"More than one object of type {nameof(PlayerSettings)} was found in the folder {SettingsFolderPath}. Taking the first one.");
+                Debug.LogWarning($"More than one object of type {nameof(PlayerSettings)} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
 
-            playerSettings = playerSetting.First();
+            PlayerSetting = playerSetting.First();
         }
     }
 }

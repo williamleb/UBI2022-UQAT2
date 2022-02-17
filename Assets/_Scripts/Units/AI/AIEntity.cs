@@ -9,7 +9,7 @@ namespace Units.AI
     public class AIEntity : NetworkBehaviour
     {
         private NavMeshAgent agent;
-        private AIBrain brain = null;
+        private AIBrain brain;
 
         public NavMeshAgent Agent => agent;
 

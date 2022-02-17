@@ -12,7 +12,7 @@ namespace Canvases.Markers
         private Vector3 worldPosition = Vector3.zero;
         private float scale = 1.0f;
 
-        private Action<Marker> release = null;
+        private Action<Marker> release;
 
         public bool IsActivated => release != null;
 
