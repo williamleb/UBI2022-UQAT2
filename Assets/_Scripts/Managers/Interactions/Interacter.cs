@@ -23,27 +23,8 @@ namespace Managers.Interactions
             var closestInteraction = GetClosestAvailableInteraction();
             if (closestInteraction)
             {
-                RPC_Interact(closestInteraction.InteractionId);
+                closestInteraction.Interact();
             }
-        }
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, InvokeLocal = false)]
-        private void RPC_Interact(int interactionId)
-        {
-            Debug.Log("Interacter.RPC_Interact() =============================="); // TODO Remove
-
-            var interaction = GetInteractionFromId(interactionId);
-            if (!interaction)
-            {
-                // The host client didn't have the requested interaction in the interactions in reach for this entity
-                // For now, we only fallback to the interaction manager without checking if the interaction was disabled because another player interacted with it or if the player could interact with it (if they are cheating)
-                // This might change in the future
-                if (InteractionManager.HasInstance)
-                    interaction = InteractionManager.Instance.GetInteraction(interactionId);
-            }
-            
-            if (interaction)
-                interaction.Interact();
         }
 
         private Interaction GetInteractionFromId(int interactionId)
