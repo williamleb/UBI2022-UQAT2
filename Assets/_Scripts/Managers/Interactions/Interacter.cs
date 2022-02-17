@@ -10,9 +10,9 @@ namespace Managers.Interactions
     [RequireComponent(typeof(Collider))]
     public class Interacter : NetworkBehaviour
     {
-        private List<Interaction> interactionsInReach = new List<Interaction>();
+        private readonly List<Interaction> interactionsInReach = new List<Interaction>();
 
-        public List<Interaction> InteractionsInReach => interactionsInReach;
+        protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
         public void InteractWithClosestInteraction()
         {
