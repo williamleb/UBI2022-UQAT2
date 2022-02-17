@@ -1,4 +1,5 @@
 ﻿using System;
+using BehaviorDesigner.Runtime.Tasks.Unity.Timeline;
 using Fusion;
 using UnityEngine;
 using Utilities.Event;
@@ -30,6 +31,16 @@ namespace Systems.Network
         public void Despawn(NetworkObject networkObject, bool allowPredicted = false)
         {
             runner.Despawn(networkObject, allowPredicted);
+        }
+
+        public bool IsPlayer(int playerId)
+        {
+            return runner != null && runner.LocalPlayer.PlayerId == playerId;
+        }
+
+        public bool IsPlayer(PlayerRef playerRef)
+        {
+            return IsPlayer(playerRef.PlayerId);
         }
     }
 }

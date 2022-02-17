@@ -8,6 +8,7 @@ namespace Managers.Interactions
 {
     [RequireComponent(typeof(Collider))]
     [ValidateInput(nameof(ValidateIfHasTag), "An interaction component must be placed on a collider that has the 'Interaction' tag.")]
+    [ValidateInput(nameof(ValidateIfColliderIsTrigger), "An interaction component must have a collider of type 'trigger'.")]
     public class Interaction : NetworkBehaviour
     {
         public const string TAG = "Interaction";
@@ -53,6 +54,20 @@ namespace Managers.Interactions
         private bool ValidateIfHasTag()
         {
             return gameObject.CompareTag(TAG);
+        }
+
+        private bool ValidateIfColliderIsTrigger()
+        {
+            var colliders = GetComponents<Collider>();
+            foreach (var colliderComponent in colliders)
+            {
+                if (colliderComponent.isTrigger)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
