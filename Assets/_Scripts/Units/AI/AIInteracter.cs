@@ -16,7 +16,7 @@ namespace Units.AI
             if (interaction == null)
                 return false;
 
-            interaction.Interact();
+            interaction.Interact(this);
             return true;
         }
     }

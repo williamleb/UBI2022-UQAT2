@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace Managers.Interactions
             var closestInteraction = GetClosestAvailableInteraction();
             if (closestInteraction)
             {
-                closestInteraction.Interact();
+                closestInteraction.Interact(this);
             }
         }
 

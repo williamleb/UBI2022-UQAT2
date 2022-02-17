@@ -2,6 +2,7 @@
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
+using Systems.Network;
 using UnityEngine;
 
 namespace Managers.Interactions
@@ -14,6 +15,7 @@ namespace Managers.Interactions
         public const string TAG = "Interaction";
         
         public event Action OnInteractedWith;
+        public event Action OnInstantFeedback;
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
@@ -57,28 +59,28 @@ namespace Managers.Interactions
             }
         }
 
-        protected void OnInteraction()
-        {
-            OnInteractedWith?.Invoke();
-        }
-
         // Moving the raycast hit outside of the function so we don't create unnecessary garbage as this method can be called frequently
         private RaycastHit hit;
-        public bool CanInteract(Interacter interaction)
+        public bool CanInteract(Interacter interacter)
         {
-            if (!Physics.Raycast(transform.position, interaction.transform.position - transform.position, out hit))
+            if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
-            if (hit.collider.gameObject != interaction.gameObject)
+            if (hit.collider.gameObject != interacter.gameObject)
                 return false;
             
             return true;
         }
 
-        public virtual void Interact()
+        public void Interact(Interacter interacter)
         {
-            Debug.Log("Interaction.Interact() =============================="); // TODO Remove
-            OnInteraction();
+            if (!CanInteract(interacter))
+                return;
+            
+            if (NetworkSystem.Instance.IsPlayer(interacter.Object.InputAuthority))
+                OnInstantFeedback?.Invoke();
+            
+            RPC_Interact();
         }
         
         private bool ValidateIfHasTag()
@@ -98,6 +100,11 @@ namespace Managers.Interactions
             }
 
             return false;
+        }
+        
+        protected void RPC_Interact()
+        {
+            OnInteractedWith?.Invoke();
         }
     }
 }
