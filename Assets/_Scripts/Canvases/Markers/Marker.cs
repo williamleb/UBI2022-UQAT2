@@ -31,6 +31,12 @@ namespace Canvases.Markers
         public void Initialize(Action<Marker> releaseHandle)
         {
             release = releaseHandle;
+        }
+
+        public void Activate()
+        {
+            AdjustMarkerSizeWithCameraDistance();
+            AdjustMarkerScreenPosition();
             gameObject.SetActive(true);
         }
 

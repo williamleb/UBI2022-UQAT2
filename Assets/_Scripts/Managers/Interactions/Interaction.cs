@@ -17,6 +17,28 @@ namespace Managers.Interactions
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
+        private bool interactionPossible = false;
+
+        public bool Possible
+        {
+            get => interactionPossible;
+            set
+            {
+                if (interactionPossible == value)
+                    return;
+                
+                interactionPossible = value;
+                
+                if (!markerToShowWhenInteractionPossible)
+                    return;
+                
+                if (interactionPossible)
+                    markerToShowWhenInteractionPossible.Activate();
+                else
+                    markerToShowWhenInteractionPossible.Deactivate();
+            }
+        }
+
         public int InteractionId => Id.GetHashCode();
 
         public override void Spawned()

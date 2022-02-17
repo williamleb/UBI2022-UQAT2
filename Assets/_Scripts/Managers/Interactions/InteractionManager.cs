@@ -22,5 +22,21 @@ namespace Managers.Interactions
         {
             return interactions.ContainsKey(interactionId) ? interactions[interactionId] : null;
         }
+
+        public void SetInteractionAsPossible(int interactionId)
+        {
+            foreach (var interaction in interactions.Values)
+            {
+                interaction.Possible = interaction.InteractionId == interactionId;
+            }
+        }
+
+        public void SetNoInteractionAsPossible()
+        {
+            foreach (var interaction in interactions.Values)
+            {
+                interaction.Possible = false;
+            }
+        }
     }
 }
