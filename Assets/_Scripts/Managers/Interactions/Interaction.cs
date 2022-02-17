@@ -40,13 +40,20 @@ namespace Managers.Interactions
             OnInteractedWith?.Invoke();
         }
 
-        public bool CanInteract(Transform transform)
+        // Moving the raycast hit outside of the function so we don't create unnecessary garbage as this method can be called frequently
+        private RaycastHit hit;
+        public bool CanInteract(Interacter interaction)
         {
-            // TODO Raycast
+            if (!Physics.Raycast(transform.position, interaction.transform.position - transform.position, out hit))
+                return false;
+
+            if (hit.collider.gameObject != interaction.gameObject)
+                return false;
+            
             return true;
         }
 
-        protected virtual void Interact()
+        public virtual void Interact()
         {
             OnInteraction();
         }

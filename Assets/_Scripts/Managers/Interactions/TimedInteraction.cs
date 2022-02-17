@@ -24,7 +24,7 @@ namespace Managers.Interactions
             wasInteractedWithThisFrame = false;
         }
         
-        protected override void Interact()
+        public override void Interact()
         {
             wasInteractedWithThisFrame = true;
 
