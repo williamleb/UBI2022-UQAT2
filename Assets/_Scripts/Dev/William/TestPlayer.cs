@@ -1,6 +1,4 @@
-﻿using Scriptables;
-using Systems;
-using Fusion;
+﻿using Fusion;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -12,7 +10,7 @@ namespace Dev.William
     [RequireComponent(typeof(NetworkCharacterController))]
     public class TestPlayer : NetworkBehaviour
     {
-        [SerializeField] private PlayerInputs playerInputs;
+        [SerializeField] private PlayerInputHandler playerInputHandler;
         [SerializeField] private NetworkCharacterController characterController;
         
         private PlayerInteracter interacter;
@@ -25,23 +23,23 @@ namespace Dev.William
         
         public override void Spawned()
         {
-            if (NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
+            if (Object.HasInputAuthority)
             {
-                NetworkSystem.Instance.SetInputFunction(GetInput);
+                NetworkSystem.Instance.OnInputEvent += GetInput;
             }
         }
-        
+
+        private void GetInput(NetworkRunner runner, NetworkInput input)
+        {
+            input.Set(NetworkInputData.FromPlayerInputs(playerInputHandler));
+        }
+
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            if (NetworkSystem.HasInstance && NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
+            if (NetworkSystem.HasInstance && Object.HasInputAuthority)
             {
-                NetworkSystem.Instance.UnsetInputFunction();
+                NetworkSystem.Instance.OnInputEvent -= GetInput;
             }
-        }
-        
-        private NetworkInputData GetInput()
-        {
-            return NetworkInputData.FromPlayerInputs(playerInputs);
         }
 
         public override void FixedUpdateNetwork()

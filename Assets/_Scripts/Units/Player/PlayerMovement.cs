@@ -1,3 +1,4 @@
+using Fusion;
 using Systems.Network;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Units.Player
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform mainCamera;
 
-        private CharacterController cc;
+        private NetworkCharacterController cc;
 
         private Vector3 moveDirection = Vector3.zero;
         private Vector2 lookDelta;
@@ -24,7 +25,7 @@ namespace Units.Player
         private void MovementAwake()
         {
             if (mainCamera == null && Camera.main != null) mainCamera = Camera.main.transform;
-            cc = GetComponent<CharacterController>();
+            cc = GetComponent<NetworkCharacterController>();
         }
 
         private void MoveUpdate(NetworkInputData inputData)
@@ -44,7 +45,7 @@ namespace Units.Player
             lookDelta = inputData.Look;
             if (!jumpInput && inputData.Jump) jumpImpulse = true;
             jumpInput = inputData.Jump;
-            if (jumpImpulse && !cc.isGrounded && cc.velocity.y < 0) bufferJump = true;
+            if (jumpImpulse && !cc.Grounded && cc.Velocity.y < 0) bufferJump = true;
         }
 
         private void CalculateMovement()
@@ -57,7 +58,7 @@ namespace Units.Player
                 moveVelocity += moveDir * (data.MoveAcceleration * Time.deltaTime);
                 moveVelocity = Vector3.ClampMagnitude(moveVelocity, data.MoveMaximumSpeed);
 
-                if (!cc.isGrounded)
+                if (!cc.Grounded)
                 {
                     moveVelocity += moveDir * (data.MoveAirBonusControl * apexPoint * Time.deltaTime);
                 }
@@ -70,7 +71,7 @@ namespace Units.Player
 
         private void CalculateJumpApex()
         {
-            if (!cc.isGrounded)
+            if (!cc.Grounded)
             {
                 apexPoint = Mathf.InverseLerp(data.JumpApexThreshold, 0, Mathf.Abs(yVelocity));
                 fallSpeed = Mathf.Lerp(data.MinFallAcceleration, data.MaxFallAcceleration, apexPoint);
@@ -83,7 +84,7 @@ namespace Units.Player
 
         private void CalculateGravity()
         {
-            if (cc.isGrounded)
+            if (cc.Grounded)
             {
                 if (yVelocity < 0) yVelocity = -0.1f;
             }
@@ -104,7 +105,7 @@ namespace Units.Player
 
         private void CalculateJump()
         {
-            if ((jumpImpulse || bufferJump) && cc.isGrounded)
+            if ((jumpImpulse || bufferJump) && cc.Grounded)
             {
                 jumpImpulse = false;
                 bufferJump = false;
@@ -114,7 +115,7 @@ namespace Units.Player
 
         private void MovePlayer()
         {
-            cc.Move(new Vector3(moveVelocity.x, yVelocity, moveVelocity.z) * Time.deltaTime);
+            cc.Move(new Vector3(moveVelocity.x, yVelocity, moveVelocity.z) * Runner.DeltaTime);
         }
 
         private void RotatePlayer()

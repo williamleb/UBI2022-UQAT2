@@ -7,37 +7,24 @@ using UnityEngine;
 namespace Units.Player
 {
     [RequireComponent(typeof(PlayerInteracter))]
-    [RequireComponent(typeof(PlayerInputs))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     public partial class PlayerEntity : NetworkBehaviour
     {
         private PlayerSettings data;
         private PlayerInteracter interacter;
-        private PlayerInputs playerInputs;
 
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
             
             interacter = GetComponent<PlayerInteracter>();
-            playerInputs = GetComponent<PlayerInputs>();
-            
+
             MovementAwake();
         }
 
-        public override void Spawned()
+        private void Start()
         {
-            if (NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.SetInputFunction(GetInput);
-            }
-        }
-        
-        public override void Despawned(NetworkRunner runner, bool hasState)
-        {
-            if (NetworkSystem.HasInstance && NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.UnsetInputFunction();
-            }
+            NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
         public override void FixedUpdateNetwork()
@@ -53,10 +40,11 @@ namespace Units.Player
                 }
             }
         }
-        
-        private NetworkInputData GetInput()
+
+        private void PlayerLeft(NetworkRunner networkRunner, PlayerRef playerRef)
         {
-            return NetworkInputData.FromPlayerInputs(playerInputs);
+            if (playerRef == Object.InputAuthority)
+                networkRunner.Despawn(Object);
         }
     }
 }

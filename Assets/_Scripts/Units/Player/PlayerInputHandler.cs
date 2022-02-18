@@ -1,12 +1,13 @@
 using System;
 using Fusion;
 using InputSystem;
+using Systems.Network;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Units.Player
 {
-    public class PlayerInputs : MonoBehaviour
+    public class PlayerInputHandler : MonoBehaviour
     {
         public event Action<string> OnInputDeviceChanged
         {
@@ -34,6 +35,9 @@ namespace Units.Player
             detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
             RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
         }
+
+        private void Start() => NetworkSystem.Instance.OnInputEvent += InstanceOnOnInputEvent;
+        private void InstanceOnOnInputEvent(NetworkRunner runner, NetworkInput input) => input.Set(NetworkInputData.FromPlayerInputs(this));
 
         private void OnEnable()
         {

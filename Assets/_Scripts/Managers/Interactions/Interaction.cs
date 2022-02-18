@@ -2,7 +2,6 @@
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
-using Systems.Network;
 using UnityEngine;
 
 namespace Managers.Interactions
@@ -77,7 +76,7 @@ namespace Managers.Interactions
             if (!CanInteract(interacter))
                 return;
             
-            if (NetworkSystem.Instance.IsPlayer(interacter.Object.InputAuthority))
+            if (interacter.Object.HasInputAuthority)
                 OnInstantFeedback?.Invoke();
             
             RPC_Interact();

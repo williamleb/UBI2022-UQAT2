@@ -8,40 +8,25 @@ namespace Systems.Network
     {
         public Vector2 Move;
         public Vector2 Look;
-        public bool Jump;
-        public bool Attack;
-        public bool AltAttack;
-        public bool Dash;
-        public bool Sprint;
-        public bool Interact;
+        public NetworkBool Jump;
+        public NetworkBool Attack;
+        public NetworkBool AltAttack;
+        public NetworkBool Dash;
+        public NetworkBool Sprint;
+        public NetworkBool Interact;
 
-        public static NetworkInputData FromPlayerInputs(PlayerInputs playerInputs)
+        public static NetworkInputData FromPlayerInputs(PlayerInputHandler playerInputHandler)
         {
-            return new NetworkInputData()
+            return new NetworkInputData
             {
-              Move = playerInputs.Move,
-              Look = playerInputs.Look,
-              Jump = playerInputs.Jump,
-              Attack = playerInputs.Attack,
-              AltAttack = playerInputs.AltAttack,
-              Dash = playerInputs.Dash,
-              Sprint = playerInputs.Sprint,
-              Interact = playerInputs.Interact
-            };
-        }
-        
-        public static NetworkInputData FromNoInput()
-        {
-            return new NetworkInputData()
-            {
-                Move = Vector2.zero,
-                Look = Vector2.zero,
-                Jump = false,
-                Attack = false,
-                AltAttack = false,
-                Dash = false,
-                Sprint = false,
-                Interact = false
+              Move = playerInputHandler.Move,
+              Look = playerInputHandler.Look,
+              Jump = playerInputHandler.Jump,
+              Attack = playerInputHandler.Attack,
+              AltAttack = playerInputHandler.AltAttack,
+              Dash = playerInputHandler.Dash,
+              Sprint = playerInputHandler.Sprint,
+              Interact = playerInputHandler.Interact
             };
         }
     }

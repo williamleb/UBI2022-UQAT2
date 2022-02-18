@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace Managers.Interactions
 {
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(Collider))]
     public class Interacter : NetworkBehaviour
     {
         private readonly List<Interaction> interactionsInReach = new List<Interaction>();
