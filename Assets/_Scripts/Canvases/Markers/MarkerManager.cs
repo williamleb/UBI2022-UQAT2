@@ -31,7 +31,6 @@ namespace Canvases.Markers
                 if (!marker.IsActivated)
                 {
                     marker.Initialize(ReleaseMarker);
-                    Debug.Log($"Marker of type {marker.GetType()} initialized");
                     return (T) Convert.ChangeType(marker, typeof(T));
                 }
             }
@@ -41,7 +40,6 @@ namespace Canvases.Markers
 
         private void ReleaseMarker(Marker marker)
         {
-            Debug.Log($"Marker of type {marker.GetType()} released");
         }
 
         private void Start()

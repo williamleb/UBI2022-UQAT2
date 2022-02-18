@@ -1,4 +1,5 @@
 using System;
+using Fusion;
 using InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,7 @@ namespace Units.Player
         public bool AltAttack;
         public bool Dash;
         public bool Sprint;
+        public bool Interact;
 
         private void Awake()
         {
@@ -46,6 +48,8 @@ namespace Units.Player
             PlayerInputAction.Player.Dash.canceled += OnDash;
             PlayerInputAction.Player.Sprint.started += OnSprint;
             PlayerInputAction.Player.Sprint.canceled += OnSprint;
+            PlayerInputAction.Player.Interact.started += OnInteract;
+            PlayerInputAction.Player.Interact.canceled += OnInteract;
         }
 
         private void OnJump(InputAction.CallbackContext obj) => Jump = obj.started;
@@ -53,6 +57,7 @@ namespace Units.Player
         private void OnAltAttack(InputAction.CallbackContext obj) => AltAttack = obj.started;
         private void OnDash(InputAction.CallbackContext obj) => Dash = obj.started;
         private void OnSprint(InputAction.CallbackContext obj) => Sprint = obj.started;
+        private void OnInteract(InputAction.CallbackContext obj) => Interact = obj.started;
 
         private void Update()
         {
@@ -66,6 +71,11 @@ namespace Units.Player
                 Move = Vector2.zero;
                 Look = Vector2.zero;
             }
+        }
+
+        private void LateUpdate()
+        {
+            Interact = false;
         }
 
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);

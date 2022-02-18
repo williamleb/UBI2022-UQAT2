@@ -2,7 +2,6 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
-using Units.AI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -14,6 +13,18 @@ namespace Systems.Network
         private NetworkRunner runner;
         //[SerializeField] private NetworkPrefabRef playerPrefab;
         //private Dictionary<PlayerRef, NetworkObject> spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+
+        private Func<NetworkInputData> getInputs = null;
+
+        public void SetInputFunction(Func<NetworkInputData> getInputsFunction)
+        {
+            getInputs = getInputsFunction;
+        }
+        
+        public void UnsetInputFunction()
+        {
+            getInputs = null;
+        }
 
         //TODO: to remove.
         private void OnGUI()
@@ -72,6 +83,8 @@ namespace Systems.Network
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
+            var inputData = getInputs?.Invoke() ?? NetworkInputData.FromNoInput();
+            input.Set(inputData);
         }
 
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
