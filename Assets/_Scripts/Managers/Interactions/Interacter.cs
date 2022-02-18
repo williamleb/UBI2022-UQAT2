@@ -64,5 +64,25 @@ namespace Managers.Interactions
             Debug.Assert(interaction, $"Objects with the tag {Interaction.TAG} must have a {nameof(Interaction)} component");
             interactionsInReach.Remove(interaction);
         }
+        
+        public override void FixedUpdateNetwork()
+        {
+            List<Interaction> interactionsToRemove = new List<Interaction>();
+
+            // We need a way to remove interactions that have been destroyed
+            foreach (var interaction in interactionsInReach)
+            {
+                if (!interaction || !interaction.InteractionEnabled)
+                    interactionsToRemove.Add(interaction);
+            }
+
+            // Remove interactions in LateUpdate or else it might interfere with the update's foreach loop
+            foreach (var interaction in interactionsToRemove)
+            {
+                interactionsInReach.Remove(interaction);
+            }
+
+            interactionsToRemove.Clear();
+        }
     }
 }

@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using Systems.Sound;
 using Units;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Ingredients.Homework
 {
@@ -14,13 +15,13 @@ namespace Ingredients.Homework
     {
         private enum State : byte
         {
-            Free,
+            Free = 0,
             Taken
         }
 
         [SerializeField, Required] private GameObject visual;
         
-        [Networked] private State HomeworkState { get; set; }
+        [Networked(OnChanged = nameof(OnStateChanged))] private State HomeworkState { get; set; }
 
         private Interaction interaction;
         private Rigidbody rb;
@@ -73,11 +74,19 @@ namespace Ingredients.Homework
             HomeworkState = State.Free;
             
             transform.position = position + Vector3.up * 2f;
-            rb.AddForce(Vector3.up * 5f);
+            rb.isKinematic = false;
+
+            // TODO Better launch logic
+            var randomAngleX = Random.Range(2f, 25f);
+            var randomAngleY = Random.Range(2f, 25f);
+            var launchDirection = Quaternion.Euler(randomAngleX, randomAngleY, 0f) * Vector3.up;
+            rb.AddForce(launchDirection * 250);
         }
 
         public override void Spawned()
         {
+            HomeworkState = State.Free;
+            
             if (HomeworkManager.HasInstance)
             {
                 HomeworkManager.Instance.RegisterHomework(this);
@@ -100,6 +109,8 @@ namespace Ingredients.Homework
             {
                 colliderComponent.enabled = HomeworkState == State.Free;
             }
+
+            rb.isKinematic = HomeworkState != State.Free;
         }
 
         private static void OnStateChanged(Changed<Homework> changed)

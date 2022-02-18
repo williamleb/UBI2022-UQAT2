@@ -73,6 +73,11 @@ namespace Units.Player
             }
         }
 
+        private void LateUpdate()
+        {
+            Interact = false;
+        }
+
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
 
         private void OnDisable()

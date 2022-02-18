@@ -1,5 +1,4 @@
-﻿using System;
-using Fusion;
+﻿using Fusion;
 using Systems.Network;
 using Units;
 using Units.AI;
@@ -70,12 +69,12 @@ namespace Dev.William
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-                DropItems(networkObject.Id);
+                RPC_DropItems(networkObject.Id);
             }
         }
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void DropItems(NetworkId entityNetworkId)
+        private void RPC_DropItems(NetworkId entityNetworkId)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             var inventory = networkObject.GetComponent<Inventory>();

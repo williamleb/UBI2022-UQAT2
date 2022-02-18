@@ -19,8 +19,10 @@ namespace Managers.Interactions
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
-        [Networked] public bool InteractionEnabled { get; set; }
-
+        private bool interactionEnabled = true;
+        
+        [Networked(OnChanged = nameof(OnEnabledChanged))] public bool InteractionEnabled { get; set; }
+        
         public int InteractionId => Id.GetHashCode();
         
         private bool interactionPossible = false;
@@ -66,7 +68,7 @@ namespace Managers.Interactions
         private RaycastHit hit;
         public bool CanInteract(Interacter interacter)
         {
-            if (!InteractionEnabled)
+            if (!interactionEnabled)
                 return false;
             
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
@@ -107,6 +109,17 @@ namespace Managers.Interactions
             }
 
             return false;
+        }
+
+        private void UpdateInteractionEnabled()
+        {
+            // Since we need to know its value outside of network updates
+            interactionEnabled = InteractionEnabled;
+        }
+        
+        private static void OnEnabledChanged(Changed<Interaction> changed)
+        {
+            changed.Behaviour.UpdateInteractionEnabled();
         }
     }
 }
