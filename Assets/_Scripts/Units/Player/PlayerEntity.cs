@@ -82,7 +82,7 @@ namespace Units.Player
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             var inventory = networkObject.GetComponent<Inventory>();
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
-            inventory.Drop();
+            inventory.DropEverything();
         }
         
         private bool ValidateIfHasTag()

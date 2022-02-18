@@ -14,8 +14,8 @@ namespace Managers.Interactions
     {
         public const string TAG = "Interaction";
         
-        public event Action OnInteractedWith; // Only called on host
-        public event Action OnInstantFeedback; // Only called on client who's interaction player has authority
+        public event Action<Interacter> OnInteractedWith; // Only called on host
+        public event Action<Interacter> OnInstantFeedback; // Only called on client who's interaction player has authority
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
@@ -84,10 +84,10 @@ namespace Managers.Interactions
                 return;
             
             if (NetworkSystem.Instance.IsPlayer(interacter.Object.InputAuthority))
-                OnInstantFeedback?.Invoke();
+                OnInstantFeedback?.Invoke(interacter);
             
             if (NetworkSystem.Instance.IsHost)
-                OnInteractedWith?.Invoke();
+                OnInteractedWith?.Invoke(interacter);
         }
         
         private bool ValidateIfHasTag()

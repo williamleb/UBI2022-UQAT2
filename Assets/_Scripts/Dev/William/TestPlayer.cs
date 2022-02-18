@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using Systems.Network;
 using Units;
 using Units.AI;
@@ -62,7 +63,9 @@ namespace Dev.William
         
         private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature
         {
-            Debug.Log("Collision!");
+            if (!Object.HasInputAuthority)
+                return;
+            
             if (collision.gameObject.CompareTag(PlayerEntity.TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
@@ -77,7 +80,7 @@ namespace Dev.William
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             var inventory = networkObject.GetComponent<Inventory>();
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
-            inventory.Drop();
+            inventory.DropEverything();
         }
     }
 }
