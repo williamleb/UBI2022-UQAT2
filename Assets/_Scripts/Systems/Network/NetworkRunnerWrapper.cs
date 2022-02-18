@@ -44,5 +44,11 @@ namespace Systems.Network
         {
             return IsPlayer(playerRef.PlayerId);
         }
+
+        public NetworkObject FindObject(NetworkId id)
+        {
+            runner.TryFindObject(id, out var foundObject);
+            return foundObject;
+        }
     }
 }

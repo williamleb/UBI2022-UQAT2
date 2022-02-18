@@ -14,13 +14,16 @@ namespace Managers.Interactions
     {
         public const string TAG = "Interaction";
         
-        public event Action OnInteractedWith;
-        public event Action OnInstantFeedback;
+        public event Action OnInteractedWith; // Only called on host
+        public event Action OnInstantFeedback; // Only called on client who's interaction player has authority
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
-        private bool interactionPossible = false;
+        [Networked] public bool InteractionEnabled { get; set; }
 
+        public int InteractionId => Id.GetHashCode();
+        
+        private bool interactionPossible = false;
         public bool Possible
         {
             get => interactionPossible;
@@ -40,15 +43,15 @@ namespace Managers.Interactions
                     markerToShowWhenInteractionPossible.Deactivate();
             }
         }
-
-        public int InteractionId => Id.GetHashCode();
-
+        
         public override void Spawned()
         {
             if (InteractionManager.HasInstance)
             {
                 InteractionManager.Instance.RegisterInteraction(this);
             }
+
+            InteractionEnabled = true;
         }
         
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -63,6 +66,9 @@ namespace Managers.Interactions
         private RaycastHit hit;
         public bool CanInteract(Interacter interacter)
         {
+            if (!InteractionEnabled)
+                return false;
+            
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
@@ -80,7 +86,8 @@ namespace Managers.Interactions
             if (NetworkSystem.Instance.IsPlayer(interacter.Object.InputAuthority))
                 OnInstantFeedback?.Invoke();
             
-            RPC_Interact();
+            if (NetworkSystem.Instance.IsHost)
+                OnInteractedWith?.Invoke();
         }
         
         private bool ValidateIfHasTag()
@@ -100,11 +107,6 @@ namespace Managers.Interactions
             }
 
             return false;
-        }
-        
-        protected void RPC_Interact()
-        {
-            OnInteractedWith?.Invoke();
         }
     }
 }
