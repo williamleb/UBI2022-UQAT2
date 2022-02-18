@@ -1,6 +1,7 @@
 using Fusion;
 using Systems.Network;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -43,8 +44,8 @@ namespace Units.Player
         {
             moveDirection.Set(inputData.Move.x, 0, inputData.Move.y);
             lookDelta = inputData.Look;
-            if (!jumpInput && inputData.Jump) jumpImpulse = true;
-            jumpInput = inputData.Jump;
+            if (!jumpInput && inputData.IsJump) jumpImpulse = true;
+            jumpInput = inputData.IsJump;
             if (jumpImpulse && !cc.Grounded && cc.Velocity.y < 0) bufferJump = true;
         }
 
@@ -115,7 +116,8 @@ namespace Units.Player
 
         private void MovePlayer()
         {
-            cc.Move(new Vector3(moveVelocity.x, yVelocity, moveVelocity.z) * Runner.DeltaTime);
+            cc.Move(moveVelocity.Flat() * Runner.DeltaTime);
+            cc.Jump(impulse:yVelocity);
         }
 
         private void RotatePlayer()

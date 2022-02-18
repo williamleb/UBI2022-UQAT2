@@ -12,11 +12,12 @@ namespace Units.Player
     {
         private PlayerSettings data;
         private PlayerInteracter interacter;
+        [Networked] private NetworkInputData Inputs { get; set; }
 
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
-            
+
             interacter = GetComponent<PlayerInteracter>();
 
             MovementAwake();
@@ -31,13 +32,14 @@ namespace Units.Player
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                MoveUpdate(inputData);
-                
-                if (inputData.Interact)
-                {
-                    Debug.Log("E");
-                    interacter.InteractWithClosestInteraction();
-                }
+                Inputs = inputData;
+            }
+            
+            MoveUpdate(Inputs);
+            if (Inputs.IsInteract)
+            {
+                Debug.Log("E");
+                interacter.InteractWithClosestInteraction();
             }
         }
 

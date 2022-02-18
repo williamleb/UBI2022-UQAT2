@@ -4,6 +4,7 @@ using InputSystem;
 using Systems.Network;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -20,14 +21,14 @@ namespace Units.Player
         public PlayerInputAction PlayerInputAction { get; private set; }
         private DetectDevice detectDevice;
 
-        public Vector2 Move;
-        public Vector2 Look;
-        public bool Jump;
-        public bool Attack;
-        public bool AltAttack;
-        public bool Dash;
-        public bool Sprint;
-        public bool Interact;
+        [HideInInspector] public InputAction Move;
+        [HideInInspector] public InputAction Look;
+        [HideInInspector] public InputAction Jump;
+        [HideInInspector] public InputAction Attack;
+        [HideInInspector] public InputAction AltAttack;
+        [HideInInspector] public InputAction Dash;
+        [HideInInspector] public InputAction Sprint;
+        [HideInInspector] public InputAction Interact;
 
         private void Awake()
         {
@@ -36,45 +37,35 @@ namespace Units.Player
             RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
         }
 
-        private void Start() => NetworkSystem.Instance.OnInputEvent += InstanceOnOnInputEvent;
-        private void InstanceOnOnInputEvent(NetworkRunner runner, NetworkInput input) => input.Set(NetworkInputData.FromPlayerInputs(this));
+        private void Start() => NetworkSystem.Instance.OnInputEvent += OnInput;
+        private void OnInput(NetworkRunner runner, NetworkInput input)
+        {
+            NetworkInputData data = new NetworkInputData();
+
+            if (Jump.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_JUMP; 
+            if (Attack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ATTACK; 
+            if (AltAttack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ALT_ATTACK; 
+            if (Dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH; 
+            if (Sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
+            if (Interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
+
+            data.Move = Move.ReadV2();
+            data.Look = Look.ReadV2();
+            
+            input.Set(data);
+        }
 
         private void OnEnable()
         {
             PlayerInputAction.Enable();
-            PlayerInputAction.Player.Jump.started += OnJump;
-            PlayerInputAction.Player.Jump.canceled += OnJump;
-            PlayerInputAction.Player.Attack.started += OnAttack;
-            PlayerInputAction.Player.Attack.canceled += OnAttack;
-            PlayerInputAction.Player.AltAttack.started += OnAltAttack;
-            PlayerInputAction.Player.AltAttack.canceled += OnAltAttack;
-            PlayerInputAction.Player.Dash.started += OnDash;
-            PlayerInputAction.Player.Dash.canceled += OnDash;
-            PlayerInputAction.Player.Sprint.started += OnSprint;
-            PlayerInputAction.Player.Sprint.canceled += OnSprint;
-            PlayerInputAction.Player.Interact.started += OnInteract;
-            PlayerInputAction.Player.Interact.canceled += OnInteract;
-        }
-
-        private void OnJump(InputAction.CallbackContext obj) => Jump = obj.started;
-        private void OnAttack(InputAction.CallbackContext obj) => Attack = obj.started;
-        private void OnAltAttack(InputAction.CallbackContext obj) => AltAttack = obj.started;
-        private void OnDash(InputAction.CallbackContext obj) => Dash = obj.started;
-        private void OnSprint(InputAction.CallbackContext obj) => Sprint = obj.started;
-        private void OnInteract(InputAction.CallbackContext obj) => Interact = obj.started;
-
-        private void Update()
-        {
-            if (Time.timeScale > 0)
-            {
-                Move = PlayerInputAction.Player.Movement.ReadValue<Vector2>();
-                Look = PlayerInputAction.Player.Look.ReadValue<Vector2>();
-            }
-            else
-            {
-                Move = Vector2.zero;
-                Look = Vector2.zero;
-            }
+            Move = PlayerInputAction.Player.Movement;
+            Look = PlayerInputAction.Player.Look;
+            Jump = PlayerInputAction.Player.Jump;
+            Attack = PlayerInputAction.Player.Attack;
+            AltAttack = PlayerInputAction.Player.AltAttack;
+            Dash = PlayerInputAction.Player.Dash;
+            Sprint = PlayerInputAction.Player.Sprint;
+            Interact = PlayerInputAction.Player.Interact;
         }
 
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);

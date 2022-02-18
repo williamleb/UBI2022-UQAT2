@@ -1,33 +1,28 @@
 ﻿using Fusion;
-using Units.Player;
 using UnityEngine;
 
 namespace Systems.Network
 {
     public struct NetworkInputData : INetworkInput
     {
+        public const uint BUTTON_JUMP = 1 << 0;
+        public const uint BUTTON_ATTACK = 1 << 1;
+        public const uint BUTTON_ALT_ATTACK = 1 << 2;
+        public const uint BUTTON_DASH = 1 << 3;
+        public const uint BUTTON_SPRINT = 1 << 4;
+        public const uint BUTTON_INTERACT = 1 << 5;
+
+        public uint Buttons;
         public Vector2 Move;
         public Vector2 Look;
-        public NetworkBool Jump;
-        public NetworkBool Attack;
-        public NetworkBool AltAttack;
-        public NetworkBool Dash;
-        public NetworkBool Sprint;
-        public NetworkBool Interact;
+        public bool IsUp(uint button) => !IsDown(button);
+        public bool IsDown(uint button) => (Buttons & button) == button;
 
-        public static NetworkInputData FromPlayerInputs(PlayerInputHandler playerInputHandler)
-        {
-            return new NetworkInputData
-            {
-              Move = playerInputHandler.Move,
-              Look = playerInputHandler.Look,
-              Jump = playerInputHandler.Jump,
-              Attack = playerInputHandler.Attack,
-              AltAttack = playerInputHandler.AltAttack,
-              Dash = playerInputHandler.Dash,
-              Sprint = playerInputHandler.Sprint,
-              Interact = playerInputHandler.Interact
-            };
-        }
+        public bool IsJump => IsDown(BUTTON_JUMP);
+        public bool IsAttack => IsDown(BUTTON_ATTACK);
+        public bool IsAltAttack => IsDown(BUTTON_ALT_ATTACK);
+        public bool IsDash => IsDown(BUTTON_DASH);
+        public bool IsSprint => IsDown(BUTTON_SPRINT);
+        public bool IsInteract => IsDown(BUTTON_INTERACT);
     }
 }
