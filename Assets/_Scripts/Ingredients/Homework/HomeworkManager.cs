@@ -54,7 +54,7 @@ namespace Ingredients.Homework
             
             foreach (var homework in homeworks.Values)
             {
-                if (homework.transform.position.y < 10f)
+                if (homework.transform.position.y < -10f)
                 {
                     NetworkSystem.Instance.Despawn(homework.Object);
                 }

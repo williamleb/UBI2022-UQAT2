@@ -13,6 +13,8 @@ namespace Units
 
         [Networked(OnChanged = nameof(OnHeldHomeworkChanged))] private int HeldHomeworkId { get; set; }
 
+        private bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
+
         public override void Spawned()
         {
             HeldHomeworkId = NO_HOMEWORK;
@@ -21,7 +23,7 @@ namespace Units
         // Should only be called on host
         public void HoldHomework(Homework homework)
         {
-            // TODO Manage if already holding one
+            DropHomework();
             
             HeldHomeworkId = homework.HomeworkId;
         }
@@ -29,8 +31,21 @@ namespace Units
         // Should only be called on host
         public void DropEverything()
         {
-            // TODO
-            Debug.Log($"Drop {gameObject.name}");
+            DropHomework();
+        }
+
+        private void DropHomework()
+        {
+            if (!HasHomework)
+                return;
+            
+            if (HomeworkManager.HasInstance)
+            {
+                var homework = HomeworkManager.Instance.GetHomework(HeldHomeworkId);
+                if (homework)
+                    homework.Free(transform.position);
+            }
+            HeldHomeworkId = NO_HOMEWORK;
         }
 
         private void UpdateMarkerVisibility()
@@ -39,9 +54,9 @@ namespace Units
                 return;
             
             if (HeldHomeworkId == NO_HOMEWORK)
-                marker.Activate();
-            else
                 marker.Deactivate();
+            else
+                marker.Activate();
         }
         
         private static void OnHeldHomeworkChanged(Changed<Inventory> changed)

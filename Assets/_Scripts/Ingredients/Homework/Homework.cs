@@ -43,31 +43,53 @@ namespace Ingredients.Homework
 
         private void OnInstantFeedback(Interacter interacter)
         {
-            // Instant feedback for picking the item
+            // TODO Instant feedback for picking the item
             SoundSystem.Instance.PlayBababooeySound();
             visual.SetActive(false);
+            interaction.InteractionEnabled = false;
         }
 
         private void OnInteractedWith(Interacter interacter)
         {
+            if (HomeworkState == State.Taken)
+                return;
+            
             var inventory = interacter.GetComponent<Inventory>();
             if (!inventory)
             {
                 Debug.LogWarning("Homework collected by an interacter without an inventory. Reverting to free state.");
                 HomeworkState = State.Free;
             }
-            
+
+            HomeworkState = State.Taken;
             inventory.HoldHomework(this);
         }
 
         public void Free(Vector3 position)
         {
-            // TODO launch in a random direction
+            if (HomeworkState == State.Free)
+                return;
+            
+            HomeworkState = State.Free;
+            
+            transform.position = position + Vector3.up * 2f;
+            rb.AddForce(Vector3.up * 5f);
         }
 
         public override void Spawned()
         {
-            HomeworkState = State.Free;
+            if (HomeworkManager.HasInstance)
+            {
+                HomeworkManager.Instance.RegisterHomework(this);
+            }
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (HomeworkManager.HasInstance)
+            {
+                HomeworkManager.Instance.UnregisterHomework(this);
+            }
         }
 
         private void UpdateForCurrentState()
