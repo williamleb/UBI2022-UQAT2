@@ -18,7 +18,7 @@ namespace Ingredients.Homework
             Taken
         }
 
-        [SerializeField, SceneObjectsOnly, Required] private GameObject visual;
+        [SerializeField, Required] private GameObject visual;
         
         [Networked] private State HomeworkState { get; set; }
 
