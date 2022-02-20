@@ -3,6 +3,7 @@ using Fusion;
 using Scriptables;
 using Systems;
 using Systems.Network;
+using Units.Camera;
 using UnityEngine;
 
 namespace Units.Player
@@ -16,6 +17,7 @@ namespace Units.Player
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private NetworkInputData inputs;
+        [SerializeField] private CameraStrategy mainCamera;
 
         private void Awake()
         {
@@ -34,6 +36,8 @@ namespace Units.Player
         public override void Spawned()
         {
             base.Spawned();
+            if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
+            mainCamera.AddTarget(gameObject);
             OnPlayerSpawned?.Invoke(Object);
         }
 

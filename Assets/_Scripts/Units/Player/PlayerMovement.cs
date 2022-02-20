@@ -8,7 +8,6 @@ namespace Units.Player
     public partial class PlayerEntity
     {
         [SerializeField] private Transform orientation;
-        [SerializeField] private Transform mainCamera;
 
         private NetworkCharacterController cc;
 
@@ -23,7 +22,6 @@ namespace Units.Player
 
         private void MovementAwake()
         {
-            if (mainCamera == null && Camera.main != null) mainCamera = Camera.main.transform;
             cc = GetComponent<NetworkCharacterController>();
             cc.Config.MaxSpeed = data.MoveMaximumSpeed;
             cc.Config.Acceleration = data.MoveAcceleration;
