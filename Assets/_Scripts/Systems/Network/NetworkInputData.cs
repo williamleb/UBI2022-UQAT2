@@ -15,8 +15,8 @@ namespace Systems.Network
         public uint Buttons;
         public Vector2 Move;
         public Vector2 Look;
-        public bool IsUp(uint button) => !IsDown(button);
-        public bool IsDown(uint button) => (Buttons & button) == button;
+
+        private bool IsDown(uint button) => (Buttons & button) == button;
 
         public bool IsJump => IsDown(BUTTON_JUMP);
         public bool IsAttack => IsDown(BUTTON_ATTACK);

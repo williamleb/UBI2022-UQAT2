@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Canvases.Components;
 using Fusion;
-using Systems.Network;
 using Units.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,18 +32,18 @@ namespace Canvases.InputSystem
 
         private void Start()
         {
-            NetworkSystem.Instance.OnPlayerJoinedEvent += Init;
+            PlayerEntity.OnPlayerSpawned += Init;
         }
 
-        private void Init(NetworkRunner networkRunner, PlayerRef playerRef)
+        private async void Init(NetworkObject player)
         {
-            NetworkObject player = networkRunner.GetPlayerObject(playerRef);
+            await Task.Delay(100);
             if (player && player.HasInputAuthority)
             {
                 playerInputHandler = player.GetComponent<PlayerInputHandler>();
-                playerInputHandler.OnInputDeviceChanged += PlayerInputHandlerOnOnInputHandlerDeviceChanged;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
                 resetAllButton.OnClick += OnResetAll;
+                Enable();
             }
         }
 
@@ -98,24 +98,24 @@ namespace Canvases.InputSystem
             }
         }
 
-        private void OnEnable()
+        private void Enable()
         {
             if (playerInputHandler != null)
-                playerInputHandler.OnInputDeviceChanged += PlayerInputHandlerOnOnInputHandlerDeviceChanged;
+                playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
             pauseMenuAction.Enable();
         }
 
-        private void PlayerInputHandlerOnOnInputHandlerDeviceChanged(string newDevice)
+        private void OnInputDeviceChanged(string newDevice)
         {
             rebindUIs.Clear();
             scrollRectContent.DestroyChildren();
             AddBindingsButton(newDevice);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
-            playerInputHandler.OnInputDeviceChanged -= PlayerInputHandlerOnOnInputHandlerDeviceChanged;
-            pauseMenuAction.Disable();
+            playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
+            pauseMenuAction.Dispose();
         }
 
         private void PauseMenuActionOnStarted(InputAction.CallbackContext obj)
@@ -133,7 +133,7 @@ namespace Canvases.InputSystem
                 background.Show();
                 if (scrollRectContent.childCount == 0)
                 {
-                    PlayerInputHandlerOnOnInputHandlerDeviceChanged(playerInputHandler.CurrentDevice);
+                    OnInputDeviceChanged(playerInputHandler.CurrentDevice);
                 }
 
                 Time.timeScale = 0;

@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using Scriptables;
 using Systems;
 using Systems.Network;
@@ -10,9 +11,11 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInputHandler))]
     public partial class PlayerEntity : NetworkBehaviour
     {
+        public static event Action<NetworkObject> OnPlayerSpawned;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
-        [Networked] private NetworkInputData Inputs { get; set; }
+        private NetworkInputData inputs;
 
         private void Awake()
         {
@@ -28,15 +31,21 @@ namespace Units.Player
             NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
+        public override void Spawned()
+        {
+            base.Spawned();
+            OnPlayerSpawned?.Invoke(Object);
+        }
+
         public override void FixedUpdateNetwork()
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                Inputs = inputData;
+                inputs = inputData;
             }
             
-            MoveUpdate(Inputs);
-            if (Inputs.IsInteract)
+            MoveUpdate(inputs);
+            if (inputs.IsInteract)
             {
                 Debug.Log("E");
                 interacter.InteractWithClosestInteraction();

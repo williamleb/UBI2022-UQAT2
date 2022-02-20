@@ -2,13 +2,12 @@ using System;
 using Fusion;
 using InputSystem;
 using Systems.Network;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities.Extensions;
 
 namespace Units.Player
 {
-    public class PlayerInputHandler : MonoBehaviour
+    public class PlayerInputHandler : NetworkBehaviour
     {
         public event Action<string> OnInputDeviceChanged
         {
@@ -21,59 +20,73 @@ namespace Units.Player
         public PlayerInputAction PlayerInputAction { get; private set; }
         private DetectDevice detectDevice;
 
-        [HideInInspector] public InputAction Move;
-        [HideInInspector] public InputAction Look;
-        [HideInInspector] public InputAction Jump;
-        [HideInInspector] public InputAction Attack;
-        [HideInInspector] public InputAction AltAttack;
-        [HideInInspector] public InputAction Dash;
-        [HideInInspector] public InputAction Sprint;
-        [HideInInspector] public InputAction Interact;
+        private InputAction move;
+        private InputAction look;
+        private InputAction jump;
+        private InputAction attack;
+        private InputAction altAttack;
+        private InputAction dash;
+        private InputAction sprint;
+        private InputAction interact;
 
-        private void Awake()
+        public override void Spawned()
         {
-            PlayerInputAction = new PlayerInputAction();
-            detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
-            RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
+            base.Spawned();
+
+            if (Object.HasInputAuthority)
+            {
+                PlayerInputAction = new PlayerInputAction();
+                detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
+                RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
+                EnableInput();
+                NetworkSystem.Instance.OnInputEvent += OnInput;
+            }
         }
 
-        private void Start() => NetworkSystem.Instance.OnInputEvent += OnInput;
         private void OnInput(NetworkRunner runner, NetworkInput input)
         {
             NetworkInputData data = new NetworkInputData();
 
-            if (Jump.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_JUMP; 
-            if (Attack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ATTACK; 
-            if (AltAttack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ALT_ATTACK; 
-            if (Dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH; 
-            if (Sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
-            if (Interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
+            if (jump.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_JUMP;
+            if (attack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ATTACK;
+            if (altAttack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ALT_ATTACK;
+            if (dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH;
+            if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
+            if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
 
-            data.Move = Move.ReadV2();
-            data.Look = Look.ReadV2();
-            
+            data.Move = move.ReadV2();
+            data.Look = look.ReadV2();
+
             input.Set(data);
         }
 
-        private void OnEnable()
+        private void EnableInput()
         {
             PlayerInputAction.Enable();
-            Move = PlayerInputAction.Player.Movement;
-            Look = PlayerInputAction.Player.Look;
-            Jump = PlayerInputAction.Player.Jump;
-            Attack = PlayerInputAction.Player.Attack;
-            AltAttack = PlayerInputAction.Player.AltAttack;
-            Dash = PlayerInputAction.Player.Dash;
-            Sprint = PlayerInputAction.Player.Sprint;
-            Interact = PlayerInputAction.Player.Interact;
+            move = PlayerInputAction.Player.Movement;
+            look = PlayerInputAction.Player.Look;
+            jump = PlayerInputAction.Player.Jump;
+            attack = PlayerInputAction.Player.Attack;
+            altAttack = PlayerInputAction.Player.AltAttack;
+            dash = PlayerInputAction.Player.Dash;
+            sprint = PlayerInputAction.Player.Sprint;
+            interact = PlayerInputAction.Player.Interact;
         }
 
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
 
-        private void OnDisable()
+        private void OnDestroy() => DisposeInputs();
+
+        private void DisposeInputs()
         {
             SaveSettings();
-            PlayerInputAction.Disable();
+            PlayerInputAction.Dispose();
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            base.Despawned(runner, hasState);
+            DisposeInputs();
         }
     }
 }
