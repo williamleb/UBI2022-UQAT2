@@ -7,6 +7,7 @@ using Systems.Network;
 using Units.Camera;
 using Units.AI;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -57,7 +58,6 @@ namespace Units.Player
             MoveUpdate(inputs);
             if (inputs.IsInteract)
             {
-                Debug.Log("E");
                 interacter.InteractWithClosestInteraction();
             }
         }
@@ -68,11 +68,11 @@ namespace Units.Player
                 networkRunner.Despawn(Object);
         }
 
-        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature
+        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature (temporary)
         {
             if (collision.gameObject.CompareTag(TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
             {
-                var networkObject = collision.gameObject.GetComponent<NetworkObject>();
+                var networkObject = collision.gameObject.GetComponentInEntity<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
                 RPC_DropItems(networkObject.Id);
             }
@@ -82,7 +82,7 @@ namespace Units.Player
         private void RPC_DropItems(NetworkId entityNetworkId)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
-            var inventory = networkObject.GetComponent<Inventory>();
+            var inventory = networkObject.GetComponentInEntity<Inventory>();
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
             inventory.DropEverything();
         }

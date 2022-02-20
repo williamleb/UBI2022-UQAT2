@@ -76,9 +76,9 @@ namespace Ingredients.Homework
             transform.position = position + Vector3.up * 2f;
             rb.isKinematic = false;
 
-            // TODO Better launch logic
-            var randomAngleX = Random.Range(2f, 25f);
-            var randomAngleY = Random.Range(2f, 25f);
+            // TODO Better launch logic when we will know what the game physics should look like
+            var randomAngleX = Random.Range(10f, 45f);
+            var randomAngleY = Random.Range(10f, 45f);
             var launchDirection = Quaternion.Euler(randomAngleX, randomAngleY, 0f) * Vector3.up;
             rb.AddForce(launchDirection * 250);
         }

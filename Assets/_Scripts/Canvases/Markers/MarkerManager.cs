@@ -10,8 +10,11 @@ namespace Canvases.Markers
     public class MarkerManager : Singleton<MarkerManager>
     {
         [SerializeField, Required] private MarkerManagerData data;
+        [SerializeField] private float generalScale = 1.0f;
 
         private readonly Dictionary<Type, List<Marker>> markers = new Dictionary<Type, List<Marker>>();
+
+        public float GeneralScale => generalScale;
 
         /// <summary>
         /// After calling this method to get a marker, you must release the marker when you no longer need it with
