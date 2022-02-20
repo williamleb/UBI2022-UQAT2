@@ -85,10 +85,10 @@ namespace Managers.Interactions
             if (!CanInteract(interacter))
                 return;
             
-            if (NetworkSystem.Instance.IsPlayer(interacter.Object.InputAuthority))
+            if (interacter.Object.HasInputAuthority)
                 OnInstantFeedback?.Invoke(interacter);
             
-            if (NetworkSystem.Instance.IsHost)
+            if (interacter.Object.HasStateAuthority)
                 OnInteractedWith?.Invoke(interacter);
         }
         

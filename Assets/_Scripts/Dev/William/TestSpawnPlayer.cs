@@ -7,26 +7,26 @@ namespace Dev.William
 {
     public class TestSpawnPlayer : MonoBehaviour
     {
-        [SerializeField] private NetworkObject playerPrefab;
+        [SerializeField] private TestPlayer playerPrefab;
 
-        private readonly Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
+        private readonly Dictionary<PlayerRef, TestPlayer> spawnedPlayers = new Dictionary<PlayerRef, TestPlayer>();
         
         public void Start()
         {
-            NetworkSystem.Instance.OnPlayerJoinedEvent += OnPlayerJoined;
-            NetworkSystem.Instance.OnPlayerLeftEvent += OnPlayerJoined;
+            NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
+            NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
         private void OnDestroy()
         {
             if (NetworkSystem.HasInstance)
             {
-                NetworkSystem.Instance.OnPlayerJoinedEvent -= OnPlayerJoined;
-                NetworkSystem.Instance.OnPlayerLeftEvent -= OnPlayerLeft;
+                NetworkSystem.Instance.OnPlayerJoinedEvent -= PlayerJoined;
+                NetworkSystem.Instance.OnPlayerLeftEvent -= PlayerLeft;
             }
         }
 
-        private void OnPlayerJoined(PlayerRef playerRef)
+        private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
         {
             if (!NetworkSystem.Instance.IsHost)
                 return;
@@ -34,18 +34,18 @@ namespace Dev.William
             if (!playerPrefab)
                 return;
 
-            var player = NetworkSystem.Instance.Spawn(playerPrefab, Vector3.up, Quaternion.identity, playerRef);
+            var player = runner.Spawn(playerPrefab, Vector3.up, Quaternion.identity, playerRef);
             spawnedPlayers.Add(playerRef, player);
         }
 
-        private void OnPlayerLeft(PlayerRef playerRef)
+        private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
             if (!NetworkSystem.Instance.IsHost)
                 return;
 
             if (spawnedPlayers.TryGetValue(playerRef, out var playerObject))
             {
-                NetworkSystem.Instance.Despawn(playerObject);
+                runner.Despawn(playerObject.Object);
                 spawnedPlayers.Remove(playerRef);
             }
         }

@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2212064253554775622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1081102434332788074}
+  - component: {fileID: 7316527217873731741}
+  m_Layer: 0
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1081102434332788074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212064253554775622}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3136995461962552438}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &7316527217873731741
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212064253554775622}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3136995461962552442
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,9 +54,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3136995461962552438}
+  - component: {fileID: 956860880054220076}
+  - component: {fileID: 5387613401633587448}
   - component: {fileID: 3136995461962552439}
   - component: {fileID: 3136995461962552440}
-  - component: {fileID: 3136995461962552441}
+  - component: {fileID: 6870753984332841146}
+  - component: {fileID: 3564590436735114309}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -32,9 +80,84 @@ Transform:
   m_Children:
   - {fileID: 3136995463023281352}
   - {fileID: 3136995462602963044}
+  - {fileID: 1081102434332788074}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &956860880054220076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136995461962552442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AoiMode: 0
+  DefaultPropertyGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 0
+  AoiPosition: {fileID: 0}
+  Flags: 2305
+  NetworkGuid:
+    RawGuidValue: ef2244ff8a8bd9f4e8bb0cf9f5f3b586
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5387613401633587448}
+  - {fileID: 3136995461962552439}
+  - {fileID: 3136995461962552440}
+  - {fileID: 6870753984332841146}
+  - {fileID: 3564590436735114309}
+  SimulationBehaviours: []
+--- !u!114 &5387613401633587448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136995461962552442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1101589486, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _interpolationTarget: {fileID: 3136995463023281352}
+  DetachInterpTarget: 0
+  SyncParent: 0
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  SyncScale: 0
+  Space: 0
+  _collider: {fileID: 7316527217873731741}
+  Config:
+    AllowedPenetration: 0.1
+    PenetrationCorrection: 0.5
+    BumpBehavior: 1
+    LayerMask:
+      serializedVersion: 2
+      m_Bits: 823
+    TriggerInteraction: 0
+    AirControl: 1
+    Acceleration: 100
+    Braking: 7
+    BaseJumpImpulse: 30
+    MaxSpeed: 13
+    MaxSlope: 60
+    MaxSlopeSpeed: 5
+    _gravity: {x: 0, y: -9.81, z: 0}
 --- !u!114 &3136995461962552439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,10 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354c6ab5e06f9d445b312972b096c698, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInputs: {fileID: 3136995461962552440}
-  immortal: 0
-  orientation: {fileID: 3136995462602963044}
+  _interpolationDataSource: 0
   mainCamera: {fileID: 0}
+  orientation: {fileID: 3136995462602963044}
 --- !u!114 &3136995461962552440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,32 +185,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4467d37883798cb4baf1a6cdd04d734b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: {x: 0, y: 0}
-  look: {x: 0, y: 0}
-  jump: 0
-  attack: 0
-  altAttack: 0
-  dash: 0
-  sprint: 0
-  isUsingKeyboard: 0
---- !u!143 &3136995461962552441
-CharacterController:
+  _interpolationDataSource: 0
+--- !u!114 &6870753984332841146
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3136995461962552442}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.5
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1becf4e15e48e3802c9744f02408de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+--- !u!114 &3564590436735114309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136995461962552442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db12acd963dd42729b238df0131662cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  marker: {fileID: 0}
 --- !u!1 &3136995462602963045
 GameObject:
   m_ObjectHideFlags: 0

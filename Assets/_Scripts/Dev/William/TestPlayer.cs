@@ -14,7 +14,6 @@ namespace Dev.William
     [RequireComponent(typeof(NetworkCharacterController))]
     public class TestPlayer : NetworkBehaviour
     {
-        [SerializeField] private PlayerInputs playerInputs;
         [SerializeField] private NetworkCharacterController characterController;
         
         private PlayerInteracter interacter;
@@ -25,35 +24,14 @@ namespace Dev.William
             characterController = GetComponent<NetworkCharacterController>();
         }
         
-        public override void Spawned()
-        {
-            if (NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.SetInputFunction(GetInput);
-            }
-        }
-        
-        public override void Despawned(NetworkRunner runner, bool hasState)
-        {
-            if (NetworkSystem.HasInstance && NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.UnsetInputFunction();
-            }
-        }
-        
-        private NetworkInputData GetInput()
-        {
-            return NetworkInputData.FromPlayerInputs(playerInputs);
-        }
-
         public override void FixedUpdateNetwork()
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                var speed = inputData.Sprint ? 10f : 5f;
+                var speed = inputData.IsSprint ? 10f : 5f;
                 characterController.Move(speed * inputData.Move.V2ToFlatV3() * NetworkSystem.DeltaTime);
                 
-                if (inputData.Interact)
+                if (inputData.IsInteract)
                 {
                     interacter.InteractWithClosestInteraction();
                 }

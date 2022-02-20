@@ -4,66 +4,68 @@ using Scriptables;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
+using Units.Camera;
 using Units.AI;
 using UnityEngine;
 
 namespace Units.Player
 {
     [RequireComponent(typeof(PlayerInteracter))]
-    [RequireComponent(typeof(PlayerInputs))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
     [ValidateInput(nameof(ValidateIfHasTag), "A PlayerEntity component must be placed on a collider that has the 'Player' tag.")]
     public partial class PlayerEntity : NetworkBehaviour
     {
         public const string TAG = "Player";
         
+        public static event Action<NetworkObject> OnPlayerSpawned;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
-        private PlayerInputs playerInputs;
+        private NetworkInputData inputs;
+        [SerializeField] private CameraStrategy mainCamera;
 
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
-            
+
             interacter = GetComponent<PlayerInteracter>();
-            playerInputs = GetComponent<PlayerInputs>();
-            
+
             MovementAwake();
+        }
+
+        private void Start()
+        {
+            NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
         public override void Spawned()
         {
-            if (NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.SetInputFunction(GetInput);
-            }
-        }
-        
-        public override void Despawned(NetworkRunner runner, bool hasState)
-        {
-            if (NetworkSystem.HasInstance && NetworkSystem.Instance.IsPlayer(Object.InputAuthority))
-            {
-                NetworkSystem.Instance.UnsetInputFunction();
-            }
+            base.Spawned();
+            if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
+            mainCamera.AddTarget(gameObject);
+            OnPlayerSpawned?.Invoke(Object);
         }
 
         public override void FixedUpdateNetwork()
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                MoveUpdate(inputData);
-                
-                if (inputData.Interact)
-                {
-                    Debug.Log("E");
-                    interacter.InteractWithClosestInteraction();
-                }
+                inputs = inputData;
+            }
+            
+            MoveUpdate(inputs);
+            if (inputs.IsInteract)
+            {
+                Debug.Log("E");
+                interacter.InteractWithClosestInteraction();
             }
         }
-        
-        private NetworkInputData GetInput()
+
+        private void PlayerLeft(NetworkRunner networkRunner, PlayerRef playerRef)
         {
-            return NetworkInputData.FromPlayerInputs(playerInputs);
+            if (playerRef == Object.InputAuthority)
+                networkRunner.Despawn(Object);
         }
 
         private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature

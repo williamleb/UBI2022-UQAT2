@@ -1,24 +1,17 @@
-﻿using System;
-using BehaviorDesigner.Runtime.Tasks.Unity.Timeline;
-using Fusion;
+﻿using Fusion;
 using UnityEngine;
-using Utilities.Event;
-using Utilities.Singleton;
 
 namespace Systems.Network
 {
-    public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
+    public partial class NetworkSystem
     {
-        public static float DeltaTime => Instance.runner ? Instance.runner.DeltaTime : 0f;
+        public static float DeltaTime => Instance.networkRunner ? Instance.networkRunner.DeltaTime : 0f;
         
-        [NonSerialized] public MemoryEvent<PlayerRef> OnPlayerJoinedEvent;
-        public event Action<PlayerRef> OnPlayerLeftEvent;
+        public bool IsConnected => networkRunner != null;
+
+        public bool IsHost => IsConnected && networkRunner.GameMode == GameMode.Host;
+        public bool IsClient => IsConnected && networkRunner.GameMode == GameMode.Client;
         
-        public bool IsConnected => runner != null;
-
-        public bool IsHost => IsConnected && runner.GameMode == GameMode.Host;
-        public bool IsClient => IsConnected && runner.GameMode == GameMode.Client;
-
         public NetworkObject Spawn(
             NetworkObject prefab, 
             Vector3? position = null, 
@@ -27,27 +20,17 @@ namespace Systems.Network
             NetworkRunner.OnBeforeSpawned onBeforeSpawned = null,
             NetworkObjectPredictionKey? networkObjectPredictionKey = null)
         {
-            return runner.Spawn(prefab, position, rotation, inputAuthority, onBeforeSpawned, networkObjectPredictionKey);
+            return networkRunner.Spawn(prefab, position, rotation, inputAuthority, onBeforeSpawned, networkObjectPredictionKey);
         }
 
         public void Despawn(NetworkObject networkObject, bool allowPredicted = false)
         {
-            runner.Despawn(networkObject, allowPredicted);
+            networkRunner.Despawn(networkObject, allowPredicted);
         }
-
-        public bool IsPlayer(int playerId)
-        {
-            return runner != null && runner.LocalPlayer.PlayerId == playerId;
-        }
-
-        public bool IsPlayer(PlayerRef playerRef)
-        {
-            return IsPlayer(playerRef.PlayerId);
-        }
-
+        
         public NetworkObject FindObject(NetworkId id)
         {
-            runner.TryFindObject(id, out var foundObject);
+            networkRunner.TryFindObject(id, out var foundObject);
             return foundObject;
         }
     }
