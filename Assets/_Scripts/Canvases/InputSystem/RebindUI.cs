@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Canvases.Components;
+using Fusion;
 using Units.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,7 +24,7 @@ namespace Canvases.InputSystem
         [Space] [SerializeField] private InputAction pauseMenuAction;
 
         private PlayerInputAction playerInputActionRef;
-        private PlayerInputs playerInputs;
+        private PlayerInputHandler playerInputHandler;
 
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
 
@@ -30,10 +32,19 @@ namespace Canvases.InputSystem
 
         private void Start()
         {
-            playerInputs = FindObjectOfType<PlayerInputs>();
-            playerInputs.OnInputDeviceChanged += PlayerInputsOnOnInputDeviceChanged;
-            playerInputActionRef = playerInputs.PlayerInputAction;
-            resetAllButton.OnClick += OnResetAll;
+            PlayerEntity.OnPlayerSpawned += Init;
+        }
+
+        private async void Init(NetworkObject player)
+        {
+            await Task.Delay(100);
+            if (player && player.HasInputAuthority)
+            {
+                playerInputHandler = player.GetComponent<PlayerInputHandler>();
+                playerInputActionRef = playerInputHandler.PlayerInputAction;
+                resetAllButton.OnClick += OnResetAll;
+                Enable();
+            }
         }
 
         private void OnResetAll()
@@ -87,24 +98,24 @@ namespace Canvases.InputSystem
             }
         }
 
-        private void OnEnable()
+        private void Enable()
         {
-            if (playerInputs != null)
-                playerInputs.OnInputDeviceChanged += PlayerInputsOnOnInputDeviceChanged;
+            if (playerInputHandler != null)
+                playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
             pauseMenuAction.Enable();
         }
 
-        private void PlayerInputsOnOnInputDeviceChanged(string newDevice)
+        private void OnInputDeviceChanged(string newDevice)
         {
             rebindUIs.Clear();
             scrollRectContent.DestroyChildren();
             AddBindingsButton(newDevice);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
-            playerInputs.OnInputDeviceChanged -= PlayerInputsOnOnInputDeviceChanged;
-            pauseMenuAction.Disable();
+            playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
+            pauseMenuAction.Dispose();
         }
 
         private void PauseMenuActionOnStarted(InputAction.CallbackContext obj)
@@ -114,7 +125,7 @@ namespace Canvases.InputSystem
                 rebindMenuContent.Hide();
                 background.Hide();
                 Time.timeScale = 1;
-                playerInputs.SaveSettings();
+                playerInputHandler.SaveSettings();
             }
             else
             {
@@ -122,7 +133,7 @@ namespace Canvases.InputSystem
                 background.Show();
                 if (scrollRectContent.childCount == 0)
                 {
-                    PlayerInputsOnOnInputDeviceChanged(playerInputs.CurrentDevice);
+                    OnInputDeviceChanged(playerInputHandler.CurrentDevice);
                 }
 
                 Time.timeScale = 0;

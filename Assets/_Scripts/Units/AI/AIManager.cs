@@ -5,10 +5,9 @@ using Utilities.Singleton;
 
 namespace Units.AI
 {
-    // ReSharper disable once InconsistentNaming Reason: AI should be uppercase
     public class AIManager : Singleton<AIManager>
     {
-        [SerializeField] private NetworkObject entityPrefab;
+        [SerializeField] private AIEntity entityPrefab;
         [SerializeField] private GameObject brainPrefab;
 
         private void Start()
@@ -26,18 +25,13 @@ namespace Units.AI
             base.OnDestroy();
         }
 
-        private void OnPlayerJoined(PlayerRef playerRef)
+        private void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
         {
             if (NetworkSystem.Instance.IsHost)
             {
-                SpawnEntity();
+                var entity = runner.Spawn(entityPrefab, Vector3.zero, Quaternion.identity,playerRef);
+                entity.AddBrain(brainPrefab);
             }
-        }
-
-        private void SpawnEntity()
-        {
-            var entity = NetworkSystem.Instance.Spawn(entityPrefab, Vector3.zero, Quaternion.identity).GetComponent<AIEntity>();
-            entity.AddBrain(brainPrefab);
         }
     }
 }

@@ -1,35 +1,39 @@
+using Fusion;
+using Systems.Network;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
     public partial class PlayerEntity
     {
         [SerializeField] private Transform orientation;
-        [SerializeField] private Transform mainCamera;
 
-        private CharacterController cc;
+        private NetworkCharacterController cc;
 
-        private Vector3 moveDirection = Vector3.zero;
-        private Vector2 lookDelta;
-        private Vector3 moveVelocity;
-        private float yVelocity;
+        [Networked] private Vector2 MoveDirection { get; set; } = Vector2.zero;
+        [Networked] private Vector2 LookDelta { get; set; }
 
-        private bool jumpInput;
-        private bool jumpImpulse;
+        private NetworkBool jumpInput;
+        private NetworkBool jumpImpulse;
         private float apexPoint;
         private float fallSpeed;
-        private bool bufferJump;
+        private NetworkBool bufferJump;
 
         private void MovementAwake()
         {
-            if (mainCamera == null && Camera.main != null) mainCamera = Camera.main.transform;
-            cc = GetComponent<CharacterController>();
+            cc = GetComponent<NetworkCharacterController>();
+            cc.Config.MaxSpeed = data.MoveMaximumSpeed;
+            cc.Config.Acceleration = data.MoveAcceleration;
+            cc.Config.Braking = data.MoveDeceleration;
+            cc.Config.AirControl = true;
+            cc.Config.BaseJumpImpulse = data.JumpHeight;
+
         }
 
-        private void MoveUpdate()
+        private void MoveUpdate(NetworkInputData inputData)
         {
-            GetInput();
-            CalculateMovement();
+            GetInput(inputData);
             CalculateJumpApex();
             CalculateGravity();
             CalculateJump();
@@ -37,41 +41,20 @@ namespace Units.Player
             RotatePlayer();
         }
 
-        private void GetInput()
+        private void GetInput(NetworkInputData inputData)
         {
-            moveDirection.Set(playerInputs.Move.x, 0, playerInputs.Move.y);
-            lookDelta = playerInputs.Look;
-            if (!jumpInput && playerInputs.Jump) jumpImpulse = true;
-            jumpInput = playerInputs.Jump;
-            if (jumpImpulse && !cc.isGrounded && cc.velocity.y < 0) bufferJump = true;
-        }
-
-        private void CalculateMovement()
-        {
-            if (moveDirection.sqrMagnitude > 0)
-            {
-                float targetAngle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg +
-                                    mainCamera.eulerAngles.y;
-                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                moveVelocity += moveDir * (data.MoveAcceleration * Time.deltaTime);
-                moveVelocity = Vector3.ClampMagnitude(moveVelocity, data.MoveMaximumSpeed);
-
-                if (!cc.isGrounded)
-                {
-                    moveVelocity += moveDir * (data.MoveAirBonusControl * apexPoint * Time.deltaTime);
-                }
-            }
-            else
-            {
-                moveVelocity = Vector3.MoveTowards(moveVelocity, Vector3.zero, data.MoveDeceleration * Time.deltaTime);
-            }
+            MoveDirection = inputData.Move;
+            LookDelta = inputData.Look;
+            if (!jumpInput && inputData.IsJump) jumpImpulse = true;
+            jumpInput = inputData.IsJump;
+            if (jumpImpulse && !cc.Grounded && cc.Velocity.y < 0) bufferJump = true;
         }
 
         private void CalculateJumpApex()
         {
-            if (!cc.isGrounded)
+            if (!cc.Grounded)
             {
-                apexPoint = Mathf.InverseLerp(data.JumpApexThreshold, 0, Mathf.Abs(yVelocity));
+                apexPoint = Mathf.InverseLerp(data.JumpApexThreshold, 0, Mathf.Abs(cc.Velocity.y));
                 fallSpeed = Mathf.Lerp(data.MinFallAcceleration, data.MaxFallAcceleration, apexPoint);
             }
             else
@@ -82,45 +65,45 @@ namespace Units.Player
 
         private void CalculateGravity()
         {
-            if (cc.isGrounded)
+            if (cc.Grounded)
             {
-                if (yVelocity < 0) yVelocity = -0.1f;
+                if (cc.Velocity.y < 0) cc.Velocity = Vector3.up * -0.1f;
             }
             else
             {
-                if (!jumpInput && yVelocity > 0)
+                if (!jumpInput && cc.Velocity.y > 0)
                 {
-                    yVelocity -= fallSpeed * data.JumpEndEarlyGravityModifier * Time.deltaTime;
+                    cc.Velocity -= Vector3.up * fallSpeed * data.JumpEndEarlyGravityModifier * Time.deltaTime;
                 }
                 else
                 {
-                    yVelocity -= fallSpeed * Time.deltaTime;
+                    cc.Velocity -= Vector3.up * fallSpeed * Time.deltaTime;
                 }
 
-                if (yVelocity < data.MaxFallSpeed) yVelocity = data.MaxFallSpeed;
+                if (cc.Velocity.y < data.MaxFallSpeed) cc.Velocity += Vector3.up * (data.MaxFallSpeed - cc.Velocity.y);
             }
         }
 
         private void CalculateJump()
         {
-            if ((jumpImpulse || bufferJump) && cc.isGrounded)
+            if ((jumpImpulse || bufferJump) && cc.Grounded)
             {
                 jumpImpulse = false;
                 bufferJump = false;
-                yVelocity = data.JumpHeight;
+                cc.Jump();
             }
         }
 
         private void MovePlayer()
         {
-            cc.Move(new Vector3(moveVelocity.x, yVelocity, moveVelocity.z) * Time.deltaTime);
+            cc.Move(MoveDirection.V2ToFlatV3());
         }
 
         private void RotatePlayer()
         {
             Vector3 ori = orientation.eulerAngles;
-            ori.x = Mathf.Clamp(ori.x - lookDelta.y * data.MouseSensitivity, 1, 75);
-            ori.y += lookDelta.x * data.MouseSensitivity;
+            ori.x = Mathf.Clamp(ori.x - LookDelta.y * data.MouseSensitivity, 1, 75);
+            ori.y += LookDelta.x * data.MouseSensitivity;
             ori.z = 0;
             orientation.rotation = Quaternion.Euler(ori);
         }

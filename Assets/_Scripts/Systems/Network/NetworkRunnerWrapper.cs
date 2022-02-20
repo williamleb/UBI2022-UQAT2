@@ -1,35 +1,14 @@
-﻿using System;
-using Fusion;
-using UnityEngine;
-using Utilities.Event;
-using Utilities.Singleton;
+﻿using Fusion;
 
 namespace Systems.Network
 {
-    public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
+    public partial class NetworkSystem
     {
-        [NonSerialized] public MemoryEvent<PlayerRef> OnPlayerJoinedEvent;
-        public event Action<PlayerRef> OnPlayerLeftEvent;
+        public static float DeltaTime => Instance.networkRunner ? Instance.networkRunner.DeltaTime : 0f;
         
-        public bool IsConnected => runner != null;
+        public bool IsConnected => networkRunner != null;
 
-        public bool IsHost => IsConnected && runner.GameMode == GameMode.Host;
-        public bool IsClient => IsConnected && runner.GameMode == GameMode.Client;
-
-        public NetworkObject Spawn(
-            NetworkObject prefab, 
-            Vector3? position = null, 
-            Quaternion? rotation = null, 
-            PlayerRef? inputAuthority = null,
-            NetworkRunner.OnBeforeSpawned onBeforeSpawned = null,
-            NetworkObjectPredictionKey? networkObjectPredictionKey = null)
-        {
-            return runner.Spawn(prefab, position, rotation, inputAuthority, onBeforeSpawned, networkObjectPredictionKey);
-        }
-
-        public void Despawn(NetworkObject networkObject, bool allowPredicted = false)
-        {
-            runner.Despawn(networkObject, allowPredicted);
-        }
+        public bool IsHost => IsConnected && networkRunner.GameMode == GameMode.Host;
+        public bool IsClient => IsConnected && networkRunner.GameMode == GameMode.Client;
     }
 }

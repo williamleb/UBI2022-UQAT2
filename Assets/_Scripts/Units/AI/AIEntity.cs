@@ -4,7 +4,6 @@ using UnityEngine.AI;
 
 namespace Units.AI
 {
-    // ReSharper disable once InconsistentNaming Reason: AI should be uppercase
     [RequireComponent(typeof(NavMeshAgent))]
     public class AIEntity : NetworkBehaviour
     {

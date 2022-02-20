@@ -30,6 +30,8 @@ namespace Canvases.Markers
 
             currentMarker = marker;
             currentMarker.Scale = markerScale;
+            currentMarker.Position = transform.position;
+            currentMarker.Activate();
             OnActivated();
         }
 

@@ -1,11 +1,9 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Units.AI
 {
-    // ReSharper disable once InconsistentNaming Reason: AI should be uppercase
     [RequireComponent(typeof(BehaviorTree))]
     public class AIBrain : MonoBehaviour
     {
