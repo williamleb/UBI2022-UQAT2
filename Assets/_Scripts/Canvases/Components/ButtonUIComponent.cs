@@ -1,25 +1,48 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.UI;
-#if AUDIO_EVENT
-using AudioEvent;
-#endif
+using Event = AK.Wwise.Event;
 
 namespace Canvases.Components
 {
+    // ReSharper disable once InconsistentNaming Reason: UI should be capitalized
     public class ButtonUIComponent : UIComponentBase
     {
+        public event Action OnClick;
+        
+        [Header("Association")] [Required]
         [SerializeField] private Button button;
-        
-        public void OnClick(UnityAction callback) => button.onClick.AddListener(callback);
-        private void OnDestroy() => button.onClick.RemoveAllListeners();
 
-#if AUDIO_EVENT
-        [SerializeField] private SimpleAudioEvent _clickSound;
-        [SerializeField] private AudioSource _audioSource;
-
-        private void Awake() => _button.onClick.AddListener(() => _clickSound.Play(_audioSource));
-#endif
+        [Header("Sound")] 
+        [SerializeField] private Event onClickSound;
         
+        public Color Color
+        {
+            set => button.image.color = value;
+        }
+
+        private void Start()
+        {
+            Debug.Assert(button, $"A {nameof(button)} must be assigned to a {nameof(ButtonUIComponent)}");
+            button.onClick.AddListener(OnButtonClicked);
+        }
+
+        private void OnDestroy()
+        {
+            button.onClick.RemoveListener(OnButtonClicked);
+        }
+        
+        private void OnButtonClicked()
+        {
+            onClickSound?.Post(gameObject);
+            OnClick?.Invoke();
+        }
+
+        private void OnValidate()
+        {
+            if (!button)
+                button = GetComponent<Button>();
+        }
     }
 }

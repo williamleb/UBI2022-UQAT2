@@ -1797,7 +1797,7 @@ namespace Fusion.CodeGen {
               WeaveRpcArrayInput(asm, ctx, il, para);
             } else {
               if (!para.ParameterType.IsPrimitive && TryGetNetworkWrapperType(para.ParameterType, out var wrapInfo)) {
-                WeaveNetworkWrap(asm, il, ctx, il => il.Append(Ldarg(para)), wrapInfo);
+                WeaveNetworkWrap(asm, il, ctx, ilp => ilp.Append(Ldarg(para)), wrapInfo);
               } else {
                 il.AppendMacro(ctx.LoadAddress());
                 il.Append(Ldarg(para));
@@ -1982,7 +1982,7 @@ namespace Fusion.CodeGen {
 
             } else {
               if (!para.VariableType.IsPrimitive && TryGetNetworkWrapperType(para.VariableType, out var wrapInfo)) {
-                WeaveNetworkUnwrap(asm, il, ctx, wrapInfo, para.VariableType, storeResult: il => il.Append(Stloc(para)));
+                WeaveNetworkUnwrap(asm, il, ctx, wrapInfo, para.VariableType, storeResult: ilp => ilp.Append(Stloc(para)));
               } else {
                 il.AppendMacro(ctx.LoadAddress());
                 il.Append(Ldind_or_Ldobj(para.VariableType));
@@ -2133,12 +2133,12 @@ namespace Fusion.CodeGen {
         if (TryGetNetworkWrapperType(elementType, out var wrapInfo)) {
 
           WeaveNetworkUnwrap(asm, il, ctx, wrapInfo, elementType,
-            prepareStore: il => {
-              il.Append(Ldloc(para));
-              il.Append(Ldloc(arrayIndex));
+            prepareStore: ilp => {
+              ilp.Append(Ldloc(para));
+              ilp.Append(Ldloc(arrayIndex));
             },
-            storeResult: il => {
-              il.Append(Stelem(elementType));
+            storeResult: ilp => {
+              ilp.Append(Stelem(elementType));
             });
 
         } else {
@@ -2213,10 +2213,10 @@ namespace Fusion.CodeGen {
 
         if (TryGetNetworkWrapperType(elementType, out var wrapInfo)) {
 
-          WeaveNetworkWrap(asm, il, ctx, il => {
-            il.Append(Ldarg(para));
-            il.Append(Ldloc(arrayIndex));
-            il.Append(Ldelem(elementType));
+          WeaveNetworkWrap(asm, il, ctx, ilp => {
+            ilp.Append(Ldarg(para));
+            ilp.Append(Ldloc(arrayIndex));
+            ilp.Append(Ldelem(elementType));
           }, wrapInfo);
 
         } else {
