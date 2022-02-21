@@ -11,8 +11,11 @@ namespace Managers.Interactions
 
         protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
-        public void InteractWithClosestInteraction()
+        public void InteractWithClosestInteraction(bool justStarted = true)
         {
+            if (!justStarted)
+                return;
+            
             var closestInteraction = GetClosestAvailableInteraction();
             if (closestInteraction)
             {

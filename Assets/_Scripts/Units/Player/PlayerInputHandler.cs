@@ -29,6 +29,8 @@ namespace Units.Player
         private InputAction sprint;
         private InputAction interact;
 
+        private bool interactOnce = false;
+
         public override void Spawned()
         {
             base.Spawned();
@@ -53,6 +55,9 @@ namespace Units.Player
             if (dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH;
             if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
             if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
+            if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
+
+            interactOnce = false;
 
             data.Move = move.ReadV2();
             data.Look = look.ReadV2();
@@ -71,7 +76,11 @@ namespace Units.Player
             dash = PlayerInputAction.Player.Dash;
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
+
+            interact.started += ActivateInteractOnce;
         }
+
+        private void ActivateInteractOnce(InputAction.CallbackContext ctx) => interactOnce = ctx.started;
 
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
 
@@ -79,6 +88,8 @@ namespace Units.Player
 
         private void DisposeInputs()
         {
+            interact.started -= ActivateInteractOnce;
+            
             SaveSettings();
             PlayerInputAction.Dispose();
         }

@@ -77,8 +77,8 @@ namespace Ingredients.Homework
             rb.isKinematic = false;
 
             // TODO Better launch logic when we will know what the game physics should look like
-            var randomAngleX = Random.Range(10f, 45f);
-            var randomAngleY = Random.Range(10f, 45f);
+            var randomAngleX = Random.Range(25f, 60f);
+            var randomAngleY = Random.Range(0f, 360f);
             var launchDirection = Quaternion.Euler(randomAngleX, randomAngleY, 0f) * Vector3.up;
             rb.AddForce(launchDirection * 250);
         }

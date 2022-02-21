@@ -11,6 +11,7 @@ namespace Systems.Network
         public const uint BUTTON_DASH = 1 << 3;
         public const uint BUTTON_SPRINT = 1 << 4;
         public const uint BUTTON_INTERACT = 1 << 5;
+        public const uint BUTTON_INTERACT_ONCE = 1 << 6;
 
         public uint Buttons;
         public Vector2 Move;
@@ -24,5 +25,6 @@ namespace Systems.Network
         public bool IsDash => IsDown(BUTTON_DASH);
         public bool IsSprint => IsDown(BUTTON_SPRINT);
         public bool IsInteract => IsDown(BUTTON_INTERACT);
+        public bool IsInteractOnce => IsDown(BUTTON_INTERACT_ONCE);
     }
 }

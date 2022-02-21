@@ -58,7 +58,7 @@ namespace Units.Player
             MoveUpdate(inputs);
             if (inputs.IsInteract)
             {
-                interacter.InteractWithClosestInteraction();
+                interacter.InteractWithClosestInteraction(inputs.IsInteractOnce);
             }
         }
 
@@ -68,11 +68,14 @@ namespace Units.Player
                 networkRunner.Despawn(Object);
         }
 
-        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature (temporary)
+        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature
         {
-            if (collision.gameObject.CompareTag(TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
+            if (!Object.HasInputAuthority)
+                return;
+            
+            if (collision.gameObject.CompareTag(PlayerEntity.TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
             {
-                var networkObject = collision.gameObject.GetComponentInEntity<NetworkObject>();
+                var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
                 RPC_DropItems(networkObject.Id);
             }
@@ -82,7 +85,7 @@ namespace Units.Player
         private void RPC_DropItems(NetworkId entityNetworkId)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
-            var inventory = networkObject.GetComponentInEntity<Inventory>();
+            var inventory = networkObject.GetComponent<Inventory>();
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
             inventory.DropEverything();
         }
