@@ -88,8 +88,6 @@ namespace Units.Player
 
         private void DisposeInputs()
         {
-            interact.started -= ActivateInteractOnce;
-            
             SaveSettings();
             PlayerInputAction.Dispose();
         }

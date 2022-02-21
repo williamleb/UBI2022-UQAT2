@@ -24,7 +24,8 @@ namespace Units
         // Should only be called on host
         public void HoldHomework(Homework homework)
         {
-            DropHomework();
+            // We drop the homework we currently have so we only have one homework
+            DropHomeworkIfHeld();
 
             HeldHomeworkId = homework.HomeworkId;
         }
@@ -32,7 +33,7 @@ namespace Units
         // Should only be called on host
         public void DropEverything()
         {
-            DropHomework();
+            DropHomeworkIfHeld();
         }
 
         // Should only be called on host
@@ -49,7 +50,7 @@ namespace Units
             HeldHomeworkId = NO_HOMEWORK;
         }
 
-        private void DropHomework()
+        private void DropHomeworkIfHeld()
         {
             var homework = GetCurrentHomework();
             if (!homework)

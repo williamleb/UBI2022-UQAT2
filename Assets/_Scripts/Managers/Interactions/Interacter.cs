@@ -8,6 +8,7 @@ namespace Managers.Interactions
     public class Interacter : NetworkBehaviour
     {
         private readonly List<Interaction> interactionsInReach = new List<Interaction>();
+        private readonly List<Interaction> interactionsToRemove = new List<Interaction>();
 
         protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
@@ -68,8 +69,6 @@ namespace Managers.Interactions
         
         public override void FixedUpdateNetwork()
         {
-            List<Interaction> interactionsToRemove = new List<Interaction>();
-
             // We need a way to remove interactions that have been destroyed
             foreach (var interaction in interactionsInReach)
             {
