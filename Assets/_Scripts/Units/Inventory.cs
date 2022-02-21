@@ -8,47 +8,70 @@ namespace Units
     public class Inventory : NetworkBehaviour
     {
         private const int NO_HOMEWORK = -1;
-        
+
         [SerializeField] private SpriteMarkerReceptor marker;
 
-        [Networked(OnChanged = nameof(OnHeldHomeworkChanged))] private int HeldHomeworkId { get; set; }
+        [Networked(OnChanged = nameof(OnHeldHomeworkChanged))]
+        private int HeldHomeworkId { get; set; }
 
-        private bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
+        public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
 
         public override void Spawned()
         {
             HeldHomeworkId = NO_HOMEWORK;
         }
-        
+
         // Should only be called on host
         public void HoldHomework(Homework homework)
         {
             DropHomework();
-            
+
             HeldHomeworkId = homework.HomeworkId;
         }
-        
+
         // Should only be called on host
         public void DropEverything()
         {
             DropHomework();
         }
 
-        private void DropHomework()
+        // Should only be called on host
+        public void RemoveHomework()
         {
             if (!HasHomework)
                 return;
             
-            if (HomeworkManager.HasInstance)
-            {
-                var homework = HomeworkManager.Instance.GetHomework(HeldHomeworkId);
-                if (homework)
-                    homework.Free(transform.position);
-            }
+            if (!HomeworkManager.HasInstance)
+                return;
+            
+            HomeworkManager.Instance.RemoveHomework(HeldHomeworkId);
+
             HeldHomeworkId = NO_HOMEWORK;
         }
 
-        private void UpdateMarkerVisibility()
+        private void DropHomework()
+        {
+            var homework = GetCurrentHomework();
+            if (!homework)
+                return;
+            
+            homework.Free(transform.position);
+
+            HeldHomeworkId = NO_HOMEWORK;
+        }
+
+        private Homework GetCurrentHomework()
+        {
+            if (!HasHomework)
+                return null;
+
+            if (!HomeworkManager.HasInstance)
+                return null;
+            
+            return HomeworkManager.Instance.GetHomework(HeldHomeworkId);
+        }
+
+    private void UpdateMarkerVisibility()
         {
             if (!marker)
                 return;

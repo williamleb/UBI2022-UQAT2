@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
@@ -20,13 +21,15 @@ namespace Managers.Interactions
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
-        private bool interactionEnabled = true;
+        private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
         
-        [Networked(OnChanged = nameof(OnEnabledChanged))] public bool InteractionEnabled { get; set; }
+        private bool interactionEnabled = true;
+        private bool interactionPossible = false;
+
+        [Networked(OnChanged = nameof(OnEnabledChanged)), UnityNonSerialized] public bool InteractionEnabled { get; set; }
         
         public int InteractionId => Id.GetHashCode();
         
-        private bool interactionPossible = false;
         public bool Possible
         {
             get => interactionPossible;
@@ -46,7 +49,17 @@ namespace Managers.Interactions
                     markerToShowWhenInteractionPossible.Deactivate();
             }
         }
+
+        public void AddValidator(Func<Interacter, bool> validator)
+        {
+            validators.Add(validator);
+        }
         
+        public void RemoveValidator(Func<Interacter, bool> validator)
+        {
+            validators.Remove(validator);
+        }
+
         public override void Spawned()
         {
             if (InteractionManager.HasInstance)
@@ -71,6 +84,12 @@ namespace Managers.Interactions
         {
             if (!interactionEnabled)
                 return false;
+
+            foreach (var validator in validators)
+            {
+                if (!validator.Invoke(interacter))
+                    return false;
+            }
             
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;

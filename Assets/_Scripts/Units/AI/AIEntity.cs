@@ -12,6 +12,9 @@ namespace Units.AI
     {
         public const string TAG = "AI";
 
+        [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
+        private GameObject brainToAddOnSpawned;
+
         private NavMeshAgent agent;
         private AIBrain brain;
 
@@ -20,6 +23,14 @@ namespace Units.AI
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+        }
+
+        public override void Spawned()
+        {
+            if (brainToAddOnSpawned && Object.HasStateAuthority)
+            {
+                AddBrain(brainToAddOnSpawned);
+            }
         }
 
         public void AddBrain(GameObject brainPrefab)

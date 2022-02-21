@@ -35,6 +35,18 @@ namespace Ingredients.Homework
             return homework;
         }
 
+        public void RemoveHomework(int homeworkId)
+        {
+            // TODO Return homework to pool when homeworks are pullable
+            if (!homeworks.TryGetValue(homeworkId, out var homework))
+                return;
+            
+            if (!NetworkSystem.Instance.IsConnected || !NetworkSystem.Instance.IsHost)
+                return;
+            
+            NetworkSystem.Instance.Despawn(homework.Object);
+        }
+
         private void Start()
         {
             spawnPoints = FindObjectsOfType<HomeworkSpawnPoint>();
@@ -56,7 +68,7 @@ namespace Ingredients.Homework
             {
                 if (homework.transform.position.y < -10f)
                 {
-                    NetworkSystem.Instance.Despawn(homework.Object);
+                    NetworkSystem.Instance.Despawn(homework.Object); // TODO Return to pool
                 }
             }
             
