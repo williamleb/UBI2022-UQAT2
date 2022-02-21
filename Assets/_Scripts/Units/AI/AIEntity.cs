@@ -1,4 +1,4 @@
-﻿using Fusion;
+using Fusion;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
