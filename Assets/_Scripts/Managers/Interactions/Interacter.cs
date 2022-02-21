@@ -8,11 +8,15 @@ namespace Managers.Interactions
     public class Interacter : NetworkBehaviour
     {
         private readonly List<Interaction> interactionsInReach = new List<Interaction>();
+        private readonly List<Interaction> interactionsToRemove = new List<Interaction>();
 
         protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
-        public void InteractWithClosestInteraction()
+        public void InteractWithClosestInteraction(bool justStarted = true)
         {
+            if (!justStarted)
+                return;
+            
             var closestInteraction = GetClosestAvailableInteraction();
             if (closestInteraction)
             {
@@ -61,6 +65,24 @@ namespace Managers.Interactions
             var interaction = other.GetComponent<Interaction>();
             Debug.Assert(interaction, $"Objects with the tag {Interaction.TAG} must have a {nameof(Interaction)} component");
             interactionsInReach.Remove(interaction);
+        }
+        
+        public override void FixedUpdateNetwork()
+        {
+            // We need a way to remove interactions that have been destroyed
+            foreach (var interaction in interactionsInReach)
+            {
+                if (!interaction || !interaction.InteractionEnabled)
+                    interactionsToRemove.Add(interaction);
+            }
+
+            // Remove interactions in LateUpdate or else it might interfere with the update's foreach loop
+            foreach (var interaction in interactionsToRemove)
+            {
+                interactionsInReach.Remove(interaction);
+            }
+
+            interactionsToRemove.Clear();
         }
     }
 }

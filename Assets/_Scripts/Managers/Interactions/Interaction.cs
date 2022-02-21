@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
+using Systems.Network;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Managers.Interactions
 {
@@ -13,13 +16,20 @@ namespace Managers.Interactions
     {
         public const string TAG = "Interaction";
         
-        public event Action OnInteractedWith;
-        public event Action OnInstantFeedback;
+        public event Action<Interacter> OnInteractedWith; // Only called on host
+        public event Action<Interacter> OnInstantFeedback; // Only called on client who's interaction player has authority
         
         [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
 
+        private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
+        
+        private bool interactionEnabled = true;
         private bool interactionPossible = false;
 
+        [Networked(OnChanged = nameof(OnEnabledChanged)), UnityNonSerialized] public bool InteractionEnabled { get; set; }
+        
+        public int InteractionId => Id.GetHashCode();
+        
         public bool Possible
         {
             get => interactionPossible;
@@ -40,7 +50,15 @@ namespace Managers.Interactions
             }
         }
 
-        public int InteractionId => Id.GetHashCode();
+        public void AddValidator(Func<Interacter, bool> validator)
+        {
+            validators.Add(validator);
+        }
+        
+        public void RemoveValidator(Func<Interacter, bool> validator)
+        {
+            validators.Remove(validator);
+        }
 
         public override void Spawned()
         {
@@ -48,6 +66,8 @@ namespace Managers.Interactions
             {
                 InteractionManager.Instance.RegisterInteraction(this);
             }
+
+            InteractionEnabled = true;
         }
         
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -62,10 +82,19 @@ namespace Managers.Interactions
         private RaycastHit hit;
         public bool CanInteract(Interacter interacter)
         {
+            if (!interactionEnabled)
+                return false;
+
+            foreach (var validator in validators)
+            {
+                if (!validator.Invoke(interacter))
+                    return false;
+            }
+            
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
-            if (hit.collider.gameObject != interacter.gameObject)
+            if (hit.collider.gameObject.GetParent() != interacter.gameObject && hit.collider.gameObject != interacter.gameObject)
                 return false;
             
             return true;
@@ -77,9 +106,10 @@ namespace Managers.Interactions
                 return;
             
             if (interacter.Object.HasInputAuthority)
-                OnInstantFeedback?.Invoke();
+                OnInstantFeedback?.Invoke(interacter);
             
-            RPC_Interact();
+            if (interacter.Object.HasStateAuthority)
+                OnInteractedWith?.Invoke(interacter);
         }
         
         private bool ValidateIfHasTag()
@@ -100,10 +130,16 @@ namespace Managers.Interactions
 
             return false;
         }
-        
-        protected void RPC_Interact()
+
+        private void UpdateInteractionEnabled()
         {
-            OnInteractedWith?.Invoke();
+            // Since we need to know its value outside of network updates
+            interactionEnabled = InteractionEnabled;
+        }
+        
+        private static void OnEnabledChanged(Changed<Interaction> changed)
+        {
+            changed.Behaviour.UpdateInteractionEnabled();
         }
     }
 }

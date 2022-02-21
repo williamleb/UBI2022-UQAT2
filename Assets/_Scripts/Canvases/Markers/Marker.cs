@@ -59,7 +59,7 @@ namespace Canvases.Markers
         {
             // This might have to be replaced if we ever decide to switch camera in the middle of the game
             currentCamera = Camera.main;
-            Debug.Assert(currentCamera, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
+            Debug.Assert(currentCamera != null, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
             
             gameObject.SetActive(false);
         }
@@ -79,7 +79,8 @@ namespace Canvases.Markers
             }
             
             var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
-            var adjustedScale = Math.Abs(cameraDistance) > 0.001f ? scale / cameraDistance : scale;
+            var generalScale = MarkerManager.HasInstance ? scale * MarkerManager.Instance.GeneralScale : scale;
+            var adjustedScale = Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;
             rectTransform.localScale = new Vector3(adjustedScale, adjustedScale, adjustedScale);
         }
 

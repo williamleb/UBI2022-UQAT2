@@ -12,6 +12,7 @@ namespace Units.Player
         
         public override void FixedUpdateNetwork()
         {
+            base.FixedUpdateNetwork();
             UpdateClosestInteractionId();
         }
 
