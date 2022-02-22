@@ -11,5 +11,13 @@ namespace Utilities.Extensions
 
         public static Vector3Int ToVector3Int(this Vector3 input) =>
             new Vector3Int((int) input.x, (int) input.y, (int) input.z);
+        
+        public static float SqrDistance(Vector3 a, Vector3 b)
+        {
+            float num1 = a.x - b.x;
+            float num2 = a.y - b.y;
+            float num3 = a.z - b.z;
+            return (float) (num1 * (double) num1 + num2 * (double) num2 + num3 * (double) num3);
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Canvases.Markers;
 using Fusion;
 using Sirenix.OdinInspector;
-using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
 
@@ -11,7 +10,6 @@ namespace Managers.Interactions
 {
     [RequireComponent(typeof(Collider))]
     [ValidateInput(nameof(ValidateIfHasTag), "An interaction component must be placed on a collider that has the 'Interaction' tag.")]
-    [ValidateInput(nameof(ValidateIfColliderIsTrigger), "An interaction component must have a collider of type 'trigger'.")]
     public class Interaction : NetworkBehaviour
     {
         public const string TAG = "Interaction";
@@ -24,7 +22,7 @@ namespace Managers.Interactions
         private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
         
         private bool interactionEnabled = true;
-        private bool interactionPossible = false;
+        private bool interactionPossible;
 
         [Networked(OnChanged = nameof(OnEnabledChanged)), UnityNonSerialized] public bool InteractionEnabled { get; set; }
         
@@ -115,20 +113,6 @@ namespace Managers.Interactions
         private bool ValidateIfHasTag()
         {
             return gameObject.CompareTag(TAG);
-        }
-
-        private bool ValidateIfColliderIsTrigger()
-        {
-            var colliders = GetComponents<Collider>();
-            foreach (var colliderComponent in colliders)
-            {
-                if (colliderComponent.isTrigger)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private void UpdateInteractionEnabled()

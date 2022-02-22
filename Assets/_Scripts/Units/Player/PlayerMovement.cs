@@ -1,3 +1,4 @@
+using System.Collections;
 using Fusion;
 using Systems.Network;
 using UnityEngine;
@@ -16,12 +17,9 @@ namespace Units.Player
         private void MovementAwake()
         {
             cc = GetComponent<NetworkCharacterController>();
-            /*cc.Config.MaxSpeed = data.MoveMaximumSpeed;
+            cc.Config.MaxSpeed = data.MoveMaximumSpeed;
             cc.Config.Acceleration = data.MoveAcceleration;
             cc.Config.Braking = data.MoveDeceleration;
-            cc.Config.AirControl = true;
-            cc.Config.BaseJumpImpulse = data.JumpHeight;*/
-
         }
 
         private void MoveUpdate(NetworkInputData inputData)
@@ -51,8 +49,19 @@ namespace Units.Player
             {
                 MoveDirection += Vector3.right;
             }
+            cc.MaxSpeed = inputData.IsSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+            if (inputData.IsDash) StartCoroutine(Dash());
         }
-        
+
+        private IEnumerator Dash()
+        {
+            for (int i = 0; i < data.DashDistance; i++)
+            {
+                cc.Move(MoveDirection);
+                yield return null;
+            }
+        }
+
         private void MovePlayer()
         {
             cc.Move(MoveDirection);

@@ -26,6 +26,7 @@ namespace Units.Player
         private InputAction interact;
 
         private bool interactOnce;
+        private bool dashOnce;
 
         public override void Spawned()
         {
@@ -45,14 +46,15 @@ namespace Units.Player
         {
             NetworkInputData data = new NetworkInputData();
             
-            if (dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH;
+            if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
             if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
             if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
             if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
 
             interactOnce = false;
+            dashOnce = false;
 
-            UnityEngine.Vector2 moveValue = move.ReadV2();
+            var moveValue = move.ReadV2();
             if (moveValue.x > 0.1) data.Buttons |= NetworkInputData.BUTTON_RIGHT;
             if (moveValue.x < -0.1) data.Buttons |= NetworkInputData.BUTTON_LEFT;
             if (moveValue.y > 0.1) data.Buttons |= NetworkInputData.BUTTON_UP;
@@ -70,9 +72,11 @@ namespace Units.Player
             interact = PlayerInputAction.Player.Interact;
 
             interact.started += ActivateInteractOnce;
+            dash.started += ActivateDashOnce;
         }
 
         private void ActivateInteractOnce(InputAction.CallbackContext ctx) => interactOnce = ctx.started;
+        private void ActivateDashOnce(InputAction.CallbackContext ctx) => dashOnce = ctx.started;
 
         public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
 
