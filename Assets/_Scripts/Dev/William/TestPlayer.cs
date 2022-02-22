@@ -3,8 +3,8 @@ using Systems.Network;
 using Units;
 using Units.AI;
 using Units.Player;
+using UnityEditor.Experimental;
 using UnityEngine;
-using Utilities.Extensions;
 
 namespace Dev.William
 {
@@ -17,6 +17,7 @@ namespace Dev.William
         [SerializeField] private NetworkCharacterController characterController;
         
         private PlayerInteracter interacter;
+        private Vector3 moveDirection;
 
         private void Awake()
         {
@@ -26,10 +27,29 @@ namespace Dev.William
         
         public override void FixedUpdateNetwork()
         {
+            moveDirection = default;
             if (GetInput(out NetworkInputData inputData))
             {
+                if (inputData.IsUp)
+                {
+                    moveDirection += Vector3.forward;
+                }
+                else if (inputData.IsDown)
+                {
+                    moveDirection += Vector3.back;
+                }
+
+                if (inputData.IsLeft)
+                {
+                    moveDirection += Vector3.left;
+                }
+                else if (inputData.IsRight)
+                {
+                    moveDirection += Vector3.right;
+                }
+                
                 var speed = inputData.IsSprint ? 10f : 5f;
-                characterController.Move(speed * inputData.Move.V2ToFlatV3() * NetworkSystem.DeltaTime);
+                characterController.Move(speed * moveDirection * NetworkSystem.DeltaTime);
                 
                 if (inputData.IsInteract)
                 {
