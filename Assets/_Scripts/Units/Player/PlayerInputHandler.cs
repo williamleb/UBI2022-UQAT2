@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Fusion;
 using InputSystem;
 using Systems.Network;
@@ -27,6 +28,23 @@ namespace Units.Player
 
         private bool interactOnce;
         private bool dashOnce;
+        
+        public static List<string> ValidActions => new List<string>()
+        {
+            nameof(move),
+            nameof(dash),
+            nameof(sprint),
+            nameof(interact)
+        };
+        
+        public InputAction GetInputAction(string inputActionName) => inputActionName.ToLower() switch
+        {
+            nameof(move) => move,
+            nameof(dash) => dash,
+            nameof(sprint) => sprint,
+            nameof(interact) => interact,
+            _ => null
+        };
 
         public override void Spawned()
         {
