@@ -7,7 +7,6 @@ using Systems.Network;
 using Units.Camera;
 using Units.AI;
 using UnityEngine;
-using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -23,6 +22,7 @@ namespace Units.Player
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
+        private Inventory inventory;
         private NetworkInputData inputs;
         [SerializeField] private CameraStrategy mainCamera;
 
@@ -31,6 +31,7 @@ namespace Units.Player
             data = SettingsSystem.Instance.PlayerSetting;
 
             interacter = GetComponent<PlayerInteracter>();
+            inventory = GetComponent<Inventory>();
 
             MovementAwake();
         }
