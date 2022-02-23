@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Fusion;
 using Scriptables;
 using Sirenix.OdinInspector;
