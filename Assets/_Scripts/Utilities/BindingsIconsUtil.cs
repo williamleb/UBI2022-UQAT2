@@ -10,11 +10,13 @@ namespace Utilities
     {
         private static GamepadIcons xbox;
         private static GamepadIcons ps4;
+        private static MouseKeyboardIcons mouseKeyboard;
 
         private static void Init()
         {
             xbox = Resources.Load<GamepadIcons>("InputSystem/GamePadIcons_Xbox");
             ps4 = Resources.Load<GamepadIcons>("InputSystem/GamePadIcons_PS");
+            mouseKeyboard = Resources.Load<MouseKeyboardIcons>("InputSystem/MouseKeyboardIcons");
         }
 
         public static Sprite GetSprite(string deviceLayoutName, string mainControlPath)
@@ -32,6 +34,10 @@ namespace Utilities
             else if (UnityEngine.InputSystem.InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Gamepad"))
             {
                 icon = xbox.GetSprite(mainControlPath);
+            }
+            else if (UnityEngine.InputSystem.InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "Keyboard"))
+            {
+                icon = mouseKeyboard.GetSprite(mainControlPath);
             }
 
             return icon;
