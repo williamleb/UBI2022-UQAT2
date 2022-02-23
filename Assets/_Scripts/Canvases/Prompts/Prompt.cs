@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Canvases.Components;
 using Fusion;
+using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +13,8 @@ namespace Canvases.Prompts
     [RequireComponent(typeof(CanvasGroup))]
     class Prompt : MonoBehaviour
     {
-        [SerializeField] private string debugAction = ""; // TODO Remove
+        [SerializeField, Tooltip("Action assigned to the prompt at start"), ValidateInput(nameof(ValidateActionAtStart), "Action is not valid. See class PlayerActionHandler to know valid actions")] 
+        private string actionAtStart = "";
         
         private InputAction action = null;
         private string inputDevice = "";
@@ -69,9 +71,7 @@ namespace Canvases.Prompts
             playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
             inputDevice = playerInputHandler.CurrentDevice;
             
-            
-            Action = debugAction; // TODO Remove
-                
+            Action = actionAtStart;
             UpdateIcon();
         }
 
@@ -80,7 +80,11 @@ namespace Canvases.Prompts
             if (!playerInputHandler)
                 return null;
             
-            return playerInputHandler.GetInputAction(actionName);
+            var actionFound = playerInputHandler.GetInputAction(actionName);
+            if (actionFound == null)
+                Debug.LogWarning($"Tried to find action {actionName} but could not find it. The prompt will not be shown");
+            
+            return actionFound;
         }
 
         private void OnInputDeviceChanged(string device)
@@ -94,6 +98,11 @@ namespace Canvases.Prompts
             var icon = BindingsIconsUtil.GetSprite(action, inputDevice);
             canvasGroup.alpha = icon ? 1f : 0f;
             image.Sprite = icon;
+        }
+
+        private bool ValidateActionAtStart()
+        {
+            return PlayerInputHandler.ValidActions.Contains(actionAtStart.ToLower());
         }
     }
 }

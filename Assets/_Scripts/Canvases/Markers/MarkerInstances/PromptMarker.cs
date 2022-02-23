@@ -1,6 +1,5 @@
 ﻿using Canvases.Prompts;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Canvases.Markers
 {
