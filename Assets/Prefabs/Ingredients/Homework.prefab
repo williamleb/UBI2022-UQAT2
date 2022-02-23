@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   markerScale: 3
+  lockInPlace: 1
   sprite: {fileID: 21300000, guid: 4c5c658bf7aba1a41a8a49c266844bec, type: 3}
 --- !u!1 &7778799847435167800
 GameObject:
@@ -57,7 +58,6 @@ GameObject:
   - component: {fileID: 7778799847435167803}
   - component: {fileID: 7778799847435167783}
   - component: {fileID: 7778799847435167782}
-  - component: {fileID: 7778799847435167777}
   - component: {fileID: 7778799847435167781}
   - component: {fileID: 7778799847435167802}
   - component: {fileID: 7778799847435167776}
@@ -111,7 +111,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   markerToShowWhenInteractionPossible: {fileID: 7778799846954531122}
-  _InteractionEnabled: 0
 --- !u!114 &7778799847435167782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,19 +137,6 @@ MonoBehaviour:
   - {fileID: 7778799847435167802}
   - {fileID: 7778799847435167776}
   SimulationBehaviours: []
---- !u!135 &7778799847435167777
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7778799847435167800}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 4
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &7778799847435167781
 Rigidbody:
   m_ObjectHideFlags: 0
