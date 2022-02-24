@@ -43,10 +43,10 @@ namespace Units.AI
             // | (2*n)/2*d      0      0        0      |
             // |      0    (f+n)/(n-f) 0 (2*f*n)/(f-n) |
             // |      0         0      1        0      |
-            // |      0         1      0        0      |
+            // |      0    (l/d)/(f-n) 0        0      |
             verificationMatrix = new Matrix4x4(
                 new Vector4((2 * near) / nearLength, 0, 0, 0),
-                new Vector4(0, (far + near)/(near - far), 0, 1),
+                new Vector4(0, (far + near)/(near - far), 0, (farLength / nearLength) / (far - near)),
                 new Vector4(0, 0, 1, 0),
                 new Vector4(0, (2 * far * near)/(far - near), 0, 0));
         }
