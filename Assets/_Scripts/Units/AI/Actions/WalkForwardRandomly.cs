@@ -1,5 +1,4 @@
-﻿using BehaviorDesigner.Runtime;
-using BehaviorDesigner.Runtime.Tasks;
+﻿using BehaviorDesigner.Runtime.Tasks;
 using UnityEngine;
 
 namespace Units.AI.Actions
@@ -9,7 +8,7 @@ namespace Units.AI.Actions
     public class WalkForwardRandomly : Action
     {
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The play mode of the animation")]
-        [SerializeField] private readonly AIBrain brain = null;
+        [SerializeField] private AIBrain brain = null;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The maximum angle that the AI can turn")]
         [SerializeField] private float maxAngleOfRotation = 45f;
         [BehaviorDesigner.Runtime.Tasks.Tooltip("The distance the AI has to walk before this action is considered complete")]
@@ -40,6 +39,13 @@ namespace Units.AI.Actions
             var direction = (Quaternion.Euler(0f, angleRotation, 0f) * brain.transform.forward).normalized;
             var newDestination = transform.position + direction * distanceToWalk;
             brain.SetDestination(newDestination);
+        }
+
+        public override void OnReset()
+        {
+            brain = null;
+            maxAngleOfRotation = 45f;
+            distanceToWalk = 2f;
         }
     }
 }

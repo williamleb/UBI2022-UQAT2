@@ -1,5 +1,6 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
+using Managers.Interactions;
 using UnityEngine;
 
 namespace Units.AI
@@ -9,6 +10,9 @@ namespace Units.AI
     {
         private AIEntity entity;
         private BehaviorTree tree;
+
+        public Inventory Inventory => entity.Inventory;
+        public AIInteracter Interacter => entity.Interacter;
         
         public bool HasReachedItsDestination => !entity.Agent.pathPending &&
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&

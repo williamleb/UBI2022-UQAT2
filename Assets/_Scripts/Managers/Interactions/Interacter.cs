@@ -11,9 +11,9 @@ namespace Managers.Interactions
         [SerializeField] private float radius = 5f;
         
         private readonly List<Interaction> interactionsInReach = new List<Interaction>(4);
-        protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
+        public IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
-        private void Start() => InvokeRepeating(nameof(DetectNearbyInteraction),1,0.1f);
+        public override void Spawned() => InvokeRepeating(nameof(DetectNearbyInteraction),1,0.1f);
 
         public void InteractWithClosestInteraction(bool justStarted = true)
         {
@@ -53,9 +53,18 @@ namespace Managers.Interactions
             if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Physics.AllLayers, QueryTriggerInteraction.UseGlobal) <= 0) return;
             foreach (Collider interact in colliders)
             {
+                if (!interact)
+                    continue;
+                
+                Debug.Log($"Interact with: {interact.name}");
                 if (interact && interact.CompareTag(Interaction.TAG))
                 {
+                    Debug.Log("Was a thing");
                     interactionsInReach.Add(interact.GetComponent<Interaction>());   
+                }
+                else
+                {
+                    Debug.Log("Wasn't a thing");
                 }
             }
         }

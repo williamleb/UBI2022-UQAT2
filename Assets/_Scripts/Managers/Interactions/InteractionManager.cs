@@ -8,6 +8,8 @@ namespace Managers.Interactions
     {
         private Dictionary<int, Interaction> interactions = new Dictionary<int, Interaction>();
 
+        public IEnumerable<Interaction> Interactions => interactions.Values;
+
         public void RegisterInteraction(Interaction interaction)
         {
             interactions.Add(interaction.InteractionId, interaction);

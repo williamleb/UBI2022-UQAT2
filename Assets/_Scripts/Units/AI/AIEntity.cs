@@ -7,6 +7,7 @@ namespace Units.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Inventory))]
+    [RequireComponent(typeof(AIInteracter))]
     [ValidateInput(nameof(ValidateIfHasTag), "An AIEntity component must be placed on a collider that has the 'AI' tag.")]
     public class AIEntity : NetworkBehaviour
     {
@@ -16,11 +17,15 @@ namespace Units.AI
         private GameObject brainToAddOnSpawned;
 
         private NavMeshAgent agent;
+        private Inventory inventory;
+        private AIInteracter interacter;
         private AIBrain brain;
         
         [Networked] public bool IsTeacher { get; private set; }
 
         public NavMeshAgent Agent => agent;
+        public Inventory Inventory => inventory;
+        public AIInteracter Interacter => interacter;
 
         private void Awake()
         {
