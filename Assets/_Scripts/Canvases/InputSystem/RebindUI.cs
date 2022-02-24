@@ -20,20 +20,12 @@ namespace Canvases.InputSystem
         [SerializeField] private TextUIComponent rebindOverlayText;
         [SerializeField] private RebindActionUI rebindPrefab;
 
-        //TODO MJ - Change this to a pause menu action in the action map
-        [Space] [SerializeField] private InputAction pauseMenuAction;
-
         private PlayerInputAction playerInputActionRef;
         private PlayerInputHandler playerInputHandler;
 
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
 
-        private void Awake() => pauseMenuAction.started += PauseMenuActionOnStarted;
-
-        private void Start()
-        {
-            PlayerEntity.OnPlayerSpawned += Init;
-        }
+        private void Awake() => PlayerEntity.OnPlayerSpawned += Init;
 
         private async void Init(NetworkObject player)
         {
@@ -41,6 +33,7 @@ namespace Canvases.InputSystem
             if (player && player.HasInputAuthority)
             {
                 playerInputHandler = player.GetComponent<PlayerInputHandler>();
+                player.GetComponent<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
                 resetAllButton.OnClick += OnResetAll;
                 Enable();
@@ -102,7 +95,6 @@ namespace Canvases.InputSystem
         {
             if (playerInputHandler != null)
                 playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
-            pauseMenuAction.Enable();
         }
 
         private void OnInputDeviceChanged(string newDevice)
@@ -114,11 +106,11 @@ namespace Canvases.InputSystem
 
         private void OnDestroy()
         {
-            playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
-            pauseMenuAction.Dispose();
+            if (playerInputHandler != null)
+                playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
         }
 
-        private void PauseMenuActionOnStarted(InputAction.CallbackContext obj)
+        private void PauseMenuActionOnStarted()
         {
             if (rebindMenuContent.IsVisible())
             {

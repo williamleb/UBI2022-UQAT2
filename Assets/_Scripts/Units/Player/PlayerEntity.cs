@@ -7,6 +7,7 @@ using Systems.Network;
 using Units.Camera;
 using Units.AI;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -19,6 +20,7 @@ namespace Units.Player
         public const string TAG = "Player";
         
         public static event Action<NetworkObject> OnPlayerSpawned;
+        public event Action OnMenuPressed;
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
@@ -45,7 +47,15 @@ namespace Units.Player
         {
             base.Spawned();
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
-            mainCamera.AddTarget(gameObject);
+            if (!Object.HasInputAuthority)
+            {
+                mainCamera.gameObject.Hide();
+            }
+            else
+            {
+                mainCamera.AddTarget(gameObject);
+            }
+
             OnPlayerSpawned?.Invoke(Object);
         }
 
@@ -60,6 +70,11 @@ namespace Units.Player
             if (inputs.IsInteract)
             {
                 interacter.InteractWithClosestInteraction(inputs.IsInteractOnce);
+            }
+
+            if (inputs.IsMenu)
+            {
+                OnMenuPressed?.Invoke();
             }
         }
 
@@ -78,17 +93,28 @@ namespace Units.Player
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-                RPC_DropItems(networkObject.Id);
+                RPC_DropItems(networkObject.Id, collision.gameObject.CompareTag(PlayerEntity.TAG));
             }
         }
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_DropItems(NetworkId entityNetworkId)
+        private void RPC_DropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
-            var inventory = networkObject.GetComponent<Inventory>();
-            Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
-            inventory.DropEverything();
+            Inventory inv;
+            if (isPlayer)
+            {
+                var player = networkObject.GetComponent<PlayerEntity>();
+                inv = player.inventory;
+                player.Hit();
+            }
+            else
+            {
+                inv = networkObject.GetComponent<Inventory>();
+            }
+            Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
+            inv.DropEverything();
+            
         }
         
         private bool ValidateIfHasTag()

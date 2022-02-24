@@ -27,6 +27,7 @@ namespace Units.Player
 
         private bool interactOnce;
         private bool dashOnce;
+        private bool menuOnce;
 
         public override void Spawned()
         {
@@ -50,17 +51,15 @@ namespace Units.Player
             if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
             if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
             if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
+            if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
 
-            interactOnce = false;
-            dashOnce = false;
-
-            var moveValue = move.ReadV2();
-            if (moveValue.x > 0.1) data.Buttons |= NetworkInputData.BUTTON_RIGHT;
-            if (moveValue.x < -0.1) data.Buttons |= NetworkInputData.BUTTON_LEFT;
-            if (moveValue.y > 0.1) data.Buttons |= NetworkInputData.BUTTON_UP;
-            if (moveValue.y < -0.1) data.Buttons |= NetworkInputData.BUTTON_DOWN;
+            data.Move = move.ReadV2();
 
             input.Set(data);
+            
+            interactOnce = false;
+            dashOnce = false;
+            menuOnce = false;
         }
 
         private void EnableInput()
@@ -70,15 +69,21 @@ namespace Units.Player
             dash = PlayerInputAction.Player.Dash;
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
-
+            
+            PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;
             dash.started += ActivateDashOnce;
         }
 
         private void ActivateInteractOnce(InputAction.CallbackContext ctx) => interactOnce = ctx.started;
         private void ActivateDashOnce(InputAction.CallbackContext ctx) => dashOnce = ctx.started;
+        private void ActivateMenuOnce(InputAction.CallbackContext ctx) => menuOnce = ctx.started;
 
-        public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
+        public void SaveSettings()
+        {
+            if (PlayerInputAction != null)
+                RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
+        }
 
         private void OnDestroy() => DisposeInputs();
 

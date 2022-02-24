@@ -2,17 +2,17 @@ using System.Collections;
 using System.Threading.Tasks;
 using Fusion;
 using Systems.Network;
+using Units.AI;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
     [RequireComponent(typeof(NetworkCharacterController))]
     public partial class PlayerEntity
     {
-        [SerializeField] private Transform orientation;
-
         private NetworkCharacterController cc;
-        private bool canMove = true;
+        [Networked] private NetworkBool CanMove { get; set; } = true;
 
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
 
@@ -27,63 +27,53 @@ namespace Units.Player
         private void MoveUpdate(NetworkInputData inputData)
         {
             GetInput(inputData);
-            if (canMove) MovePlayer();
+            MovePlayer();
             RotatePlayer();
         }
 
         private void GetInput(NetworkInputData inputData)
         {
-            MoveDirection = default;
-            if (inputData.IsUp)
-            {
-                MoveDirection += Vector3.forward;
-            }
-            else if (inputData.IsDown)
-            {
-                MoveDirection += Vector3.back;
-            }
-
-            if (inputData.IsLeft)
-            {
-                MoveDirection += Vector3.left;
-            }
-            else if (inputData.IsRight)
-            {
-                MoveDirection += Vector3.right;
-            }
-            cc.MaxSpeed = inputData.IsSprint && !inventory.HasHomework ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
-            if (inputData.IsDash && !inventory.HasHomework) StartCoroutine(Dash());
+            MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+            ChangeMoveSpeed(inputData.IsSprint);
+            if (inputData.IsDash) Dash();
         }
 
-        private IEnumerator Dash()
+        private void ChangeMoveSpeed(bool isSprinting)
         {
-            //TODO validate what the solution is for the tanks hitting each other
-            RaycastHit[] hits = new RaycastHit[1];
-            for (int i = 0; i < data.DashDistance; i++)
-            {
-                cc.Move(MoveDirection);
-                if (Runner.GetPhysicsScene().Raycast(transform.position, transform.forward, hits, 0.3f,
-                        Physics.AllLayers) > 0)
-                {
-                    PlayerEntity other = hits[0].collider.gameObject.GetComponent<PlayerEntity>();
-                    if (other)
-                    {
-                        other.Hit();
-                        yield break;
-                    }
-                }
-                yield return null;
-            }
+            bool canSprint = isSprinting && !inventory.HasHomework;
+            //Add other speed related logic. Boosters, slow when golder homework?
+            cc.MaxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+        }
 
-            Hit();
+        private void Dash()
+        {
+            if (!CanMove || inventory.HasHomework) return;
+            Vector3 startPos = transform.position;
+            cc.Velocity += transform.forward * (data.DashDistance * cc.MaxSpeed);
+            cc.Move(Vector3.zero);
+            //If hit something
+            if (Runner.LagCompensation.Raycast(startPos, transform.forward, 1f,
+                    Object.InputAuthority, out LagCompensatedHit hit))
+            {
+                var go = hit.GameObject;
+                if (go.CompareTag(TAG) || go.CompareTag(AIEntity.TAG))
+                {
+                    var networkObject = go.GetComponent<NetworkObject>();
+                    Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
+                    RPC_DropItems(networkObject.Id, go.CompareTag(TAG));
+                }
+            }
+            else
+            {
+                Hit();
+            }
         }
 
         private async void Hit()
         {
-            inventory.DropEverything();
-            canMove = false;
+            CanMove = false;
             await Task.Delay((int)(cc.MaxSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
-            canMove = true;
+            CanMove = true;
         }
 
         private void MovePlayer()
@@ -93,8 +83,12 @@ namespace Units.Player
 
         private void RotatePlayer()
         {
-            Vector3 ori = orientation.eulerAngles;
-            orientation.rotation = Quaternion.Euler(ori);
+            if (MoveDirection.sqrMagnitude > 0) transform.forward = MoveDirection;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawLine(transform.position,transform.position + transform.forward * (data.DashDistance * cc.MaxSpeed));
         }
     }
 }

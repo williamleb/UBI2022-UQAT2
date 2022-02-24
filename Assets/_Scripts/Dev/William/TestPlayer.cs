@@ -5,6 +5,7 @@ using Units.AI;
 using Units.Player;
 using UnityEditor.Experimental;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Dev.William
 {
@@ -30,23 +31,7 @@ namespace Dev.William
             moveDirection = default;
             if (GetInput(out NetworkInputData inputData))
             {
-                if (inputData.IsUp)
-                {
-                    moveDirection += Vector3.forward;
-                }
-                else if (inputData.IsDown)
-                {
-                    moveDirection += Vector3.back;
-                }
-
-                if (inputData.IsLeft)
-                {
-                    moveDirection += Vector3.left;
-                }
-                else if (inputData.IsRight)
-                {
-                    moveDirection += Vector3.right;
-                }
+                moveDirection = inputData.Move.V2ToFlatV3();
                 
                 var speed = inputData.IsSprint ? 10f : 5f;
                 characterController.Move(speed * moveDirection * NetworkSystem.DeltaTime);
