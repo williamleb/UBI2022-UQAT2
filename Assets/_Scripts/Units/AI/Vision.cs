@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using Units.Player;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using Utilities.Extensions;
 
 namespace Units.AI
@@ -20,11 +18,13 @@ namespace Units.AI
 
         private Matrix4x4 verificationMatrix;
 
-        private List<PlayerEntity> playersInSight = new List<PlayerEntity>();
-        private List<AIEntity> aisInSight = new List<AIEntity>();
-        private List<Interaction> interactionsInSight = new List<Interaction>();
+        private readonly List<PlayerEntity> playersInSight = new List<PlayerEntity>();
+        private readonly List<AIEntity> aisInSight = new List<AIEntity>();
+        private readonly List<Interaction> interactionsInSight = new List<Interaction>();
 
-        private List<GameObject> lol = new List<GameObject>();
+        public IEnumerable<PlayerEntity> PlayersInSight => playersInSight;
+        public IEnumerable<AIEntity> AIsInSight => aisInSight;
+        public IEnumerable<Interaction> InteractionsInSight => interactionsInSight;
 
         private void Start()
         {
@@ -51,14 +51,11 @@ namespace Units.AI
                 new Vector4(0, (2 * far * near)/(far - near), 0, 0));
         }
 
-        private int counter = 0;
         private void DetectObjectsInVision()
         {
             playersInSight.Clear();
             aisInSight.Clear();
             interactionsInSight.Clear();
-            
-            lol.Clear();
             
             var colliders = new Collider[10];
             var thisTransform = transform;
@@ -71,34 +68,78 @@ namespace Units.AI
                 if (!objectCollider)
                     continue;
                 
-                if (objectCollider.CompareTag(PlayerEntity.TAG))
-                {
-                    Debug.Log($"In {counter}");
-                    ++counter;
-                }
-                
-                if (!IsInFrustum(objectCollider.transform.position))
-                    continue;
-
-                if (objectCollider.CompareTag(PlayerEntity.TAG))
-                {
-                    lol.Add(objectCollider.gameObject);
-                }
-                else if (objectCollider.CompareTag(AIEntity.TAG))
-                {
-                    lol.Add(objectCollider.gameObject);
-                }
-                else if (objectCollider.CompareTag(Interaction.TAG))
-                {
-                    lol.Add(objectCollider.gameObject);
-                }
+                ManageCollider(objectCollider);
             }
+        }
+
+        private void ManageCollider(Collider objectCollider)
+        {
+            if (!IsInFrustum(objectCollider.transform.position))
+                return;
+
+            if (objectCollider.CompareTag(PlayerEntity.TAG))
+                ManagePlayerCollider(objectCollider);
+            else if (objectCollider.CompareTag(AIEntity.TAG))
+                ManageAICollider(objectCollider);
+            else if (objectCollider.CompareTag(Interaction.TAG))
+                ManageInteractionCollider(objectCollider);
+        }
+
+        private void ManagePlayerCollider(Collider playerCollider)
+        {
+            if (!IsVisible(playerCollider))
+                return;
+
+            var playerEntity = playerCollider.gameObject.GetComponentInEntity<PlayerEntity>();
+            if (!playerEntity)
+                return;
+            
+            playersInSight.Add(playerEntity);
+        }
+        
+        private void ManageAICollider(Collider aiCollider)
+        {
+            if (!IsVisible(aiCollider))
+                return;
+
+            var aiEntity = aiCollider.gameObject.GetComponentInEntity<AIEntity>();
+            if (!aiEntity)
+                return;
+            
+            aisInSight.Add(aiEntity);
+        }
+        
+        private void ManageInteractionCollider(Collider interactionCollider)
+        {
+            if (!IsVisible(interactionCollider))
+                return;
+
+            var interaction = interactionCollider.gameObject.GetComponentInEntity<Interaction>();
+            if (!interaction)
+                return;
+            
+            interactionsInSight.Add(interaction);
+        }
+
+        private RaycastHit hit;
+        private bool IsVisible(Collider objectCollider)
+        {
+            if (!Physics.Raycast(transform.position, objectCollider.transform.position - transform.position, out hit))
+                return false;
+
+            if (!objectCollider.gameObject.CompareEntities(hit.collider.gameObject))
+                return false;
+
+            return true;
         }
 
         private bool IsInFrustum(Vector3 position)
         {
             var thisTransform = transform;
             var direction = position - thisTransform.position;
+            if (Vector3.Dot(direction, transform.forward) < 0)
+                return false;
+            
             var rotatedDirection = Quaternion.Euler(0f, -thisTransform.eulerAngles.y, 0f) * direction;
             var localPosition = new Vector4(rotatedDirection.x, rotatedDirection.z, 1, 1);
 
@@ -140,66 +181,38 @@ namespace Units.AI
         
         private void OnDrawGizmosSelected()
         {
+            DrawSightFrustumGizmo();
+            DrawObjectsInSightGizmos();
+        }
+
+        private void DrawSightFrustumGizmo()
+        {
             var frustumMesh = CreateFrustumMesh();
             var thisTransform = transform;
 
             Gizmos.color = Color.green;
             Gizmos.DrawMesh(frustumMesh, thisTransform.position, thisTransform.rotation);
-
-            Gizmos.color = Color.red;
-            foreach (var ok in lol)
-            {
-                Gizmos.DrawSphere(ok.transform.position + Vector3.up * 2f, 0.5f);
-            }
-            
-            
-            var position = transform.position;
-            var upperLeftCorner = new Vector3(-farLength / 2f, position.y, far);
-            var upperRightCorner = new Vector3(farLength / 2f, position.y, far);
-            var lowerRightCorner = new Vector3(nearLength / 2f, position.y, near);
-            var lowerLeftCorner = new Vector3(-nearLength / 2f, position.y, near);
-            
-            DoIt(upperLeftCorner + position, Color.blue);
-            DoIt(upperRightCorner + position, Color.blue);
-            DoIt(lowerRightCorner + position, Color.blue);
-            DoIt(lowerLeftCorner + position, Color.blue);
-
-            foreach (var ok in lol)
-            {
-                DoIt(ok.transform.position, Color.yellow);
-            }
-            
-            DoIt(transform.position, Color.cyan);
-
-            var salut = transform.rotation * (transform.position + new Vector3(0f, 0f, (far + near) / 2f));
-            Gizmos.color = Color.black;
-            Gizmos.DrawSphere(salut, 1f);
-            
-            var rotation = thisTransform.rotation;
-            var boxCenter = transform.position;
-            var halfExtents = new Vector3(farLength / 2f, 10f, far);
-            halfExtents = halfExtents.Abs();
-            
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(boxCenter + new Vector3(halfExtents.x, 0, halfExtents.z), 0.2f);
-            Gizmos.DrawSphere(boxCenter + new Vector3(-halfExtents.x, 0, halfExtents.z), 0.2f);
-            Gizmos.DrawSphere(boxCenter + new Vector3(halfExtents.x, 0, -halfExtents.z), 0.2f);
-            Gizmos.DrawSphere(boxCenter + new Vector3(-halfExtents.x, 0, -halfExtents.z), 0.2f);
         }
 
-
-        private void DoIt(Vector3 position, Color color)
+        private void DrawObjectsInSightGizmos()
         {
-            var thisTransform = transform;
-            var direction = position - thisTransform.position;
-            var rotatedDirection = Quaternion.Euler(0f, -thisTransform.eulerAngles.y, 0f) * direction;
-            var localPosition = new Vector4(rotatedDirection.x, rotatedDirection.z, 1, 1);
-
-            var normalizedPosition = verificationMatrix * localPosition;
-            normalizedPosition /= normalizedPosition.w;
-
-            Gizmos.color = color;
-            Gizmos.DrawSphere(new Vector3(normalizedPosition.x * 10f, 1f, normalizedPosition.y * 10f), 0.5f);
+            Gizmos.color = Color.yellow;
+            foreach (var interaction in interactionsInSight)
+            {
+                Gizmos.DrawSphere(interaction.transform.position + Vector3.up * 2f, 0.5f);
+            }
+            
+            Gizmos.color = Color.cyan;
+            foreach (var player in playersInSight)
+            {
+                Gizmos.DrawSphere(player.transform.position + Vector3.up * 2f, 0.5f);
+            }
+            
+            Gizmos.color = Color.magenta;
+            foreach (var ai in aisInSight)
+            {
+                Gizmos.DrawSphere(ai.transform.position + Vector3.up * 2f, 0.5f);
+            }
         }
 #endif
     }
