@@ -56,6 +56,7 @@ namespace Units.AI
             if (!NetworkSystem.Instance.IsHost) 
                 return;
             
+            // TODO Spawn AIs on AI spawners
             
             var entity = runner.Spawn(entityPrefab, Vector3.zero, Quaternion.identity, playerRef,
                 (networkRunner, aiObject) =>

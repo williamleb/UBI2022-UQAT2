@@ -43,11 +43,6 @@ namespace Units.AI.Actions
                     break;
                 }
             }
-            
-            if (!interactionToInteractWith)
-                return;
-
-            brain.SetDestination(interactionToInteractWith.transform.position);
         }
 
         public override void OnEnd()

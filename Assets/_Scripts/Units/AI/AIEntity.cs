@@ -30,6 +30,8 @@ namespace Units.AI
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            inventory = GetComponent<Inventory>();
+            interacter = GetComponent<AIInteracter>();
         }
 
         // Those two methods should only be called before the AI entity is spawned
@@ -82,6 +84,7 @@ namespace Units.AI
             }
 
             var brainGameObject = Instantiate(brainPrefab, transform);
+            brainGameObject.transform.position = Vector3.zero;
             brainGameObject.name = brainPrefab.name;
 
             brain = brainGameObject.GetComponent<AIBrain>();

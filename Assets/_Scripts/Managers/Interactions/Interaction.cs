@@ -92,7 +92,7 @@ namespace Managers.Interactions
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
-            if (hit.collider.gameObject.GetParent() != interacter.gameObject && hit.collider.gameObject != interacter.gameObject)
+            if (interacter.gameObject.CompareEntities(hit.collider.gameObject))
                 return false;
             
             return true;

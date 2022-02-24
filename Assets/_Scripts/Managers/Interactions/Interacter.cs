@@ -56,15 +56,9 @@ namespace Managers.Interactions
                 if (!interact)
                     continue;
                 
-                Debug.Log($"Interact with: {interact.name}");
                 if (interact && interact.CompareTag(Interaction.TAG))
                 {
-                    Debug.Log("Was a thing");
                     interactionsInReach.Add(interact.GetComponent<Interaction>());   
-                }
-                else
-                {
-                    Debug.Log("Wasn't a thing");
                 }
             }
         }
