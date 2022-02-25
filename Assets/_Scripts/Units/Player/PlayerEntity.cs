@@ -1,24 +1,20 @@
 using System;
 using Fusion;
 using Scriptables;
-using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Units.Camera;
 using Units.AI;
 using UnityEngine;
-using Utilities.Extensions;
+using Utilities.Tags;
 
 namespace Units.Player
 {
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
-    [ValidateInput(nameof(ValidateIfHasTag), "A PlayerEntity component must be placed on a collider that has the 'Player' tag.")]
     public partial class PlayerEntity : NetworkBehaviour
     {
-        public const string TAG = "Player";
-        
         public static event Action<NetworkObject> OnPlayerSpawned;
         
         private PlayerSettings data;
@@ -73,7 +69,7 @@ namespace Units.Player
             if (!Object.HasInputAuthority)
                 return;
             
-            if (collision.gameObject.CompareTag(PlayerEntity.TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
+            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(AIEntity.TAG))
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
@@ -89,10 +85,24 @@ namespace Units.Player
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
             inventory.DropEverything();
         }
-        
-        private bool ValidateIfHasTag()
+
+        private void OnValidate()
         {
-            return gameObject.CompareTag(TAG);
+            AssignPlayerTagIfDoesNotHaveIt();
+        }
+
+        private void AssignPlayerTagIfDoesNotHaveIt()
+        {
+            var thisGameObject = gameObject;
+            if (thisGameObject.CompareTag(Tags.UNTAGGED))
+            {
+                gameObject.tag = Tags.PLAYER;
+            }
+
+            if (!thisGameObject.CompareTag(Tags.PLAYER))
+            {
+                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
+            }
         }
     }
 }
