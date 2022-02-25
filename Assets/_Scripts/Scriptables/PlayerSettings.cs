@@ -10,7 +10,8 @@ namespace Scriptables
         [SerializeField] private float sprintMaximumSpeed = 14f;
         [SerializeField] private float moveAcceleration = 100f;
         [SerializeField] private float moveDeceleration = 7f;
-        [SerializeField] private float dashDistance = 10f;
+        [SerializeField] private float dashSpeed = 28f;
+        [SerializeField] private float dashDuration = 0.3f;
         [SerializeField] private int knockOutTimeInMS = 500;
 
         #region accessors
@@ -19,7 +20,8 @@ namespace Scriptables
         public float SprintMaximumSpeed => sprintMaximumSpeed;
         public float MoveAcceleration => moveAcceleration;
         public float MoveDeceleration => moveDeceleration;
-        public float DashDistance => dashDistance;
+        public float DashSpeed => dashSpeed;
+        public float DashDuration => dashDuration;
         public int KnockOutTimeInMS => knockOutTimeInMS;
 
         #endregion

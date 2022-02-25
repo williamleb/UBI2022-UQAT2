@@ -1,10 +1,10 @@
-using System.Collections;
 using System.Threading.Tasks;
 using Fusion;
 using Systems.Network;
 using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
+using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
@@ -13,8 +13,11 @@ namespace Units.Player
     {
         private NetworkCharacterController cc;
         [Networked] private NetworkBool CanMove { get; set; } = true;
+        [Networked] private NetworkBool Dashing { get; set; }
 
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
+
+        private TickTimer dashTimer;
 
         private void MovementAwake()
         {
@@ -22,50 +25,69 @@ namespace Units.Player
             cc.Config.MaxSpeed = data.MoveMaximumSpeed;
             cc.Config.Acceleration = data.MoveAcceleration;
             cc.Config.Braking = data.MoveDeceleration;
+            dashTimer = new TickTimer(data.DashDuration);
+            dashTimer.OnTimerEnd += () => EndDash();
         }
 
         private void MoveUpdate(NetworkInputData inputData)
         {
             GetInput(inputData);
             MovePlayer();
+            if (Dashing) DetectCollision();
             RotatePlayer();
+            dashTimer.Tick(Runner.DeltaTime);
         }
 
         private void GetInput(NetworkInputData inputData)
         {
-            MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
-            ChangeMoveSpeed(inputData.IsSprint);
-            if (inputData.IsDash) Dash();
+            if (!Dashing)
+            {
+                MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+                ChangeMoveSpeed(inputData.IsSprint);
+                if (inputData.IsDash) Dash();
+            }
         }
 
         private void ChangeMoveSpeed(bool isSprinting)
         {
             bool canSprint = isSprinting && !inventory.HasHomework;
-            //Add other speed related logic. Boosters, slow when golder homework?
+            //Add other speed related logic. Boosters, slow when holding golden homework?
             cc.MaxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
         }
 
         private void Dash()
         {
-            if (!CanMove || inventory.HasHomework) return;
-            Vector3 startPos = transform.position;
-            cc.Velocity += transform.forward * (data.DashDistance * cc.MaxSpeed);
-            cc.Move(Vector3.zero);
-            //If hit something
-            if (Runner.LagCompensation.Raycast(startPos, transform.forward, 1f,
-                    Object.InputAuthority, out LagCompensatedHit hit))
+            if (!CanMove || inventory.HasHomework || Dashing) return;
+            Dashing = true;
+            dashTimer.Reset();
+            cc.MaxSpeed = data.DashSpeed;
+            MoveDirection = transform.forward;
+        }
+
+        private void EndDash(bool knockOutPlayer = true)
+        {
+            if (knockOutPlayer && Dashing)
+            {
+                Hit();
+            }
+            Dashing = false;
+
+        }
+
+        private void DetectCollision()
+        {
+            if (Runner.LagCompensation.Raycast(transform.position, transform.forward, 0.5f, Object.InputAuthority, out LagCompensatedHit hit,Physics.AllLayers,HitOptions.IncludePhysX))
             {
                 var go = hit.GameObject;
                 if (go.CompareTag(TAG) || go.CompareTag(AIEntity.TAG))
                 {
-                    var networkObject = go.GetComponent<NetworkObject>();
+                    var networkObject = go.GetComponentInEntity<NetworkObject>();
                     Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
                     RPC_DropItems(networkObject.Id, go.CompareTag(TAG));
+                    EndDash(false);
+                    return;
                 }
-            }
-            else
-            {
-                Hit();
+                EndDash();
             }
         }
 
@@ -84,11 +106,6 @@ namespace Units.Player
         private void RotatePlayer()
         {
             if (MoveDirection.sqrMagnitude > 0) transform.forward = MoveDirection;
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawLine(transform.position,transform.position + transform.forward * (data.DashDistance * cc.MaxSpeed));
         }
     }
 }

@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Units.Camera;
-using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
 
@@ -49,11 +48,11 @@ namespace Units.Player
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
             if (!Object.HasInputAuthority)
             {
-                mainCamera.gameObject.Hide();
+                mainCamera!.gameObject.Hide();
             }
             else
             {
-                mainCamera.AddTarget(gameObject);
+                mainCamera!.AddTarget(gameObject);
             }
 
             OnPlayerSpawned?.Invoke(Object);
@@ -84,20 +83,7 @@ namespace Units.Player
                 networkRunner.Despawn(Object);
         }
 
-        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature
-        {
-            if (!Object.HasInputAuthority)
-                return;
-            
-            if (collision.gameObject.CompareTag(PlayerEntity.TAG) || collision.gameObject.CompareTag(AIEntity.TAG))
-            {
-                var networkObject = collision.gameObject.GetComponent<NetworkObject>();
-                Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-                RPC_DropItems(networkObject.Id, collision.gameObject.CompareTag(PlayerEntity.TAG));
-            }
-        }
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        [Rpc]
         private void RPC_DropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
