@@ -3,6 +3,7 @@ using System.Linq;
 using Fusion;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Tags;
 
 namespace Managers.Interactions
 {
@@ -53,7 +54,7 @@ namespace Managers.Interactions
             if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Physics.AllLayers, QueryTriggerInteraction.UseGlobal) <= 0) return;
             foreach (Collider interact in colliders)
             {
-                if (interact && interact.CompareTag(Interaction.TAG))
+                if (interact && interact.CompareTag(Tags.INTERACTION))
                 {
                     interactionsInReach.Add(interact.GetComponent<Interaction>());   
                 }
