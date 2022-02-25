@@ -4,6 +4,7 @@ using Systems.Network;
 using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Tags;
 using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
@@ -79,11 +80,11 @@ namespace Units.Player
             if (Runner.LagCompensation.Raycast(transform.position, transform.forward, 0.5f, Object.InputAuthority, out LagCompensatedHit hit,Physics.AllLayers,HitOptions.IncludePhysX))
             {
                 var go = hit.GameObject;
-                if (go.CompareTag(TAG) || go.CompareTag(AIEntity.TAG))
+                if (go.CompareTag(Tags.PLAYER) || go.CompareTag(Tags.AI))
                 {
                     var networkObject = go.GetComponentInEntity<NetworkObject>();
                     Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-                    RPC_DropItems(networkObject.Id, go.CompareTag(TAG));
+                    RPC_DropItems(networkObject.Id, go.CompareTag(Tags.PLAYER));
                     EndDash(false);
                     return;
                 }

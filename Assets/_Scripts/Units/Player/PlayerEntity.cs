@@ -6,6 +6,7 @@ using Systems;
 using Systems.Network;
 using Units.Camera;
 using UnityEngine;
+using Utilities.Extensions;
 using Utilities.Tags;
 
 namespace Units.Player
@@ -101,7 +102,7 @@ namespace Units.Player
             
         }
         
-        private bool OnValidate()
+        private void OnValidate()
         {
             AssignPlayerTagIfDoesNotHaveIt();
         }
