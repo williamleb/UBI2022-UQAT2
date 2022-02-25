@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Managers.Game;
+using UnityEngine;
 
 namespace Canvases.HUDs
 {
@@ -11,7 +12,22 @@ namespace Canvases.HUDs
         {
             canvasGroup = GetComponent<CanvasGroup>();
         }
-        
-        
+
+        private void Start()
+        {
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        }
+
+        private void OnDestroy()
+        {
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+        }
+
+        private void OnGameStateChanged(GameState newGameState)
+        {
+            canvasGroup.alpha = newGameState == GameState.Running ? 1f : 0f;
+        }
     }
 }
