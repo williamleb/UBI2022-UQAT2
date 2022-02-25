@@ -2,23 +2,19 @@ using System;
 using System.Threading.Tasks;
 using Fusion;
 using Scriptables;
-using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Units.Camera;
 using UnityEngine;
-using Utilities.Extensions;
+using Utilities.Tags;
 
 namespace Units.Player
 {
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
-    [ValidateInput(nameof(ValidateIfHasTag), "A PlayerEntity component must be placed on a collider that has the 'Player' tag.")]
     public partial class PlayerEntity : NetworkBehaviour
     {
-        public const string TAG = "Player";
-        
         public static event Action<NetworkObject> OnPlayerSpawned;
         public event Action OnMenuPressed;
         
@@ -105,9 +101,23 @@ namespace Units.Player
             
         }
         
-        private bool ValidateIfHasTag()
+        private bool OnValidate()
         {
-            return gameObject.CompareTag(TAG);
+            AssignPlayerTagIfDoesNotHaveIt();
+        }
+
+        private void AssignPlayerTagIfDoesNotHaveIt()
+        {
+            var thisGameObject = gameObject;
+            if (thisGameObject.CompareTag(Tags.UNTAGGED))
+            {
+                gameObject.tag = Tags.PLAYER;
+            }
+
+            if (!thisGameObject.CompareTag(Tags.PLAYER))
+            {
+                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
+            }
         }
     }
 }

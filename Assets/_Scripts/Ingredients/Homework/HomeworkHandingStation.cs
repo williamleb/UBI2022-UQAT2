@@ -2,6 +2,7 @@
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Tags;
 
 namespace Units.AI
 {
@@ -32,7 +33,7 @@ namespace Units.AI
         private bool CanGiveHomework(Interacter interacter)
         {
             var interacterGameObject = interacter.gameObject;
-            if (!interacterGameObject.CompareTag(PlayerEntity.TAG) && !interacterGameObject.CompareTag(AIEntity.TAG))
+            if (!interacterGameObject.CompareTag(Tags.PLAYER) && !interacterGameObject.CompareTag(AIEntity.TAG))
                 return false;
 
             var inventory = interacterGameObject.GetComponentInEntity<Inventory>();

@@ -122,8 +122,8 @@ namespace Canvases.InputSystem
             UpdateDuplicateText(mainBindingReferences, mainDisplayString);
             UpdateDuplicateText(altBindingReferences, altDisplayString);
 
-            Sprite mainIcon = GamepadIconsUtil.OnUpdateBindingDisplay(deviceLayoutName, mainControlPath);
-            Sprite altIcon = GamepadIconsUtil.OnUpdateBindingDisplay(deviceLayoutName, altControlPath);
+            Sprite mainIcon = BindingsIconsUtil.GetSprite(deviceLayoutName, mainControlPath);
+            Sprite altIcon = BindingsIconsUtil.GetSprite(deviceLayoutName, altControlPath);
 
             DisplayIcon(mainBindingReferences, mainIcon);
             DisplayIcon(altBindingReferences, altIcon);

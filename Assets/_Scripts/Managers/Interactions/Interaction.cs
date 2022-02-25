@@ -17,7 +17,7 @@ namespace Managers.Interactions
         public event Action<Interacter> OnInteractedWith; // Only called on host
         public event Action<Interacter> OnInstantFeedback; // Only called on client who's interaction player has authority
         
-        [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
+        [SerializeField] private PromptMarkerReceptor markerToShowWhenInteractionPossible;
 
         private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
         

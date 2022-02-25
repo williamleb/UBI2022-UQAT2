@@ -5,6 +5,7 @@ using Units.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using Utilities;
 using Utilities.Extensions;
 
 namespace Canvases.InputSystem
@@ -48,25 +49,11 @@ namespace Canvases.InputSystem
         {
             currentControlScheme.Text = $"< {deviceName.ToUpper()} >";
             ReadOnlyArray<InputAction> inputActions = playerInputActionRef.Player.Get().actions;
-            foreach (InputAction inputAction in inputActions)
+            foreach (var inputAction in inputActions)
             {
-                if (inputAction.bindings[0].isComposite)
+                foreach (var mainBinding in BindingsIconsUtil.GetRelevantMainBindings(inputAction, deviceName))
                 {
-                    if (deviceName == "Gamepad")
-                    {
-                        SpawnButton(inputAction, inputAction.bindings.Count - 2);
-                    }
-                    else
-                    {
-                        for (int i = 1; i < inputAction.bindings.Count - 2; i += 2)
-                        {
-                            SpawnButton(inputAction, i);
-                        }
-                    }
-                }
-                else
-                {
-                    SpawnButton(inputAction, deviceName == "Gamepad" ? 2 : 0);
+                    SpawnButton(inputAction, mainBinding);
                 }
             }
         }
