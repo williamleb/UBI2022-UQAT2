@@ -7,28 +7,19 @@ using UnityEngine.UI;
 
 namespace Canvases.HUDs
 {
-    [RequireComponent(typeof(CanvasGroup))]
     public class HUD : MonoBehaviour
     {
         [Header("HUD Scores")]
         [SerializeField, Required] private RectTransform hudScoreContainer;
         [SerializeField, Required] private GameObject hudScorePrefab;
         
-        private CanvasGroup canvasGroup;
-
         private Dictionary<PlayerRef, HUDScore> hudScores = new Dictionary<PlayerRef, HUDScore>();
-
-        private void Awake()
-        {
-            canvasGroup = GetComponent<CanvasGroup>();
-        }
 
         private void Start()
         {
             if (!GameManager.HasInstance)
                 return;
             
-            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
             GameManager.Instance.OnScoreRegistered += OnScoreRegistered;
             GameManager.Instance.OnScoreUnregistered += OnScoreUnregistered;
         }
@@ -38,14 +29,8 @@ namespace Canvases.HUDs
             if (!GameManager.HasInstance)
                 return;
             
-            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
             GameManager.Instance.OnScoreRegistered -= OnScoreRegistered;
             GameManager.Instance.OnScoreUnregistered -= OnScoreUnregistered;
-        }
-
-        private void OnGameStateChanged(GameState newGameState)
-        {
-            canvasGroup.alpha = newGameState == GameState.Running ? 1f : 0f;
         }
 
         private void OnScoreRegistered(Score score, PlayerRef player)

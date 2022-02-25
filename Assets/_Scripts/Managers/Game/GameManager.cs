@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Systems.Network;
 using Units.Player;
@@ -47,6 +48,14 @@ namespace Managers.Game
                 return null;
 
             return scores[player];
+        }
+
+        public PlayerRef FindPlayerWithHighestScore()
+        {
+            if (!scores.Any())
+                return PlayerRef.None;
+            
+            return scores.Aggregate((left, right) => left.Value.Value > right.Value.Value ? left : right).Key;
         }
 
         public void RegisterScore(Score score, PlayerRef player)
@@ -146,6 +155,11 @@ namespace Managers.Game
         public void Reset()
         {
             networkedData.Reset();
+            
+            foreach (var score in scores.Values)
+            {
+                score.Reset();
+            }
         }
     }
 }
