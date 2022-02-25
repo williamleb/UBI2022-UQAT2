@@ -10,8 +10,6 @@ namespace Units.AI
     [RequireComponent(typeof(Inventory))]
     public class AIEntity : NetworkBehaviour
     {
-        public const string TAG = "AI";
-
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 

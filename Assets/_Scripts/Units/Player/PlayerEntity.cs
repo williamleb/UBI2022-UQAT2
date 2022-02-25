@@ -1,10 +1,10 @@
 using System;
 using Fusion;
+using Managers.Game;
 using Scriptables;
 using Systems;
 using Systems.Network;
 using Units.Camera;
-using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
@@ -18,10 +18,14 @@ namespace Units.Player
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         
+        [SerializeField] private CameraStrategy mainCamera;
+        [SerializeField] private NetworkObject scorePrefab;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private NetworkInputData inputs;
-        [SerializeField] private CameraStrategy mainCamera;
+        
+        [Networked] private NetworkId ScoreObjectId { get; set; }
 
         private void Awake()
         {
@@ -40,9 +44,40 @@ namespace Units.Player
         public override void Spawned()
         {
             base.Spawned();
+
+            gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
+            
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
             mainCamera.AddTarget(gameObject);
             OnPlayerSpawned?.Invoke(Object);
+
+            if (Object.HasStateAuthority)
+                SpawnScore();
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (Object.HasStateAuthority)
+                DespawnScore();
+        }
+
+        private void SpawnScore()
+        {
+            if (!scorePrefab)
+            {
+                Debug.LogWarning($"Could not spawn a score for player {Object.InputAuthority.PlayerId} because it didn't have a valid {nameof(scorePrefab)}");
+                return;
+            }
+            
+            var scoreObject = Runner.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, Object.InputAuthority);
+            ScoreObjectId = scoreObject.Id;
+        }
+
+        private void DespawnScore()
+        {
+            var scoreObject = Runner.FindObject(ScoreObjectId);
+            Runner.Despawn(scoreObject);
+            ScoreObjectId = new NetworkId();
         }
 
         public override void FixedUpdateNetwork()
@@ -70,7 +105,7 @@ namespace Units.Player
             if (!Object.HasInputAuthority)
                 return;
             
-            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(AIEntity.TAG))
+            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(Tags.AI))
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
@@ -81,7 +116,7 @@ namespace Units.Player
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_DropItems(NetworkId entityNetworkId)
         {
-            var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
+            var networkObject = Runner.FindObject(entityNetworkId);
             var inventory = networkObject.GetComponent<Inventory>();
             Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
             inventory.DropEverything();

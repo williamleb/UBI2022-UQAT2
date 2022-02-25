@@ -63,7 +63,7 @@ namespace Dev.William
             if (!Object.HasInputAuthority)
                 return;
             
-            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(AIEntity.TAG))
+            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(Tags.AI))
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
