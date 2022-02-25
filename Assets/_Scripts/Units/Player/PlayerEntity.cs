@@ -87,13 +87,18 @@ namespace Units.Player
             inventory.DropEverything();
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
+            if (!Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
         }
 
         private void AssignTagAndLayer()
         {
+            if (this == null)
+                return;
+
             var thisGameObject = gameObject;
             
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
@@ -102,5 +107,6 @@ namespace Units.Player
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }
+#endif
     }
 }

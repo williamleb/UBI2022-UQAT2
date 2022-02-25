@@ -1,13 +1,13 @@
 using Fusion;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Units.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Inventory))]
-    [ValidateInput(nameof(ValidateIfHasTag), "An AIEntity component must be placed on a collider that has the 'AI' tag.")]
     public class AIEntity : NetworkBehaviour
     {
         public const string TAG = "AI";
@@ -50,9 +50,26 @@ namespace Units.AI
             brain.AssignEntity(this);
         }
 
-        private bool ValidateIfHasTag()
+#if UNITY_EDITOR
+        private void OnValidate()
         {
-            return gameObject.CompareTag(TAG);
+            if (!Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
         }
+
+        private void AssignTagAndLayer()
+        {
+            if (this == null)
+                return;
+            
+            var thisGameObject = gameObject;
+            
+            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.AI))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.AI}. Instead, it has {thisGameObject.tag}");
+            
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+        }
+#endif
     }
 }
