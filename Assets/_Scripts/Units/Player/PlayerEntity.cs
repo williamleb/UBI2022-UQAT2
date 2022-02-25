@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Fusion;
-using Managers.Game;
 using Scriptables;
 using Systems;
 using Systems.Network;
@@ -138,6 +137,7 @@ namespace Units.Player
             
         }
         
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (!Application.isPlaying)
