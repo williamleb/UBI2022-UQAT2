@@ -18,6 +18,7 @@ namespace Units.Player
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public event Action OnMenuPressed;
+        public int PlayerID { get; private set; }
         
         [SerializeField] private CameraStrategy mainCamera;
         [SerializeField] private NetworkObject scorePrefab;
@@ -41,7 +42,6 @@ namespace Units.Player
 
         private void Start()
         {
-            NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
         public override async void Spawned()
@@ -111,10 +111,30 @@ namespace Units.Player
             }
         }
 
-        private void PlayerLeft(NetworkRunner networkRunner, PlayerRef playerRef)
+        public async void TriggerDespawn()
         {
-            if (playerRef == Object.InputAuthority)
-                networkRunner.Despawn(Object);
+            //await Task.Delay(300); // wait for effects
+
+            if (Object == null) { return; }
+
+            if (Object.HasStateAuthority)
+            {
+                Runner.Despawn(Object);
+            }
+            else if (Runner.IsSharedModeMasterClient)
+            {
+                Object.RequestStateAuthority();
+
+                while (Object.HasStateAuthority == false)
+                {
+                    await Task.Delay(100); // wait for Auth transfer
+                }
+
+                if (Object.HasStateAuthority)
+                {
+                    Runner.Despawn(Object);
+                }
+            }
         }
 
         [Rpc]

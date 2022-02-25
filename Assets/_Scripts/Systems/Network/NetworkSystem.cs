@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -10,7 +11,9 @@ namespace Systems.Network
 {
     public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
     {
-        private NetworkRunner networkRunner;
+        private static string customLobbyName = "bababooeyLobby";
+        public NetworkRunner NetworkRunner { get; private set; }
+        public bool DebugMode { get; set; } = true;
         
         #region Events
 
@@ -32,42 +35,92 @@ namespace Systems.Network
 
         #endregion
 
-        //TODO: to remove.
         private void OnGUI()
         {
-            if (networkRunner == null)
+            if (DebugMode)
             {
-                if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
+                if (NetworkRunner == null)
                 {
-                    StartGame(GameMode.Host);
+                    if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
+                    {
+                        StartGame(GameMode.Host);
+                    }
+                    if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
+                    {
+                        StartGame(GameMode.Client);
+                    }
+                    if (GUI.Button(new Rect(0, 80, 200, 40), "Single"))
+                    {
+                        StartGame(GameMode.Single);
+                    }
                 }
-
-                if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
+                else
                 {
-                    StartGame(GameMode.Client);
+                    GUI.TextField(new Rect(10, 10, 40, 20), NetworkRunner.GameMode == GameMode.Host ? "Host" : "Client");
                 }
-                if (GUI.Button(new Rect(0, 80, 200, 40), "Single"))
-                {
-                    StartGame(GameMode.Single);
-                }
-            }
-            else
-            {
-                GUI.TextField(new Rect(10, 10, 40, 20), networkRunner.GameMode == GameMode.Host ? "Host" : "Client");
             }
         }
 
         async void StartGame(GameMode mode)
         {
-            networkRunner = gameObject.AddComponent<NetworkRunner>();
-            networkRunner.ProvideInput = true;
+            NetworkRunner = gameObject.AddComponent<NetworkRunner>();
+            NetworkRunner.ProvideInput = true;
 
-            await networkRunner.StartGame(new StartGameArgs
+            await NetworkRunner.StartGame(new StartGameArgs
             {
                 GameMode = mode,
                 Scene = SceneManager.GetActiveScene().buildIndex,
                 SceneObjectProvider = gameObject.AddComponent<NetworkSceneManagerDefault>()
             });
+        }
+
+        //Create a hosted game with the given session name. 
+        public async Task CreateGame(string sessionName)
+        {
+            Debug.Log($"Creating game with session name {sessionName}");
+
+            NetworkRunner = gameObject.AddComponent<NetworkRunner>();
+            NetworkRunner.ProvideInput = true;
+
+            var result = await NetworkRunner.StartGame(new StartGameArgs()
+            {
+                SessionName = sessionName.ToLower(),
+                CustomLobbyName = customLobbyName,
+                GameMode = GameMode.Host,
+                SceneObjectProvider = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            });
+
+            LevelSystem.Instance.LoadLobby();
+        }
+
+        //Try to join a game base on a specific session name.
+        public async Task<bool> TryJoinGame(string sessionName)
+        {
+            Debug.Log($"Trying to join game with session name : {sessionName}");
+
+            NetworkRunner = gameObject.AddComponent<NetworkRunner>();
+            NetworkRunner.ProvideInput = true;
+
+            var result = await NetworkRunner.StartGame(new StartGameArgs()
+            {
+                SessionName = sessionName.ToLower(),
+                CustomLobbyName = customLobbyName,
+                GameMode = GameMode.Client,
+                SceneObjectProvider = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+                DisableClientSessionCreation = true
+            });
+
+            if (result.Ok)
+            {
+                Debug.Log($"Connected to session name : {sessionName}.");
+                Debug.Log(NetworkRunner.SessionInfo.ToString());
+                return true;
+            }
+            else
+            {
+                Debug.Log($"Failed to join game with session name : {sessionName}");
+                return false;
+            }
         }
 
         public void OnConnectedToServer(NetworkRunner runner) => OnConnectedToServerEvent?.Invoke(runner);
