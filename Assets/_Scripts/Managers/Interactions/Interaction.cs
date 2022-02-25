@@ -92,6 +92,8 @@ namespace Managers.Interactions
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
+            Debug.Log($"Hit: {hit.collider.name}, parent: {hit.collider.gameObject.GetParent().name}");
+            
             if (hit.collider.gameObject.GetParent() != interacter.gameObject && hit.collider.gameObject != interacter.gameObject)
                 return false;
             

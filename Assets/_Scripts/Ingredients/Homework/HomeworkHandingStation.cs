@@ -1,8 +1,7 @@
 ﻿using Managers.Interactions;
-using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
-using Utilities.Tags;
+using Utilities.Unity;
 
 namespace Units.AI
 {

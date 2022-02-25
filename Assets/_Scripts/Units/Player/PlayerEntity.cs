@@ -6,7 +6,8 @@ using Systems.Network;
 using Units.Camera;
 using Units.AI;
 using UnityEngine;
-using Utilities.Tags;
+using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Units.Player
 {
@@ -88,21 +89,18 @@ namespace Units.Player
 
         private void OnValidate()
         {
-            AssignPlayerTagIfDoesNotHaveIt();
+            UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
         }
 
-        private void AssignPlayerTagIfDoesNotHaveIt()
+        private void AssignTagAndLayer()
         {
             var thisGameObject = gameObject;
-            if (thisGameObject.CompareTag(Tags.UNTAGGED))
-            {
-                gameObject.tag = Tags.PLAYER;
-            }
-
-            if (!thisGameObject.CompareTag(Tags.PLAYER))
-            {
+            
+            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
-            }
+            
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }
     }
 }
