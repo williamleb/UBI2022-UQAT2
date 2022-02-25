@@ -5,7 +5,7 @@ namespace Managers.Game
 {
     public class Score : NetworkBehaviour
     {
-        public event Action<int, PlayerRef> OnScoreChanged;
+        public event Action<int> OnScoreChanged;
 
         [Networked(OnChanged = nameof(OnValueChanged))] public int Value { get; private set; }
 
@@ -43,7 +43,7 @@ namespace Managers.Game
         private static void OnValueChanged(Changed<Score> changed)
         {
             var score = changed.Behaviour;
-            score.OnScoreChanged?.Invoke(score.Value, score.Object.InputAuthority);
+            score.OnScoreChanged?.Invoke(score.Value);
         }
     }
 }

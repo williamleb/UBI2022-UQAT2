@@ -10,7 +10,6 @@ namespace Managers.Game
 {
     public enum  GameState { NotStarted, Running, Finished }
 
-    
     [RequireComponent(typeof(NetworkedGameData))]
     public class GameManager : Singleton<GameManager>
     {
@@ -21,6 +20,8 @@ namespace Managers.Game
         // Area to unlock
         // Number of points for last homework
 
+        public event Action<Score, PlayerRef> OnScoreRegistered; 
+        public event Action<PlayerRef> OnScoreUnregistered; 
         public event Action<GameState> OnGameStateChanged; 
         public event Action OnPhaseTotalHomeworkChanged
         {
@@ -52,13 +53,15 @@ namespace Managers.Game
         {
             Debug.Assert(!scores.ContainsKey(player), $"Trying to register a score for player {player.PlayerId} when a score is already registered for them");
             scores.Add(player, score);
-            // TODO Event
+            
+            OnScoreRegistered?.Invoke(score, player);
         }
 
         public void UnregisterScore(PlayerRef player)
         {
             scores.Remove(player);
-            // TODO Event
+            
+            OnScoreUnregistered?.Invoke(player);
         }
 
         protected override void Awake()
