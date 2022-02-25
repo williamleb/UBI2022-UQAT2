@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using Utilities.Unity;
 using Behaviour = Fusion.Behaviour;
 
 namespace Utilities.Extensions
@@ -48,6 +49,32 @@ namespace Utilities.Extensions
         {
             var parent = gameObject.transform.parent;
             return parent ? parent.gameObject : gameObject;
+        }
+        
+        public static bool HasTag(this GameObject gameObject)
+        {
+            return !gameObject.CompareTag(Tags.UNTAGGED);
+        }
+        
+        public static bool AssignTagIfDoesNotHaveIt(this GameObject gameObject, string tag)
+        {
+            if (!gameObject.HasTag())
+                gameObject.tag = tag;
+
+            return gameObject.CompareTag(tag);
+        }
+        
+        public static bool HasLayer(this GameObject gameObject)
+        {
+            return gameObject.layer != Layers.DEFAULT;
+        }
+        
+        public static bool AssignLayerIfDoesNotHaveIt(this GameObject gameObject, int layer)
+        {
+            if (!gameObject.HasLayer())
+                gameObject.layer = layer;
+
+            return gameObject.layer == layer;
         }
     }
 }

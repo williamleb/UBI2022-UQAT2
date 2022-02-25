@@ -3,10 +3,9 @@ using Systems.Network;
 using Units;
 using Units.AI;
 using Units.Player;
-using UnityEditor.Experimental;
 using UnityEngine;
+using Utilities.Unity;
 using Utilities.Extensions;
-using Utilities.Tags;
 
 namespace Dev.William
 {
@@ -49,7 +48,7 @@ namespace Dev.William
             if (!Object.HasInputAuthority)
                 return;
             
-            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(AIEntity.TAG))
+            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(Tags.AI))
             {
                 var networkObject = collision.gameObject.GetComponent<NetworkObject>();
                 Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");

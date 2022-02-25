@@ -55,9 +55,13 @@ namespace Canvases.Markers
 
         protected virtual void Awake()
         {
-            gameObject.SetActive(false);
             rectTransform = GetComponent<RectTransform>();
             PlayerEntity.OnPlayerSpawned += Init;
+        }
+
+        private void Start()
+        {
+            gameObject.SetActive(false);
         }
 
         protected virtual void Init(NetworkObject networkObject)

@@ -1,8 +1,9 @@
-﻿using Managers.Interactions;
+﻿using Managers.Game;
+using Managers.Interactions;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
-using Utilities.Tags;
+using Utilities.Unity;
 
 namespace Units.AI
 {
@@ -33,7 +34,7 @@ namespace Units.AI
         private bool CanGiveHomework(Interacter interacter)
         {
             var interacterGameObject = interacter.gameObject;
-            if (!interacterGameObject.CompareTag(Tags.PLAYER) && !interacterGameObject.CompareTag(AIEntity.TAG))
+            if (!interacterGameObject.CompareTag(Tags.PLAYER) && !interacterGameObject.CompareTag(Tags.AI))
                 return false;
 
             var inventory = interacterGameObject.GetComponentInEntity<Inventory>();
@@ -55,10 +56,21 @@ namespace Units.AI
         {
             var inventory = interacter.gameObject.GetComponentInEntity<Inventory>();
             Debug.Assert(inventory, $"{nameof(HomeworkHandingStation)} should only be interacted with by actors with an {nameof(Inventory)}");
-            
-            Debug.Log($"Player {interacter.Object.Id} scored!"); // TODO Give a point when point system will be in place
+
+            if (interacter.gameObject.CompareTag(Tags.PLAYER))
+                HandHomework(interacter);
             
             inventory.RemoveHomework();
+        }
+
+        private void HandHomework(Interacter interacter)
+        {
+            if (!GameManager.HasInstance)
+                return;
+            
+            var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+            Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
+            GameManager.Instance.HandHomework(player);
         }
     }
 }

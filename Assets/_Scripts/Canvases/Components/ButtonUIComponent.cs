@@ -22,6 +22,8 @@ namespace Canvases.Components
             set => button.image.color = value;
         }
 
+        public void Select() => button.Select();
+
         private void Start()
         {
             Debug.Assert(button, $"A {nameof(button)} must be assigned to a {nameof(ButtonUIComponent)}");

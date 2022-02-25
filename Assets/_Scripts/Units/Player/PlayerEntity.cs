@@ -7,7 +7,7 @@ using Systems.Network;
 using Units.Camera;
 using UnityEngine;
 using Utilities.Extensions;
-using Utilities.Tags;
+using Utilities.Unity;
 
 namespace Units.Player
 {
@@ -19,11 +19,15 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public event Action OnMenuPressed;
         
+        [SerializeField] private CameraStrategy mainCamera;
+        [SerializeField] private NetworkObject scorePrefab;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
         private NetworkInputData inputs;
-        [SerializeField] private CameraStrategy mainCamera;
+        
+        [Networked] private NetworkId ScoreObjectId { get; set; }
 
         private void Awake()
         {
@@ -43,6 +47,9 @@ namespace Units.Player
         public override async void Spawned()
         {
             base.Spawned();
+
+            gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
+            
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
             if (!Object.HasInputAuthority)
             {
@@ -55,6 +62,34 @@ namespace Units.Player
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
+
+            if (Object.HasStateAuthority)
+                SpawnScore();
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (Object.HasStateAuthority)
+                DespawnScore();
+        }
+
+        private void SpawnScore()
+        {
+            if (!scorePrefab)
+            {
+                Debug.LogWarning($"Could not spawn a score for player {Object.InputAuthority.PlayerId} because it didn't have a valid {nameof(scorePrefab)}");
+                return;
+            }
+            
+            var scoreObject = Runner.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, Object.InputAuthority);
+            ScoreObjectId = scoreObject.Id;
+        }
+
+        private void DespawnScore()
+        {
+            var scoreObject = Runner.FindObject(ScoreObjectId);
+            Runner.Despawn(scoreObject);
+            ScoreObjectId = new NetworkId();
         }
 
         public override void FixedUpdateNetwork()
@@ -102,23 +137,26 @@ namespace Units.Player
             
         }
         
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            AssignPlayerTagIfDoesNotHaveIt();
+            if (!Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
         }
 
-        private void AssignPlayerTagIfDoesNotHaveIt()
+        private void AssignTagAndLayer()
         {
-            var thisGameObject = gameObject;
-            if (thisGameObject.CompareTag(Tags.UNTAGGED))
-            {
-                gameObject.tag = Tags.PLAYER;
-            }
+            if (this == null)
+                return;
 
-            if (!thisGameObject.CompareTag(Tags.PLAYER))
-            {
+            var thisGameObject = gameObject;
+            
+            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
-            }
+            
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }
+#endif
     }
 }
