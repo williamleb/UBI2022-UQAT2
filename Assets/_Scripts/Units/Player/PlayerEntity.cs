@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Fusion;
 using Managers.Game;
 using Scriptables;
@@ -17,12 +18,14 @@ namespace Units.Player
     public partial class PlayerEntity : NetworkBehaviour
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
+        public event Action OnMenuPressed;
         
         [SerializeField] private CameraStrategy mainCamera;
         [SerializeField] private NetworkObject scorePrefab;
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
+        private Inventory inventory;
         private NetworkInputData inputs;
         
         [Networked] private NetworkId ScoreObjectId { get; set; }
@@ -32,6 +35,7 @@ namespace Units.Player
             data = SettingsSystem.Instance.PlayerSetting;
 
             interacter = GetComponent<PlayerInteracter>();
+            inventory = GetComponent<Inventory>();
 
             MovementAwake();
         }
@@ -41,14 +45,23 @@ namespace Units.Player
             NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
-        public override void Spawned()
+        public override async void Spawned()
         {
             base.Spawned();
 
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
             
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
-            mainCamera.AddTarget(gameObject);
+            if (!Object.HasInputAuthority)
+            {
+                mainCamera!.gameObject.Hide();
+            }
+            else
+            {
+                mainCamera!.AddTarget(gameObject);
+            }
+
+            await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
 
             if (Object.HasStateAuthority)
@@ -92,6 +105,11 @@ namespace Units.Player
             {
                 interacter.InteractWithClosestInteraction(inputs.IsInteractOnce);
             }
+
+            if (inputs.IsMenu)
+            {
+                OnMenuPressed?.Invoke();
+            }
         }
 
         private void PlayerLeft(NetworkRunner networkRunner, PlayerRef playerRef)
@@ -100,29 +118,26 @@ namespace Units.Player
                 networkRunner.Despawn(Object);
         }
 
-        private void OnCollisionEnter(Collision collision) // TODO Replace with the dive feature
+        [Rpc]
+        private void RPC_DropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
         {
-            if (!Object.HasInputAuthority)
-                return;
-            
-            if (collision.gameObject.CompareTag(Tags.PLAYER) || collision.gameObject.CompareTag(Tags.AI))
+            var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
+            Inventory inv;
+            if (isPlayer)
             {
-                var networkObject = collision.gameObject.GetComponent<NetworkObject>();
-                Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-                RPC_DropItems(networkObject.Id);
+                var player = networkObject.GetComponent<PlayerEntity>();
+                inv = player.inventory;
+                player.Hit();
             }
+            else
+            {
+                inv = networkObject.GetComponent<Inventory>();
+            }
+            Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
+            inv.DropEverything();
+            
         }
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_DropItems(NetworkId entityNetworkId)
-        {
-            var networkObject = Runner.FindObject(entityNetworkId);
-            var inventory = networkObject.GetComponent<Inventory>();
-            Debug.Assert(inventory, $"A player or an AI should have an {nameof(Inventory)}");
-            inventory.DropEverything();
-        }
-
-#if UNITY_EDITOR
+        
         private void OnValidate()
         {
             if (!Application.isPlaying)

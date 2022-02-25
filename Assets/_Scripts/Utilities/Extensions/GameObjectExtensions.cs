@@ -1,6 +1,7 @@
 using Fusion;
 using UnityEngine;
 using Utilities.Unity;
+using Behaviour = Fusion.Behaviour;
 
 namespace Utilities.Extensions
 {
@@ -20,18 +21,26 @@ namespace Utilities.Extensions
         /// This is done because entities have their collider a level lower than their parent game object with contains
         /// most of their scripts.
         /// </summary>
-        public static T GetComponentInEntity<T>(this GameObject gameObject) where T : MonoBehaviour
+        public static T GetComponentInEntity<T>(this GameObject gameObject) where T : Component
         {
             var component = gameObject.GetComponentInParent<T>();
             if (!component)
             {
                 component = gameObject.GetComponent<T>();
             }
+            if (!component)
+            {
+                component = gameObject.GetComponentInChildren<T>();
+            }
+            if (!component)
+            {
+                component = gameObject.transform.parent.GetComponentInChildren<T>();
+            }
 
             return component;
         }
         
-        public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : MonoBehaviour
+        public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : Component
         {
             return gameObject.gameObject.GetComponentInEntity<T>();
         }

@@ -1,18 +1,24 @@
-using System.Collections;
+using System.Threading.Tasks;
 using Fusion;
 using Systems.Network;
+using Units.AI;
 using UnityEngine;
+using Utilities.Extensions;
+using Utilities.Tags;
+using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
     [RequireComponent(typeof(NetworkCharacterController))]
     public partial class PlayerEntity
     {
-        [SerializeField] private Transform orientation;
-
         private NetworkCharacterController cc;
+        [Networked] private NetworkBool CanMove { get; set; } = true;
+        [Networked] private NetworkBool Dashing { get; set; }
 
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
+
+        private TickTimer dashTimer;
 
         private void MovementAwake()
         {
@@ -20,46 +26,77 @@ namespace Units.Player
             cc.Config.MaxSpeed = data.MoveMaximumSpeed;
             cc.Config.Acceleration = data.MoveAcceleration;
             cc.Config.Braking = data.MoveDeceleration;
+            dashTimer = new TickTimer(data.DashDuration);
+            dashTimer.OnTimerEnd += () => EndDash();
         }
 
         private void MoveUpdate(NetworkInputData inputData)
         {
             GetInput(inputData);
             MovePlayer();
+            if (Dashing) DetectCollision();
             RotatePlayer();
+            dashTimer.Tick(Runner.DeltaTime);
         }
 
         private void GetInput(NetworkInputData inputData)
         {
-            MoveDirection = default;
-            if (inputData.IsUp)
+            if (!Dashing)
             {
-                MoveDirection += Vector3.forward;
+                MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+                ChangeMoveSpeed(inputData.IsSprint);
+                if (inputData.IsDash) Dash();
             }
-            else if (inputData.IsDown)
-            {
-                MoveDirection += Vector3.back;
-            }
-
-            if (inputData.IsLeft)
-            {
-                MoveDirection += Vector3.left;
-            }
-            else if (inputData.IsRight)
-            {
-                MoveDirection += Vector3.right;
-            }
-            cc.MaxSpeed = inputData.IsSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
-            if (inputData.IsDash) StartCoroutine(Dash());
         }
 
-        private IEnumerator Dash()
+        private void ChangeMoveSpeed(bool isSprinting)
         {
-            for (int i = 0; i < data.DashDistance; i++)
+            bool canSprint = isSprinting && !inventory.HasHomework;
+            //Add other speed related logic. Boosters, slow when holding golden homework?
+            cc.MaxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+        }
+
+        private void Dash()
+        {
+            if (!CanMove || inventory.HasHomework || Dashing) return;
+            Dashing = true;
+            dashTimer.Reset();
+            cc.MaxSpeed = data.DashSpeed;
+            MoveDirection = transform.forward;
+        }
+
+        private void EndDash(bool knockOutPlayer = true)
+        {
+            if (knockOutPlayer && Dashing)
             {
-                cc.Move(MoveDirection);
-                yield return null;
+                Hit();
             }
+            Dashing = false;
+
+        }
+
+        private void DetectCollision()
+        {
+            if (Runner.LagCompensation.Raycast(transform.position, transform.forward, 0.5f, Object.InputAuthority, out LagCompensatedHit hit,Physics.AllLayers,HitOptions.IncludePhysX))
+            {
+                var go = hit.GameObject;
+                if (go.CompareTag(Tags.PLAYER) || go.CompareTag(Tags.AI))
+                {
+                    var networkObject = go.GetComponentInEntity<NetworkObject>();
+                    Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
+                    RPC_DropItems(networkObject.Id, go.CompareTag(Tags.PLAYER));
+                    EndDash(false);
+                    return;
+                }
+                EndDash();
+            }
+        }
+
+        private async void Hit()
+        {
+            CanMove = false;
+            await Task.Delay((int)(cc.MaxSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
+            CanMove = true;
         }
 
         private void MovePlayer()
@@ -69,8 +106,7 @@ namespace Units.Player
 
         private void RotatePlayer()
         {
-            Vector3 ori = orientation.eulerAngles;
-            orientation.rotation = Quaternion.Euler(ori);
+            if (MoveDirection.sqrMagnitude > 0) transform.forward = MoveDirection;
         }
     }
 }
