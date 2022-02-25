@@ -54,8 +54,17 @@ namespace Managers.Game
         {
             if (!scores.Any())
                 return PlayerRef.None;
+
+            var highestScore = scores.First().Key;
+            foreach (var player in scores.Keys)
+            {
+                if (scores[player].Value > scores[highestScore].Value)
+                {
+                    highestScore = player;
+                }
+            }
             
-            return scores.Aggregate((left, right) => left.Value.Value > right.Value.Value ? left : right).Key;
+            return highestScore;
         }
 
         public void RegisterScore(Score score, PlayerRef player)
