@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Canvases.Components;
 using Fusion;
 using Units.Player;
@@ -27,10 +26,9 @@ namespace Canvases.InputSystem
 
         private void Awake() => PlayerEntity.OnPlayerSpawned += Init;
 
-        private async void Init(NetworkObject player)
+        private void Init(NetworkObject player)
         {
-            await Task.Delay(100);
-            if (player && player.HasInputAuthority)
+            if (player.HasInputAuthority)
             {
                 playerInputHandler = player.GetComponent<PlayerInputHandler>();
                 player.GetComponent<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;

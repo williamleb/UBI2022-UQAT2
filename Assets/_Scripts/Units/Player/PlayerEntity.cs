@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Fusion;
 using Scriptables;
 using Sirenix.OdinInspector;
@@ -42,7 +43,7 @@ namespace Units.Player
             NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
         }
 
-        public override void Spawned()
+        public override async void Spawned()
         {
             base.Spawned();
             if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
@@ -55,6 +56,7 @@ namespace Units.Player
                 mainCamera!.AddTarget(gameObject);
             }
 
+            await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
         }
 
