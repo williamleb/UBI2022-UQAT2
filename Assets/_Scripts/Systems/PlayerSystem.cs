@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -21,33 +22,43 @@ namespace Systems
 		{
 			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
+
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
+			LevelSystem.Instance.OnLevelLoad += SpawnPlayers;
 		}
 
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
+			Debug.Log($"{playerRef} joined.");
 			playersJoined.Add(playerRef, runner);
+
+			//If the game has already started, we spawn the player immediately.
+			//This part will depend on how we want to handle the reconnection and the stage system.
+			if (LevelSystem.Instance.State != LevelSystem.LevelState.OTHER)
+            {
+				SpawnPlayer(runner, playerRef);
+			}
 		}
 
 		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
-			Debug.Log($"{playerRef} despawn.");
+			Debug.Log($"{playerRef} left.");
 			PlayerEntity player = Get(playerRef);
-			player.TriggerDespawn();
 			RemovePlayer(player);
+		}
+
+		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
+        {
+			Debug.Log($"{playerRef} spawn.");
+			runner.Spawn(playerPrefab, null, null, playerRef);
 		}
 
 		private void SpawnPlayers()
         {
-			playersJoined.ToList().ForEach(keyValuePair => keyValuePair.Value.Spawn(playerPrefab, new Vector3(0, 0, 5), Quaternion.identity, keyValuePair.Key));
-			LevelSystem.Instance.OnLobbyLoad -= SpawnPlayers;
+			Debug.Log("Spawning players.");
+			playersJoined.ToList().ForEach(keyValuePair => keyValuePair.Value.Spawn(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity, keyValuePair.Key));
 			playersJoined.Clear();
 		}
-
-		private void OnLevelChangedPlayerDespawn()
-        {
-
-        }
 
 		public PlayerEntity Get(PlayerRef playerRef)
 		{
@@ -76,7 +87,9 @@ namespace Systems
 			if (player == null || !playersEntity.Contains(player))
 				return;
 
+			player.TriggerDespawn();
 			playersEntity.Remove(player);
+			playersJoined.Remove(player.PlayerID);
 			Debug.Log("Player removed " + player.PlayerID);
 		}
 

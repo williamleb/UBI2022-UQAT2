@@ -11,7 +11,7 @@ namespace Systems.Network
 {
     public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
     {
-        private static string customLobbyName = "bababooeyLobby";
+        [SerializeField] private static string customLobbyName = "bababooeyLobby";
         public NetworkRunner NetworkRunner { get; private set; }
         public bool DebugMode { get; set; } = true;
         

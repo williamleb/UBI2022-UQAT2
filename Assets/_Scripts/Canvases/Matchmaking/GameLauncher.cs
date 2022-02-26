@@ -34,10 +34,14 @@ namespace Matchmaking
             _ = NetworkSystem.Instance.CreateGame(createGameTextField.text);
         }
 
-        public void JoinGameClick()
+        public async void JoinGameClick()
         {
             Debug.Log($"Join game click");
-            _ = NetworkSystem.Instance.TryJoinGame(joinGameTextField.text);
+
+            if (!await NetworkSystem.Instance.TryJoinGame(joinGameTextField.text))
+            {
+
+            }
         }
     }
 }
