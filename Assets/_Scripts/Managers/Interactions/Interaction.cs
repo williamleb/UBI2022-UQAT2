@@ -8,7 +8,6 @@ using Utilities.Unity;
 
 namespace Managers.Interactions
 {
-    [RequireComponent(typeof(Collider))]
     public class Interaction : NetworkBehaviour
     {
         public event Action<Interacter> OnInteractedWith; // Only called on host
