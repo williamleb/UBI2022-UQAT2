@@ -56,12 +56,8 @@ namespace Canvases.Prompts
             }
         }
 
-        private async void Init(NetworkObject player)
+        private void Init(NetworkObject player)
         {
-            // It's the same hack that is used in RebindUI.Init so we can know when the player is initialized.
-            // If we find a better way to know detect that in RebindUI.Init, we should also change it here
-            await Task.Delay(100);
-
             if (!player || !player.HasInputAuthority) 
                 return;
             

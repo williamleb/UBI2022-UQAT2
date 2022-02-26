@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Canvases.Markers
@@ -11,7 +12,7 @@ namespace Canvases.Markers
         private T currentMarker;
         private Vector3 offsetToParent;
         
-        public bool IsActivated => currentMarker != null;
+        [ShowInInspector] public bool IsActivated => currentMarker != null;
 
         public T CurrentMarker => currentMarker;
 

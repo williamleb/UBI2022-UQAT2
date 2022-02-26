@@ -10,7 +10,7 @@ namespace Units.Camera
 		[SerializeField] private float boundsMovementMax = 2f;
 		private float boundsMovementMultiplier;
 
-		private UnityEngine.Camera mainCamera;
+		[SerializeField] private UnityEngine.Camera mainCamera;
 
 		private float boundsDiagonal;
 
@@ -37,7 +37,7 @@ namespace Units.Camera
 			bounds.y = 0;
 			boundsDiagonal = Vector3.Distance(bounds, -bounds) * 2;
 
-			mainCamera = UnityEngine.Camera.main;
+			if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main;
 		}
 
 		private void OnDrawGizmos()
@@ -46,7 +46,7 @@ namespace Units.Camera
 			Gizmos.DrawWireCube(localBoundsOffset, bounds * 2);
 		}
 
-		public Vector3 StayWithinBounds(Vector3 position, Vector3 offset, float cameraTiltAngle, float distance, Transform cameraTrans)
+		public Vector3 StayWithinBounds(Vector3 position, float cameraTiltAngle, float distance, Transform cameraTrans)
 		{
 			if (!initialized)
 				Initialize();

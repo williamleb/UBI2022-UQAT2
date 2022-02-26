@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Units.AI
 {
@@ -77,11 +78,11 @@ namespace Units.AI
             if (!IsInFrustum(objectCollider.transform.position))
                 return;
 
-            if (objectCollider.CompareTag(PlayerEntity.TAG))
+            if (objectCollider.CompareTag(Tags.PLAYER))
                 ManagePlayerCollider(objectCollider);
-            else if (objectCollider.CompareTag(AIEntity.TAG))
+            else if (objectCollider.CompareTag(Tags.AI))
                 ManageAICollider(objectCollider);
-            else if (objectCollider.CompareTag(Interaction.TAG))
+            else if (objectCollider.CompareTag(Tags.INTERACTION))
                 ManageInteractionCollider(objectCollider);
         }
 

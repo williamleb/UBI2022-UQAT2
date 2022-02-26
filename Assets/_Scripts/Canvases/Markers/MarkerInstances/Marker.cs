@@ -1,5 +1,8 @@
 ﻿using System;
+using Fusion;
+using Units.Player;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Canvases.Markers
 {
@@ -53,21 +56,31 @@ namespace Canvases.Markers
         protected virtual void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
+            PlayerEntity.OnPlayerSpawned += Init;
         }
 
-        protected virtual void Start()
+        private void Start()
         {
-            // This might have to be replaced if we ever decide to switch camera in the middle of the game
-            currentCamera = Camera.main;
-            Debug.Assert(currentCamera != null, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
-            
             gameObject.SetActive(false);
+        }
+
+        protected virtual void Init(NetworkObject networkObject)
+        {
+            if (networkObject.HasInputAuthority)
+            {
+                // This might have to be replaced if we ever decide to switch camera in the middle of the game
+                currentCamera = networkObject.GetComponentInEntity<Camera>();
+                Debug.Assert(currentCamera != null, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
+            }
         }
 
         protected virtual void Update()
         {
-            AdjustMarkerSizeWithCameraDistance();
-            AdjustMarkerScreenPosition();
+            if (currentCamera != null)
+            {
+                AdjustMarkerSizeWithCameraDistance();
+                AdjustMarkerScreenPosition();
+            }
         }
 
         private void AdjustMarkerSizeWithCameraDistance()
