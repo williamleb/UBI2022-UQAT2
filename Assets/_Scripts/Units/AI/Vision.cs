@@ -4,8 +4,10 @@ using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Units.Player;
+using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Mesh;
 using Utilities.Unity;
 
 namespace Units.AI
@@ -163,23 +165,6 @@ namespace Units.AI
         }
 
 #if UNITY_EDITOR
-        private Mesh CreateFrustumMesh()
-        {
-            var position = transform.position;
-            var upperLeftCorner = new Vector3(-farLength / 2f, position.y, far);
-            var upperRightCorner = new Vector3(farLength / 2f, position.y, far);
-            var lowerRightCorner = new Vector3(nearLength / 2f, position.y, near);
-            var lowerLeftCorner = new Vector3(-nearLength / 2f, position.y, near);
-            
-            return new Mesh
-            {
-                vertices = new[] {upperLeftCorner, upperRightCorner, lowerRightCorner, lowerLeftCorner},
-                normals = new[] {Vector3.up, Vector3.up, Vector3.up, Vector3.up},
-                uv = new [] {new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1)},
-                triangles = new[] {0, 1, 3, 2, 3, 1}
-            };
-        }
-        
         private void OnDrawGizmosSelected()
         {
             DrawSightFrustumGizmo();
@@ -188,7 +173,13 @@ namespace Units.AI
 
         private void DrawSightFrustumGizmo()
         {
-            var frustumMesh = CreateFrustumMesh();
+            var position = transform.position;
+            var upperLeftCorner = new Vector3(-farLength / 2f, position.y, far);
+            var upperRightCorner = new Vector3(farLength / 2f, position.y, far);
+            var lowerRightCorner = new Vector3(nearLength / 2f, position.y, near);
+            var lowerLeftCorner = new Vector3(-nearLength / 2f, position.y, near);
+            
+            var frustumMesh = MeshUtils.CreateQuadMesh(upperLeftCorner, upperRightCorner, lowerRightCorner, lowerLeftCorner);
             var thisTransform = transform;
 
             Gizmos.color = Color.green;
