@@ -1,7 +1,6 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
 using Managers.Interactions;
-using Units.Player;
 using UnityEngine;
 
 namespace Units.AI
@@ -31,8 +30,7 @@ namespace Units.AI
 
         public void SetDestination(Vector3 target)
         {
-            var playerEntity = FindObjectOfType<PlayerEntity>();
-            entity.Agent.SetDestination(playerEntity.transform.position);
+            entity.Agent.SetDestination(target);
         }
     }
 }

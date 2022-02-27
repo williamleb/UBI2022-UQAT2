@@ -1,13 +1,12 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Ingredients.Homework;
 using Managers.Interactions;
-using UnityEngine;
 
 namespace Units.AI.Actions
 {
-    [TaskCategory("AIBrain")]
-    [TaskDescription("Make the AI walk towards a random homework.")]
-    public class WalkTowardsHomeworkInteraction : WalkTowardsInteraction
+    [TaskCategory("AI/Interact With")]
+    [TaskDescription("Interact with the first homework in this AI's interaction list.")]
+    public class InteractWithHomework : InteractWith
     {
         protected override bool FilterInteraction(Interaction interaction)
         {

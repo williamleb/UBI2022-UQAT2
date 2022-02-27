@@ -4,20 +4,26 @@ using UnityEngine;
 
 namespace Units.AI.Actions
 {
-    [TaskCategory("AIBrain")]
+    [TaskCategory("AI/Walk To")]
     [TaskDescription("Make the AI walk towards a random interaction.")]
-    public class WalkTowardsInteraction : Action
+    public class WalkToInteraction : WalkTo
     {
-        [SerializeField] private AIBrain brain = null;
-
         private Interaction interactionToWalkToward;
 
-        public override void OnStart()
+        protected override Vector3 Destination => interactionToWalkToward.transform.position;
+        protected override bool EndsOnDestinationReached => false;
+        protected override bool UpdateDestination => interactionToWalkToward;
+        protected override bool SetDestinationOnStart => interactionToWalkToward;
+        
+        protected virtual bool FilterInteraction(Interaction interaction) => interaction;
+
+        protected override void OnBeforeStart()
         {
+            base.OnBeforeStart();
             SetNewDestination();
         }
 
-        public override TaskStatus OnUpdate()
+        protected override TaskStatus OnUpdateImplementation()
         {
             if (!interactionToWalkToward)
                 return TaskStatus.Failure;
@@ -25,18 +31,14 @@ namespace Units.AI.Actions
             if (!interactionToWalkToward.InteractionEnabled)
                 return TaskStatus.Failure;
 
-            if (brain.Interacter.CanInteractWith(interactionToWalkToward.InteractionId))
+            if (Brain.Interacter.CanInteractWith(interactionToWalkToward.InteractionId))
                 return TaskStatus.Success;
 
-            brain.SetDestination(interactionToWalkToward.transform.position);
             return TaskStatus.Running;
         }
         
         private void SetNewDestination()
         {
-            if (!brain)
-                return;
-
             if (!InteractionManager.HasInstance)
                 return;
 
@@ -48,23 +50,13 @@ namespace Units.AI.Actions
                     break;
                 }
             }
-            
-            if (!interactionToWalkToward)
-                return;
-
-            brain.SetDestination(interactionToWalkToward.transform.position);
         }
 
         public override void OnEnd()
         {
             interactionToWalkToward = null;
-        }
-
-        protected virtual bool FilterInteraction(Interaction interaction) => interaction;
-
-        public override void OnReset()
-        {
-            brain = null;
+            
+            base.OnEnd();
         }
     }
 }

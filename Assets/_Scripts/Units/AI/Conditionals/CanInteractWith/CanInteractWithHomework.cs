@@ -2,11 +2,11 @@
 using Ingredients.Homework;
 using Managers.Interactions;
 
-namespace Units.AI.Actions
+namespace Units.AI.Conditionals
 {
-    [TaskCategory("AIBrain")]
-    [TaskDescription("Interact with the first homework in this AI's interaction list.")]
-    public class InteractWithHomework : InteractWith
+    [TaskDescription("Returns success when the AI can interact with a homework")]
+    [TaskCategory("AI/Can Interact With")]
+    public class CanInteractWithHomework : CanInteractWith
     {
         protected override bool FilterInteraction(Interaction interaction)
         {

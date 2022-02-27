@@ -1,14 +1,13 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Managers.Interactions;
-using UnityEngine;
 
 namespace Units.AI.Actions
 {
-    [TaskCategory("AIBrain")]
+    [TaskCategory("AI/Walk To")]
     [TaskDescription("Make the AI walk towards the teacher.")]
-    public class WalkTowardsTeacherInteraction : WalkTowardsInteraction
+    public class WalkToTeacherInteraction : WalkToInteraction
     {
-        protected override bool FilterInteraction(Interaction interaction)
+        protected override bool FilterInteraction(Interaction interaction) 
         {
             return interaction.gameObject.GetComponent<HomeworkHandingStation>() != null;
         }

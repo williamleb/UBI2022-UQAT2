@@ -1,19 +1,17 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Managers.Interactions;
-using UnityEngine;
 
 namespace Units.AI.Actions
 {
-    [TaskCategory("AIBrain")]
+    [TaskCategory("AI/Interact With")]
     [TaskDescription("Interact with the first interaction in this AI's interaction list.")]
-    public class InteractWith : Action
+    public class InteractWith : AIAction
     {
-        [SerializeField] private AIBrain brain = null;
-
         private Interaction interactionToInteractWith;
 
         public override void OnStart()
         {
+            base.OnStart();
             SetNewDestination();
         }
 
@@ -26,16 +24,13 @@ namespace Units.AI.Actions
                 return TaskStatus.Failure;
 
             // TODO Support holding interactions here when it will become a feature
-            brain.Interacter.InteractWith(interactionToInteractWith.InteractionId);
+            Brain.Interacter.InteractWith(interactionToInteractWith.InteractionId);
             return TaskStatus.Success;
         }
         
         private void SetNewDestination()
         {
-            if (!brain)
-                return;
-
-            foreach (var interaction in brain.Interacter.InteractionsInReach)
+            foreach (var interaction in Brain.Interacter.InteractionsInReach)
             {
                 if (interaction.InteractionEnabled && FilterInteraction(interaction))
                 {
@@ -51,10 +46,5 @@ namespace Units.AI.Actions
         }
 
         protected virtual bool FilterInteraction(Interaction interaction) => interaction;
-
-        public override void OnReset()
-        {
-            brain = null;
-        }
     }
 }

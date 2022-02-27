@@ -1,26 +1,14 @@
-﻿using Units.AI;
-using UnityEngine;
+﻿using BehaviorDesigner.Runtime.Tasks;
 
-namespace BehaviorDesigner.Runtime.Tasks
+namespace Units.AI.Conditionals
 {
     [TaskDescription("Returns success when the inventory contains a homework.")]
-    [TaskCategory("AIBrain")]
-    public class HasAHomework : Conditional
+    [TaskCategory("AI")]
+    public class HasAHomework : AIConditional
     {
-        [Tooltip("The inventory which will be checked to know if we are carrying a homework")]
-        [SerializeField] private AIBrain brain = null;
-
         public override TaskStatus OnUpdate()
         {
-            if (!brain)
-                return TaskStatus.Failure;
-            
-            return brain.Inventory.HasHomework ? TaskStatus.Success : TaskStatus.Failure;
-        }
-
-        public override void OnReset()
-        {
-            brain = null;
+            return Brain.Inventory.HasHomework ? TaskStatus.Success : TaskStatus.Failure;
         }
     }
 }

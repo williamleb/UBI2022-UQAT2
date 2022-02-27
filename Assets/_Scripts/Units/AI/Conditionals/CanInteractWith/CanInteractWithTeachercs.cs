@@ -1,11 +1,11 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Managers.Interactions;
 
-namespace Units.AI.Actions
+namespace Units.AI.Conditionals
 {
-    [TaskCategory("AIBrain")]
-    [TaskDescription("Interact with the teacher in this AI's interaction list.")]
-    public class InteractWithTeacher : InteractWith
+    [TaskDescription("Returns success when the AI can interact with the teacher to give them their homework")]
+    [TaskCategory("AI/Can Interact With")]
+    public class CanInteractWithTeacher : CanInteractWith
     {
         protected override bool FilterInteraction(Interaction interaction)
         {
