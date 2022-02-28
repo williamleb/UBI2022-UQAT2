@@ -8,7 +8,7 @@ namespace Managers.Rooms
     {
         private Dictionary<int, Room> rooms = new Dictionary<int, Room>();
 
-        public IEnumerable<Room> Interactions => rooms.Values;
+        public IEnumerable<Room> Rooms => rooms.Values;
 
         public void RegisterRoom(Room room)
         {

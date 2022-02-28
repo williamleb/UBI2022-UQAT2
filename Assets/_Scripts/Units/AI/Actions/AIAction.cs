@@ -1,6 +1,7 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.AI.Actions
 {
@@ -21,6 +22,14 @@ namespace Units.AI.Actions
         {
             base.OnReset();
             brain = null;
+        }
+
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            
+            if (brain == null)
+                brain = Owner.gameObject.GetComponentInEntity<AIBrain>();
         }
     }
 }

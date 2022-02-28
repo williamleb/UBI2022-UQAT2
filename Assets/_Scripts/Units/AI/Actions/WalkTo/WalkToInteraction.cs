@@ -8,12 +8,12 @@ namespace Units.AI.Actions
     [TaskDescription("Make the AI walk towards a random interaction.")]
     public class WalkToInteraction : WalkTo
     {
-        private Interaction interactionToWalkToward;
+        private Interaction interactionToWalkTo;
 
-        protected override Vector3 Destination => interactionToWalkToward.transform.position;
+        protected override Vector3 Destination => interactionToWalkTo.transform.position;
         protected override bool EndsOnDestinationReached => false;
-        protected override bool UpdateDestination => interactionToWalkToward;
-        protected override bool SetDestinationOnStart => interactionToWalkToward;
+        protected override bool UpdateDestination => interactionToWalkTo != null;
+        protected override bool SetDestinationOnStart => interactionToWalkTo != null;
         
         protected virtual bool FilterInteraction(Interaction interaction) => interaction;
 
@@ -25,13 +25,13 @@ namespace Units.AI.Actions
 
         protected override TaskStatus OnUpdateImplementation()
         {
-            if (!interactionToWalkToward)
+            if (!interactionToWalkTo)
                 return TaskStatus.Failure;
 
-            if (!interactionToWalkToward.InteractionEnabled)
+            if (!interactionToWalkTo.InteractionEnabled)
                 return TaskStatus.Failure;
 
-            if (Brain.Interacter.CanInteractWith(interactionToWalkToward.InteractionId))
+            if (Brain.Interacter.CanInteractWith(interactionToWalkTo.InteractionId))
                 return TaskStatus.Success;
 
             return TaskStatus.Running;
@@ -46,7 +46,7 @@ namespace Units.AI.Actions
             {
                 if (interaction.InteractionEnabled && FilterInteraction(interaction))
                 {
-                    interactionToWalkToward = interaction;
+                    interactionToWalkTo = interaction;
                     break;
                 }
             }
@@ -54,7 +54,7 @@ namespace Units.AI.Actions
 
         public override void OnEnd()
         {
-            interactionToWalkToward = null;
+            interactionToWalkTo = null;
             
             base.OnEnd();
         }

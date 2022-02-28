@@ -54,13 +54,6 @@ namespace Managers.Rooms
             return boundingPosition.RotateAround(lowerLeftPosition, rotationAngles) + lowerLeftPosition;
         }
 
-        public override void FixedUpdateNetwork()
-        {
-            var player = FindObjectOfType<PlayerEntity>();
-            
-            Debug.Log($"Is in room? {IsInRoom(player.transform.position)}");
-        }
-
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
