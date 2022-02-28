@@ -11,7 +11,7 @@ namespace Units.AI.Conditionals
         {
             foreach (var interaction in Brain.Interacter.InteractionsInReach)
             {
-                if (FilterInteraction(interaction))
+                if (interaction && FilterInteraction(interaction))
                     return TaskStatus.Success;
             }
             

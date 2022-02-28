@@ -8,17 +8,17 @@ using Utilities.Extensions;
 namespace Units.AI.Actions
 {
     [TaskCategory("AI/Walk To")]
-    [TaskDescription("Make the AI walk towards a random room.")]
-    public class WalkToRandomRoom : WalkTo
+    [TaskDescription("Make the AI walk towards a random point in the target room. Needs a target room to be assigned by the action WalkToRandomRoom or else it will fail.")]
+    public class WalkToRandomPointInTargetRoom : WalkTo
     {
         [SerializeField] private SharedTransform roomTarget;
-        
-        private Room roomToWalkTo;
+
+        private Room currentRoom;
         private Vector3 randomPositionInRoom;
 
         protected override Vector3 Destination => randomPositionInRoom;
-        protected override bool UpdateDestination => roomToWalkTo != null;
-        protected override bool SetDestinationOnStart => roomToWalkTo != null;
+        protected override bool UpdateDestination => roomTarget != null;
+        protected override bool SetDestinationOnStart => roomTarget != null;
         
         protected override void OnBeforeStart()
         {
@@ -28,7 +28,7 @@ namespace Units.AI.Actions
 
         protected override TaskStatus OnUpdateImplementation()
         {
-            if (!roomToWalkTo)
+            if (roomTarget == null)
                 return TaskStatus.Failure;
 
             return TaskStatus.Running;
@@ -36,21 +36,19 @@ namespace Units.AI.Actions
         
         private void SetNewDestination()
         {
-            if (!RoomManager.HasInstance)
+            if (roomTarget == null)
                 return;
 
-            var rooms = RoomManager.Instance.Rooms.ToArray();
-            if (!rooms.Any())
+            currentRoom = roomTarget.Value.GetComponent<Room>();
+            if (!currentRoom)
                 return;
-
-            roomToWalkTo = rooms.RandomElement();
-            roomTarget?.SetValue(roomToWalkTo.transform);
-            randomPositionInRoom = roomToWalkTo.GetRandomRoomPosition();
+            
+            randomPositionInRoom = currentRoom.GetRandomRoomPosition();
         }
 
         public override void OnEnd()
         {
-            roomToWalkTo = null;
+            currentRoom = null;
             randomPositionInRoom = Vector3.zero;
             
             base.OnEnd();

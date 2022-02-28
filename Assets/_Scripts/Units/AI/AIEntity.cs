@@ -20,6 +20,8 @@ namespace Units.AI
         private NavMeshAgent agent;
         private Inventory inventory;
         private AIInteracter interacter;
+        private Animator animator;
+        private NetworkMecanimAnimator networkAnimator;
         private AIBrain brain;
 
         private Transform aiColliderTransform;
@@ -35,6 +37,8 @@ namespace Units.AI
             agent = GetComponent<NavMeshAgent>();
             inventory = GetComponent<Inventory>();
             interacter = GetComponent<AIInteracter>();
+            animator = GetComponent<Animator>();
+            networkAnimator = GetComponent<NetworkMecanimAnimator>();
         }
 
         // Those two methods should only be called before the AI entity is spawned

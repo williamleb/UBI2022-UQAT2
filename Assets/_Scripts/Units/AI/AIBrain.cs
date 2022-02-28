@@ -1,6 +1,5 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
-using Managers.Interactions;
 using UnityEngine;
 
 namespace Units.AI

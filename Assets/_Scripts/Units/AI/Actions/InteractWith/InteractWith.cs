@@ -1,4 +1,5 @@
-﻿using BehaviorDesigner.Runtime.Tasks;
+﻿using System;
+using BehaviorDesigner.Runtime.Tasks;
 using Managers.Interactions;
 
 namespace Units.AI.Actions
@@ -32,11 +33,23 @@ namespace Units.AI.Actions
         {
             foreach (var interaction in Brain.Interacter.InteractionsInReach)
             {
-                if (interaction.InteractionEnabled && FilterInteraction(interaction))
+                if (IsInteractionSuitable(interaction))
                 {
                     interactionToInteractWith = interaction;
                     break;
                 }
+            }
+        }
+
+        private bool IsInteractionSuitable(Interaction interaction)
+        {
+            try
+            {
+                return interaction && interaction.InteractionEnabled && FilterInteraction(interaction);
+            }
+            catch (NullReferenceException)
+            {
+                return false;
             }
         }
 
