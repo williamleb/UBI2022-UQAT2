@@ -6,7 +6,7 @@ namespace Systems.Network
 {
     public class PlayerSpawner : MonoBehaviour
     {
-        [SerializeField] private PlayerEntity playerPrefab;
+        [SerializeField] private NetworkObject playerPrefab;
 
         private void Start()
         {

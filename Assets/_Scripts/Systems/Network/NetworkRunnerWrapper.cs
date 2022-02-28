@@ -9,7 +9,7 @@ namespace Systems.Network
         
         public bool IsConnected => networkRunner != null;
 
-        public bool IsHost => IsConnected && networkRunner.GameMode == GameMode.Host;
+        public bool IsHost => IsConnected && (networkRunner.GameMode == GameMode.Host || networkRunner.GameMode == GameMode.Single);
         public bool IsClient => IsConnected && networkRunner.GameMode == GameMode.Client;
         
         public NetworkObject Spawn(

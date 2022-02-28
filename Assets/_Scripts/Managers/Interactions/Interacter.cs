@@ -2,15 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
+using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Managers.Interactions
 {
     public class Interacter : NetworkBehaviour
     {
-        private readonly List<Interaction> interactionsInReach = new List<Interaction>();
-        private readonly List<Interaction> interactionsToRemove = new List<Interaction>();
+        [SerializeField] private float radius = 5f;
+        
+        private readonly List<Interaction> interactionsInReach = new List<Interaction>(4);
+        public IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
-        protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
+        public override void Spawned() => InvokeRepeating(nameof(DetectNearbyInteraction),1,0.1f);
 
         public void InteractWithClosestInteraction(bool justStarted = true)
         {
@@ -24,10 +28,7 @@ namespace Managers.Interactions
             }
         }
 
-        private Interaction GetInteractionFromId(int interactionId)
-        {
-            return interactionsInReach.FirstOrDefault(interaction => interaction.InteractionId == interactionId);
-        }
+        private Interaction GetInteractionFromId(int interactionId) => interactionsInReach.FirstOrDefault(interaction => interaction.InteractionId == interactionId);
 
         protected Interaction GetClosestAvailableInteraction()
         {
@@ -43,46 +44,23 @@ namespace Managers.Interactions
             var thisPosition = transform.position;
             var leftPosition = left.transform.position;
             var rightPosition = right.transform.position;
-            
-            return Vector3.Distance(leftPosition, thisPosition).CompareTo(Vector3.Distance(rightPosition, thisPosition));
+            return VectorExtensions.SqrDistance(leftPosition, thisPosition).CompareTo(VectorExtensions.SqrDistance(rightPosition, thisPosition));
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void DetectNearbyInteraction()
         {
-            if (!other.CompareTag(Interaction.TAG)) 
-                return;
-            
-            var interaction = other.GetComponent<Interaction>();
-            Debug.Assert(interaction, $"Objects with the tag {Interaction.TAG} must have a {nameof(Interaction)} component");
-            interactionsInReach.Add(interaction);
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag(Interaction.TAG)) 
-                return;
-            
-            var interaction = other.GetComponent<Interaction>();
-            Debug.Assert(interaction, $"Objects with the tag {Interaction.TAG} must have a {nameof(Interaction)} component");
-            interactionsInReach.Remove(interaction);
-        }
-        
-        public override void FixedUpdateNetwork()
-        {
-            // We need a way to remove interactions that have been destroyed
-            foreach (var interaction in interactionsInReach)
+            Collider[] colliders = new Collider[4];
+            interactionsInReach.Clear();
+            if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, LayerMask.GetMask(Layers.NAME_GAMEPLAY), QueryTriggerInteraction.UseGlobal) <= 0) return;
+            foreach (Collider interact in colliders)
             {
-                if (!interaction || !interaction.InteractionEnabled)
-                    interactionsToRemove.Add(interaction);
+                if (interact && interact.CompareTag(Tags.INTERACTION))
+                {
+                    interactionsInReach.Add(interact.GetComponent<Interaction>());   
+                }
             }
-
-            // Remove interactions in LateUpdate or else it might interfere with the update's foreach loop
-            foreach (var interaction in interactionsToRemove)
-            {
-                interactionsInReach.Remove(interaction);
-            }
-
-            interactionsToRemove.Clear();
         }
+
+        private void OnDrawGizmosSelected() => Gizmos.DrawWireSphere(transform.position,radius);
     }
 }

@@ -2,29 +2,23 @@ using System;
 using System.Collections.Generic;
 using Canvases.Markers;
 using Fusion;
-using Sirenix.OdinInspector;
-using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Managers.Interactions
 {
-    [RequireComponent(typeof(Collider))]
-    [ValidateInput(nameof(ValidateIfHasTag), "An interaction component must be placed on a collider that has the 'Interaction' tag.")]
-    [ValidateInput(nameof(ValidateIfColliderIsTrigger), "An interaction component must have a collider of type 'trigger'.")]
     public class Interaction : NetworkBehaviour
     {
-        public const string TAG = "Interaction";
-        
         public event Action<Interacter> OnInteractedWith; // Only called on host
         public event Action<Interacter> OnInstantFeedback; // Only called on client who's interaction player has authority
         
-        [SerializeField] private SpriteMarkerReceptor markerToShowWhenInteractionPossible;
+        [SerializeField] private PromptMarkerReceptor markerToShowWhenInteractionPossible;
 
         private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
         
         private bool interactionEnabled = true;
-        private bool interactionPossible = false;
+        private bool interactionPossible;
 
         [Networked(OnChanged = nameof(OnEnabledChanged)), UnityNonSerialized] public bool InteractionEnabled { get; set; }
         
@@ -94,7 +88,7 @@ namespace Managers.Interactions
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
 
-            if (hit.collider.gameObject.GetParent() != interacter.gameObject && hit.collider.gameObject != interacter.gameObject)
+            if (!interacter.gameObject.CompareEntities(hit.collider.gameObject))
                 return false;
             
             return true;
@@ -111,25 +105,6 @@ namespace Managers.Interactions
             if (interacter.Object.HasStateAuthority)
                 OnInteractedWith?.Invoke(interacter);
         }
-        
-        private bool ValidateIfHasTag()
-        {
-            return gameObject.CompareTag(TAG);
-        }
-
-        private bool ValidateIfColliderIsTrigger()
-        {
-            var colliders = GetComponents<Collider>();
-            foreach (var colliderComponent in colliders)
-            {
-                if (colliderComponent.isTrigger)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         private void UpdateInteractionEnabled()
         {
@@ -141,5 +116,27 @@ namespace Managers.Interactions
         {
             changed.Behaviour.UpdateInteractionEnabled();
         }
+        
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
+        }
+
+        private void AssignTagAndLayer()
+        {
+            if (this == null)
+                return;
+            
+            var thisGameObject = gameObject;
+            
+            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.INTERACTION))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.INTERACTION}. Instead, it has {thisGameObject.tag}");
+            
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+        }
+#endif
     }
 }
