@@ -1,24 +1,23 @@
+using System.Threading.Tasks;
 using Fusion;
 using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
+using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
+    [RequireComponent(typeof(NetworkCharacterController))]
     public partial class PlayerEntity
     {
-        [SerializeField] private Transform orientation;
-
         private NetworkCharacterController cc;
+        [Networked] private NetworkBool CanMove { get; set; } = true;
+        [Networked] private NetworkBool Dashing { get; set; }
 
-        [Networked] private Vector2 MoveDirection { get; set; } = Vector2.zero;
-        [Networked] private Vector2 LookDelta { get; set; }
+        [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
 
-        private NetworkBool jumpInput;
-        private NetworkBool jumpImpulse;
-        private float apexPoint;
-        private float fallSpeed;
-        private NetworkBool bufferJump;
+        private TickTimer dashTimer;
 
         private void MovementAwake()
         {
@@ -26,86 +25,87 @@ namespace Units.Player
             cc.Config.MaxSpeed = data.MoveMaximumSpeed;
             cc.Config.Acceleration = data.MoveAcceleration;
             cc.Config.Braking = data.MoveDeceleration;
-            cc.Config.AirControl = true;
-            cc.Config.BaseJumpImpulse = data.JumpHeight;
-
+            dashTimer = new TickTimer(data.DashDuration);
+            dashTimer.OnTimerEnd += () => EndDash();
         }
 
         private void MoveUpdate(NetworkInputData inputData)
         {
             GetInput(inputData);
-            CalculateJumpApex();
-            CalculateGravity();
-            CalculateJump();
             MovePlayer();
+            if (Dashing) DetectCollision();
             RotatePlayer();
+            dashTimer.Tick(Runner.DeltaTime);
         }
 
         private void GetInput(NetworkInputData inputData)
         {
-            MoveDirection = inputData.Move;
-            LookDelta = inputData.Look;
-            if (!jumpInput && inputData.IsJump) jumpImpulse = true;
-            jumpInput = inputData.IsJump;
-            if (jumpImpulse && !cc.Grounded && cc.Velocity.y < 0) bufferJump = true;
-        }
-
-        private void CalculateJumpApex()
-        {
-            if (!cc.Grounded)
+            if (!Dashing)
             {
-                apexPoint = Mathf.InverseLerp(data.JumpApexThreshold, 0, Mathf.Abs(cc.Velocity.y));
-                fallSpeed = Mathf.Lerp(data.MinFallAcceleration, data.MaxFallAcceleration, apexPoint);
-            }
-            else
-            {
-                apexPoint = 0;
+                MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+                ChangeMoveSpeed(inputData.IsSprint);
+                if (inputData.IsDash) Dash();
             }
         }
 
-        private void CalculateGravity()
+        private void ChangeMoveSpeed(bool isSprinting)
         {
-            if (cc.Grounded)
+            bool canSprint = isSprinting && !inventory.HasHomework;
+            //Add other speed related logic. Boosters, slow when holding golden homework?
+            cc.MaxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+        }
+
+        private void Dash()
+        {
+            if (!CanMove || inventory.HasHomework || Dashing) return;
+            Dashing = true;
+            dashTimer.Reset();
+            cc.MaxSpeed = data.DashSpeed;
+            MoveDirection = transform.forward;
+        }
+
+        private void EndDash(bool knockOutPlayer = true)
+        {
+            if (knockOutPlayer && Dashing)
             {
-                if (cc.Velocity.y < 0) cc.Velocity = Vector3.up * -0.1f;
+                Hit();
             }
-            else
+            Dashing = false;
+
+        }
+
+        private void DetectCollision()
+        {
+            if (Runner.LagCompensation.Raycast(transform.position, transform.forward, 0.5f, Object.InputAuthority, out LagCompensatedHit hit,Physics.AllLayers,HitOptions.IncludePhysX))
             {
-                if (!jumpInput && cc.Velocity.y > 0)
+                var go = hit.GameObject;
+                if (go.CompareTag(Tags.PLAYER) || go.CompareTag(Tags.AI))
                 {
-                    cc.Velocity -= Vector3.up * fallSpeed * data.JumpEndEarlyGravityModifier * Time.deltaTime;
+                    var networkObject = go.GetComponentInEntity<NetworkObject>();
+                    Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
+                    RPC_DropItems(networkObject.Id, go.CompareTag(Tags.PLAYER));
+                    EndDash(false);
+                    return;
                 }
-                else
-                {
-                    cc.Velocity -= Vector3.up * fallSpeed * Time.deltaTime;
-                }
-
-                if (cc.Velocity.y < data.MaxFallSpeed) cc.Velocity += Vector3.up * (data.MaxFallSpeed - cc.Velocity.y);
+                EndDash();
             }
         }
 
-        private void CalculateJump()
+        private async void Hit()
         {
-            if ((jumpImpulse || bufferJump) && cc.Grounded)
-            {
-                jumpImpulse = false;
-                bufferJump = false;
-                cc.Jump();
-            }
+            CanMove = false;
+            await Task.Delay((int)(cc.MaxSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
+            CanMove = true;
         }
 
         private void MovePlayer()
         {
-            cc.Move(MoveDirection.V2ToFlatV3());
+            cc.Move(MoveDirection);
         }
 
         private void RotatePlayer()
         {
-            Vector3 ori = orientation.eulerAngles;
-            ori.x = Mathf.Clamp(ori.x - LookDelta.y * data.MouseSensitivity, 1, 75);
-            ori.y += LookDelta.x * data.MouseSensitivity;
-            ori.z = 0;
-            orientation.rotation = Quaternion.Euler(ori);
+            if (MoveDirection.sqrMagnitude > 0) transform.forward = MoveDirection;
         }
     }
 }

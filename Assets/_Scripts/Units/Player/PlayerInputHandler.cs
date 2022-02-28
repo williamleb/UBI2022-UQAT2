@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Fusion;
 using InputSystem;
 using Systems.Network;
@@ -21,15 +22,30 @@ namespace Units.Player
         private DetectDevice detectDevice;
 
         private InputAction move;
-        private InputAction look;
-        private InputAction jump;
-        private InputAction attack;
-        private InputAction altAttack;
         private InputAction dash;
         private InputAction sprint;
         private InputAction interact;
 
-        private bool interactOnce = false;
+        private bool interactOnce;
+        private bool dashOnce;
+        private bool menuOnce;
+        
+        public static List<string> ValidActions => new List<string>()
+        {
+            nameof(move),
+            nameof(dash),
+            nameof(sprint),
+            nameof(interact)
+        };
+        
+        public InputAction GetInputAction(string inputActionName) => inputActionName.ToLower() switch
+        {
+            nameof(move) => move,
+            nameof(dash) => dash,
+            nameof(sprint) => sprint,
+            nameof(interact) => interact,
+            _ => null
+        };
 
         public override void Spawned()
         {
@@ -48,41 +64,44 @@ namespace Units.Player
         private void OnInput(NetworkRunner runner, NetworkInput input)
         {
             NetworkInputData data = new NetworkInputData();
-
-            if (jump.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_JUMP;
-            if (attack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ATTACK;
-            if (altAttack.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_ALT_ATTACK;
-            if (dash.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_DASH;
+            
+            if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
             if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
             if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
             if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
-
-            interactOnce = false;
+            if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
 
             data.Move = move.ReadV2();
-            data.Look = look.ReadV2();
 
             input.Set(data);
+            
+            interactOnce = false;
+            dashOnce = false;
+            menuOnce = false;
         }
 
         private void EnableInput()
         {
             PlayerInputAction.Enable();
             move = PlayerInputAction.Player.Movement;
-            look = PlayerInputAction.Player.Look;
-            jump = PlayerInputAction.Player.Jump;
-            attack = PlayerInputAction.Player.Attack;
-            altAttack = PlayerInputAction.Player.AltAttack;
             dash = PlayerInputAction.Player.Dash;
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
-
+            
+            PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;
+            dash.started += ActivateDashOnce;
         }
 
         private void ActivateInteractOnce(InputAction.CallbackContext ctx) => interactOnce = ctx.started;
+        private void ActivateDashOnce(InputAction.CallbackContext ctx) => dashOnce = ctx.started;
+        private void ActivateMenuOnce(InputAction.CallbackContext ctx) => menuOnce = ctx.started;
 
-        public void SaveSettings() => RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
+        public void SaveSettings()
+        {
+            if (PlayerInputAction != null)
+                RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
+        }
 
         private void OnDestroy() => DisposeInputs();
 
