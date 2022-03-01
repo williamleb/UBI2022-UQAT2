@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using Systems.Network;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Matchmaking
 {
@@ -16,16 +13,9 @@ namespace Matchmaking
         [SerializeField] private TextMeshProUGUI createGameTextField;
         [SerializeField] private TextMeshProUGUI joinGameTextField;
 
-        // Start is called before the first frame update
         void Start()
         {
             NetworkSystem.Instance.DebugMode = false;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void CreateGameClick()
@@ -37,11 +27,7 @@ namespace Matchmaking
         public async void JoinGameClick()
         {
             Debug.Log($"Join game click");
-
-            if (!await NetworkSystem.Instance.TryJoinGame(joinGameTextField.text))
-            {
-
-            }
+            await NetworkSystem.Instance.TryJoinGame(joinGameTextField.text);
         }
     }
 }
