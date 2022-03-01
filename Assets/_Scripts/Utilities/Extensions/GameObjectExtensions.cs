@@ -50,6 +50,14 @@ namespace Utilities.Extensions
             var parent = gameObject.transform.parent;
             return parent ? parent.gameObject : gameObject;
         }
+
+        public static bool CompareEntities(this GameObject gameObject, GameObject other)
+        {
+            return other == gameObject || 
+                   other.GetParent() == gameObject ||
+                   other.GetParent() == gameObject.GetParent() || 
+                   other == gameObject.GetParent();
+        }
         
         public static bool HasTag(this GameObject gameObject)
         {

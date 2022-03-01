@@ -12,9 +12,9 @@ namespace Managers.Interactions
         [SerializeField] private float radius = 5f;
         
         private readonly List<Interaction> interactionsInReach = new List<Interaction>(4);
-        protected IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
+        public IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
 
-        private void Start() => InvokeRepeating(nameof(DetectNearbyInteraction),1,0.1f);
+        public override void Spawned() => InvokeRepeating(nameof(DetectNearbyInteraction),1,0.1f);
 
         public void InteractWithClosestInteraction(bool justStarted = true)
         {

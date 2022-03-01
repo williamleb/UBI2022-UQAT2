@@ -10,23 +10,36 @@ namespace Systems
         private const string SETTINGS_FOLDER_PATH = "Settings";
 
         public PlayerSettings PlayerSetting { get; private set; }
+        public AISettings AISettings { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
 
             LoadPlayerSettings();
+            LoadAISettings();
         }
 
         private void LoadPlayerSettings()
         {
-            PlayerSettings[] playerSetting = Resources.LoadAll<PlayerSettings>(SETTINGS_FOLDER_PATH);
+            var playerSetting = Resources.LoadAll<PlayerSettings>(SETTINGS_FOLDER_PATH);
 
             Debug.Assert(playerSetting.Any(), $"An object of type {nameof(PlayerSettings)} should be in the folder {SETTINGS_FOLDER_PATH}");
             if (playerSetting.Length > 1)
                 Debug.LogWarning($"More than one object of type {nameof(PlayerSettings)} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
 
             PlayerSetting = playerSetting.First();
+        }
+        
+        private void LoadAISettings()
+        {
+            var aiSettings = Resources.LoadAll<AISettings>(SETTINGS_FOLDER_PATH);
+
+            Debug.Assert(aiSettings.Any(), $"An object of type {nameof(AISettings)} should be in the folder {SETTINGS_FOLDER_PATH}");
+            if (aiSettings.Length > 1)
+                Debug.LogWarning($"More than one object of type {nameof(AISettings)} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
+
+            AISettings = aiSettings.First();
         }
     }
 }
