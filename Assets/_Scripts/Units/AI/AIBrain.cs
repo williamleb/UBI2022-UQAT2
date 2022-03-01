@@ -37,7 +37,6 @@ namespace Units.AI
         public void StopMoving()
         {
             entity.Agent.SetDestination(entity.transform.position);
-            entity.Agent.isStopped = true;
         }
 
         public void PlayAnimation(string animationName)

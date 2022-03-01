@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Units.AI.Actions
 {
-    [TaskCategory("AI")]
+    [TaskCategory("Values")]
     public class ResetTransform : Action
     {
         [SerializeField] private readonly SharedTransform transformToReset = null;

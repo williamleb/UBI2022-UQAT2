@@ -20,7 +20,7 @@ namespace Units.AI.Conditionals
             var hasSeenPlayerHitter = Brain.PlayerHitterDetection.HasAPlayerHitSomeoneThisFrame;
             if (hasSeenPlayerHitter)
             {
-                outPlayerHitterTransform.SetValue(Brain.PlayerHitterDetection.PlayerThatHitSomeoneThisFrame);
+                outPlayerHitterTransform.SetValue(Brain.PlayerHitterDetection.PlayerThatHitSomeoneThisFrame.transform);
             }
 
             return hasSeenPlayerHitter ? TaskStatus.Success : TaskStatus.Failure;

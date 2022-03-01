@@ -10,7 +10,7 @@
         [Serializable]
         [TaskDescription("Returns success if the AI has seen a player hitter this frame.")]
         [TaskCategory("AI")]
-        public class HasSeenPlayerHitterThisFrame : AIConditional
+        public class HasBeenGivenHomeworkThisFrame : AIConditional
         {
             [SerializeField] private SharedTransform outEntityThatGaveOutHomeworkThisFrame = null;
 
@@ -22,7 +22,7 @@
                 var hasEntityGivenHomework = Brain.HomeworkHandingStation.HasAnEntityGivenHomeworkThisFrame;
                 if (hasEntityGivenHomework)
                 {
-                    outEntityThatGaveOutHomeworkThisFrame.SetValue(Brain.HomeworkHandingStation.EntityThatHasGivenHomeworkThisFrame);
+                    outEntityThatGaveOutHomeworkThisFrame.SetValue(Brain.HomeworkHandingStation.EntityThatHasGivenHomeworkThisFrame.transform);
                 }
 
                 return hasEntityGivenHomework ? TaskStatus.Success : TaskStatus.Failure;
