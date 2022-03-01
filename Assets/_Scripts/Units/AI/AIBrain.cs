@@ -20,6 +20,8 @@ namespace Units.AI
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&
                                                 (!entity.Agent.hasPath || Math.Abs(entity.Agent.velocity.sqrMagnitude) < 0.01f);
 
+        public bool IsHit => entity.IsHit;
+
         public void AssignEntity(AIEntity assignedEntity)
         {
             entity = assignedEntity;

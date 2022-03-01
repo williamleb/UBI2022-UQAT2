@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using Fusion;
+using Systems;
 using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;
@@ -30,7 +33,7 @@ namespace Units.AI
         private AIBrain brain;
 
         private Transform aiColliderTransform;
-        private bool isHit;
+        private Coroutine hitCoroutine = null;
 
         [Networked] public bool IsTeacher { get; private set; }
 
@@ -41,8 +44,8 @@ namespace Units.AI
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
-        
-        public bool IsHit 
+
+        public bool IsHit => hitCoroutine != null;
 
         private void Awake()
         {
@@ -168,7 +171,33 @@ namespace Units.AI
 
         public void Hit()
         {
-            // TODO
+            if (hitCoroutine != null)
+            {
+                StopHitRoutine();
+            }
+            
+            hitCoroutine = StartCoroutine(HitRoutine());
+        }
+
+        private IEnumerator HitRoutine()
+        {
+            var secondsToWait = SettingsSystem.Instance.AISettings.SecondsDownAfterBeingHit;
+            yield return new WaitForSeconds(secondsToWait);
+            hitCoroutine = null;
+        }
+        
+        private void StopHitRoutine()
+        {
+            if (hitCoroutine == null)
+                return;
+            
+            StopCoroutine(hitCoroutine);
+            hitCoroutine = null;
+        }
+
+        private void OnDisable()
+        {
+            StopHitRoutine();
         }
 
 #if UNITY_EDITOR
