@@ -1,3 +1,107 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e0d7ae3a9d67923d12d4d60d4726b0ad0ba294916e2edc95338e97c16c7d2eec
-size 7222
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3277535868480097401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3277535868480097400}
+  - component: {fileID: 3277535868480097402}
+  - component: {fileID: 3277535868480097405}
+  m_Layer: 0
+  m_Name: LoneStudentBrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3277535868480097400
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3277535868480097402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74af5e29875f4a0c8be147253a3fc578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3277535868480097405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startWhenEnabled: 1
+  asynchronousLoad: 0
+  pauseWhenDisabled: 0
+  restartWhenComplete: 0
+  logTaskChanges: 0
+  group: 0
+  resetValuesOnRestart: 0
+  externalBehavior: {fileID: 0}
+  mBehaviorSource:
+    behaviorName: LoneStudentBrain
+    behaviorDescription: Brain for a lone student that picks up homeworks and give
+      them to the teacher
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(387.5,30)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(13.3117027,137.279938)"},"ID":1,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-664.557434,133.782471)"},"ID":2,"Name":"Selector","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-176.9581,127.344788)"},"ID":3,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.IsHit","NodeData":{"Offset":"(-0.6451607,142.903214)"},"ID":4,"Name":"Is
+        Hit","Instant":true,"AIBrainbrain":0}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(93.29758,139.605881)"},"ID":5,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.StopMoving","NodeData":{"Offset":"(-126.519707,137.29364)"},"ID":6,"Name":"Stop
+        Moving","Instant":true,"AIBrainbrain":1},{"Type":"Units.AI.Actions.PlayAnimation","NodeData":{"Offset":"(19.9088364,140.865082)"},"ID":7,"Name":"Play
+        Animation","Instant":true,"SharedStringanimationName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"Fall"},"SharedIntanimationLayerIndex":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolwaitUntilAnimationIsFinished":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"AIBrainbrain":2},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(150.26593,140.865082)"},"ID":8,"Name":"Idle","Instant":true}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(120,314.953461)"},"ID":9,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(5.263135,175.263153)"},"ID":10,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-535.4314,111.314926)"},"ID":11,"Name":"Selector","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"Units.AI.Conditionals.HasAHomework","NodeData":{"Offset":"(-203.3883,142.675659)"},"ID":12,"Name":"Has
+        A Homework","Instant":true,"AIBrainbrain":3},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(270,130)"},"ID":13,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-130.737061,158.205109)"},"ID":14,"Name":"Selector","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"Units.AI.Conditionals.CanInteractWithHomework","NodeData":{"Offset":"(-141.21283,166.044189)"},"ID":15,"Name":"Can
+        Interact With Homework","Instant":true,"AIBrainbrain":4},{"Type":"Units.AI.Actions.WalkToHomeworkInteraction","NodeData":{"Offset":"(160.329681,174.246857)"},"ID":16,"Name":"Walk
+        To Homework Interaction","Instant":true,"AIBrainbrain":5}]},{"Type":"Units.AI.Actions.InteractWithHomework","NodeData":{"Offset":"(104.855438,171.029129)"},"ID":17,"Name":"Interact
+        With Homework","Instant":true,"AIBrainbrain":6}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(108.349991,121.604492)"},"ID":18,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Conditionals.CanInteractWithTeacher","NodeData":{"Offset":"(-137.890808,126.262268)"},"ID":19,"Name":"Can
+        Interact With Teacher","Instant":true,"AIBrainbrain":7},{"Type":"Units.AI.Actions.WalkToTeacherInteraction","NodeData":{"Offset":"(113.212036,128.400879)"},"ID":20,"Name":"Walk
+        To Teacher Interaction","Instant":true,"AIBrainbrain":8}]},{"Type":"Units.AI.Actions.InteractWithTeacher","NodeData":{"Offset":"(569.441833,130.340149)"},"ID":21,"Name":"Interact
+        With Teacher","Instant":true,"AIBrainbrain":9}]}]}]}}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.2
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
