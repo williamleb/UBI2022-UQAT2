@@ -12,9 +12,14 @@ namespace Units.AI.Actions
         [SerializeField] private readonly SharedBool interruptionContributesToWaitTime = true;
 
         private float endTime;
-
         private bool hasFinished;
-        
+
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            hasFinished = true;
+        }
+
         public override void OnStart()
         {
             if (hasFinished)

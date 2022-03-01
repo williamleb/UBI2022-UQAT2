@@ -11,6 +11,8 @@ namespace Units.AI
     [RequireComponent(typeof(AIInteracter))]
     public class AIEntity : NetworkBehaviour
     {
+        private static readonly int walking = Animator.StringToHash("IsWalking");
+        
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
@@ -25,12 +27,14 @@ namespace Units.AI
         private AIBrain brain;
 
         private Transform aiColliderTransform;
-        
+
         [Networked] public bool IsTeacher { get; private set; }
 
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
+        public Animator Animator => animator;
+        public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
 
         private void Awake()
         {
@@ -86,6 +90,7 @@ namespace Units.AI
         public override void FixedUpdateNetwork()
         {
             UpdateCollider();
+            UpdateWalkingAnimation();
         }
 
         private void UpdateCollider()
@@ -96,6 +101,19 @@ namespace Units.AI
             var thisTransform = transform;
             aiColliderTransform.position = thisTransform.position;
             aiColliderTransform.rotation = thisTransform.rotation;
+        }
+
+        private void UpdateWalkingAnimation()
+        {
+            if (!Object.HasStateAuthority)
+                return;
+
+            if (!animator)
+                return;
+
+            // We will probably want to send the speed directly to the animator in the future and do a blend space
+            var isWalking = agent.velocity.sqrMagnitude > 0.3f;
+            animator.SetBool(walking, isWalking);
         }
 
         private void RegisterToManager()

@@ -31,5 +31,32 @@ namespace Units.AI
         {
             entity.Agent.SetDestination(target);
         }
+
+        public void StopMoving()
+        {
+            entity.Agent.SetDestination(entity.transform.position);
+            entity.Agent.isStopped = true;
+        }
+
+        public void PlayAnimation(string animationName)
+        {
+            if (!entity.NetworkAnimator)
+                return;
+            
+            entity.NetworkAnimator.SetTrigger(animationName);
+        }
+
+        public bool IsPlayingAnimation(int layerIndex, string animationName)
+        {
+            if (!entity.Animator)
+                return false;
+            
+            return entity.Animator.GetCurrentAnimatorStateInfo(layerIndex).IsName(animationName);
+        }
+
+        public bool IsInAnimationTransition(int layerIndex)
+        {
+            return entity.Animator.IsInTransition(layerIndex);
+        }
     }
 }
