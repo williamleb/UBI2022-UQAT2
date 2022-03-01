@@ -1,5 +1,7 @@
+using Fusion;
 using System;
 using Systems.Network;
+using Trisibo;
 using UnityEngine;
 using Utilities.Singleton;
 
@@ -7,9 +9,9 @@ namespace Systems
 {
     public class LevelSystem : PersistentSingleton<LevelSystem>
     {
-        [SerializeField] private int mainMenuSceneIndex = 0;
-        [SerializeField] private int lobbySceneIndex = 1;
-        [SerializeField] private int gameSceneIndex = 2;
+        [SerializeField] private SceneField mainMenuSceneIndex;
+        [SerializeField] private SceneField lobbySceneIndex;
+        [SerializeField] private SceneField gameSceneIndex;
 
         public event Action OnLobbyLoad;
         public event Action OnGameLoad;
@@ -23,16 +25,40 @@ namespace Systems
             GAME
         }
 
+        public void Start()
+        {
+            NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
+        }
+
         public int ActiveSceneIndex { get; private set; }
 
         public void LoadLobby()
-        {
+        {   
             State = LevelState.TRANSITION;
+
             Debug.Log("Loading lobby scene.");
-            ActiveSceneIndex = lobbySceneIndex;
-            NetworkSystem.Instance.NetworkRunner.SetActiveScene(lobbySceneIndex);
-            State = LevelState.LOBBY;
-            OnLobbyLoad?.Invoke();
+            ActiveSceneIndex = lobbySceneIndex.BuildIndex;
+            NetworkSystem.Instance.NetworkRunner.SetActiveScene(lobbySceneIndex.BuildIndex);
+        }
+
+        private void ChangeLevelState(NetworkRunner networkRunner)
+        {   
+            if (ActiveSceneIndex == lobbySceneIndex.BuildIndex)
+            {
+                State = LevelState.LOBBY;
+                OnLobbyLoad?.Invoke();
+            }
+            else if (ActiveSceneIndex == gameSceneIndex.BuildIndex)
+            {
+                State = LevelState.GAME;
+                OnGameLoad?.Invoke();
+            }
+            else
+            {
+                State = LevelState.TRANSITION;
+            }
+
+            Debug.Log($"Scene loaded with build index {ActiveSceneIndex}.");
         }
 
         public void LoadGame()
@@ -42,11 +68,9 @@ namespace Systems
             if (PlayerSystem.Instance.AllPlayers.Count != 0)
                 PlayerSystem.Instance.DespawnAllPlayers();
 
-            Debug.Log($"Loading scene with index {gameSceneIndex}");
-            ActiveSceneIndex = gameSceneIndex;
-            NetworkSystem.Instance.NetworkRunner.SetActiveScene(gameSceneIndex);
-            State = LevelState.GAME;
-            OnGameLoad?.Invoke();
+            Debug.Log($"Loading scene with index {gameSceneIndex.BuildIndex}");
+            ActiveSceneIndex = gameSceneIndex.BuildIndex;
+            NetworkSystem.Instance.NetworkRunner.SetActiveScene(gameSceneIndex.BuildIndex);
         }
     }
 }
