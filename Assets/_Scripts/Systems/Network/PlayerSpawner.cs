@@ -15,6 +15,7 @@ namespace Systems.Network
 
         private void PlayerJoined(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"Player {player} spawn.");
             runner.Spawn(playerPrefab,null,null,player);
         }
     }

@@ -5,12 +5,11 @@ namespace Systems.Network
 {
     public partial class NetworkSystem
     {
-        public static float DeltaTime => Instance.networkRunner ? Instance.networkRunner.DeltaTime : 0f;
-        
-        public bool IsConnected => networkRunner != null;
+        public static float DeltaTime => Instance.NetworkRunner ? Instance.NetworkRunner.DeltaTime : 0f;
+        public bool IsConnected => NetworkRunner != null;
 
-        public bool IsHost => IsConnected && (networkRunner.GameMode == GameMode.Host || networkRunner.GameMode == GameMode.Single);
-        public bool IsClient => IsConnected && networkRunner.GameMode == GameMode.Client;
+        public bool IsHost => IsConnected && (NetworkRunner.GameMode == GameMode.Host || NetworkRunner.GameMode == GameMode.Single);
+        public bool IsClient => IsConnected && NetworkRunner.GameMode == GameMode.Client;
         
         public NetworkObject Spawn(
             NetworkObject prefab, 
@@ -20,17 +19,17 @@ namespace Systems.Network
             NetworkRunner.OnBeforeSpawned onBeforeSpawned = null,
             NetworkObjectPredictionKey? networkObjectPredictionKey = null)
         {
-            return networkRunner.Spawn(prefab, position, rotation, inputAuthority, onBeforeSpawned, networkObjectPredictionKey);
+            return NetworkRunner.Spawn(prefab, position, rotation, inputAuthority, onBeforeSpawned, networkObjectPredictionKey);
         }
 
         public void Despawn(NetworkObject networkObject, bool allowPredicted = false)
         {
-            networkRunner.Despawn(networkObject, allowPredicted);
+            NetworkRunner.Despawn(networkObject, allowPredicted);
         }
         
         public NetworkObject FindObject(NetworkId id)
         {
-            networkRunner.TryFindObject(id, out var foundObject);
+            NetworkRunner.TryFindObject(id, out var foundObject);
             return foundObject;
         }
     }
