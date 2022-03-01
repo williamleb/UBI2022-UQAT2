@@ -62,6 +62,8 @@ namespace Units.Player
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
+            
+            PlayerSystem.Instance.AddPlayer(this);
 
             if (Object.HasStateAuthority)
                 SpawnScore();

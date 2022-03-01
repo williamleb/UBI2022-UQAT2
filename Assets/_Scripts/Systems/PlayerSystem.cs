@@ -1,8 +1,6 @@
 using Fusion;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -24,7 +22,7 @@ namespace Systems
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			LevelSystem.Instance.OnLevelLoad += SpawnPlayers;
+			LevelSystem.Instance.OnGameLoad += SpawnPlayers;
 		}
 
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
@@ -32,9 +30,7 @@ namespace Systems
 			Debug.Log($"{playerRef} joined.");
 			playersJoined.Add(playerRef, runner);
 
-			//If the game has already started, we spawn the player immediately.
-			//This part will depend on how we want to handle the reconnection and the stage system.
-			if (LevelSystem.Instance.State != LevelSystem.LevelState.OTHER)
+            if (LevelSystem.Instance.State != LevelSystem.LevelState.TRANSITION)
             {
 				SpawnPlayer(runner, playerRef);
 			}
@@ -49,15 +45,18 @@ namespace Systems
 
 		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
         {
-			Debug.Log($"{playerRef} spawn.");
-			runner.Spawn(playerPrefab, null, null, playerRef);
+			Debug.Log($"Spawning {playerRef}");
+			runner.Spawn(playerPrefab,
+						new Vector3(Random.Range(0, 3), 0, Random.Range(0, 3)),
+						Quaternion.identity,
+						playerRef);
 		}
 
 		private void SpawnPlayers()
         {
-			Debug.Log("Spawning players.");
-			playersJoined.ToList().ForEach(keyValuePair => keyValuePair.Value.Spawn(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity, keyValuePair.Key));
-			playersJoined.Clear();
+			Debug.Log("Spawning players...");
+			playersJoined.ToList().ForEach(
+				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
 		}
 
 		public PlayerEntity Get(PlayerRef playerRef)
@@ -76,10 +75,10 @@ namespace Systems
 			return null;
 		}
 
-		public void AddPlayers(PlayerEntity player)
-		{
-			playersEntity.Add(player);
-			Debug.Log("Player added " + player.PlayerID);
+		//Called by the playerEntity on Spawned()
+		public void AddPlayer(PlayerEntity playerEntity)
+        {
+			playersEntity.Add(playerEntity);
 		}
 
 		public void RemovePlayer(PlayerEntity player)
@@ -92,6 +91,17 @@ namespace Systems
 			playersJoined.Remove(player.PlayerID);
 			Debug.Log("Player removed " + player.PlayerID);
 		}
+
+		//Called between lobby and game
+		public void DespawnAllPlayers()
+        {
+            foreach (PlayerEntity playerEntity in playersEntity.ToList())
+            {
+				playerEntity.TriggerDespawn();
+				playersEntity.Remove(playerEntity);
+				Debug.Log("Player despawn " + playerEntity.PlayerID);
+			}
+        }
 
 		public void ResetPlayerSystem()
 		{
