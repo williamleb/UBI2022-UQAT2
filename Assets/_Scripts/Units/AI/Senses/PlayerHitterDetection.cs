@@ -1,8 +1,7 @@
-﻿using System;
-using Units.Player;
+﻿using Units.Player;
 using UnityEngine;
 
-namespace Units.AI
+namespace Units.AI.Senses
 {
     [RequireComponent(typeof(Vision))]
     public class PlayerHitterDetection : MonoBehaviour

@@ -36,7 +36,7 @@ namespace Managers.Interactions
                 return null;
             
             interactionsInReach.Sort(CompareInteractionDistances);
-            return interactionsInReach.FirstOrDefault(interaction => interaction.CanInteract(this));
+            return interactionsInReach.FirstOrDefault(interaction => interaction && interaction.CanInteract(this));
         }
 
         private int CompareInteractionDistances(Interaction left, Interaction right)

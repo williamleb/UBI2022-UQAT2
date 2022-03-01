@@ -11,8 +11,8 @@ namespace Scriptables
         [SerializeField, MinValue(0.2f)] private float visionFar = 10f;
         [SerializeField, MinValue(0.1f)] private float visionNearLength = 2f;
         [SerializeField, MinValue(0.2f)] private float visionFarLength = 20f;
-        [SerializeField] private float secondsOfImmobilisationBadBehavior = 1.5f;
-        [SerializeField] private float secondsOfImmobilisationFakeHomework = 1.5f;
+        [SerializeField, ReadOnly] private float secondsOfImmobilisationBadBehavior = 1.5f; // Not yet implemented
+        [SerializeField, ReadOnly] private float secondsOfImmobilisationFakeHomework = 1.5f; // Not yet implemented
         [SerializeField, MinMaxSlider(0f, 30f, true)] private Vector2 secondsToStayInARoom = new Vector2(10f, 15f);
         [SerializeField, MinMaxSlider(0f, 30f, true)] private Vector2 secondsToChangePositionsInARoom = new Vector2(3f, 5f);
         [SerializeField] private float secondsToShowRoomIndicator = 2f;

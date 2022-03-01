@@ -1,4 +1,5 @@
 using Fusion;
+using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;
 using Utilities.Extensions;
@@ -29,6 +30,7 @@ namespace Units.AI
         private AIBrain brain;
 
         private Transform aiColliderTransform;
+        private bool isHit;
 
         [Networked] public bool IsTeacher { get; private set; }
 
@@ -39,6 +41,8 @@ namespace Units.AI
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
+        
+        public bool IsHit 
 
         private void Awake()
         {

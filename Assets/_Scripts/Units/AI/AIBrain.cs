@@ -1,5 +1,6 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
+using Units.AI.Senses;
 using UnityEngine;
 
 namespace Units.AI

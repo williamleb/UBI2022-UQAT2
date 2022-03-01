@@ -4,13 +4,12 @@ using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Units.Player;
-using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Mesh;
 using Utilities.Unity;
 
-namespace Units.AI
+namespace Units.AI.Senses
 {
     public class Vision : NetworkBehaviour
     {
@@ -24,6 +23,11 @@ namespace Units.AI
         private readonly List<PlayerEntity> playersInSight = new List<PlayerEntity>();
         private readonly List<AIEntity> aisInSight = new List<AIEntity>();
         private readonly List<Interaction> interactionsInSight = new List<Interaction>();
+        
+        protected float Near { get => near; set => near = value; }
+        protected float Far { get => far; set => far = value; }
+        protected float NearLength { get => nearLength; set => nearLength = value; }
+        protected float FarLength { get => farLength; set => farLength = value; }
 
         public IEnumerable<PlayerEntity> PlayersInSight => playersInSight;
         public IEnumerable<AIEntity> AIsInSight => aisInSight;
@@ -64,7 +68,7 @@ namespace Units.AI
             var thisTransform = transform;
             var halfExtents = new Vector3(farLength / 2f, 10f, far);
             
-            if (Runner.GetPhysicsScene().OverlapBox(thisTransform.position, halfExtents, colliders, thisTransform.rotation, Physics.AllLayers) <= 0) return;
+            if (Runner.GetPhysicsScene().OverlapBox(thisTransform.position, halfExtents, colliders, thisTransform.rotation, LayerMask.GetMask(Layers.NAME_GAMEPLAY)) <= 0) return;
 
             foreach (var objectCollider in colliders)
             {
@@ -153,7 +157,7 @@ namespace Units.AI
                    normalizedPosition.y >= -1f && normalizedPosition.y <= 1f;
         }
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             far = Math.Max(near + 0.1f, far);
             farLength = Math.Max(nearLength + 0.1f, farLength);
@@ -174,10 +178,10 @@ namespace Units.AI
         private void DrawSightFrustumGizmo()
         {
             var position = transform.position;
-            var upperLeftCorner = new Vector3(-farLength / 2f, position.y, far);
-            var upperRightCorner = new Vector3(farLength / 2f, position.y, far);
-            var lowerRightCorner = new Vector3(nearLength / 2f, position.y, near);
-            var lowerLeftCorner = new Vector3(-nearLength / 2f, position.y, near);
+            var upperLeftCorner = new Vector3(-farLength / 2f, 0f, far);
+            var upperRightCorner = new Vector3(farLength / 2f, 0f, far);
+            var lowerRightCorner = new Vector3(nearLength / 2f, 0f, near);
+            var lowerLeftCorner = new Vector3(-nearLength / 2f, 0f, near);
             
             var frustumMesh = MeshUtils.CreateQuadMesh(upperLeftCorner, upperRightCorner, lowerRightCorner, lowerLeftCorner);
             var thisTransform = transform;

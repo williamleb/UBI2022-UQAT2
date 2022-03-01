@@ -4,6 +4,7 @@ using Fusion;
 using Scriptables;
 using Systems;
 using Systems.Network;
+using Units.AI;
 using Units.Camera;
 using UnityEngine;
 using Utilities.Extensions;
@@ -135,7 +136,10 @@ namespace Units.Player
             }
             else
             {
-                inv = networkObject.GetComponent<Inventory>();
+                var aiEntity = networkObject.GetComponentInEntity<AIEntity>();
+                Debug.Assert(aiEntity);
+                inv = aiEntity.Inventory;
+                aiEntity.Hit();
             }
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
             inv.DropEverything();
