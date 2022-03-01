@@ -1,4 +1,5 @@
-﻿using BehaviorDesigner.Runtime;
+﻿using System;
+using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using Scriptables;
 using Systems;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace Units.AI.Actions.LoadSettings
 {
+    [Serializable]
     [TaskCategory("AI/Load Settings")]
     public class LoadTeacherSettings : AIAction
     {

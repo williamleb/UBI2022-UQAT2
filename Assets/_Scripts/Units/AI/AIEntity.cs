@@ -24,6 +24,8 @@ namespace Units.AI
         private AIInteracter interacter;
         private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
+        private PlayerHitterDetection playerHitterDetection;
+        private HomeworkHandingStation homeworkHandingStation;
         private AIBrain brain;
 
         private Transform aiColliderTransform;
@@ -35,6 +37,8 @@ namespace Units.AI
         public AIInteracter Interacter => interacter;
         public Animator Animator => animator;
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
+        public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
+        public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
 
         private void Awake()
         {
@@ -43,6 +47,8 @@ namespace Units.AI
             interacter = GetComponent<AIInteracter>();
             animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
+            playerHitterDetection = GetComponent<PlayerHitterDetection>();
+            homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
         }
 
         // Those two methods should only be called before the AI entity is spawned
@@ -154,6 +160,11 @@ namespace Units.AI
             Debug.Assert(brain, $"Calling {nameof(AddBrain)} with a prefab that doesn't have a script {nameof(AIBrain)}");
             
             brain.AssignEntity(this);
+        }
+
+        public void Hit()
+        {
+            // TODO
         }
 
 #if UNITY_EDITOR

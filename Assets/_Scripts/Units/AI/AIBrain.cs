@@ -12,6 +12,8 @@ namespace Units.AI
 
         public Inventory Inventory => entity.Inventory;
         public AIInteracter Interacter => entity.Interacter;
+        public PlayerHitterDetection PlayerHitterDetection => entity.PlayerHitterDetection;
+        public HomeworkHandingStation HomeworkHandingStation => entity.HomeworkHandingStation;
         
         public bool HasReachedItsDestination => !entity.Agent.pathPending &&
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&
@@ -57,6 +59,30 @@ namespace Units.AI
         public bool IsInAnimationTransition(int layerIndex)
         {
             return entity.Animator.IsInTransition(layerIndex);
+        }
+
+        public void LookAt(Vector3 destination, float speed)
+        {
+            var lookPos = destination - entity.transform.position;
+            lookPos.y = 0;
+            var rotation = Quaternion.LookRotation(lookPos);
+            entity.transform.rotation = Quaternion.Slerp(entity.transform.rotation, rotation, speed);  
+        }
+
+        public bool IsLookingAt(Vector3 destination, float tolerance)
+        {
+            var thisTransform = entity.transform;
+            var lookPos = destination - thisTransform.position;
+            var forward = thisTransform.forward;
+
+            return Math.Abs(Vector3.Dot(lookPos.normalized, forward.normalized) - 1f) < tolerance;
+        }
+
+        public bool IsCloseTo(Vector3 destination, float closeDistance)
+        {
+            var direction = destination - entity.transform.position;
+
+            return direction.sqrMagnitude < closeDistance * closeDistance;
         }
     }
 }

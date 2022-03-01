@@ -117,6 +117,11 @@ namespace Units.Player
                 networkRunner.Despawn(Object);
         }
 
+        public void ExternalHit()
+        {
+            RPC_DropItems(Object.Id, true);
+        }
+
         [Rpc]
         private void RPC_DropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
         {

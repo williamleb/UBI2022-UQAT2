@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Fusion;
 using Systems.Network;
@@ -18,6 +19,9 @@ namespace Units.Player
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
 
         private TickTimer dashTimer;
+        private bool hasHitSomeoneThisFrame = false;
+
+        public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
         private void MovementAwake()
         {
@@ -85,10 +89,16 @@ namespace Units.Player
                     Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
                     RPC_DropItems(networkObject.Id, go.CompareTag(Tags.PLAYER));
                     EndDash(false);
+                    hasHitSomeoneThisFrame = true;
                     return;
                 }
                 EndDash();
             }
+        }
+
+        private void LateUpdate()
+        {
+            hasHitSomeoneThisFrame = false;
         }
 
         private async void Hit()
