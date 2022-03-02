@@ -13,10 +13,13 @@ namespace Ingredients.Homework
     [RequireComponent(typeof(Rigidbody))]
     public class Homework : NetworkBehaviour
     {
+        private static readonly int isSpawned = Animator.StringToHash("IsSpawned");
+
         private enum State : byte
         {
-            Free = 0,
-            Taken
+            InWorld = 0,
+            Taken,
+            Free
         }
 
         [SerializeField, Required] private GameObject visual;
@@ -26,14 +29,17 @@ namespace Ingredients.Homework
         private Interaction interaction;
         private Rigidbody rb;
         private Collider[] colliders;
+        private Animator animator;
 
         public int HomeworkId => Id.GetHashCode();
+        public bool IsFree => HomeworkState == State.Free;
 
         private void Awake()
         {
             interaction = GetComponent<Interaction>();
             rb = GetComponent<Rigidbody>();
             colliders = GetComponents<Collider>();
+            animator = GetComponent<Animator>();
         }
 
         private void OnEnable()
@@ -59,19 +65,37 @@ namespace Ingredients.Homework
             if (!inventory)
             {
                 Debug.LogWarning("Homework collected by an interacter without an inventory. Reverting to free state.");
-                HomeworkState = State.Free;
+                HomeworkState = State.InWorld;
             }
 
             HomeworkState = State.Taken;
             inventory.HoldHomework(this);
         }
-
-        public void Free(Vector3 position)
+        
+        public void Free()
         {
-            if (HomeworkState == State.Free)
+            HomeworkState = State.Free;
+        }
+
+        public void Activate(Transform transformToActivateTo)
+        {
+            if (HomeworkState != State.Free)
                 return;
             
-            HomeworkState = State.Free;
+            HomeworkState = State.InWorld;
+
+            var thisTransform = transform;
+            thisTransform.position = transformToActivateTo.position;
+            thisTransform.rotation = transformToActivateTo.rotation;
+            rb.isKinematic = false;
+        }
+
+        public void DropInWorld(Vector3 position)
+        {
+            if (HomeworkState != State.Taken)
+                return;
+            
+            HomeworkState = State.InWorld;
             
             transform.position = position + Vector3.up * 2f;
             rb.isKinematic = false;
@@ -85,8 +109,6 @@ namespace Ingredients.Homework
 
         public override void Spawned()
         {
-            HomeworkState = State.Free;
-            
             if (HomeworkManager.HasInstance)
             {
                 HomeworkManager.Instance.RegisterHomework(this);
@@ -103,14 +125,15 @@ namespace Ingredients.Homework
 
         private void UpdateForCurrentState()
         {
-            visual.SetActive(HomeworkState == State.Free);
-            interaction.InteractionEnabled = HomeworkState == State.Free;
+            visual.SetActive(HomeworkState == State.InWorld);
+            interaction.InteractionEnabled = HomeworkState == State.InWorld;
             foreach (var colliderComponent in colliders)
             {
-                colliderComponent.enabled = HomeworkState == State.Free;
+                colliderComponent.enabled = HomeworkState == State.InWorld;
             }
 
-            rb.isKinematic = HomeworkState != State.Free;
+            rb.isKinematic = HomeworkState != State.InWorld;
+            animator.SetBool(isSpawned, HomeworkState != State.Free);
         }
 
         private static void OnStateChanged(Changed<Homework> changed)
