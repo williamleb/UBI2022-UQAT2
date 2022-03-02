@@ -1,8 +1,12 @@
 using Fusion;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Systems.Network;
 using Trisibo;
+using Units.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utilities.Singleton;
 
 namespace Systems
@@ -13,8 +17,10 @@ namespace Systems
         [SerializeField] private SceneField lobbySceneIndex;
         [SerializeField] private SceneField gameSceneIndex;
 
+        protected Scene loadedScene;
+
         public event Action OnLobbyLoad;
-        public event Action OnGameLoad;
+        public INetworkSceneObjectProvider networkSceneObjectProvider { get; private set; }
 
         public LevelState State { get; private set; }
 
@@ -28,6 +34,7 @@ namespace Systems
         public void Start()
         {
             NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
+            networkSceneObjectProvider = gameObject.AddComponent<NetworkSceneMaganer>();
         }
 
         public int ActiveSceneIndex { get; private set; }
@@ -41,8 +48,16 @@ namespace Systems
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(lobbySceneIndex.BuildIndex);
         }
 
+        public void LoadGame()
+        {
+            State = LevelState.TRANSITION;
+
+            Debug.Log($"Loading scene with index {gameSceneIndex.BuildIndex}");
+            ActiveSceneIndex = gameSceneIndex.BuildIndex;
+            NetworkSystem.Instance.NetworkRunner.SetActiveScene(gameSceneIndex.BuildIndex);
+        }
         private void ChangeLevelState(NetworkRunner networkRunner)
-        {   
+        {
             if (ActiveSceneIndex == lobbySceneIndex.BuildIndex)
             {
                 State = LevelState.LOBBY;
@@ -51,26 +66,56 @@ namespace Systems
             else if (ActiveSceneIndex == gameSceneIndex.BuildIndex)
             {
                 State = LevelState.GAME;
-                OnGameLoad?.Invoke();
             }
             else
             {
                 State = LevelState.TRANSITION;
             }
 
-            Debug.Log($"Scene loaded with build index {ActiveSceneIndex}.");
+            PlayerInputHandler.fetchInput = true;
         }
 
-        public void LoadGame()
+        public class NetworkSceneMaganer : NetworkSceneManagerBase
         {
-            State = LevelState.TRANSITION;
+            protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
+            {
+                Debug.Log($"Switching Scene from {prevScene} to {newScene}");
+                if (newScene <= 0)
+                {
+                    finished(new List<NetworkObject>());
+                    yield break;
+                }
 
-            if (PlayerSystem.Instance.AllPlayers.Count != 0)
-                PlayerSystem.Instance.DespawnAllPlayers();
+                if (prevScene > 0)
+                {
+                    PlayerInputHandler.fetchInput = false;
+                }
 
-            Debug.Log($"Loading scene with index {gameSceneIndex.BuildIndex}");
-            ActiveSceneIndex = gameSceneIndex.BuildIndex;
-            NetworkSystem.Instance.NetworkRunner.SetActiveScene(gameSceneIndex.BuildIndex);
+                if (Instance.loadedScene != default)
+                {
+                    Debug.Log($"Unloading Scene {Instance.loadedScene.buildIndex}");
+                    yield return SceneManager.UnloadSceneAsync(Instance.loadedScene);
+                }
+
+                Instance.loadedScene = default;
+                Debug.Log($"Loading scene {newScene}");
+
+                List<NetworkObject> sceneObjects = new List<NetworkObject>();
+
+                if (newScene >= 0)
+                {
+                    yield return SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Additive);
+                    Instance.loadedScene = SceneManager.GetSceneByBuildIndex(newScene);
+                    Debug.Log($"Loaded scene {newScene}");
+                    sceneObjects = FindNetworkObjects(Instance.loadedScene, disable: false);
+                }
+
+                // Delay one frame
+                yield return null;
+
+                Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
+                finished(sceneObjects);
+            }
         }
     }
 }
