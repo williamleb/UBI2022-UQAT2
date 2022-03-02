@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -21,8 +20,6 @@ namespace Managers.Score
         
         [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
         
-        private HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
-
         private Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
 
         public Score GetScoreForPlayer(PlayerRef player)
@@ -78,14 +75,24 @@ namespace Managers.Score
 
         private void OnPlayerSpawned(NetworkObject player)
         {
+            if (!NetworkSystem.Instance.IsHost)
+                return;
             
+            if (!scorePrefab)
+                return;
+            
+            NetworkSystem.Instance.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, player.InputAuthority);
         }
 
         private void OnPlayerDespawned(NetworkObject player)
         {
-            
-        }
+            if (!NetworkSystem.Instance.IsHost)
+                return;
 
+            var score = GetScoreForPlayer(player.InputAuthority);
+            NetworkSystem.Instance.Despawn(score.Object);
+        }
+        
         private void OnReset()
         {
             foreach (var score in scores.Values)

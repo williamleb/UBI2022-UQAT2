@@ -23,14 +23,11 @@ namespace Units.Player
         public int PlayerID { get; private set; }
         
         [SerializeField] private CameraStrategy mainCamera;
-        [SerializeField] private NetworkObject scorePrefab;
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
         private NetworkInputData inputs;
-        
-        [Networked] private NetworkId ScoreObjectId { get; set; }
 
         private void Awake()
         {
@@ -40,10 +37,6 @@ namespace Units.Player
             inventory = GetComponent<Inventory>();
 
             MovementAwake();
-        }
-
-        private void Start()
-        {
         }
 
         public override async void Spawned()
@@ -66,36 +59,11 @@ namespace Units.Player
             OnPlayerSpawned?.Invoke(Object);
             
             PlayerSystem.Instance.AddPlayer(this);
-
-            if (Object.HasStateAuthority)
-                SpawnScore();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             OnPlayerDespawned?.Invoke(Object);
-
-            if (Object.HasStateAuthority)
-                DespawnScore();
-        }
-
-        private void SpawnScore()
-        {
-            if (!scorePrefab)
-            {
-                Debug.LogWarning($"Could not spawn a score for player {Object.InputAuthority.PlayerId} because it didn't have a valid {nameof(scorePrefab)}");
-                return;
-            }
-            
-            var scoreObject = Runner.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, Object.InputAuthority);
-            ScoreObjectId = scoreObject.Id;
-        }
-
-        private void DespawnScore()
-        {
-            var scoreObject = Runner.FindObject(ScoreObjectId);
-            Runner.Despawn(scoreObject);
-            ScoreObjectId = new NetworkId();
         }
 
         public override void FixedUpdateNetwork()
