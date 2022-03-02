@@ -4,6 +4,7 @@ using System.Linq;
 using Fusion;
 using Managers.Game;
 using Sirenix.OdinInspector;
+using Systems;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -30,23 +31,6 @@ namespace Managers.Score
             return scores[player];
         }
 
-        public PlayerRef FindPlayerWithHighestScore()
-        {
-            if (!scores.Any())
-                return PlayerRef.None;
-
-            var highestScore = scores.First().Key;
-            foreach (var player in scores.Keys)
-            {
-                if (scores[player].Value > scores[highestScore].Value)
-                {
-                    highestScore = player;
-                }
-            }
-            
-            return highestScore;
-        }
-
         public void RegisterScore(Score score, PlayerRef player)
         {
             Debug.Assert(!scores.ContainsKey(player), $"Trying to register a score for player {player.PlayerId} when a score is already registered for them");
@@ -61,59 +45,7 @@ namespace Managers.Score
             
             OnScoreUnregistered?.Invoke(player);
         }
-
-        private void Start()
-        {
-            if (GameManager.HasInstance)
-            {
-                GameManager.Instance.OnReset += OnReset;
-            }
-
-            PlayerEntity.OnPlayerSpawned += OnPlayerSpawned;
-            PlayerEntity.OnPlayerDespawned += OnPlayerDespawned;
-        }
-
-        private void OnPlayerSpawned(NetworkObject player)
-        {
-            if (!NetworkSystem.Instance.IsHost)
-                return;
-            
-            if (!scorePrefab)
-                return;
-            
-            NetworkSystem.Instance.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, player.InputAuthority);
-        }
-
-        private void OnPlayerDespawned(NetworkObject player)
-        {
-            if (!NetworkSystem.Instance.IsHost)
-                return;
-
-            var score = GetScoreForPlayer(player.InputAuthority);
-            NetworkSystem.Instance.Despawn(score.Object);
-        }
         
-        private void OnReset()
-        {
-            foreach (var score in scores.Values)
-            {
-                score.Reset();
-            }
-        }
-
-        protected override void OnDestroy()
-        {
-            if (GameManager.HasInstance)
-            {
-                GameManager.Instance.OnReset -= OnReset;
-            }
-
-            PlayerEntity.OnPlayerSpawned -= OnPlayerSpawned;
-            PlayerEntity.OnPlayerDespawned -= OnPlayerDespawned;
-            
-            base.OnDestroy();
-        }
-
         public void HandHomework(PlayerEntity playerEntity)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
@@ -137,6 +69,96 @@ namespace Managers.Score
             
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();
+        }
+        
+        public PlayerRef FindPlayerWithHighestScore()
+        {
+            if (!scores.Any())
+                return PlayerRef.None;
+
+            var highestScore = scores.First().Key;
+            foreach (var player in scores.Keys)
+            {
+                if (scores[player].Value > scores[highestScore].Value)
+                {
+                    highestScore = player;
+                }
+            }
+            
+            return highestScore;
+        }
+
+        private void Start()
+        {
+            if (GameManager.HasInstance)
+            {
+                GameManager.Instance.OnReset += OnReset;
+                GameManager.Instance.OnBeginSpawn += OnBeginSpawn;
+            }
+
+            PlayerEntity.OnPlayerSpawned += OnPlayerSpawned;
+            PlayerEntity.OnPlayerDespawned += OnPlayerDespawned;
+        }
+        
+        protected override void OnDestroy()
+        {
+            if (GameManager.HasInstance)
+            {
+                GameManager.Instance.OnReset -= OnReset;
+                GameManager.Instance.OnBeginSpawn -= OnBeginSpawn;
+            }
+
+            PlayerEntity.OnPlayerSpawned -= OnPlayerSpawned;
+            PlayerEntity.OnPlayerDespawned -= OnPlayerDespawned;
+            
+            base.OnDestroy();
+        }
+
+        private void OnPlayerSpawned(NetworkObject player)
+        {
+            SpawnScoreForPlayer(player.InputAuthority);
+        }
+
+        private void SpawnScoreForPlayer(PlayerRef player)
+        {
+            if (!NetworkSystem.Instance.IsHost)
+                return;
+            
+            if (!scorePrefab)
+                return;
+
+            if (scores.ContainsKey(player))
+                return;
+            
+            NetworkSystem.Instance.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, player);
+        }
+
+        private void OnPlayerDespawned(NetworkObject player)
+        {
+            if (!NetworkSystem.Instance.IsHost)
+                return;
+
+            var score = GetScoreForPlayer(player.InputAuthority);
+            NetworkSystem.Instance.Despawn(score.Object);
+        }
+        
+        private void OnReset()
+        {
+            foreach (var score in scores.Values)
+            {
+                score.Reset();
+            }
+        }
+
+        private void OnBeginSpawn()
+        {
+            foreach (var player in PlayerSystem.Instance.AllPlayers)
+            {
+                if (!player)
+                    continue;
+                
+                SpawnScoreForPlayer(player.Object.InputAuthority);
+            }
         }
     }
 }
