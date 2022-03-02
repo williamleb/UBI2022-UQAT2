@@ -18,6 +18,7 @@ namespace Units.Player
     public partial class PlayerEntity : NetworkBehaviour
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
+        public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         public int PlayerID { get; private set; }
         
@@ -72,6 +73,8 @@ namespace Units.Player
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
+            OnPlayerDespawned?.Invoke(Object);
+
             if (Object.HasStateAuthority)
                 DespawnScore();
         }

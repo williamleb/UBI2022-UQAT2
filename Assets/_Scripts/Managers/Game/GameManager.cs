@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Fusion;
 using Systems.Network;
-using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
 
@@ -24,8 +22,7 @@ namespace Managers.Game
 
         public event Action OnBeginSpawn; // Only called on host
         public event Action OnEndSpawn; // Only called on host
-        public event Action<Score, PlayerRef> OnScoreRegistered; 
-        public event Action<PlayerRef> OnScoreUnregistered; 
+        public event Action OnReset; // Only called on host
         public event Action<GameState> OnGameStateChanged; 
         public event Action OnPhaseTotalHomeworkChanged
         {
@@ -34,7 +31,6 @@ namespace Managers.Game
         }
         
         [SerializeField] private int totalNumberOfHomeworkToFinishPhase = 10; // TODO Replace with current phase info
-        [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
         
         private NetworkedGameData networkedData;
         private GameState currentState;
@@ -46,50 +42,9 @@ namespace Managers.Game
         public int NumberOfHomeworkToFinishPhase => totalNumberOfHomeworkToFinishPhase;
         public GameState CurrentState => currentState;
         public bool IsSpawning => spawnAndStartGameCoroutine != null;
-
-        private Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
+        public bool IsNextHomeworkLastForPhase => NumberOfHomeworkToFinishPhase <= PhaseTotalHomework + 1;
 
         public bool IsRunning => currentState == GameState.Running;
-
-        public Score GetScoreForPlayer(PlayerRef player)
-        {
-            if (!scores.ContainsKey(player))
-                return null;
-
-            return scores[player];
-        }
-
-        public PlayerRef FindPlayerWithHighestScore()
-        {
-            if (!scores.Any())
-                return PlayerRef.None;
-
-            var highestScore = scores.First().Key;
-            foreach (var player in scores.Keys)
-            {
-                if (scores[player].Value > scores[highestScore].Value)
-                {
-                    highestScore = player;
-                }
-            }
-            
-            return highestScore;
-        }
-
-        public void RegisterScore(Score score, PlayerRef player)
-        {
-            Debug.Assert(!scores.ContainsKey(player), $"Trying to register a score for player {player.PlayerId} when a score is already registered for them");
-            scores.Add(player, score);
-            
-            OnScoreRegistered?.Invoke(score, player);
-        }
-
-        public void UnregisterScore(PlayerRef player)
-        {
-            scores.Remove(player);
-            
-            OnScoreUnregistered?.Invoke(player);
-        }
 
         protected override void Awake()
         {
@@ -130,30 +85,6 @@ namespace Managers.Game
             OnGameStateChanged?.Invoke(currentState);
         }
         
-        public void HandHomework(PlayerEntity playerEntity)
-        {
-            if (currentState != GameState.Running)
-                return;
-            
-            // TODO Manage teams (add points to all team)
-            // TODO Manage different types of homework (fake, golden)
-
-            var player = playerEntity.Object.InputAuthority;
-            var score = GetScoreForPlayer(player);
-            if (!score) Debug.LogWarning($"Tried to hand homework for player {player.PlayerId} which doesn't have any score");
-
-            ++networkedData.PhaseTotalHomework;
-            if (PhaseTotalHomework == NumberOfHomeworkToFinishPhase)
-            {
-                score.Add(scoreForLastHomework);
-                EndGame(); // TODO Switch phase if still has phases
-            }
-            else
-            {
-                score.Add(1);
-            }
-        }
-
         private void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
         {
             // TODO Remove this method once we have a good start condition not only based on the first player
@@ -201,8 +132,11 @@ namespace Managers.Game
             networkedData.GameIsStarted = true;
         }
 
-        private void EndGame()
+        public void EndGame()
         {
+            if (currentState != GameState.Running)
+                return;
+            
             networkedData.GameIsEnded = true;
         }
 
@@ -210,9 +144,15 @@ namespace Managers.Game
         {
             networkedData.Reset();
             
-            foreach (var score in scores.Values)
+            OnReset?.Invoke();
+        }
+        
+        public void IncrementHomeworksGivenForPhase()
+        {
+            ++networkedData.PhaseTotalHomework;
+            if (PhaseTotalHomework == NumberOfHomeworkToFinishPhase)
             {
-                score.Reset();
+                EndGame(); // TODO Switch phase if still has phases
             }
         }
     }
