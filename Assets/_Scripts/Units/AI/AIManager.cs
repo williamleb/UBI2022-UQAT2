@@ -1,23 +1,29 @@
 ﻿using System.Collections.Generic;
 using Systems.Network;
 using Fusion;
+using Managers.Game;
 using UnityEngine;
+using Utilities.Extensions;
 using Utilities.Singleton;
 
 namespace Units.AI
 {
     public class AIManager : Singleton<AIManager>
     {
-        [SerializeField] private AIEntity entityPrefab;
-        [SerializeField] private GameObject brainPrefab;
-
         private AIEntity teacher = null;
-        private List<AIEntity> students = new List<AIEntity>();
+        private readonly List<AIEntity> students = new List<AIEntity>();
+
+        private readonly List<AIEntity> aisToSpawn = new List<AIEntity>();
+
+        public AIEntity Teacher => teacher;
+        public IEnumerable<AIEntity> Students => students;
 
         public void RegisterTeacher(AIEntity teacherAI)
         {
             Debug.Assert(!teacher, "Trying to assign a teacher when there is already another teacher (there can only be one teacher)");
             teacher = teacherAI;
+            
+            UpdateAISpawned(teacherAI);
         }
 
         public void UnregisterTeacher(AIEntity teacherAI)
@@ -29,6 +35,8 @@ namespace Units.AI
         public void RegisterStudent(AIEntity student)
         {
             students.Add(student);
+            
+            UpdateAISpawned(student);
         }
 
         public void UnregisterStudent(AIEntity student)
@@ -36,39 +44,70 @@ namespace Units.AI
             students.Remove(student);
         }
 
+        private void UpdateAISpawned(AIEntity aiEntity)
+        {
+            aisToSpawn.Remove(aiEntity);
+
+            if (!GameManager.HasInstance)
+                return;
+
+            if (GameManager.Instance.IsSpawning && aisToSpawn.Count == 0)
+            {
+                GameManager.Instance.UnlockSpawn(this);
+            }
+        }
+
         private void Start()
         {
-            NetworkSystem.Instance.OnPlayerJoinedEvent += OnPlayerJoined;
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnBeginSpawn += SpawnAIsFromSpawnLocations;
         }
         
         protected override void OnDestroy()
         {
-            if (NetworkSystem.HasInstance)
-            {
-                NetworkSystem.Instance.OnPlayerJoinedEvent -= OnPlayerJoined;
-            }
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnBeginSpawn -= SpawnAIsFromSpawnLocations;
             
             base.OnDestroy();
         }
 
-        private void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
+        private void SpawnAIsFromSpawnLocations()
         {
-            if (!NetworkSystem.Instance.IsHost) 
-                return;
-            
-            // TODO Spawn AIs on AI spawners
-            
-            var entity = runner.Spawn(entityPrefab, Vector3.zero, Quaternion.identity, playerRef,
-                (networkRunner, aiObject) =>
-                {
-                    var entity = aiObject.GetComponent<AIEntity>();
-                    Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
+            GameManager.Instance.LockSpawn(this);
 
-                    var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
-                    if (homeworkHandingStation) entity.MarkAsTeacher();
-                    else entity.MarkAsStudent();
-                });
-            entity.AddBrain(brainPrefab);
+            foreach (var spawnLocation in FindObjectsOfType<AISpawnLocation>())
+            {
+                SpawnAI(spawnLocation);
+            }
+            
+            GameManager.Instance.UnlockSpawn(this);
+        }
+
+        private void SpawnAI(AISpawnLocation spawnLocation)
+        {
+            var spawnLocationTransform = spawnLocation.transform;
+            var entityGameObject = NetworkSystem.Instance.Spawn(
+                spawnLocation.AIEntityPrefab, 
+                spawnLocationTransform.position, 
+                spawnLocationTransform.rotation, 
+                null, 
+                SetupAIEntityBeforeSpawn);
+            
+            var entity = entityGameObject.GetComponentInEntity<AIEntity>();
+            Debug.Assert(entity);
+            entity.AddBrain(spawnLocation.AIBrainPrefab);
+            
+            aisToSpawn.Add(entity);
+        }
+
+        private void SetupAIEntityBeforeSpawn(NetworkRunner runner, NetworkObject aiObject)
+        {
+            var entity = aiObject.GetComponent<AIEntity>();
+            Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
+
+            var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
+            if (homeworkHandingStation) entity.MarkAsTeacher();
+            else entity.MarkAsStudent();
         }
     }
 }

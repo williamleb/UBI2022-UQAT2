@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -21,6 +22,8 @@ namespace Managers.Game
         // Area to unlock
         // Number of points for last homework
 
+        public event Action OnBeginSpawn; // Only called on host
+        public event Action OnEndSpawn; // Only called on host
         public event Action<Score, PlayerRef> OnScoreRegistered; 
         public event Action<PlayerRef> OnScoreUnregistered; 
         public event Action<GameState> OnGameStateChanged; 
@@ -36,9 +39,13 @@ namespace Managers.Game
         private NetworkedGameData networkedData;
         private GameState currentState;
 
+        private Coroutine spawnAndStartGameCoroutine = null;
+        private List<MonoBehaviour> spawnLocks = new List<MonoBehaviour>();
+
         public int PhaseTotalHomework => networkedData.PhaseTotalHomework;
         public int NumberOfHomeworkToFinishPhase => totalNumberOfHomeworkToFinishPhase;
         public GameState CurrentState => currentState;
+        public bool IsSpawning => spawnAndStartGameCoroutine != null;
 
         private Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
 
@@ -102,6 +109,12 @@ namespace Managers.Game
             
             if (NetworkSystem.HasInstance)
                 NetworkSystem.Instance.OnPlayerJoinedEvent -= OnPlayerJoined;
+
+            if (spawnAndStartGameCoroutine != null)
+            {
+                StopCoroutine(spawnAndStartGameCoroutine);
+                spawnAndStartGameCoroutine = null;
+            }
             
             base.OnDestroy();
         }
@@ -143,8 +156,36 @@ namespace Managers.Game
         {
             // TODO Remove this method once we have a good start condition not only based on the first player
             // being spawned
+            if (currentState == GameState.Running || IsSpawning)
+                return;
+
+
             if (NetworkSystem.Instance.IsHost)
-                StartGame();
+                spawnAndStartGameCoroutine = StartCoroutine(SpawnAndStartGameRoutine());
+        }
+
+        public void LockSpawn(MonoBehaviour spawnLock)
+        {
+            spawnLocks.Add(spawnLock);
+        }
+
+        public void UnlockSpawn(MonoBehaviour spawnLock)
+        {
+            spawnLocks.Remove(spawnLock);
+        }
+
+        private IEnumerator SpawnAndStartGameRoutine()
+        {
+            spawnLocks.Clear();
+            OnBeginSpawn?.Invoke();
+            yield return null;
+
+            yield return new WaitUntil(() => spawnLocks.Count <= 0);
+            
+            spawnAndStartGameCoroutine = null;
+            OnEndSpawn?.Invoke();
+            
+            StartGame();
         }
         
         public void StartGame()

@@ -1,4 +1,5 @@
-﻿using Managers.Game;
+﻿using System;
+using Managers.Game;
 using Managers.Interactions;
 using Units.Player;
 using UnityEngine;
@@ -11,6 +12,9 @@ namespace Units.AI
     public class HomeworkHandingStation : MonoBehaviour
     {
         private Interaction giveHomeworkInteraction;
+
+        public Interacter EntityThatHasGivenHomeworkThisFrame { get; private set; } = null;
+        public bool HasAnEntityGivenHomeworkThisFrame => EntityThatHasGivenHomeworkThisFrame != null;
 
         private void Awake()
         {
@@ -61,6 +65,12 @@ namespace Units.AI
                 HandHomework(interacter);
             
             inventory.RemoveHomework();
+            EntityThatHasGivenHomeworkThisFrame = interacter;
+        }
+
+        private void LateUpdate()
+        {
+            EntityThatHasGivenHomeworkThisFrame = null;
         }
 
         private void HandHomework(Interacter interacter)

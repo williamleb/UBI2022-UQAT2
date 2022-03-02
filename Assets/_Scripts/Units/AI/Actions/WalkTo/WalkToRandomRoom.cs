@@ -23,7 +23,15 @@ namespace Units.AI.Actions
         protected override void OnBeforeStart()
         {
             base.OnBeforeStart();
-            SetNewDestination();
+
+            if (roomTarget.Value == null)
+            {
+                SetNewDestination();
+            }
+            else
+            {
+                RestoreDestination();
+            }
         }
 
         protected override TaskStatus OnUpdateImplementation()
@@ -45,6 +53,13 @@ namespace Units.AI.Actions
 
             roomToWalkTo = rooms.RandomElement();
             roomTarget?.SetValue(roomToWalkTo.transform);
+            randomPositionInRoom = roomToWalkTo.GetRandomRoomPosition();
+        }
+
+        private void RestoreDestination()
+        {
+            roomToWalkTo = roomTarget.Value.GetComponent<Room>();
+            Debug.Assert(roomToWalkTo);
             randomPositionInRoom = roomToWalkTo.GetRandomRoomPosition();
         }
 

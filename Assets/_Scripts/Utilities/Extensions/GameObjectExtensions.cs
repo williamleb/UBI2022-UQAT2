@@ -84,5 +84,15 @@ namespace Utilities.Extensions
 
             return gameObject.layer == layer;
         }
+        
+        public static bool IsAnAI(this GameObject gameObject)
+        {
+            return gameObject.CompareTag(Tags.AI) || gameObject.GetParent().CompareTag(Tags.AI);
+        }
+        
+        public static bool IsAPlayer(this GameObject gameObject)
+        {
+            return gameObject.CompareTag(Tags.PLAYER) || gameObject.GetParent().CompareTag(Tags.PLAYER);
+        }
     }
 }
