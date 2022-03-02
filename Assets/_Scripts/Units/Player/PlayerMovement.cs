@@ -9,10 +9,9 @@ using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
-    [RequireComponent(typeof(NetworkCharacterController))]
     public partial class PlayerEntity
     {
-        private NetworkCharacterController cc;
+        private NetworkRigidbody nRb;
         [Networked] private NetworkBool CanMove { get; set; } = true;
         [Networked] private NetworkBool Dashing { get; set; }
 
@@ -20,33 +19,48 @@ namespace Units.Player
 
         private TickTimer dashTimer;
         private bool hasHitSomeoneThisFrame = false;
+        private float maxSpeed;
+        private Vector3 velocity = Vector3.zero;
 
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
+        private float CurrentAcceleration
+        {
+            get
+            {
+                //turn rate decreases acceleration, acceleration changes move velocity
+                float turnRate = data.TurnRate * (maxSpeed / data.MoveMaximumSpeed);
+                //If velocity and move direction are not aligned the acceleration is reduced
+                //dot returns 1 when vectors are aligned and 0 when perpendicular
+                turnRate -= Vector3.Dot(velocity.normalized, MoveDirection);
+                return data.MoveAcceleration / turnRate;
+            }
+        }
+
         private void MovementAwake()
         {
-            cc = GetComponent<NetworkCharacterController>();
-            cc.Config.MaxSpeed = data.MoveMaximumSpeed;
-            cc.Config.Acceleration = data.MoveAcceleration;
-            cc.Config.Braking = data.MoveDeceleration;
+            nRb = GetComponent<NetworkRigidbody>();
             dashTimer = new TickTimer(data.DashDuration);
             dashTimer.OnTimerEnd += () => EndDash();
         }
 
-        private void MoveUpdate(NetworkInputData inputData)
+        private void MoveUpdate()
         {
-            GetInput(inputData);
+            CalculateVelocity();
             MovePlayer();
             if (Dashing) DetectCollision();
             RotatePlayer();
             dashTimer.Tick(Runner.DeltaTime);
         }
 
-        private void GetInput(NetworkInputData inputData)
+
+        private void SetMoveInput(NetworkInputData inputData)
         {
             if (!Dashing)
             {
                 MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+                //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
+                MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
                 ChangeMoveSpeed(inputData.IsSprint);
                 if (inputData.IsDash) Dash();
             }
@@ -56,7 +70,7 @@ namespace Units.Player
         {
             bool canSprint = isSprinting && !inventory.HasHomework;
             //Add other speed related logic. Boosters, slow when holding golden homework?
-            cc.MaxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+            maxSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
         }
 
         private void Dash()
@@ -64,8 +78,24 @@ namespace Units.Player
             if (!CanMove || inventory.HasHomework || Dashing) return;
             Dashing = true;
             dashTimer.Reset();
-            cc.MaxSpeed = data.DashSpeed;
-            MoveDirection = transform.forward;
+            maxSpeed = data.DashForce;
+            //TODO add dash animation
+        }
+
+        private void CalculateVelocity()
+        {
+            //Reset local velocity if character isn't moving.
+            if (nRb.Rigidbody.velocity.sqrMagnitude < 0.1) velocity = Vector3.zero;
+            
+            if (MoveDirection.sqrMagnitude > 0)
+            {
+                velocity += MoveDirection * (CurrentAcceleration * Runner.DeltaTime);
+                velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+            }
+            else
+            {
+                velocity = Vector3.MoveTowards(velocity, Vector3.zero, data.MoveDeceleration * Runner.DeltaTime);
+            }
         }
 
         private void EndDash(bool knockOutPlayer = true)
@@ -104,18 +134,21 @@ namespace Units.Player
         private async void Hit()
         {
             CanMove = false;
-            await Task.Delay((int)(cc.MaxSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
+            await Task.Delay((int)(maxSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
             CanMove = true;
         }
 
         private void MovePlayer()
         {
-            cc.Move(MoveDirection);
+            nRb.Rigidbody.velocity = velocity;
         }
 
         private void RotatePlayer()
         {
-            if (MoveDirection.sqrMagnitude > 0) transform.forward = MoveDirection;
+            if (MoveDirection.sqrMagnitude > 0)
+            {
+                transform.forward = Vector3.MoveTowards(transform.forward, MoveDirection, data.TurnRotationSpeed);
+            }
         }
     }
 }
