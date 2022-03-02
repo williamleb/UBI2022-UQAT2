@@ -56,7 +56,7 @@ namespace Units
             if (!homework)
                 return;
             
-            homework.Free(transform.position);
+            homework.DropInWorld(transform.position);
 
             HeldHomeworkId = NO_HOMEWORK;
         }

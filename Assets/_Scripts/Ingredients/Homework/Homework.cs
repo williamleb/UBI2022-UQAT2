@@ -15,8 +15,9 @@ namespace Ingredients.Homework
     {
         private enum State : byte
         {
-            Free = 0,
-            Taken
+            InWorld = 0,
+            Taken,
+            Free
         }
 
         [SerializeField, Required] private GameObject visual;
@@ -28,6 +29,7 @@ namespace Ingredients.Homework
         private Collider[] colliders;
 
         public int HomeworkId => Id.GetHashCode();
+        public bool IsFree => HomeworkState == State.Free;
 
         private void Awake()
         {
@@ -40,6 +42,11 @@ namespace Ingredients.Homework
         {
             interaction.OnInstantFeedback += OnInstantFeedback;
             interaction.OnInteractedWith += OnInteractedWith;
+        }
+
+        public void Free()
+        {
+            HomeworkState = State.Free;
         }
 
         private void OnInstantFeedback(Interacter interacter)
@@ -59,19 +66,27 @@ namespace Ingredients.Homework
             if (!inventory)
             {
                 Debug.LogWarning("Homework collected by an interacter without an inventory. Reverting to free state.");
-                HomeworkState = State.Free;
+                HomeworkState = State.InWorld;
             }
 
             HomeworkState = State.Taken;
             inventory.HoldHomework(this);
         }
 
-        public void Free(Vector3 position)
+        public void Spawn(Vector3 position)
         {
-            if (HomeworkState == State.Free)
+            if (HomeworkState != State.Free)
                 return;
             
-            HomeworkState = State.Free;
+            
+        }
+
+        public void DropInWorld(Vector3 position)
+        {
+            if (HomeworkState != State.Taken)
+                return;
+            
+            HomeworkState = State.InWorld;
             
             transform.position = position + Vector3.up * 2f;
             rb.isKinematic = false;
@@ -85,8 +100,6 @@ namespace Ingredients.Homework
 
         public override void Spawned()
         {
-            HomeworkState = State.Free;
-            
             if (HomeworkManager.HasInstance)
             {
                 HomeworkManager.Instance.RegisterHomework(this);
@@ -103,14 +116,14 @@ namespace Ingredients.Homework
 
         private void UpdateForCurrentState()
         {
-            visual.SetActive(HomeworkState == State.Free);
-            interaction.InteractionEnabled = HomeworkState == State.Free;
+            visual.SetActive(HomeworkState == State.InWorld);
+            interaction.InteractionEnabled = HomeworkState == State.InWorld;
             foreach (var colliderComponent in colliders)
             {
-                colliderComponent.enabled = HomeworkState == State.Free;
+                colliderComponent.enabled = HomeworkState == State.InWorld;
             }
 
-            rb.isKinematic = HomeworkState != State.Free;
+            rb.isKinematic = HomeworkState != State.InWorld;
         }
 
         private static void OnStateChanged(Changed<Homework> changed)

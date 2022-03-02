@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fusion;
+using Scriptables;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using Systems;
 using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
@@ -14,8 +16,10 @@ namespace Ingredients.Homework
     {
         [SerializeField, Required] private NetworkObject homeworkPrefab;
         
-        private Dictionary<int, Homework> homeworks = new Dictionary<int, Homework>();
+        private readonly Dictionary<int, Homework> homeworks = new Dictionary<int, Homework>();
         private HomeworkSpawnPoint[] spawnPoints = Array.Empty<HomeworkSpawnPoint>();
+
+        private HomeworkSettings settings;
 
         public void RegisterHomework(Homework homework)
         {
@@ -37,14 +41,10 @@ namespace Ingredients.Homework
 
         public void RemoveHomework(int homeworkId)
         {
-            // TODO Return homework to pool when homeworks are pullable
             if (!homeworks.TryGetValue(homeworkId, out var homework))
                 return;
             
-            if (!NetworkSystem.Instance.IsConnected || !NetworkSystem.Instance.IsHost)
-                return;
-            
-            NetworkSystem.Instance.Despawn(homework.Object);
+            homework.Free();
         }
 
         private void Start()
@@ -54,14 +54,14 @@ namespace Ingredients.Homework
             {
                 Debug.LogWarning("No spawn points for homeworks found in the scene. We won't be able to spawn homeworks.");
             }
+
+            settings = SettingsSystem.Instance.HomeworkSettings;
         }
 
-        // The homework spawning logic will change in the future
-        // We could also reuse homeworks instead of spawning/despawning them
         private float spawnTimer = 0f;
         private void Update()
         {
-            if (!NetworkSystem.Instance.IsConnected || !NetworkSystem.Instance.IsHost || spawnPoints.IsNullOrEmpty())
+            if (!NetworkSystem.Instance.IsHost || spawnPoints.IsNullOrEmpty())
                 return;
             
             foreach (var homework in homeworks.Values)
@@ -77,8 +77,17 @@ namespace Ingredients.Homework
             {
                 spawnTimer = 0f;
                 var randomSpawnPoint = spawnPoints.RandomElement();
-                NetworkSystem.Instance.Spawn(homeworkPrefab, randomSpawnPoint.transform.position);
+                
+                var spawnerTransform = randomSpawnPoint.transform;
+                NetworkSystem.Instance.Spawn(homeworkPrefab, spawnerTransform.position, spawnerTransform.rotation, null, ManageHomeworkBeforeSpawned);
             }
+        }
+
+        private void ManageHomeworkBeforeSpawned(NetworkRunner runner, NetworkObject homeworkObject)
+        {
+            var homework = homeworkObject.GetComponent<Homework>();
+            Debug.Assert(homework);
+            homework.Free();
         }
     }
 }
