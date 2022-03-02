@@ -40,7 +40,7 @@ namespace Managers.Game
         private GameState currentState;
 
         private Coroutine spawnAndStartGameCoroutine = null;
-        private List<MonoBehaviour> spawnLocks = new List<MonoBehaviour>();
+        private HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
 
         public int PhaseTotalHomework => networkedData.PhaseTotalHomework;
         public int NumberOfHomeworkToFinishPhase => totalNumberOfHomeworkToFinishPhase;
@@ -48,6 +48,8 @@ namespace Managers.Game
         public bool IsSpawning => spawnAndStartGameCoroutine != null;
 
         private Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
+
+        public bool IsRunning => currentState == GameState.Running;
 
         public Score GetScoreForPlayer(PlayerRef player)
         {
@@ -177,6 +179,8 @@ namespace Managers.Game
         private IEnumerator SpawnAndStartGameRoutine()
         {
             spawnLocks.Clear();
+            yield return null;
+            
             OnBeginSpawn?.Invoke();
             yield return null;
 

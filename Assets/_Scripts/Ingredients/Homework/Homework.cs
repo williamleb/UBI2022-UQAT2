@@ -13,6 +13,8 @@ namespace Ingredients.Homework
     [RequireComponent(typeof(Rigidbody))]
     public class Homework : NetworkBehaviour
     {
+        private static readonly int isSpawned = Animator.StringToHash("IsSpawned");
+
         private enum State : byte
         {
             InWorld = 0,
@@ -27,6 +29,7 @@ namespace Ingredients.Homework
         private Interaction interaction;
         private Rigidbody rb;
         private Collider[] colliders;
+        private Animator animator;
 
         public int HomeworkId => Id.GetHashCode();
         public bool IsFree => HomeworkState == State.Free;
@@ -36,17 +39,13 @@ namespace Ingredients.Homework
             interaction = GetComponent<Interaction>();
             rb = GetComponent<Rigidbody>();
             colliders = GetComponents<Collider>();
+            animator = GetComponent<Animator>();
         }
 
         private void OnEnable()
         {
             interaction.OnInstantFeedback += OnInstantFeedback;
             interaction.OnInteractedWith += OnInteractedWith;
-        }
-
-        public void Free()
-        {
-            HomeworkState = State.Free;
         }
 
         private void OnInstantFeedback(Interacter interacter)
@@ -72,13 +71,23 @@ namespace Ingredients.Homework
             HomeworkState = State.Taken;
             inventory.HoldHomework(this);
         }
+        
+        public void Free()
+        {
+            HomeworkState = State.Free;
+        }
 
-        public void Spawn(Vector3 position)
+        public void Activate(Transform transformToActivateTo)
         {
             if (HomeworkState != State.Free)
                 return;
             
-            
+            HomeworkState = State.InWorld;
+
+            var thisTransform = transform;
+            thisTransform.position = transformToActivateTo.position;
+            thisTransform.rotation = transformToActivateTo.rotation;
+            rb.isKinematic = false;
         }
 
         public void DropInWorld(Vector3 position)
@@ -124,6 +133,7 @@ namespace Ingredients.Homework
             }
 
             rb.isKinematic = HomeworkState != State.InWorld;
+            animator.SetBool(isSpawned, HomeworkState != State.Free);
         }
 
         private static void OnStateChanged(Changed<Homework> changed)
