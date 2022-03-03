@@ -10,11 +10,19 @@ namespace Units
         private const int NO_HOMEWORK = -1;
 
         [SerializeField] private SpriteMarkerReceptor marker;
+        [SerializeField] private Transform homeworkHoldingTransform;
 
         [Networked(OnChanged = nameof(OnHeldHomeworkChanged))]
         private int HeldHomeworkId { get; set; }
 
         public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
+        public Transform HomeworkHoldingTransform => homeworkHoldingTransform;
+
+        private void Awake()
+        {
+            if (!homeworkHoldingTransform)
+                homeworkHoldingTransform = transform;
+        }
 
         public override void Spawned()
         {

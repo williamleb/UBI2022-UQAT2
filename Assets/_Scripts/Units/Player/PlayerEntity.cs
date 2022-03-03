@@ -22,12 +22,15 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
-        public int PlayerID { get; private set; }
+        
         [SerializeField][Required] private CameraStrategy mainCamera;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
         private NetworkInputData inputs;
+        
+        public int PlayerID { get; private set; }
         
         [Networked] private NetworkId ScoreObjectId { get; set; }
 
