@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Scriptables
@@ -6,11 +7,8 @@ namespace Scriptables
     [CreateAssetMenu(menuName = "Settings/Player Settings")]
     public class PlayerSettings : ScriptableObject
     {
-        [Header("Player movement config")] [Tooltip("Walking speed")] [SerializeField]
+        [Header("Player movement ")] [Tooltip("Walking speed")] [SerializeField]
         private float moveMaximumSpeed = 7f;
-
-        [Tooltip("Running speed")] [SerializeField]
-        private float sprintMaximumSpeed = 14f;
 
         [Tooltip("Gaz, the amount of force added when moving. Higher number means you reach max speed faster")]
         [SerializeField]
@@ -20,9 +18,27 @@ namespace Scriptables
         [SerializeField]
         private float moveDeceleration = 7f;
 
-        [Tooltip("VISUAL ONLY Rotation step to turn towards new direction, higher means bigger steps -> faster snap to new rotation")] [SerializeField]
+        [Space] [Header("Sprint config")] [Tooltip("Sprint max speed")] [SerializeField]
+        private float sprintMaximumSpeed = 14f;
+
+        [Tooltip("time to sprint maximum speed, increases max speed per second. " +
+                 "Higher number means you reach sprint max speed faster")]
+        [SerializeField]
+        private float sprintAcceleration = 20f;
+
+        [Tooltip("time to normal, decreases max speed per second. Higher number means your speed decreases faster")]
+        [SerializeField]
+        private float sprintBraking = 10f;
+
+        [Space]
+        [Header("Turn config")]
+        [Tooltip("VISUAL ONLY Rotation step to turn towards new direction, " +
+                 "higher means bigger steps faster snap to new rotation")]
+        [SerializeField]
         private float turnRotationSpeed = 0.2f;
-        [Tooltip("Turn rate the factor that divides the move acceleration when turning. Higher means slower turns")] [SerializeField]
+
+        [Tooltip("Turn rate the factor that divides the move acceleration when turning. Higher means slower turns")]
+        [SerializeField]
         [MinValue(1.1f)]
         private float turnRate = 2f;
 
@@ -30,7 +46,7 @@ namespace Scriptables
         [Header("Dash configuration")]
         [Tooltip("Amount of force of the dash. Higher number means you dash at a higher speed")]
         [SerializeField]
-        private float dashForce = 28f;
+        private float dashForce = 30f;
 
         [Tooltip("Time in seconds before the dash has ended and we assumed the player missed and fumbles")]
         [SerializeField]
@@ -41,7 +57,7 @@ namespace Scriptables
         [SerializeField]
         private int knockOutTimeInMS = 500;
 
-        #region accessors
+        [SerializeField] private PlayerCameraSettings playerCameraSettings;
 
         public float MoveMaximumSpeed => moveMaximumSpeed;
         public float SprintMaximumSpeed => sprintMaximumSpeed;
@@ -52,7 +68,19 @@ namespace Scriptables
         public int KnockOutTimeInMS => knockOutTimeInMS;
         public float TurnRotationSpeed => turnRotationSpeed;
         public float TurnRate => turnRate;
-
-        #endregion
+        public float SprintBraking => sprintBraking;
+        public float SprintAcceleration => sprintAcceleration;
+        public PlayerCameraSettings PlayerCameraSetting => playerCameraSettings;
+        
+        [Serializable]
+        public class PlayerCameraSettings
+        {
+            public float PosX;
+            public float PosY;
+            public float PosZ;
+            public float RotX;
+            public float FieldOfView;
+        }
+        
     }
 }

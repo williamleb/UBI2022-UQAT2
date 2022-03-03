@@ -29,7 +29,6 @@ namespace Units.Player
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
-        private NetworkInputData inputs;
 
         private bool isThrowing = false;
         
@@ -46,6 +45,7 @@ namespace Units.Player
             inventory.AssignVelocityObject(this);
 
             MovementAwake();
+            DashAwake();
         }
 
         public override async void Spawned()
@@ -56,7 +56,7 @@ namespace Units.Player
 
             if (Object.HasInputAuthority)
             {
-                mainCamera.AddTarget(gameObject);
+                mainCamera.Init(transform, data.PlayerCameraSetting);
             }
             else
             {
@@ -79,6 +79,7 @@ namespace Units.Player
             if (GetInput(out NetworkInputData inputData))
             {
                 SetMoveInput(inputData);
+                SetDashInput(inputData);
                 if (inputData.IsInteractOnce && Runner.IsForward)
                 {
                     interacter.InteractWithClosestInteraction();
@@ -92,6 +93,7 @@ namespace Units.Player
                 }
             }
             MoveUpdate();
+            DashUpdate();
         }
 
         private void UpdateThrow(NetworkInputData inputData)

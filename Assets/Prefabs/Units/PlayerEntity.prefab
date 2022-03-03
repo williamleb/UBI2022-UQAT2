@@ -47,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bounds: {x: 27, y: 0, z: 31}
   boundsOffset: {x: 1, y: 0, z: 11}
-  boundsMovementMax: 2
   mainCamera: {fileID: 6673044231460945073}
 --- !u!114 &3536100283719149549
 MonoBehaviour:
@@ -62,8 +61,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 2
-  MyCamera: {fileID: 6673044231460945077}
+  MyCamera: {fileID: 6673044231460945073}
   cameraBounds: {fileID: 3536100283719149550}
+  MAX_DIST: 64
+  MIN_DIST: 50
 --- !u!1 &3536100283858223401
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,13 +192,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6673044231460945078}
-  m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
-  m_LocalPosition: {x: 0, y: 63, z: -44}
+  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 15, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3536100283719149548}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 55, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!20 &6673044231460945073
 Camera:
   m_ObjectHideFlags: 0
@@ -223,7 +224,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 10
+  field of view: 30
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

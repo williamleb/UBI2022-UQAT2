@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Scriptables;
 using UnityEngine;
 
 namespace Units.Camera
@@ -7,36 +7,59 @@ namespace Units.Camera
     {
         [Header("Base Settings")] [SerializeField]
         protected float MoveSpeed;
-        
-        [SerializeField] protected Transform MyCamera;
 
-        [Header("-- Targets")] protected readonly List<GameObject> Targets = new List<GameObject>();
-        protected readonly List<GameObject> ActiveTargets = new List<GameObject>();
+        [SerializeField] protected UnityEngine.Camera MyCamera;
 
-        protected virtual void Initialize()
+        [Header("Boundaries")] [SerializeField]
+        private CameraBounds cameraBounds;
+
+        private Transform target;
+        private PlayerSettings.PlayerCameraSettings data;
+        private Vector3 offset;
+        private Vector3 averageTarget;
+        private float longestDistance;
+
+        private bool initialized;
+
+        private void Awake()
         {
-            if (MyCamera == null && UnityEngine.Camera.main != null) MyCamera = UnityEngine.Camera.main.transform;
+            if (MyCamera == null && UnityEngine.Camera.main != null) MyCamera = UnityEngine.Camera.main;
         }
 
-        public void AddTarget(GameObject target)
+        public void Init(Transform targetTransform, PlayerSettings.PlayerCameraSettings cameraSettings)
         {
-            Targets.Add(target);
+            target = targetTransform;
+            data = cameraSettings;
+            initialized = true;
+            UpdateCamera();
         }
 
-        public void RemoveTarget(GameObject target)
+        private void UpdateCamera()
         {
-            Targets.Remove(target);
+            if (!initialized) return;
+            CalculateAverages();
+            CalculateOffset();
+
+            MyCamera.transform.localPosition = offset;
+            MyCamera.transform.rotation = Quaternion.Euler(data.RotX, 0, 0);
+            MyCamera.fieldOfView = data.FieldOfView;
+
+            averageTarget = cameraBounds.StayWithinBounds(averageTarget, data.RotX, longestDistance);
+
+            UpdatePositionAndRotation();
         }
 
-        public virtual void ClearTargets()
+        private void LateUpdate() => UpdateCamera();
+
+        private void CalculateAverages()
         {
-            Targets.Clear();
-            ActiveTargets.Clear();
+            averageTarget = target.position;
+            longestDistance = Mathf.Sqrt(data.PosY * data.PosY + data.PosZ * data.PosZ);
         }
 
-        public void RemoveAll()
-        {
-            Targets.Clear();
-        }
+        private void CalculateOffset() => offset.Set(data.PosX, data.PosY, data.PosZ);
+
+        private void UpdatePositionAndRotation() => transform.position =
+            Vector3.Lerp(transform.position, averageTarget, Time.fixedDeltaTime * MoveSpeed);
     }
 }
