@@ -20,16 +20,15 @@ namespace Units.Player
     public partial class PlayerEntity : NetworkBehaviour
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
+        public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         public int PlayerID { get; private set; }
-
         [SerializeField][Required] private CameraStrategy mainCamera;
-        [SerializeField] private NetworkObject scorePrefab;
-
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
-
+        private NetworkInputData inputs;
+        
         [Networked] private NetworkId ScoreObjectId { get; set; }
 
         private void Awake()
@@ -51,13 +50,11 @@ namespace Units.Player
             if (Object.HasInputAuthority)
             {
                 mainCamera.AddTarget(gameObject);
-                SpawnScore();
             }
             else
             {
                 mainCamera.gameObject.Hide();
             }
-
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
@@ -67,27 +64,7 @@ namespace Units.Player
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            if (Object.HasStateAuthority)
-                DespawnScore();
-        }
-
-        private void SpawnScore()
-        {
-            if (!scorePrefab)
-            {
-                Debug.LogWarning($"Could not spawn a score for player {Object.InputAuthority.PlayerId} because it didn't have a valid {nameof(scorePrefab)}");
-                return;
-            }
-
-            var scoreObject = Runner.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, Object.InputAuthority);
-            ScoreObjectId = scoreObject.Id;
-        }
-
-        private void DespawnScore()
-        {
-            var scoreObject = Runner.FindObject(ScoreObjectId);
-            Runner.Despawn(scoreObject);
-            ScoreObjectId = new NetworkId();
+            OnPlayerDespawned?.Invoke(Object);
         }
 
         public override void FixedUpdateNetwork()

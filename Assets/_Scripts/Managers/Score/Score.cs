@@ -1,7 +1,7 @@
 ﻿using System;
 using Fusion;
 
-namespace Managers.Game
+namespace Managers.Score
 {
     public class Score : NetworkBehaviour
     {
@@ -15,14 +15,14 @@ namespace Managers.Game
 
             gameObject.name = $"Score-Player{Object.InputAuthority.PlayerId}";
             
-            if (GameManager.Instance)
-                GameManager.Instance.RegisterScore(this, Object.InputAuthority);
+            if (ScoreManager.Instance)
+                ScoreManager.Instance.RegisterScore(this, Object.InputAuthority);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            if (GameManager.HasInstance)
-                GameManager.Instance.UnregisterScore(Object.InputAuthority);
+            if (ScoreManager.HasInstance)
+                ScoreManager.Instance.UnregisterScore(Object.InputAuthority);
         }
 
         public void Add(int scoreToAdd)
