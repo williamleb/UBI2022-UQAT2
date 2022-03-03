@@ -9,21 +9,25 @@ namespace Systems
     {
         private const string SETTINGS_FOLDER_PATH = "Settings";
 
+        public static PlayerSettings PlayerSettings => Instance.PlayerSetting;
+        public static AISettings AISettings => Instance.AISetting;
+        public static HomeworkSettings HomeworkSettings => Instance.HomeworkSetting;
+
         private PlayerSettings playerSettings;
-        private AISettings aiSettings;
-        private HomeworkSettings homeworkSettings;
+        private AISettings aiSetting;
+        private HomeworkSettings homeworkSetting;
 
         public PlayerSettings PlayerSetting => playerSettings;
-        public AISettings AISettings => aiSettings;
-        public HomeworkSettings HomeworkSettings => homeworkSettings;
+        public AISettings AISetting => aiSetting;
+        public HomeworkSettings HomeworkSetting => homeworkSetting;
 
         protected override void Awake()
         {
             base.Awake();
 
             LoadSettings(out playerSettings);
-            LoadSettings(out aiSettings);
-            LoadSettings(out homeworkSettings);
+            LoadSettings(out aiSetting);
+            LoadSettings(out homeworkSetting);
         }
 
         private void LoadSettings<T>(out T memberToInitialize) where T : ScriptableObject

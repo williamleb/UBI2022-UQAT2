@@ -80,7 +80,7 @@ namespace Ingredients.Homework
                 Debug.LogWarning("No spawn points for homeworks found in the scene. We won't be able to spawn homeworks.");
             }
 
-            settings = SettingsSystem.Instance.HomeworkSettings;
+            settings = SettingsSystem.HomeworkSettings;
 
             if (GameManager.HasInstance)
             {

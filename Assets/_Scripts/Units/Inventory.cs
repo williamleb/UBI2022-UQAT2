@@ -1,6 +1,8 @@
 ﻿using Canvases.Markers;
 using Fusion;
 using Ingredients.Homework;
+using Interfaces;
+using Systems;
 using UnityEngine;
 
 namespace Units
@@ -12,16 +14,25 @@ namespace Units
         [SerializeField] private SpriteMarkerReceptor marker;
         [SerializeField] private Transform homeworkHoldingTransform;
 
+        private IVelocityObject velocityObject;
+
         [Networked(OnChanged = nameof(OnHeldHomeworkChanged))]
         private int HeldHomeworkId { get; set; }
 
         public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
         public Transform HomeworkHoldingTransform => homeworkHoldingTransform;
 
+        private Vector3 VelocityContribution => velocityObject != null ? velocityObject.Velocity * SettingsSystem.HomeworkSettings.CurrentObjectContributionToHomeworkFalling : Vector3.zero;
+
         private void Awake()
         {
             if (!homeworkHoldingTransform)
                 homeworkHoldingTransform = transform;
+        }
+
+        public void AssignVelocityObject(IVelocityObject objectToTakeVelocityFrom)
+        {
+            velocityObject = objectToTakeVelocityFrom;
         }
 
         public override void Spawned()
@@ -33,7 +44,7 @@ namespace Units
         public void HoldHomework(Homework homework)
         {
             // We drop the homework we currently have so we only have one homework
-            DropHomeworkIfHeld();
+            DropHomeworkIfHeld(Vector3.zero, 0f);
 
             HeldHomeworkId = homework.HomeworkId;
         }
@@ -41,7 +52,18 @@ namespace Units
         // Should only be called on host
         public void DropEverything()
         {
-            DropHomeworkIfHeld();
+            DropEverything(Vector3.zero, 0f);
+        }
+        
+        // Should only be called on host
+        /// <param name="direction">The direction of the force that causes the drop.
+        ///                         The dropped items might not fall exactly in this direction since the inventory's velocity also affects this direction.
+        ///                         This direction will be normalized. You should use the force attribute to change the force at which everything is dropped.</param>
+        /// <param name="force">The force at which the object should be dropped in the specified direction.
+        ///                     A force of 1 represent the same impact as the object's current velocity.</param>
+        public void DropEverything(Vector3 direction, float force)
+        {
+            DropHomeworkIfHeld(direction, force);
         }
 
         // Should only be called on host
@@ -58,13 +80,19 @@ namespace Units
             HeldHomeworkId = NO_HOMEWORK;
         }
 
-        private void DropHomeworkIfHeld()
+        private void DropHomeworkIfHeld(Vector3 impactDirection, float impactForce)
         {
             var homework = GetCurrentHomework();
             if (!homework)
                 return;
+
+            var impactContribution = impactDirection.normalized * impactForce * SettingsSystem.HomeworkSettings.ImpactContributionToHomeworkFalling;
+            Debug.Log($"Contribution: {impactContribution}");
             
-            homework.DropInWorld(transform.position);
+            var launchVelocity = impactContribution + VelocityContribution;
+            Debug.Log($"Launch velocity: {launchVelocity}");
+            
+            homework.DropInWorld(launchVelocity);
 
             HeldHomeworkId = NO_HOMEWORK;
         }
@@ -80,7 +108,7 @@ namespace Units
             return HomeworkManager.Instance.GetHomework(HeldHomeworkId);
         }
 
-    private void UpdateMarkerVisibility()
+        private void UpdateMarkerVisibility()
         {
             if (!marker)
                 return;

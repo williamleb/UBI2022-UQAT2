@@ -95,16 +95,12 @@ namespace Ingredients.Homework
             rb.isKinematic = false;
         }
 
-        public void DropInWorld(Vector3 position)
+        public void DropInWorld()
         {
-            var randomAngleX = Random.Range(25f, 60f);
-            var randomAngleY = Random.Range(0f, 360f);
-            var launchDirection = Quaternion.Euler(randomAngleX, randomAngleY, 0f) * Vector3.up;
-            
-            DropInWorld(position, launchDirection * 250);
+            DropInWorld(Vector3.zero);
         }
 
-        public void DropInWorld(Vector3 position, Vector3 velocity)
+        public void DropInWorld(Vector3 velocity)
         {
             if (HomeworkState != State.Taken)
                 return;
@@ -112,7 +108,6 @@ namespace Ingredients.Homework
             HomeworkState = State.InWorld;
             holdingTransform = null;
 
-            transform.position = position + Vector3.up * 2f;
             rb.isKinematic = false;
             rb.AddForce(velocity);
         }

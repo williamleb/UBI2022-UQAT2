@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fusion;
+using Interfaces;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
@@ -17,7 +18,7 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
-    public partial class PlayerEntity : NetworkBehaviour
+    public partial class PlayerEntity : NetworkBehaviour, IVelocityObject
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
@@ -31,6 +32,7 @@ namespace Units.Player
         private NetworkInputData inputs;
         
         public int PlayerID { get; private set; }
+        public Vector3 Velocity => nRb.Rigidbody.velocity;
         
         [Networked] private NetworkId ScoreObjectId { get; set; }
 
@@ -40,6 +42,8 @@ namespace Units.Player
 
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
+            
+            inventory.AssignVelocityObject(this);
 
             MovementAwake();
         }
@@ -139,7 +143,7 @@ namespace Units.Player
             }
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
-            inv.DropEverything();
+            inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
         }
 
 #if UNITY_EDITOR

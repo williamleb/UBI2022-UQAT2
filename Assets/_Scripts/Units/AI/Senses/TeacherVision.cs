@@ -12,7 +12,7 @@ namespace Units.AI.Senses
 
         private void Awake()
         {
-            var settings = SettingsSystem.Instance.AISettings;
+            var settings = SettingsSystem.AISettings;
             Near = settings.VisionNear;
             Far = settings.VisionFar;
             NearLength = settings.VisionNearLength;
