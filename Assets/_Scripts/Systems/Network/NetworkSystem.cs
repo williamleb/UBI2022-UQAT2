@@ -88,7 +88,7 @@ namespace Systems.Network
                 SessionName = sessionName.ToLower(),
                 CustomLobbyName = customLobbyName,
                 GameMode = GameMode.Host,
-                SceneObjectProvider = gameObject.AddComponent<NetworkSceneManagerDefault>()
+                SceneObjectProvider = LevelSystem.Instance.networkSceneObjectProvider
             });
 
             LevelSystem.Instance.LoadLobby();
@@ -107,7 +107,7 @@ namespace Systems.Network
                 SessionName = sessionName.ToLower(),
                 CustomLobbyName = customLobbyName,
                 GameMode = GameMode.Client,
-                SceneObjectProvider = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+                SceneObjectProvider = LevelSystem.Instance.networkSceneObjectProvider,
                 DisableClientSessionCreation = true
             });
 

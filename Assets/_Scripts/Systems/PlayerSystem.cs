@@ -22,7 +22,6 @@ namespace Systems
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			LevelSystem.Instance.OnGameLoad += SpawnPlayers;
 		}
 
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)

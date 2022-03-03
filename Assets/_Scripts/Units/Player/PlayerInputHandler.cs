@@ -30,6 +30,8 @@ namespace Units.Player
         private bool dashOnce;
         private bool menuOnce;
 
+        public static bool fetchInput = true;
+
         public static List<string> ValidActions => new List<string>()
         {
             nameof(move),
@@ -64,12 +66,15 @@ namespace Units.Player
         {
             NetworkInputData data = new NetworkInputData();
 
-            if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
-            if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
-            if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
-            if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
+            if (fetchInput)
+            {
+                if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
+                if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
+                if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
+                if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
 
-            data.Move = move.ReadV2();
+                data.Move = move.ReadV2();
+            }
 
             input.Set(data);
 
@@ -112,6 +117,7 @@ namespace Units.Player
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
+            NetworkSystem.Instance.OnInputEvent -= OnInput;
             DisposeInputs();
         }
     }
