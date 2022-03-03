@@ -22,7 +22,7 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
 
     IEnumerator StartGameCoroutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(15.0f);
         LevelSystem.Instance.LoadGame();
     }
 }
