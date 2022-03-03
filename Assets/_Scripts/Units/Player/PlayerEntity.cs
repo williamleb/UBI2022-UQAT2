@@ -30,12 +30,12 @@ namespace Units.Player
         private PlayerInteracter interacter;
         private Inventory inventory;
         private NetworkInputData inputs;
+
+        private bool isThrowing = false;
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         
-        [Networked] private NetworkId ScoreObjectId { get; set; }
-
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
@@ -84,12 +84,31 @@ namespace Units.Player
                     interacter.InteractWithClosestInteraction();
                 }
 
+                UpdateThrow(inputData);
+
                 if (inputData.IsMenu)
                 {
                     OnMenuPressed?.Invoke();
                 }
             }
             MoveUpdate();
+        }
+
+        private void UpdateThrow(NetworkInputData inputData)
+        {
+            // TODO This is temp until we have the right logic for the throw
+            if (inputData.IsThrow)
+            {
+                isThrowing = true;
+            }
+            else
+            {
+                if (isThrowing)
+                {
+                    isThrowing = false;
+                    inventory.DropEverything(transform.forward + Vector3.up * 0.25f, 2f);
+                }
+            }
         }
 
         public async void TriggerDespawn()

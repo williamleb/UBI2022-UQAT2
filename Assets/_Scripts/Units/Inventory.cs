@@ -87,10 +87,7 @@ namespace Units
                 return;
 
             var impactContribution = impactDirection.normalized * impactForce * SettingsSystem.HomeworkSettings.ImpactContributionToHomeworkFalling;
-            Debug.Log($"Contribution: {impactContribution}");
-            
             var launchVelocity = impactContribution + VelocityContribution;
-            Debug.Log($"Launch velocity: {launchVelocity}");
             
             homework.DropInWorld(launchVelocity);
 
