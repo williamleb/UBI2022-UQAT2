@@ -1,6 +1,7 @@
 ﻿using System;
 using Managers.Game;
 using Managers.Interactions;
+using Managers.Score;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -75,12 +76,12 @@ namespace Units.AI
 
         private void HandHomework(Interacter interacter)
         {
-            if (!GameManager.HasInstance)
+            if (!ScoreManager.HasInstance)
                 return;
             
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
-            GameManager.Instance.HandHomework(player);
+            ScoreManager.Instance.HandHomework(player);
         }
     }
 }

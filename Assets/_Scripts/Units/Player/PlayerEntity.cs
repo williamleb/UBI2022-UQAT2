@@ -1,14 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using Fusion;
-using Scriptables;
+using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Units.AI;
 using Units.Camera;
+using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
+using PlayerSettings = Scriptables.PlayerSettings;
 
 namespace Units.Player
 {
@@ -18,12 +20,10 @@ namespace Units.Player
     public partial class PlayerEntity : NetworkBehaviour
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
+        public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         public int PlayerID { get; private set; }
-        
-        [SerializeField] private CameraStrategy mainCamera;
-        [SerializeField] private NetworkObject scorePrefab;
-        
+        [SerializeField][Required] private CameraStrategy mainCamera;
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
@@ -41,77 +41,48 @@ namespace Units.Player
             MovementAwake();
         }
 
-        private void Start()
-        {
-        }
-
         public override async void Spawned()
         {
             base.Spawned();
 
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
-            
-            if (mainCamera == null && UnityEngine.Camera.main != null) mainCamera = UnityEngine.Camera.main.GetComponentInParent<CameraStrategy>();
-            if (!Object.HasInputAuthority)
+
+            if (Object.HasInputAuthority)
             {
-                mainCamera!.gameObject.Hide();
+                mainCamera.AddTarget(gameObject);
             }
             else
             {
-                mainCamera!.AddTarget(gameObject);
+                mainCamera.gameObject.Hide();
             }
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
             
             PlayerSystem.Instance.AddPlayer(this);
-
-            if (Object.HasStateAuthority)
-                SpawnScore();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            if (Object.HasStateAuthority)
-                DespawnScore();
-        }
-
-        private void SpawnScore()
-        {
-            if (!scorePrefab)
-            {
-                Debug.LogWarning($"Could not spawn a score for player {Object.InputAuthority.PlayerId} because it didn't have a valid {nameof(scorePrefab)}");
-                return;
-            }
-            
-            var scoreObject = Runner.Spawn(scorePrefab, Vector3.zero, Quaternion.identity, Object.InputAuthority);
-            ScoreObjectId = scoreObject.Id;
-        }
-
-        private void DespawnScore()
-        {
-            var scoreObject = Runner.FindObject(ScoreObjectId);
-            Runner.Despawn(scoreObject);
-            ScoreObjectId = new NetworkId();
+            OnPlayerDespawned?.Invoke(Object);
         }
 
         public override void FixedUpdateNetwork()
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                inputs = inputData;
-            }
-            
-            MoveUpdate(inputs);
-            if (inputs.IsInteract)
-            {
-                interacter.InteractWithClosestInteraction(inputs.IsInteractOnce);
-            }
+                SetMoveInput(inputData);
+                if (inputData.IsInteractOnce && Runner.IsForward)
+                {
+                    interacter.InteractWithClosestInteraction();
+                }
 
-            if (inputs.IsMenu)
-            {
-                OnMenuPressed?.Invoke();
+                if (inputData.IsMenu)
+                {
+                    OnMenuPressed?.Invoke();
+                }
             }
+            MoveUpdate();
         }
 
         public async void TriggerDespawn()
@@ -163,16 +134,16 @@ namespace Units.Player
                 inv = aiEntity.Inventory;
                 aiEntity.Hit();
             }
+
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
             inv.DropEverything();
-            
         }
-        
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
             if (!Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
+                EditorApplication.delayCall += AssignTagAndLayer;
         }
 
         private void AssignTagAndLayer()
@@ -181,10 +152,10 @@ namespace Units.Player
                 return;
 
             var thisGameObject = gameObject;
-            
+
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
-            
+
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }

@@ -31,7 +31,7 @@ namespace Units.Player
         private bool menuOnce;
 
         public static bool fetchInput = true;
-        
+
         public static List<string> ValidActions => new List<string>()
         {
             nameof(move),
@@ -39,7 +39,7 @@ namespace Units.Player
             nameof(sprint),
             nameof(interact)
         };
-        
+
         public InputAction GetInputAction(string inputActionName) => inputActionName.ToLower() switch
         {
             nameof(move) => move,
@@ -52,7 +52,6 @@ namespace Units.Player
         public override void Spawned()
         {
             base.Spawned();
-
             if (Object.HasInputAuthority)
             {
                 PlayerInputAction = new PlayerInputAction();
@@ -71,7 +70,6 @@ namespace Units.Player
             {
                 if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
                 if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
-                if (interact.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_INTERACT;
                 if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
                 if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
 
@@ -79,7 +77,7 @@ namespace Units.Player
             }
 
             input.Set(data);
-            
+
             interactOnce = false;
             dashOnce = false;
             menuOnce = false;
@@ -92,7 +90,7 @@ namespace Units.Player
             dash = PlayerInputAction.Player.Dash;
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
-            
+
             PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;
             dash.started += ActivateDashOnce;

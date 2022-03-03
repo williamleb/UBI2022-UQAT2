@@ -1,7 +1,5 @@
-﻿using System;
-using Canvases.Components;
-using Fusion;
-using Managers.Game;
+﻿using Canvases.Components;
+using Managers.Score;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -33,7 +31,7 @@ namespace Canvases.HUDs
 
         private void OnScoreChanged(int newScore)
         {
-            // TODO Cute animation
+            // TODO Kool animation
             scoreText.Text = $"{newScore}";
         }
     }

@@ -9,37 +9,32 @@ namespace Systems
     {
         private const string SETTINGS_FOLDER_PATH = "Settings";
 
-        public PlayerSettings PlayerSetting { get; private set; }
-        public AISettings AISettings { get; private set; }
+        private PlayerSettings playerSettings;
+        private AISettings aiSettings;
+        private HomeworkSettings homeworkSettings;
+
+        public PlayerSettings PlayerSetting => playerSettings;
+        public AISettings AISettings => aiSettings;
+        public HomeworkSettings HomeworkSettings => homeworkSettings;
 
         protected override void Awake()
         {
             base.Awake();
 
-            LoadPlayerSettings();
-            LoadAISettings();
+            LoadSettings(out playerSettings);
+            LoadSettings(out aiSettings);
+            LoadSettings(out homeworkSettings);
         }
 
-        private void LoadPlayerSettings()
+        private void LoadSettings<T>(out T memberToInitialize) where T : ScriptableObject
         {
-            var playerSetting = Resources.LoadAll<PlayerSettings>(SETTINGS_FOLDER_PATH);
+            var loadedSettingsList = Resources.LoadAll<T>(SETTINGS_FOLDER_PATH);
 
-            Debug.Assert(playerSetting.Any(), $"An object of type {nameof(PlayerSettings)} should be in the folder {SETTINGS_FOLDER_PATH}");
-            if (playerSetting.Length > 1)
-                Debug.LogWarning($"More than one object of type {nameof(PlayerSettings)} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
+            Debug.Assert(loadedSettingsList.Any(), $"An object of type {typeof(T).Name} should be in the folder {SETTINGS_FOLDER_PATH}");
+            if (loadedSettingsList.Length > 1)
+                Debug.LogWarning($"More than one object of type {typeof(T).Name} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
 
-            PlayerSetting = playerSetting.First();
-        }
-        
-        private void LoadAISettings()
-        {
-            var aiSettings = Resources.LoadAll<AISettings>(SETTINGS_FOLDER_PATH);
-
-            Debug.Assert(aiSettings.Any(), $"An object of type {nameof(AISettings)} should be in the folder {SETTINGS_FOLDER_PATH}");
-            if (aiSettings.Length > 1)
-                Debug.LogWarning($"More than one object of type {nameof(AISettings)} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
-
-            AISettings = aiSettings.First();
+            memberToInitialize = loadedSettingsList.First();
         }
     }
 }
