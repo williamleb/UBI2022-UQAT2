@@ -111,8 +111,6 @@ namespace Units.Player
                 RebindSaveLoad.SaveOverrides(PlayerInputAction.asset);
         }
 
-        private void OnDestroy() => DisposeInputs();
-
         private void DisposeInputs()
         {
             SaveSettings();

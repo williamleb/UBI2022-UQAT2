@@ -15,8 +15,9 @@ namespace Units.Player
         private float currentMoveSpeed;
         private Vector3 velocity = Vector3.zero;
 
-        private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.1;
-        private bool IsPlayerMoving => nRb.Rigidbody.velocity.sqrMagnitude > 0.1;
+        private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
+        private bool IsPlayerMoving => nRb.Rigidbody.velocity.sqrMagnitude > 0.05;
+        private bool IsMovingFast => nRb.Rigidbody.velocity.magnitude >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
         
         private float CurrentAcceleration
         {
@@ -73,10 +74,10 @@ namespace Units.Player
         
         private void CalculateVelocity()
         {
-            //if (!IsPlayerMoving) velocity = Vector3.zero;
-            
             if (HasMoveInput && !IsDashing)
             {
+                if (!IsPlayerMoving) ResetVelocity();
+                
                 velocity += MoveDirection * (CurrentAcceleration * Runner.DeltaTime);
                 velocity = Vector3.ClampMagnitude(velocity, currentMoveSpeed);
             }
@@ -97,6 +98,11 @@ namespace Units.Player
             {
                 transform.forward = Vector3.MoveTowards(transform.forward, MoveDirection, data.TurnRotationSpeed);
             }
+        }
+        
+        private void ResetVelocity()
+        {
+            velocity = Vector3.zero;
         }
     }
 }

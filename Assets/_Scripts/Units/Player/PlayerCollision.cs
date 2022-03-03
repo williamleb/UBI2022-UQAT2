@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Units.Player
 {
@@ -9,6 +10,24 @@ namespace Units.Player
             CanMove = false;
             await Task.Delay((int)(currentMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
             CanMove = true;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (IsMovingFast && collision.gameObject.isStatic)
+            {
+                Hit();
+            }
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            
         }
     }
 }

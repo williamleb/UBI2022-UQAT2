@@ -30,6 +30,8 @@ namespace Scriptables
         [SerializeField]
         private float sprintBraking = 10f;
 
+        [MinValue(0)][MaxValue(1)] [SerializeField] private float sprintFumbleThreshold = 0.75f;
+
         [Space]
         [Header("Turn config")]
         [Tooltip("VISUAL ONLY Rotation step to turn towards new direction, " +
@@ -71,7 +73,8 @@ namespace Scriptables
         public float SprintBraking => sprintBraking;
         public float SprintAcceleration => sprintAcceleration;
         public PlayerCameraSettings PlayerCameraSetting => playerCameraSettings;
-        
+        public float SprintFumbleThreshold => sprintFumbleThreshold;
+
         [Serializable]
         public class PlayerCameraSettings
         {
@@ -81,6 +84,5 @@ namespace Scriptables
             public float RotX;
             public float FieldOfView;
         }
-        
     }
 }
