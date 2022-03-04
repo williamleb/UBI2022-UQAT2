@@ -1,7 +1,9 @@
 using Fusion;
 using UnityEngine;
+using Utilities.Unity;
+using Behaviour = Fusion.Behaviour;
 
- namespace Utilities.Extensions
+namespace Utilities.Extensions
 {
     public static class GameObjectExtensions
     {
@@ -19,18 +21,26 @@ using UnityEngine;
         /// This is done because entities have their collider a level lower than their parent game object with contains
         /// most of their scripts.
         /// </summary>
-        public static T GetComponentInEntity<T>(this GameObject gameObject) where T : MonoBehaviour
+        public static T GetComponentInEntity<T>(this GameObject gameObject) where T : Component
         {
             var component = gameObject.GetComponentInParent<T>();
             if (!component)
             {
                 component = gameObject.GetComponent<T>();
             }
+            if (!component)
+            {
+                component = gameObject.GetComponentInChildren<T>();
+            }
+            if (!component)
+            {
+                component = gameObject.transform.parent.GetComponentInChildren<T>();
+            }
 
             return component;
         }
         
-        public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : MonoBehaviour
+        public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : Component
         {
             return gameObject.gameObject.GetComponentInEntity<T>();
         }
@@ -39,6 +49,40 @@ using UnityEngine;
         {
             var parent = gameObject.transform.parent;
             return parent ? parent.gameObject : gameObject;
+        }
+
+        public static bool CompareEntities(this GameObject gameObject, GameObject other)
+        {
+            return other == gameObject || 
+                   other.GetParent() == gameObject ||
+                   other.GetParent() == gameObject.GetParent() || 
+                   other == gameObject.GetParent();
+        }
+        
+        public static bool HasTag(this GameObject gameObject)
+        {
+            return !gameObject.CompareTag(Tags.UNTAGGED);
+        }
+        
+        public static bool AssignTagIfDoesNotHaveIt(this GameObject gameObject, string tag)
+        {
+            if (!gameObject.HasTag())
+                gameObject.tag = tag;
+
+            return gameObject.CompareTag(tag);
+        }
+        
+        public static bool HasLayer(this GameObject gameObject)
+        {
+            return gameObject.layer != Layers.DEFAULT;
+        }
+        
+        public static bool AssignLayerIfDoesNotHaveIt(this GameObject gameObject, int layer)
+        {
+            if (!gameObject.HasLayer())
+                gameObject.layer = layer;
+
+            return gameObject.layer == layer;
         }
     }
 }

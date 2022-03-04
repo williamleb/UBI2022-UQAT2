@@ -4,9 +4,6 @@ namespace Units.Camera
 {
     public class CameraStrategyMultipleTargets : CameraStrategy
     {
-        // Defining the size of the arena, easily accessible by anyone who needs it
-        private const float ARENA_Y = 17.7f;
-		
         private Vector3 offset;
         private Vector3 averageTarget;
 
@@ -41,27 +38,12 @@ namespace Units.Camera
             ForceUpdatePositionAndRotation();
         }
 
-        public void ResetCameraPosition()
-        {
-            transform.position = Vector3.zero;
-            MyCamera.transform.localPosition = offset;
-            MyCamera.transform.rotation = Quaternion.Euler(CAMERA_TILT_ANGLE, 0, 0);
-        }
-
-        [SerializeField] private float singleTargetYAdditionalOffset = 2f;
-
         private void UpdateCamera()
         {
             CalculateAverages();
             CalculateOffset();
 
-            averageTarget = cameraBounds.StayWithinBounds(averageTarget, offset, CAMERA_TILT_ANGLE, longestDistance, MyCamera.transform);
-            if (Targets.Count == 1 && Targets[0] != null)
-            {
-                float arenaYMultiplier = Mathf.Clamp01(Targets[0].transform.position.z / ARENA_Y);
-                float additionalZOffsetForOnlineTeleport = arenaYMultiplier * singleTargetYAdditionalOffset;
-                averageTarget += Vector3.forward * additionalZOffsetForOnlineTeleport;
-            }
+            averageTarget = cameraBounds.StayWithinBounds(averageTarget, CAMERA_TILT_ANGLE, longestDistance, MyCamera.transform);
 
             UpdatePositionAndRotation();
         }
