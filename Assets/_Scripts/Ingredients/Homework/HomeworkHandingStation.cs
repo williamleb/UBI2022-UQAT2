@@ -1,6 +1,4 @@
-﻿using System;
-using Managers.Game;
-using Managers.Interactions;
+﻿using Managers.Interactions;
 using Managers.Score;
 using Units.Player;
 using UnityEngine;
@@ -14,8 +12,18 @@ namespace Units.AI
     {
         private Interaction giveHomeworkInteraction;
 
-        public Interacter EntityThatHasGivenHomeworkThisFrame { get; private set; } = null;
-        public bool HasAnEntityGivenHomeworkThisFrame => EntityThatHasGivenHomeworkThisFrame != null;
+        private Interacter entityThatHasGivenHomeworkThisFrame = null;
+        private bool resetEntityThatHasGivenHomeworkThisFrame = false;
+        
+        public Interacter EntityThatHasGivenHomeworkThisFrame
+        {
+            get
+            {
+                resetEntityThatHasGivenHomeworkThisFrame = true;
+                return entityThatHasGivenHomeworkThisFrame; 
+            }
+        }
+        public bool HasAnEntityGivenHomeworkThisFrame => entityThatHasGivenHomeworkThisFrame != null;
 
         private void Awake()
         {
@@ -66,12 +74,7 @@ namespace Units.AI
                 HandHomework(interacter);
             
             inventory.RemoveHomework();
-            EntityThatHasGivenHomeworkThisFrame = interacter;
-        }
-
-        private void LateUpdate()
-        {
-            EntityThatHasGivenHomeworkThisFrame = null;
+            entityThatHasGivenHomeworkThisFrame = interacter;
         }
 
         private void HandHomework(Interacter interacter)
@@ -82,6 +85,19 @@ namespace Units.AI
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
             ScoreManager.Instance.HandHomework(player);
+        }
+        
+        private void LateUpdate()
+        {
+            if (resetEntityThatHasGivenHomeworkThisFrame)
+            {
+                entityThatHasGivenHomeworkThisFrame = null;
+                resetEntityThatHasGivenHomeworkThisFrame = false;
+            }
+            else if (entityThatHasGivenHomeworkThisFrame != null)
+            {
+                resetEntityThatHasGivenHomeworkThisFrame = true;
+            }
         }
     }
 }
