@@ -25,6 +25,7 @@ namespace Units.Player
         private InputAction dash;
         private InputAction sprint;
         private InputAction interact;
+        private InputAction throwing;
 
         private bool interactOnce;
         private bool dashOnce;
@@ -37,7 +38,8 @@ namespace Units.Player
             nameof(move),
             nameof(dash),
             nameof(sprint),
-            nameof(interact)
+            nameof(interact),
+            nameof(throwing)
         };
 
         public InputAction GetInputAction(string inputActionName) => inputActionName.ToLower() switch
@@ -46,6 +48,7 @@ namespace Units.Player
             nameof(dash) => dash,
             nameof(sprint) => sprint,
             nameof(interact) => interact,
+            nameof(throwing) => throwing,
             _ => null
         };
 
@@ -72,6 +75,7 @@ namespace Units.Player
                 if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
                 if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
                 if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
+                if (throwing.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_THROW;
 
                 data.Move = move.ReadV2();
             }
@@ -90,6 +94,7 @@ namespace Units.Player
             dash = PlayerInputAction.Player.Dash;
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
+            throwing = PlayerInputAction.Player.Throw;
 
             PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;

@@ -23,14 +23,17 @@ namespace Ingredients.Homework
         }
 
         [SerializeField, Required] private GameObject visual;
-        
-        [Networked(OnChanged = nameof(OnStateChanged))] private State HomeworkState { get; set; }
 
         private Interaction interaction;
         private Rigidbody rb;
         private Collider[] colliders;
         private Animator animator;
 
+        private Transform holdingTransform;
+
+        [Networked(OnChanged = nameof(OnStateChanged))]
+        private State HomeworkState { get; set; }
+        
         public int HomeworkId => Id.GetHashCode();
         public bool IsFree => HomeworkState == State.Free;
 
@@ -52,7 +55,6 @@ namespace Ingredients.Homework
         {
             // TODO Instant feedback for picking the item
             SoundSystem.Instance.PlayBababooeySound();
-            visual.SetActive(false);
             interaction.InteractionEnabled = false;
         }
 
@@ -60,7 +62,7 @@ namespace Ingredients.Homework
         {
             if (HomeworkState == State.Taken)
                 return;
-            
+
             var inventory = interacter.GetComponent<Inventory>();
             if (!inventory)
             {
@@ -70,19 +72,22 @@ namespace Ingredients.Homework
 
             HomeworkState = State.Taken;
             inventory.HoldHomework(this);
+            holdingTransform = inventory.HomeworkHoldingTransform;
         }
-        
+
         public void Free()
         {
             HomeworkState = State.Free;
+            holdingTransform = null;
         }
 
         public void Activate(Transform transformToActivateTo)
         {
             if (HomeworkState != State.Free)
                 return;
-            
+
             HomeworkState = State.InWorld;
+            holdingTransform = null;
 
             var thisTransform = transform;
             thisTransform.position = transformToActivateTo.position;
@@ -90,21 +95,21 @@ namespace Ingredients.Homework
             rb.isKinematic = false;
         }
 
-        public void DropInWorld(Vector3 position)
+        public void DropInWorld()
+        {
+            DropInWorld(Vector3.zero);
+        }
+
+        public void DropInWorld(Vector3 velocity)
         {
             if (HomeworkState != State.Taken)
                 return;
             
             HomeworkState = State.InWorld;
-            
-            transform.position = position + Vector3.up * 2f;
-            rb.isKinematic = false;
+            holdingTransform = null;
 
-            // TODO Better launch logic when we will know what the game physics should look like
-            var randomAngleX = Random.Range(25f, 60f);
-            var randomAngleY = Random.Range(0f, 360f);
-            var launchDirection = Quaternion.Euler(randomAngleX, randomAngleY, 0f) * Vector3.up;
-            rb.AddForce(launchDirection * 250);
+            rb.isKinematic = false;
+            rb.AddForce(velocity);
         }
 
         public override void Spawned()
@@ -125,7 +130,7 @@ namespace Ingredients.Homework
 
         private void UpdateForCurrentState()
         {
-            visual.SetActive(HomeworkState == State.InWorld);
+            visual.SetActive(HomeworkState != State.Free);
             interaction.InteractionEnabled = HomeworkState == State.InWorld;
             foreach (var colliderComponent in colliders)
             {
@@ -134,6 +139,16 @@ namespace Ingredients.Homework
 
             rb.isKinematic = HomeworkState != State.InWorld;
             animator.SetBool(isSpawned, HomeworkState != State.Free);
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            if (holdingTransform)
+            {
+                var thisTransform = transform;
+                thisTransform.position = holdingTransform.position;
+                thisTransform.rotation = holdingTransform.rotation;
+            }
         }
 
         private static void OnStateChanged(Changed<Homework> changed)

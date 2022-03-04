@@ -7,12 +7,12 @@ namespace Utilities.Extensions
         /// <summary>
         /// Vector 2 from vector 3's x and y components
         /// </summary>
-        public static Vector2 ToV2(this Vector3 vector) => new Vector2(vector.x, vector.y);
+        public static Vector2 ToV2(this Vector3 vector) => vector.XY();
         
         /// <summary>
         /// Vector 2 from vector 3's x and z components
         /// </summary>
-        public static Vector2 FlatV3ToV2(this Vector3 vector) => new Vector2(vector.x, vector.y);
+        public static Vector2 FlatV3ToV2(this Vector3 vector) => vector.XZ();
 
         /// <summary>
         /// Vector 3 removing the y component
@@ -23,6 +23,13 @@ namespace Utilities.Extensions
         /// Vector 3 from vector 2's x becoming x and y becoming z
         /// </summary>
         public static Vector3 V2ToFlatV3(this Vector2 vector) => new Vector3(vector.x, 0, vector.y);
+        
+        public static Vector2 XY(this Vector3 vector) => new Vector2(vector.x, vector.y);
+        public static Vector2 XZ(this Vector3 vector) => new Vector2(vector.x, vector.z);
+        public static Vector2 YX(this Vector3 vector) => new Vector2(vector.y, vector.x);
+        public static Vector2 YZ(this Vector3 vector) => new Vector2(vector.y, vector.z);
+        public static Vector2 ZX(this Vector3 vector) => new Vector2(vector.z, vector.x);
+        public static Vector2 ZY(this Vector3 vector) => new Vector2(vector.z, vector.y);
 
         public static Vector3Int ToVector3Int(this Vector3 input) =>
             new Vector3Int((int) input.x, (int) input.y, (int) input.z);

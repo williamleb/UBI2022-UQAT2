@@ -9,6 +9,7 @@ namespace Systems.Network
         public const uint BUTTON_SPRINT = 1 << 1;
         public const uint BUTTON_INTERACT_ONCE = 1 << 2;
         public const uint BUTTON_MENU = 1 << 3;
+        public const uint BUTTON_THROW = 1 << 4;
 
         public uint Buttons;
         public Vector2 Move;
@@ -19,5 +20,6 @@ namespace Systems.Network
         public bool IsSprint => IsPressed(BUTTON_SPRINT);
         public bool IsInteractOnce => IsPressed(BUTTON_INTERACT_ONCE);
         public bool IsMenu => IsPressed(BUTTON_MENU);
+        public bool IsThrow => IsPressed(BUTTON_THROW);
     }
 }

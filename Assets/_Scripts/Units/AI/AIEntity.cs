@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Fusion;
+using Interfaces;
 using Systems;
 using Units.AI.Senses;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace Units.AI
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(AIInteracter))]
-    public class AIEntity : NetworkBehaviour
+    public class AIEntity : NetworkBehaviour, IVelocityObject
     {
         private static readonly int walking = Animator.StringToHash("IsWalking");
         
@@ -44,6 +45,7 @@ namespace Units.AI
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
+        public Vector3 Velocity => agent.velocity;
 
         public bool IsHit => hitCoroutine != null;
 
@@ -56,6 +58,8 @@ namespace Units.AI
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
             playerHitterDetection = GetComponent<PlayerHitterDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
+            
+            inventory.AssignVelocityObject(this);
         }
 
         // Those two methods should only be called before the AI entity is spawned
@@ -181,7 +185,7 @@ namespace Units.AI
 
         private IEnumerator HitRoutine()
         {
-            var secondsToWait = SettingsSystem.Instance.AISettings.SecondsDownAfterBeingHit;
+            var secondsToWait = SettingsSystem.AISettings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
             hitCoroutine = null;
         }

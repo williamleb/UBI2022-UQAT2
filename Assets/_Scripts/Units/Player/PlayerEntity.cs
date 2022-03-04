@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fusion;
+using Interfaces;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
@@ -17,26 +18,32 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
-    public partial class PlayerEntity : NetworkBehaviour
+    public partial class PlayerEntity : NetworkBehaviour, IVelocityObject
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
-        public int PlayerID { get; private set; }
+        
         [SerializeField][Required] private CameraStrategy mainCamera;
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
         private NetworkInputData inputs;
-        
-        [Networked] private NetworkId ScoreObjectId { get; set; }
 
+        private bool isThrowing = false;
+        
+        public int PlayerID { get; private set; }
+        public Vector3 Velocity => nRb.Rigidbody.velocity;
+        
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
 
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
+            
+            inventory.AssignVelocityObject(this);
 
             MovementAwake();
         }
@@ -77,12 +84,31 @@ namespace Units.Player
                     interacter.InteractWithClosestInteraction();
                 }
 
+                UpdateThrow(inputData);
+
                 if (inputData.IsMenu)
                 {
                     OnMenuPressed?.Invoke();
                 }
             }
             MoveUpdate();
+        }
+
+        private void UpdateThrow(NetworkInputData inputData)
+        {
+            // TODO This is temp until we have the right logic for the throw
+            if (inputData.IsThrow)
+            {
+                isThrowing = true;
+            }
+            else
+            {
+                if (isThrowing)
+                {
+                    isThrowing = false;
+                    inventory.DropEverything(transform.forward + Vector3.up * 0.25f, 2f);
+                }
+            }
         }
 
         public async void TriggerDespawn()
@@ -136,7 +162,7 @@ namespace Units.Player
             }
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
-            inv.DropEverything();
+            inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
         }
 
 #if UNITY_EDITOR

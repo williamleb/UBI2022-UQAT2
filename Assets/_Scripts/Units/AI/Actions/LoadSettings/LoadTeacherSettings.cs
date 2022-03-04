@@ -26,7 +26,7 @@ namespace Units.AI.Actions.LoadSettings
             if (!SettingsSystem.HasInstance)
                 return;
 
-            settings = SettingsSystem.Instance.AISettings;
+            settings = SettingsSystem.AISettings;
 
             minSecondsToStayInARoom?.SetValue(settings.MinSecondsToStayInARoom);
             maxSecondsToStayInARoom?.SetValue(settings.MaxSecondsToStayInARoom);
