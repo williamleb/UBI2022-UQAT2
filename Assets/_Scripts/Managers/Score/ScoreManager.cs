@@ -135,7 +135,7 @@ namespace Managers.Score
 
         private void OnPlayerDespawned(NetworkObject player)
         {
-            if (!NetworkSystem.Instance.IsHost)
+            if (!NetworkSystem.HasInstance || !NetworkSystem.Instance.IsHost)
                 return;
 
             var score = GetScoreForPlayer(player.InputAuthority);

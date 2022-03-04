@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
@@ -9,22 +10,22 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
-        
-        [Networked] private NetworkBool IsDashing { get; set; }
-        
+
+        [Networked] private NetworkBool IsDashing { get; set; } = false;
+
         private TickTimer dashTimer;
         private bool hasHitSomeoneThisFrame;
-        
+
         private void DashAwake()
         {
             dashTimer = new TickTimer(data.DashDuration);
             dashTimer.OnTimerEnd += () => EndDash();
         }
 
-        private void DashUpdate()
+        private void DashUpdate(NetworkInputData inputData)
         {
+            SetDashInput(inputData);
             if (IsDashing) DetectCollision();
             dashTimer.Tick(Runner.DeltaTime);
         }
@@ -40,22 +41,23 @@ namespace Units.Player
             IsDashing = true;
             dashTimer.Reset();
             velocity = transform.forward * data.DashForce;
-            //TODO add dash animation
+            AnimDashTrigger();
         }
-        
+
         private void EndDash(bool knockOutPlayer = true)
         {
             if (knockOutPlayer && IsDashing)
             {
                 Hit();
             }
-            IsDashing = false;
 
+            IsDashing = false;
         }
-        
+
         private void DetectCollision()
         {
-            if (Runner.LagCompensation.Raycast(transform.position, transform.forward, 0.5f, Object.InputAuthority, out LagCompensatedHit hit,Physics.AllLayers,HitOptions.IncludePhysX))
+            if (Runner.LagCompensation.Raycast(transform.position + Vector3.up, transform.forward, 1f,
+                    Object.InputAuthority, out LagCompensatedHit hit, Physics.AllLayers, HitOptions.IncludePhysX))
             {
                 var go = hit.GameObject;
                 if (go.CompareTag(Tags.PLAYER) || go.CompareTag(Tags.AI))
@@ -67,6 +69,7 @@ namespace Units.Player
                     hasHitSomeoneThisFrame = true;
                     return;
                 }
+
                 EndDash();
             }
         }

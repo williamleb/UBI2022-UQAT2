@@ -400,7 +400,6 @@ GameObject:
   m_Component:
   - component: {fileID: 985372298615590180}
   - component: {fileID: 2504170754291705159}
-  - component: {fileID: 1057079395382111376}
   m_Layer: 3
   m_Name: PlayerEntity
   m_TagString: Untagged
@@ -449,25 +448,6 @@ MonoBehaviour:
   - {fileID: 6144844350189493940}
   NetworkedBehaviours: []
   SimulationBehaviours: []
---- !u!95 &1057079395382111376
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8586700964149085410}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0e9a89944ecae7c469faf10feb46ada1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &3536100284109717099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -795,7 +775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 956860880054220076, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: NetworkedBehaviours.Array.size
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 956860880054220076, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: NetworkedBehaviours.Array.data[0]
@@ -817,6 +797,14 @@ PrefabInstance:
       propertyPath: NetworkedBehaviours.Array.data[4]
       value: 
       objectReference: {fileID: 799398654280048077}
+    - target: {fileID: 956860880054220076, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: NetworkedBehaviours.Array.data[5]
+      value: 
+      objectReference: {fileID: 7529914335948680938}
+    - target: {fileID: 956860880054220076, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: NetworkedBehaviours.Array.data[6]
+      value: 
+      objectReference: {fileID: 5116227592582133937}
     - target: {fileID: 956860880054220076, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
       value: 0
@@ -843,7 +831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3136995461962552438, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3136995461962552438, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: m_LocalPosition.z
@@ -878,6 +866,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3136995461962552439, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 6098077505114701062}
+    - target: {fileID: 3136995461962552439, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 3536100283719149549}
@@ -896,6 +888,34 @@ PrefabInstance:
     - target: {fileID: 3136995463023281353, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[1]
+      value: -1997446259
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[2]
+      value: -1201672039
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[3]
+      value: 980972727
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[4]
+      value: -1072628038
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[5]
+      value: -1585914449
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+      propertyPath: StateHashes.Array.data[6]
+      value: 2092670953
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
@@ -970,3 +990,30 @@ MonoBehaviour:
   m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7529914335948680938 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3494245439934465394, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+  m_PrefabInstance: {fileID: 6341539448853179288}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5116227592582133937 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2234297121202098985, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+  m_PrefabInstance: {fileID: 6341539448853179288}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &6098077505114701062 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 910032416157750942, guid: ef2244ff8a8bd9f4e8bb0cf9f5f3b586, type: 3}
+  m_PrefabInstance: {fileID: 6341539448853179288}
+  m_PrefabAsset: {fileID: 0}

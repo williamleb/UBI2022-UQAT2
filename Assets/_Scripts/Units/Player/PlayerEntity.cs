@@ -65,7 +65,7 @@ namespace Units.Player
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
-            
+
             PlayerSystem.Instance.AddPlayer(this);
         }
 
@@ -78,8 +78,8 @@ namespace Units.Player
         {
             if (GetInput(out NetworkInputData inputData))
             {
-                SetMoveInput(inputData);
-                SetDashInput(inputData);
+                MoveUpdate(inputData);
+                DashUpdate(inputData);
                 if (inputData.IsInteractOnce && Runner.IsForward)
                 {
                     interacter.InteractWithClosestInteraction();
@@ -91,9 +91,9 @@ namespace Units.Player
                 {
                     OnMenuPressed?.Invoke();
                 }
+                
+                AnimationUpdate();
             }
-            MoveUpdate();
-            DashUpdate();
         }
 
         private void UpdateThrow(NetworkInputData inputData)
@@ -117,7 +117,10 @@ namespace Units.Player
         {
             //await Task.Delay(300); // wait for effects
 
-            if (Object == null) { return; }
+            if (Object == null)
+            {
+                return;
+            }
 
             if (Object.HasStateAuthority)
             {
@@ -182,10 +185,12 @@ namespace Units.Player
             var thisGameObject = gameObject;
 
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
+                Debug.LogWarning(
+                    $"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
 
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+                Debug.LogWarning(
+                    $"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }
 #endif
     }

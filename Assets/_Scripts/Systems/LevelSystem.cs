@@ -72,7 +72,7 @@ namespace Systems
                 State = LevelState.TRANSITION;
             }
 
-            PlayerInputHandler.fetchInput = true;
+            PlayerInputHandler.FetchInput = true;
         }
 
         public class NetworkSceneMaganer : NetworkSceneManagerBase
@@ -88,7 +88,7 @@ namespace Systems
 
                 if (prevScene > 0)
                 {
-                    PlayerInputHandler.fetchInput = false;
+                    PlayerInputHandler.FetchInput = false;
                 }
 
                 if (Instance.loadedScene != default)

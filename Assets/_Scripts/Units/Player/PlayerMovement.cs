@@ -12,19 +12,20 @@ namespace Units.Player
         [Networked] private NetworkBool CanMove { get; set; } = true;
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
         
-        private float currentMoveSpeed;
+        private float currentMaxMoveSpeed;
         private Vector3 velocity = Vector3.zero;
 
+        private float CurrentMoveSpeed => nRb.Rigidbody.velocity.magnitude;
         private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
         private bool IsPlayerMoving => nRb.Rigidbody.velocity.sqrMagnitude > 0.05;
-        private bool IsMovingFast => nRb.Rigidbody.velocity.magnitude >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
+        private bool IsMovingFast => CurrentMoveSpeed >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
         
         private float CurrentAcceleration
         {
             get
             {
                 //turn rate decreases acceleration, acceleration changes move velocity
-                float turnRate = data.TurnRate * (currentMoveSpeed / data.MoveMaximumSpeed);
+                float turnRate = data.TurnRate * (currentMaxMoveSpeed / data.MoveMaximumSpeed);
                 //If velocity and move direction are not aligned the acceleration is reduced
                 //dot returns 1 when vectors are aligned and 0 when perpendicular
                 turnRate -= Vector3.Dot(velocity.normalized, MoveDirection);
@@ -37,8 +38,9 @@ namespace Units.Player
             nRb = GetComponent<NetworkRigidbody>();
         }
 
-        private void MoveUpdate()
+        private void MoveUpdate(NetworkInputData inputData)
         {
+            SetMoveInput(inputData);
             CalculateVelocity();
             MovePlayer();
             RotatePlayer();
@@ -64,11 +66,11 @@ namespace Units.Player
                 //Add other speed related logic. Boosters, slow when holding golden homework?
                 float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                 float sprintAcceleration = (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
-                currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, maxMoveSpeed, sprintAcceleration);   
+                currentMaxMoveSpeed = Mathf.MoveTowards(currentMaxMoveSpeed, maxMoveSpeed, sprintAcceleration);   
             }
             else
             {
-                currentMoveSpeed = data.MoveMaximumSpeed;
+                currentMaxMoveSpeed = data.MoveMaximumSpeed;
             }
         }
         
@@ -79,7 +81,7 @@ namespace Units.Player
                 if (!IsPlayerMoving) ResetVelocity();
                 
                 velocity += MoveDirection * (CurrentAcceleration * Runner.DeltaTime);
-                velocity = Vector3.ClampMagnitude(velocity, currentMoveSpeed);
+                velocity = Vector3.ClampMagnitude(velocity, currentMaxMoveSpeed);
             }
             else
             {
@@ -96,7 +98,7 @@ namespace Units.Player
         {
             if (HasMoveInput)
             {
-                transform.forward = Vector3.MoveTowards(transform.forward, MoveDirection, data.TurnRotationSpeed);
+                transform.forward = Vector3.RotateTowards(transform.forward, MoveDirection, data.TurnRotationSpeed,data.TurnRotationSpeed);
             }
         }
         

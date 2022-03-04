@@ -8,7 +8,7 @@ namespace Units.Player
         private async void Hit()
         {
             CanMove = false;
-            await Task.Delay((int)(currentMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
+            await Task.Delay((int)(currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
             CanMove = true;
         }
 
@@ -17,6 +17,7 @@ namespace Units.Player
             if (IsMovingFast && collision.gameObject.isStatic)
             {
                 Hit();
+                Debug.Log("Fumbles");
             }
         }
 

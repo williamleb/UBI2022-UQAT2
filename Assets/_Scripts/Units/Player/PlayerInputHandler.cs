@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Fusion;
 using InputSystem;
 using Systems.Network;
@@ -31,26 +30,7 @@ namespace Units.Player
         private bool dashOnce;
         private bool menuOnce;
 
-        public static bool fetchInput = true;
-
-        public static List<string> ValidActions => new List<string>()
-        {
-            nameof(move),
-            nameof(dash),
-            nameof(sprint),
-            nameof(interact),
-            nameof(throwing)
-        };
-
-        public InputAction GetInputAction(string inputActionName) => inputActionName.ToLower() switch
-        {
-            nameof(move) => move,
-            nameof(dash) => dash,
-            nameof(sprint) => sprint,
-            nameof(interact) => interact,
-            nameof(throwing) => throwing,
-            _ => null
-        };
+        public static bool FetchInput = true;
 
         public override void Spawned()
         {
@@ -69,7 +49,7 @@ namespace Units.Player
         {
             NetworkInputData data = new NetworkInputData();
 
-            if (fetchInput)
+            if (FetchInput)
             {
                 if (dashOnce) data.Buttons |= NetworkInputData.BUTTON_DASH;
                 if (sprint.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_SPRINT;
@@ -114,13 +94,17 @@ namespace Units.Player
         private void DisposeInputs()
         {
             SaveSettings();
-            PlayerInputAction.Dispose();
+            if (Object.HasInputAuthority)
+            {
+                PlayerInputAction.Dispose();
+            }
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
-            NetworkSystem.Instance.OnInputEvent -= OnInput;
+            if (NetworkSystem.HasInstance)
+                NetworkSystem.Instance.OnInputEvent -= OnInput;
             DisposeInputs();
         }
     }
