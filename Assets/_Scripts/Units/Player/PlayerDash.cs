@@ -41,7 +41,6 @@ namespace Units.Player
             IsDashing = true;
             dashTimer.Reset();
             velocity = transform.forward * data.DashForce;
-            AnimDashTrigger();
         }
 
         private void EndDash(bool knockOutPlayer = true)
@@ -49,6 +48,7 @@ namespace Units.Player
             if (knockOutPlayer && IsDashing)
             {
                 Hit();
+                AnimFallTrigger();
             }
 
             IsDashing = false;

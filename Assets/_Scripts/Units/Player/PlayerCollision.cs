@@ -17,7 +17,7 @@ namespace Units.Player
             if (IsMovingFast && collision.gameObject.isStatic)
             {
                 Hit();
-                Debug.Log("Fumbles");
+                AnimStumbleTrigger();
             }
         }
 

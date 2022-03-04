@@ -157,6 +157,7 @@ namespace Units.Player
                 var player = networkObject.GetComponent<PlayerEntity>();
                 inv = player.inventory;
                 player.Hit();
+                player.AnimFallTrigger();
             }
             else
             {
