@@ -10,6 +10,8 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
+!/[Ll]ibrary/Wwise/UBI2022-UQAT2/**/*
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
@@ -57,4 +59,49 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+
+Assembly-CSharp.csproj.DotSettings
+
+.idea/
+
+UserSettings/
+.vsconfig
+
+## ---------------- ##
+##   WWise stuff    ##
+## ---------------- ##
+
+!/[Ll]ibrary/
+
+/[Ll]ibrary/*
+![Ll]ibrary/Wwise/
+
+# project stuff
+/[Ll]ibrary/Wwise/UBI2022-UQAT2/.cache/
+/[Ll]ibrary/Wwise/UBI2022-UQAT2/*.prof
+/[Ll]ibrary/Wwise/UBI2022-UQAT2/*_WwiseProject.*.validationcache
+/[Ll]ibrary/Wwise/UBI2022-UQAT2/*_WwiseProject.*.wsettings
+/[Ll]ibrary/Wwise/UBI2022-UQAT2/**/*.akd
+
+# build stuff (unsure?)
+# Assets/Wwise/Deployment/Plugins/Windows/**/*.meta
+
+# WWise Picker (editor)
+# from https://www.audiokinetic.com/library/edge/?source=Unity&id=unity__troubleshooting.html
+# >> Do not keep AkWwiseProjectData.asset under version control! 
+# >> This is a temporary cache file for the Wwise project data, 
+# >> so as to avoid having the Wwise Picker continuously parse the Work Unit files.
+Assets/Wwise/Editor/ProjectData/AkWwiseProjectData.asset*
+
+# notes:
+# 1) if any other files go in Assets/Wwise/Editor/ProjectData/ besides AkWwiseProjectData.asset*,
+#    then don't ignore Assets/Wwise/Editor/ProjectData.meta. If AkWwiseProjectData.asset is the only item in there,
+#    then, it's OK to ignore this file.
+# 
+# Assets/Wwise/Editor/ProjectData.meta
+
+## --------------- ##
+## End WWise Stuff ##
+## --------------- ##
 
