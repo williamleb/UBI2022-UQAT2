@@ -1,4 +1,6 @@
 ﻿using Fusion;
+using Interfaces;
+using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -9,15 +11,19 @@ using UnityEditor;
 
 namespace Managers.Rooms
 {
-    public class Room : NetworkBehaviour
+    public class Room : NetworkBehaviour, IProbabilityObject
     {
         [SerializeField] private float width = 10f;
         [SerializeField] private float height = 10f;
+        
+        [Tooltip("Relative probability of this particular room to be chosen by the teacher compared to others. If all rooms have a value of 0.5 for this field, they will all have the same probability of being chosen.")]
+        [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
 
         private Vector3 lowerLeftPosition;
         private Vector3 rotationAngles;
 
         public int RoomId => Id.GetHashCode();
+        public float Probability => probability;
         
         public override void Spawned()
         {
