@@ -1,22 +1,16 @@
-﻿using Sirenix.OdinInspector;
-using Units.Player;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Canvases.Markers
 {
     public class PromptMarkerReceptor : MarkerReceptor<PromptMarker>
     {
-        [SerializeField, ValidateInput(nameof(ValidateAction), "Action is not valid. See class PlayerActionHandler to know valid actions")] 
-        private string action = "Interact";
+        [SerializeField, Tooltip("Action assigned to the prompt at start")]
+        private InputActionReference actionReference;
         
         protected override void OnActivated()
         {
-            CurrentMarker.Action = action;
-        }
-        
-        private bool ValidateAction()
-        {
-            return PlayerInputHandler.ValidActions.Contains(action.ToLower());
+            CurrentMarker.Action = actionReference.action;
         }
     }
 }

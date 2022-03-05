@@ -1,5 +1,7 @@
-﻿using Managers.Game;
+﻿using System;
+using Managers.Game;
 using Managers.Interactions;
+using Managers.Score;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -11,6 +13,9 @@ namespace Units.AI
     public class HomeworkHandingStation : MonoBehaviour
     {
         private Interaction giveHomeworkInteraction;
+
+        public Interacter EntityThatHasGivenHomeworkThisFrame { get; private set; } = null;
+        public bool HasAnEntityGivenHomeworkThisFrame => EntityThatHasGivenHomeworkThisFrame != null;
 
         private void Awake()
         {
@@ -61,16 +66,22 @@ namespace Units.AI
                 HandHomework(interacter);
             
             inventory.RemoveHomework();
+            EntityThatHasGivenHomeworkThisFrame = interacter;
+        }
+
+        private void LateUpdate()
+        {
+            EntityThatHasGivenHomeworkThisFrame = null;
         }
 
         private void HandHomework(Interacter interacter)
         {
-            if (!GameManager.HasInstance)
+            if (!ScoreManager.HasInstance)
                 return;
             
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
-            GameManager.Instance.HandHomework(player);
+            ScoreManager.Instance.HandHomework(player);
         }
     }
 }

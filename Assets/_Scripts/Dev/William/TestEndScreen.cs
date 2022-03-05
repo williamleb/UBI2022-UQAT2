@@ -1,6 +1,7 @@
 ﻿using Canvases.Components;
 using Fusion;
 using Managers.Game;
+using Managers.Score;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -32,7 +33,12 @@ namespace Dev.William
             if (gameState == GameState.Finished)
             {
                 restartButton.Select();
-                winnerText.Text = $"Winner: Player{GameManager.Instance.FindPlayerWithHighestScore().PlayerId}";
+
+                var playerWithHighestScore = ScoreManager.HasInstance
+                    ? ScoreManager.Instance.FindPlayerWithHighestScore()
+                    : PlayerRef.None;
+                
+                winnerText.Text = $"Winner: Player{playerWithHighestScore.PlayerId}";
             }
         }
 

@@ -21,6 +21,9 @@ namespace BehaviorDesigner.Runtime.Tasks
         private float startTime;
         // Remember the time that the task is paused so the time paused doesn't contribute to the wait time.
         private float pauseTime;
+        
+        protected float WaitDuration { get; set; }
+        protected float StartTime { get; set; }
 
         public override void OnStart()
         {

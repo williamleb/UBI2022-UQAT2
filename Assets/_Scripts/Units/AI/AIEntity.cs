@@ -1,4 +1,9 @@
+using System;
+using System.Collections;
 using Fusion;
+using Interfaces;
+using Systems;
+using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;
 using Utilities.Extensions;
@@ -9,8 +14,10 @@ namespace Units.AI
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(AIInteracter))]
-    public class AIEntity : NetworkBehaviour
+    public class AIEntity : NetworkBehaviour, IVelocityObject
     {
+        private static readonly int walking = Animator.StringToHash("IsWalking");
+        
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
@@ -22,15 +29,25 @@ namespace Units.AI
         private AIInteracter interacter;
         private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
+        private PlayerHitterDetection playerHitterDetection;
+        private HomeworkHandingStation homeworkHandingStation;
         private AIBrain brain;
 
         private Transform aiColliderTransform;
-        
+        private Coroutine hitCoroutine = null;
+
         [Networked] public bool IsTeacher { get; private set; }
 
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
+        public Animator Animator => animator;
+        public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
+        public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
+        public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
+        public Vector3 Velocity => agent.velocity;
+
+        public bool IsHit => hitCoroutine != null;
 
         private void Awake()
         {
@@ -39,6 +56,10 @@ namespace Units.AI
             interacter = GetComponent<AIInteracter>();
             animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
+            playerHitterDetection = GetComponent<PlayerHitterDetection>();
+            homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
+            
+            inventory.AssignVelocityObject(this);
         }
 
         // Those two methods should only be called before the AI entity is spawned
@@ -86,6 +107,7 @@ namespace Units.AI
         public override void FixedUpdateNetwork()
         {
             UpdateCollider();
+            UpdateWalkingAnimation();
         }
 
         private void UpdateCollider()
@@ -96,6 +118,19 @@ namespace Units.AI
             var thisTransform = transform;
             aiColliderTransform.position = thisTransform.position;
             aiColliderTransform.rotation = thisTransform.rotation;
+        }
+
+        private void UpdateWalkingAnimation()
+        {
+            if (!Object.HasStateAuthority)
+                return;
+
+            if (!animator)
+                return;
+
+            // We will probably want to send the speed directly to the animator in the future and do a blend space
+            var isWalking = agent.velocity.sqrMagnitude > 0.3f;
+            animator.SetBool(walking, isWalking);
         }
 
         private void RegisterToManager()
@@ -136,6 +171,37 @@ namespace Units.AI
             Debug.Assert(brain, $"Calling {nameof(AddBrain)} with a prefab that doesn't have a script {nameof(AIBrain)}");
             
             brain.AssignEntity(this);
+        }
+
+        public void Hit()
+        {
+            if (hitCoroutine != null)
+            {
+                StopHitRoutine();
+            }
+            
+            hitCoroutine = StartCoroutine(HitRoutine());
+        }
+
+        private IEnumerator HitRoutine()
+        {
+            var secondsToWait = SettingsSystem.AISettings.SecondsDownAfterBeingHit;
+            yield return new WaitForSeconds(secondsToWait);
+            hitCoroutine = null;
+        }
+        
+        private void StopHitRoutine()
+        {
+            if (hitCoroutine == null)
+                return;
+            
+            StopCoroutine(hitCoroutine);
+            hitCoroutine = null;
+        }
+
+        private void OnDisable()
+        {
+            StopHitRoutine();
         }
 
 #if UNITY_EDITOR

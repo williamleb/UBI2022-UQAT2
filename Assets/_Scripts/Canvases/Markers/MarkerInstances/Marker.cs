@@ -30,7 +30,7 @@ namespace Canvases.Markers
             get => scale;
             set => scale = value;
         }
-        
+
         public void Initialize(Action<Marker> releaseHandle)
         {
             release = releaseHandle;
@@ -38,8 +38,11 @@ namespace Canvases.Markers
 
         public void Activate()
         {
-            AdjustMarkerSizeWithCameraDistance();
-            AdjustMarkerScreenPosition();
+            if (currentCamera != null)
+            {
+                AdjustMarkerSizeWithCameraDistance();
+                AdjustMarkerScreenPosition();
+            }
             gameObject.SetActive(true);
         }
 
@@ -47,7 +50,7 @@ namespace Canvases.Markers
         {
             if (release == null)
                 return;
-            
+
             release.Invoke(this);
             release = null;
             gameObject.SetActive(false);
@@ -90,7 +93,7 @@ namespace Canvases.Markers
                 rectTransform.localScale = new Vector3(0f, 0f, 0f);
                 return;
             }
-            
+
             var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
             var generalScale = MarkerManager.HasInstance ? scale * MarkerManager.Instance.GeneralScale : scale;
             var adjustedScale = Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;

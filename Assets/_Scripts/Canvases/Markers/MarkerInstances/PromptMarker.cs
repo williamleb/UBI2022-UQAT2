@@ -1,5 +1,6 @@
 ﻿using Canvases.Prompts;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Canvases.Markers
 {
@@ -8,7 +9,7 @@ namespace Canvases.Markers
     {
         private Prompt prompt;
 
-        public string Action
+        public InputAction Action
         {
             set => prompt.Action = value;
         }

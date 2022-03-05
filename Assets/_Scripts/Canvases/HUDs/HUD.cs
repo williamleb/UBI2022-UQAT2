@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Fusion;
-using Managers.Game;
+using Managers.Score;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,20 +17,20 @@ namespace Canvases.HUDs
 
         private void Start()
         {
-            if (!GameManager.HasInstance)
+            if (!ScoreManager.HasInstance)
                 return;
             
-            GameManager.Instance.OnScoreRegistered += OnScoreRegistered;
-            GameManager.Instance.OnScoreUnregistered += OnScoreUnregistered;
+            ScoreManager.Instance.OnScoreRegistered += OnScoreRegistered;
+            ScoreManager.Instance.OnScoreUnregistered += OnScoreUnregistered;
         }
 
         private void OnDestroy()
         {
-            if (!GameManager.HasInstance)
+            if (!ScoreManager.HasInstance)
                 return;
             
-            GameManager.Instance.OnScoreRegistered -= OnScoreRegistered;
-            GameManager.Instance.OnScoreUnregistered -= OnScoreUnregistered;
+            ScoreManager.Instance.OnScoreRegistered -= OnScoreRegistered;
+            ScoreManager.Instance.OnScoreUnregistered -= OnScoreUnregistered;
         }
 
         private void OnScoreRegistered(Score score, PlayerRef player)
