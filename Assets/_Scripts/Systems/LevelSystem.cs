@@ -20,6 +20,7 @@ namespace Systems
         protected Scene loadedScene;
 
         public event Action OnLobbyLoad;
+        public event Action OnGameLoad;
         public INetworkSceneObjectProvider networkSceneObjectProvider { get; private set; }
 
         public LevelState State { get; private set; }
@@ -33,14 +34,20 @@ namespace Systems
 
         public void Start()
         {
-            NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
             networkSceneObjectProvider = gameObject.AddComponent<NetworkSceneMaganer>();
+        }
+
+        // Since the NetworkRunner is deleted after a connection error (idk why),
+        // called by the runner to re-register actions
+        public void SubscribeNetworkEvents()
+        {
+            NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
         }
 
         public int ActiveSceneIndex { get; private set; }
 
         public void LoadLobby()
-        {   
+        {
             State = LevelState.TRANSITION;
 
             Debug.Log("Loading lobby scene.");
@@ -60,12 +67,14 @@ namespace Systems
         {
             if (ActiveSceneIndex == lobbySceneIndex.BuildIndex)
             {
+                Debug.Log("Invoking spawn player");
                 State = LevelState.LOBBY;
                 OnLobbyLoad?.Invoke();
             }
             else if (ActiveSceneIndex == gameSceneIndex.BuildIndex)
             {
                 State = LevelState.GAME;
+                OnGameLoad?.Invoke();
             }
             else
             {
@@ -79,7 +88,6 @@ namespace Systems
         {
             protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
             {
-                Debug.Log($"Switching Scene from {prevScene} to {newScene}");
                 if (newScene <= 0)
                 {
                     finished(new List<NetworkObject>());
@@ -93,12 +101,10 @@ namespace Systems
 
                 if (Instance.loadedScene != default)
                 {
-                    Debug.Log($"Unloading Scene {Instance.loadedScene.buildIndex}");
                     yield return SceneManager.UnloadSceneAsync(Instance.loadedScene);
                 }
 
                 Instance.loadedScene = default;
-                Debug.Log($"Loading scene {newScene}");
 
                 List<NetworkObject> sceneObjects = new List<NetworkObject>();
 
@@ -106,7 +112,6 @@ namespace Systems
                 {
                     yield return SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Additive);
                     Instance.loadedScene = SceneManager.GetSceneByBuildIndex(newScene);
-                    Debug.Log($"Loaded scene {newScene}");
                     sceneObjects = FindNetworkObjects(Instance.loadedScene, disable: false);
                 }
 

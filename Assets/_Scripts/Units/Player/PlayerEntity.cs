@@ -34,6 +34,7 @@ namespace Units.Player
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
+        public bool IsReady { get; private set; } = false;
         
         private void Awake()
         {
@@ -83,6 +84,12 @@ namespace Units.Player
                 if (inputData.IsInteractOnce && Runner.IsForward)
                 {
                     interacter.InteractWithClosestInteraction();
+                }
+
+                if (inputData.IsReadyOnce)
+                {
+                    IsReady = !IsReady;
+                    Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
                 }
 
                 UpdateThrow(inputData);

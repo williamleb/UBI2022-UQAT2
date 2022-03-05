@@ -15,7 +15,13 @@ namespace Systems.Network
         [SerializeField] private static string customLobbyName = "bababooeyLobby";
         public NetworkRunner NetworkRunner { get; private set; }
         public bool DebugMode { get; set; } = true;
-        
+
+        private void Start()
+        {
+            LevelSystem.Instance.SubscribeNetworkEvents();
+            PlayerSystem.Instance.SubscribeNetworkEvents();
+        }
+
         #region Events
 
         public event Action<NetworkRunner, NetworkInput> OnInputEvent;
@@ -76,7 +82,7 @@ namespace Systems.Network
         }
 
         //Create a hosted game with the given session name. 
-        public async Task CreateGame(string sessionName)
+        public async Task<bool> CreateGame(string sessionName)
         {
             Debug.Log($"Creating game with session name {sessionName}");
 
@@ -91,7 +97,16 @@ namespace Systems.Network
                 SceneObjectProvider = LevelSystem.Instance.networkSceneObjectProvider
             });
 
-            LevelSystem.Instance.LoadLobby();
+            if (result.Ok)
+            {
+                LevelSystem.Instance.LoadLobby();
+                return true;
+            }
+            else
+            {
+                Debug.Log($"Failed to join game with session name : {sessionName}");
+                return false;
+            }        
         }
 
         //Try to join a game base on a specific session name.
