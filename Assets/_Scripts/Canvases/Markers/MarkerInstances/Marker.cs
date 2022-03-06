@@ -25,6 +25,9 @@ namespace Canvases.Markers
             set => worldPosition = value;
         }
 
+        public bool ShowOutsideCameraBorders { get; set; } = true; // TODO
+        public Vector2 Padding { get; set; } = new Vector2(10f, 10f); // TODO
+
         public float Scale
         {
             get => scale;
@@ -88,7 +91,7 @@ namespace Canvases.Markers
 
         private void AdjustMarkerSizeWithCameraDistance()
         {
-            if (CameraIsBehind())
+            if (CameraIsBehind() && !ShowOutsideCameraBorders)
             {
                 rectTransform.localScale = new Vector3(0f, 0f, 0f);
                 return;
@@ -110,6 +113,30 @@ namespace Canvases.Markers
         private void AdjustMarkerScreenPosition()
         {
             var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
+            var halfSize = rectTransform.sizeDelta * transform.lossyScale * 0.5f;
+
+            Debug.Log($"Screen position: {screenPosition}");
+            Debug.Log($"Screen dimensions: {new Vector2(Screen.width, Screen.height)}");
+            Debug.Log($"Size: {halfSize * 2f}");
+
+            
+            if (CameraIsBehind())
+            {
+                var cameraToPositionDirection = (Position - currentCamera.transform.position).normalized;
+                var newX = Vector3.Dot(currentCamera.transform.right, cameraToPositionDirection);
+                var newY = Vector3.Dot(currentCamera.transform.up, cameraToPositionDirection);
+
+                screenPosition = new Vector3(newX * Screen.width, newY * Screen.height, 0f);
+
+                Debug.Log($"The vector position: {screenPosition}");
+            }
+
+            var x = Mathf.Clamp(screenPosition.x, halfSize.x + Padding.x, Screen.width - halfSize.x - Padding.x);
+            var y = Mathf.Clamp(screenPosition.y, halfSize.y + Padding.y, Screen.height - halfSize.y - Padding.y);
+            screenPosition = new Vector3(x, y, 0f);
+            
+            Debug.Log($"Clamped: {screenPosition}");
+            
             rectTransform.position = screenPosition;
         }
     }
