@@ -1,4 +1,5 @@
 ﻿using System;
+using DigitalRuby.Tween;
 using Fusion;
 using Units.Player;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Canvases.Markers
         private float scale = 1.0f;
 
         private Action<Marker> release;
+
+        private float targetLocalScale = 0f;
 
         public bool IsActivated => release != null;
 
@@ -85,22 +88,65 @@ namespace Canvases.Markers
             if (currentCamera != null)
             {
                 AdjustMarkerSizeWithCameraDistance();
+                UpdateMarkerLocalScale();
                 AdjustMarkerScreenPosition();
+            }
+        }
+
+        private void UpdateVisibility()
+        {
+            if (CameraIsBehind() && !ShowOutsideCameraBorders)
+            {
+                rectTransform.localScale = new Vector3(0f, 0f, 0f);
+                targetLocalScale = 0f;
+                return;
+            }
+            else
+            {
+                
             }
         }
 
         private void AdjustMarkerSizeWithCameraDistance()
         {
-            if (CameraIsBehind() && !ShowOutsideCameraBorders)
+            if (ShowOutsideCameraBorders && !IfIsInsideScreen())
             {
-                rectTransform.localScale = new Vector3(0f, 0f, 0f);
+                targetLocalScale = MarkerManager.HasInstance ? MarkerManager.Instance.GeneralScale : 1f;
                 return;
             }
 
             var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
             var generalScale = MarkerManager.HasInstance ? scale * MarkerManager.Instance.GeneralScale : scale;
-            var adjustedScale = Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;
-            rectTransform.localScale = new Vector3(adjustedScale, adjustedScale, adjustedScale);
+            targetLocalScale = Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;
+        }
+
+        private void UpdateMarkerLocalScale()
+        {
+            if (!MarkerManager.HasInstance)
+            {
+                rectTransform.localScale = targetLocalScale * Vector3.one;
+                return;
+            }
+
+            var currentLocalScale = rectTransform.localScale.x;
+            if (Math.Abs(currentLocalScale - targetLocalScale) < 0.1f)
+            {
+                return;
+            }
+
+            if (currentLocalScale < targetLocalScale)
+            {
+                currentLocalScale += MarkerManager.Instance.ScaleRate * Time.deltaTime;
+                currentLocalScale = Math.Min(currentLocalScale, targetLocalScale);
+            }
+            else
+            {
+                currentLocalScale -= MarkerManager.Instance.ScaleRate * Time.deltaTime;
+                currentLocalScale = Math.Max(currentLocalScale, targetLocalScale);
+            }
+
+            Debug.Log($"LocalScale: {currentLocalScale}");
+            rectTransform.localScale = currentLocalScale * Vector3.one;
         }
 
         private bool CameraIsBehind()
@@ -115,29 +161,27 @@ namespace Canvases.Markers
             var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
             var halfSize = rectTransform.sizeDelta * transform.lossyScale * 0.5f;
 
-            Debug.Log($"Screen position: {screenPosition}");
-            Debug.Log($"Screen dimensions: {new Vector2(Screen.width, Screen.height)}");
-            Debug.Log($"Size: {halfSize * 2f}");
-
-            
-            if (CameraIsBehind())
+            if (ShowOutsideCameraBorders && CameraIsBehind())
             {
-                var cameraToPositionDirection = (Position - currentCamera.transform.position).normalized;
-                var newX = Vector3.Dot(currentCamera.transform.right, cameraToPositionDirection);
-                var newY = Vector3.Dot(currentCamera.transform.up, cameraToPositionDirection);
-
-                screenPosition = new Vector3(newX * Screen.width, newY * Screen.height, 0f);
-
-                Debug.Log($"The vector position: {screenPosition}");
+                screenPosition.x = -screenPosition.x;
+                screenPosition.y = -screenPosition.y;
             }
 
-            var x = Mathf.Clamp(screenPosition.x, halfSize.x + Padding.x, Screen.width - halfSize.x - Padding.x);
-            var y = Mathf.Clamp(screenPosition.y, halfSize.y + Padding.y, Screen.height - halfSize.y - Padding.y);
-            screenPosition = new Vector3(x, y, 0f);
+            var clampedX = Mathf.Clamp(screenPosition.x, halfSize.x + Padding.x, Screen.width - halfSize.x - Padding.x);
+            var clampedY = Mathf.Clamp(screenPosition.y, halfSize.y + Padding.y, Screen.height - halfSize.y - Padding.y);
             
-            Debug.Log($"Clamped: {screenPosition}");
+            rectTransform.position = new Vector3(clampedX, clampedY, 0f);
+        }
+
+        private bool IfIsInsideScreen()
+        {
+            if (CameraIsBehind())
+                return false;
             
-            rectTransform.position = screenPosition;
+            var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
+            
+            return screenPosition.x > Padding.x && screenPosition.x < Screen.width - Padding.x &&
+                   screenPosition.y > Padding.y && screenPosition.y < Screen.height - Padding.y;
         }
     }
 }
