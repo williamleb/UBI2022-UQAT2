@@ -18,7 +18,9 @@ namespace Canvases.Markers
 
         private Action<Marker> release;
 
-        private float targetLocalScale = 0f;
+        private bool isOutsideCamera = false;
+        private float tweenTargetSize = 0f;
+        private FloatTween insideOutsideCameraTransitionTween = null;
 
         public bool IsActivated => release != null;
 
@@ -27,7 +29,7 @@ namespace Canvases.Markers
             get => worldPosition;
             set => worldPosition = value;
         }
-
+        
         public bool ShowOutsideCameraBorders { get; set; } = true; // TODO
         public Vector2 Padding { get; set; } = new Vector2(10f, 10f); // TODO
 
@@ -46,7 +48,7 @@ namespace Canvases.Markers
         {
             if (currentCamera != null)
             {
-                AdjustMarkerSizeWithCameraDistance();
+                UpdateMarkerSize();
                 AdjustMarkerScreenPosition();
             }
             gameObject.SetActive(true);
@@ -87,66 +89,68 @@ namespace Canvases.Markers
         {
             if (currentCamera != null)
             {
-                AdjustMarkerSizeWithCameraDistance();
-                UpdateMarkerLocalScale();
+                UpdateMarkerSize();
                 AdjustMarkerScreenPosition();
             }
         }
 
-        private void UpdateVisibility()
+        private void UpdateMarkerSize()
         {
             if (CameraIsBehind() && !ShowOutsideCameraBorders)
             {
                 rectTransform.localScale = new Vector3(0f, 0f, 0f);
-                targetLocalScale = 0f;
                 return;
             }
-            else
+            
+            var targetSize = GetMarkerSizeWithCameraDistance();
+            var currentSize = rectTransform.localScale.x;
+
+            var newIsOutsideCamera = !IsInsideCamera();
+            if (newIsOutsideCamera != isOutsideCamera)
             {
+                isOutsideCamera = newIsOutsideCamera;
                 
+                if (insideOutsideCameraTransitionTween != null)
+                {
+                    TweenFactory.RemoveTween(insideOutsideCameraTransitionTween, TweenStopBehavior.DoNotModify);
+                }
+
+                tweenTargetSize = targetSize;
+                var duration = MarkerManager.HasInstance ? MarkerManager.Instance.SecondsOfTransitionsInsideOutsideCamera : 0.1f;
+
+                gameObject.Tween(
+                    nameof(insideOutsideCameraTransitionTween), 
+                    currentSize, 
+                    tweenTargetSize, 
+                    duration, 
+                    TweenScaleFunctions.QuadraticEaseOut, 
+                    t => rectTransform.localScale = t.CurrentValue * Vector3.one);
+                return;
             }
+
+            if (insideOutsideCameraTransitionTween != null)
+            {
+                if (Math.Abs(currentSize - tweenTargetSize) > 0.1f)
+                {
+                    return;
+                }
+                
+                insideOutsideCameraTransitionTween = null;
+            }
+
+            rectTransform.localScale = targetSize * Vector3.one;
         }
 
-        private void AdjustMarkerSizeWithCameraDistance()
+        private float GetMarkerSizeWithCameraDistance()
         {
-            if (ShowOutsideCameraBorders && !IfIsInsideScreen())
+            if (ShowOutsideCameraBorders && !IsInsideCamera())
             {
-                targetLocalScale = MarkerManager.HasInstance ? MarkerManager.Instance.GeneralScale : 1f;
-                return;
+                return MarkerManager.HasInstance ? MarkerManager.Instance.OutsideCameraScale : 1f;
             }
-
+            
             var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
             var generalScale = MarkerManager.HasInstance ? scale * MarkerManager.Instance.GeneralScale : scale;
-            targetLocalScale = Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;
-        }
-
-        private void UpdateMarkerLocalScale()
-        {
-            if (!MarkerManager.HasInstance)
-            {
-                rectTransform.localScale = targetLocalScale * Vector3.one;
-                return;
-            }
-
-            var currentLocalScale = rectTransform.localScale.x;
-            if (Math.Abs(currentLocalScale - targetLocalScale) < 0.1f)
-            {
-                return;
-            }
-
-            if (currentLocalScale < targetLocalScale)
-            {
-                currentLocalScale += MarkerManager.Instance.ScaleRate * Time.deltaTime;
-                currentLocalScale = Math.Min(currentLocalScale, targetLocalScale);
-            }
-            else
-            {
-                currentLocalScale -= MarkerManager.Instance.ScaleRate * Time.deltaTime;
-                currentLocalScale = Math.Max(currentLocalScale, targetLocalScale);
-            }
-
-            Debug.Log($"LocalScale: {currentLocalScale}");
-            rectTransform.localScale = currentLocalScale * Vector3.one;
+            return Math.Abs(cameraDistance) > 0.001f ? generalScale / cameraDistance : generalScale;
         }
 
         private bool CameraIsBehind()
@@ -173,7 +177,7 @@ namespace Canvases.Markers
             rectTransform.position = new Vector3(clampedX, clampedY, 0f);
         }
 
-        private bool IfIsInsideScreen()
+        private bool IsInsideCamera()
         {
             if (CameraIsBehind())
                 return false;
