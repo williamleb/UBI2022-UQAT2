@@ -8,6 +8,8 @@ namespace Canvases.Markers
     {
         [SerializeField] private float markerScale = 1.0f;
         [SerializeField] private bool lockInPlace = true;
+        [SerializeField] private bool showOutsideCameraBorders = false;
+        [SerializeField, ShowIf(nameof(showOutsideCameraBorders))] private Vector2 padding = new Vector2(10f, 10f);
         
         private T currentMarker;
         private Vector3 offsetToParent;
@@ -44,6 +46,8 @@ namespace Canvases.Markers
             currentMarker = marker;
             currentMarker.Scale = markerScale;
             currentMarker.Position = transform.position;
+            currentMarker.ShowOutsideCameraBorders = showOutsideCameraBorders;
+            currentMarker.Padding = padding;
             currentMarker.Activate();
             OnActivated();
         }

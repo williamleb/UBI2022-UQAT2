@@ -151,7 +151,7 @@ namespace Canvases.Markers
         {
             if (insideOutsideCameraTransitionTween != null)
             {
-                if (insideOutsideCameraTransitionTween.State == TweenState.Stopped)
+                if (insideOutsideCameraTransitionTween.State != TweenState.Stopped)
                     return false;
                 
                 insideOutsideCameraTransitionTween = null;
