@@ -12,6 +12,7 @@ namespace Managers.Interactions
     {
         public event Action<Interacter> OnInteractedWith; // Only called on host
         public event Action<Interacter> OnInstantFeedback; // Only called on client who's interaction player has authority
+        public event Action<bool> OnInteractionPossibilityChanged;
         
         [SerializeField] private PromptMarkerReceptor markerToShowWhenInteractionPossible;
 
@@ -41,6 +42,8 @@ namespace Managers.Interactions
                     markerToShowWhenInteractionPossible.Activate();
                 else
                     markerToShowWhenInteractionPossible.Deactivate();
+                
+                OnInteractionPossibilityChanged?.Invoke(interactionPossible);
             }
         }
 
