@@ -29,8 +29,56 @@ Transform:
   m_Children:
   - {fileID: 9007952481490626431}
   m_Father: {fileID: 7778799847435167780}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3167266982469200164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1729975447650585820}
+  - component: {fileID: 8641667599225036634}
+  m_Layer: 3
+  m_Name: HomeworkMarker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1729975447650585820
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3167266982469200164}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7778799847435167780}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8641667599225036634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3167266982469200164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cddca4fe8df4561b5905eb905c0a851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  markerScale: 3
+  lockInPlace: 1
+  showOutsideCameraBorders: 1
+  padding: {x: 10, y: 10}
+  sprite: {fileID: 21300000, guid: 4a3f79e785ba3b74d982cdc40e77faab, type: 3}
 --- !u!1 &4696352038361210478
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,7 +121,7 @@ GameObject:
   - component: {fileID: 7778799846954531123}
   - component: {fileID: 6424069841489323483}
   m_Layer: 0
-  m_Name: Marker
+  m_Name: PromptMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7778799846954531120}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7778799847435167780}
@@ -107,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   markerScale: 3
   lockInPlace: 1
+  showOutsideCameraBorders: 0
+  padding: {x: 10, y: 10}
   actionReference: {fileID: -8964356537790128568, guid: 4f878948d09c1d74bb22b3dcaca44dcf, type: 3}
 --- !u!1 &7778799847435167800
 GameObject:
@@ -144,6 +194,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7778799846954531123}
+  - {fileID: 1729975447650585820}
   - {fileID: 4526205713884226856}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -262,6 +313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   visual: {fileID: 7778799847479356275}
+  homeworkMarker: {fileID: 8641667599225036634}
 --- !u!95 &8445365399247779791
 Animator:
   serializedVersion: 3

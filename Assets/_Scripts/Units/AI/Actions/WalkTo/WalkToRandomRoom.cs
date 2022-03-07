@@ -51,7 +51,7 @@ namespace Units.AI.Actions
             if (!rooms.Any())
                 return;
 
-            roomToWalkTo = rooms.RandomElement();
+            roomToWalkTo = rooms.WeightedRandomElement();
             roomTarget?.SetValue(roomToWalkTo.transform);
             randomPositionInRoom = roomToWalkTo.GetRandomRoomPosition();
         }

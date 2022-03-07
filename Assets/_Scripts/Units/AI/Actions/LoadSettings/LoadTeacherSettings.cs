@@ -16,6 +16,7 @@ namespace Units.AI.Actions.LoadSettings
         [SerializeField] private SharedFloat minSecondsToChangePositionInARoom;
         [SerializeField] private SharedFloat maxSecondsToChangePositionInARoom;
         [SerializeField] private SharedFloat secondsToChaseBadBehavior;
+        [SerializeField] private SharedFloat secondsToShowRoomIndicator;
 
         private AISettings settings = null;
 
@@ -33,6 +34,7 @@ namespace Units.AI.Actions.LoadSettings
             minSecondsToChangePositionInARoom?.SetValue(settings.MinSecondsToChangePositionInARoom);
             maxSecondsToChangePositionInARoom?.SetValue(settings.MaxSecondsToChangePositionInARoom);
             secondsToChaseBadBehavior?.SetValue(settings.SecondsToChaseBadBehavior);
+            secondsToShowRoomIndicator?.SetValue(settings.SecondsToShowRoomIndicator);
         }
 
         public override TaskStatus OnUpdate()

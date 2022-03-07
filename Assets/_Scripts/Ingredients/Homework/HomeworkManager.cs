@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
+using JetBrains.Annotations;
 using Managers.Game;
 using Scriptables;
 using Sirenix.OdinInspector;
@@ -139,6 +140,7 @@ namespace Ingredients.Homework
                 
                 ActivateHomework();
             }
+            // ReSharper disable once IteratorNeverReturns Reason: this loops until the coroutine stops from external sources
         }
 
         private IEnumerator VerifyHomeworkStateRoutine()
@@ -150,6 +152,7 @@ namespace Ingredients.Homework
                 FreeAllHomeworkPastSecurityNet();
                 ActivateHomeworkIfEveryHomeworkIsFree();
             }
+            // ReSharper disable once IteratorNeverReturns Reason: this loops until the coroutine stops from external sources
         }
 
         private void FreeAllHomeworkPastSecurityNet()
@@ -181,7 +184,7 @@ namespace Ingredients.Homework
             }
         }
 
-        public void ActivateHomework()
+        private void ActivateHomework()
         {
             var homeworkToActivate = GetNextFreeHomework();
             if (!homeworkToActivate)
@@ -222,27 +225,12 @@ namespace Ingredients.Homework
             return homeworks.Values.Any(homework => Vector3.SqrMagnitude(homeworkSpawnerPosition - homework.transform.position) < 0.5f);
         }
 
+        [CanBeNull] 
         private HomeworkSpawnPoint ChooseSpawnPoint()
         {
             var validSpawnPoints = spawnPoints.Where(spawnPoint => !HasAnyHomeworkNear(spawnPoint.transform.position)).ToArray();
 
-            if (!validSpawnPoints.Any())
-                return null;
-            
-            var sumOfProbabilities = validSpawnPoints.Sum(spawnPoint => spawnPoint.Probability);
-
-            var randomFloat = Random.Range(0f, sumOfProbabilities);
-            var currentProbability = 0f;
-            foreach (var validSpawnPoint in validSpawnPoints)
-            {
-                currentProbability += validSpawnPoint.Probability;
-                if (randomFloat <= currentProbability)
-                {
-                    return validSpawnPoint;
-                }
-            }
-
-            return null;
+            return validSpawnPoints.Any() ? validSpawnPoints.WeightedRandomElement() : null;
         }
 
         private void ManageHomeworkBeforeSpawned(NetworkRunner runner, NetworkObject homeworkObject)

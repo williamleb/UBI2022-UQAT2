@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Canvases.Markers;
 using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Systems.Sound;
 using Units;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Ingredients.Homework
 {
@@ -23,6 +22,7 @@ namespace Ingredients.Homework
         }
 
         [SerializeField, Required] private GameObject visual;
+        [SerializeField] private SpriteMarkerReceptor homeworkMarker;
 
         private Interaction interaction;
         private Rigidbody rb;
@@ -49,6 +49,34 @@ namespace Ingredients.Homework
         {
             interaction.OnInstantFeedback += OnInstantFeedback;
             interaction.OnInteractedWith += OnInteractedWith;
+            interaction.OnInteractionPossibilityChanged += OnInteractionPossibilityChanged;
+        }
+
+        private void OnDisable()
+        {
+            interaction.OnInstantFeedback -= OnInstantFeedback;
+            interaction.OnInteractedWith -= OnInteractedWith;
+            interaction.OnInteractionPossibilityChanged -= OnInteractionPossibilityChanged;
+        }
+
+        private void OnInteractionPossibilityChanged(bool interactionPossible)
+        {
+            UpdateHomeworkMarkerVisibility();            
+        }
+
+        private void UpdateHomeworkMarkerVisibility()
+        {
+            if (!homeworkMarker)
+                return;
+
+            if (interaction.Possible || HomeworkState == State.Free)
+            {
+                homeworkMarker.Deactivate();
+            }
+            else
+            {
+                homeworkMarker.Activate();
+            }
         }
 
         private void OnInstantFeedback(Interacter interacter)
@@ -118,6 +146,8 @@ namespace Ingredients.Homework
             {
                 HomeworkManager.Instance.RegisterHomework(this);
             }
+
+            UpdateHomeworkMarkerVisibility();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -139,6 +169,8 @@ namespace Ingredients.Homework
 
             rb.isKinematic = HomeworkState != State.InWorld;
             animator.SetBool(isSpawned, HomeworkState != State.Free);
+            
+            UpdateHomeworkMarkerVisibility();            
         }
 
         public override void FixedUpdateNetwork()

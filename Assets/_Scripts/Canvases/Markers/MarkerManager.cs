@@ -11,10 +11,14 @@ namespace Canvases.Markers
     {
         [SerializeField, Required] private MarkerManagerData data;
         [SerializeField] private float generalScale = 1.0f;
+        [SerializeField] private float outsideCameraScale = 1.0f;
+        [SerializeField] private float secondsOfTransitionsInsideOutsideCamera = 0.25f;
 
         private readonly Dictionary<Type, List<Marker>> markers = new Dictionary<Type, List<Marker>>();
 
         public float GeneralScale => generalScale;
+        public float OutsideCameraScale => outsideCameraScale;
+        public float SecondsOfTransitionsInsideOutsideCamera => secondsOfTransitionsInsideOutsideCamera;
 
         /// <summary>
         /// After calling this method to get a marker, you must release the marker when you no longer need it with
