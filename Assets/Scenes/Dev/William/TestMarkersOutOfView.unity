@@ -1506,6 +1506,7 @@ GameObject:
   - component: {fileID: 686646314}
   - component: {fileID: 686646315}
   - component: {fileID: 686646316}
+  - component: {fileID: 686646317}
   m_Layer: 0
   m_Name: Marker
   m_TagString: Untagged
@@ -1552,6 +1553,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a4320fe213443888fefcfdf50600780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &686646317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686646313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0126fc4a55b425a86402ed505310a4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &691815510
@@ -2798,6 +2811,7 @@ GameObject:
   - component: {fileID: 1211320801}
   - component: {fileID: 1211320803}
   - component: {fileID: 1211320802}
+  - component: {fileID: 1211320804}
   m_Layer: 0
   m_Name: Marker
   m_TagString: Untagged
@@ -2846,6 +2860,18 @@ MonoBehaviour:
   markerScale: 4
   lockInPlace: 1
   sprite: {fileID: 21300000, guid: 4a3f79e785ba3b74d982cdc40e77faab, type: 3}
+--- !u!114 &1211320804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211320800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0126fc4a55b425a86402ed505310a4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1314878568
 GameObject:
   m_ObjectHideFlags: 0
@@ -3459,7 +3485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1784522653
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4023,6 +4049,10 @@ PrefabInstance:
       propertyPath: generalScale
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 774838030713762693, guid: 3b91fda5dfbe5a4408f5cece4812c991, type: 3}
+      propertyPath: outsideCameraScale
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 774838030713762695, guid: 3b91fda5dfbe5a4408f5cece4812c991, type: 3}
       propertyPath: m_Name
       value: MarkerPanel
@@ -4402,7 +4432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1669211385573244434, guid: 9c3aa26750321a745b7f0801e9b114db, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 237.246
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1669211385573244434, guid: 9c3aa26750321a745b7f0801e9b114db, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4474,7 +4504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7210395381719948749, guid: 9c3aa26750321a745b7f0801e9b114db, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 237.246
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7210395381719948749, guid: 9c3aa26750321a745b7f0801e9b114db, type: 3}
       propertyPath: m_AnchoredPosition.y

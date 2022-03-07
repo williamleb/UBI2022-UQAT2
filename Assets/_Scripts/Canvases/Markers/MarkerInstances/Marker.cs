@@ -10,6 +10,8 @@ namespace Canvases.Markers
     [RequireComponent(typeof(RectTransform))]
     public abstract class Marker : MonoBehaviour
     {
+        private const float SMALLEST_SCALE = 0.1f;
+        
         private RectTransform rectTransform;
         private Camera currentCamera;
 
@@ -18,8 +20,8 @@ namespace Canvases.Markers
 
         private Action<Marker> release;
 
+        private bool justActivated = false;
         private bool isOutsideCamera = false;
-        private float tweenTargetSize = 0f;
         private FloatTween insideOutsideCameraTransitionTween = null;
 
         public bool IsActivated => release != null;
@@ -30,8 +32,8 @@ namespace Canvases.Markers
             set => worldPosition = value;
         }
         
-        public bool ShowOutsideCameraBorders { get; set; } = true; // TODO
-        public Vector2 Padding { get; set; } = new Vector2(10f, 10f); // TODO
+        public bool ShowOutsideCameraBorders { get; set; } = false;
+        public Vector2 Padding { get; set; } = new Vector2(10f, 10f);
 
         public float Scale
         {
@@ -46,10 +48,14 @@ namespace Canvases.Markers
 
         public void Activate()
         {
+            justActivated = true;
+            RemoveCurrentTween();
+            isOutsideCamera = false;
+            
             if (currentCamera != null)
             {
-                UpdateMarkerSize();
-                AdjustMarkerScreenPosition();
+                rectTransform.localScale = SMALLEST_SCALE * Vector3.one;
+                UpdateMarkerScreenPosition();
             }
             gameObject.SetActive(true);
         }
@@ -90,55 +96,92 @@ namespace Canvases.Markers
             if (currentCamera != null)
             {
                 UpdateMarkerSize();
-                AdjustMarkerScreenPosition();
+                UpdateMarkerScreenPosition();
             }
+        }
+
+        private void HideMarker()
+        {
+            rectTransform.localScale = new Vector3(0f, 0f, 0f);
         }
 
         private void UpdateMarkerSize()
         {
-            if (CameraIsBehind() && !ShowOutsideCameraBorders)
+            if (!ShowOutsideCameraBorders && CameraIsBehind())
             {
-                rectTransform.localScale = new Vector3(0f, 0f, 0f);
+                HideMarker();
+                return;
+            }
+
+            if (!ManageFinishedTween())
+                return;
+            
+            var targetSize = GetMarkerSizeWithCameraDistance(); 
+            if (justActivated)
+            {
+                justActivated = false;
+                StartTween(SMALLEST_SCALE, targetSize);
                 return;
             }
             
-            var targetSize = GetMarkerSizeWithCameraDistance();
+            if (ShowOutsideCameraBorders && UpdateInsideOutsideCameraTween(targetSize))
+            {
+                return;
+            }
+
+            rectTransform.localScale = targetSize * Vector3.one;
+        }
+
+        private bool UpdateInsideOutsideCameraTween(float targetSize)
+        {
             var currentSize = rectTransform.localScale.x;
 
             var newIsOutsideCamera = !IsInsideCamera();
             if (newIsOutsideCamera != isOutsideCamera)
             {
                 isOutsideCamera = newIsOutsideCamera;
-                
-                if (insideOutsideCameraTransitionTween != null)
-                {
-                    TweenFactory.RemoveTween(insideOutsideCameraTransitionTween, TweenStopBehavior.DoNotModify);
-                }
-
-                tweenTargetSize = targetSize;
-                var duration = MarkerManager.HasInstance ? MarkerManager.Instance.SecondsOfTransitionsInsideOutsideCamera : 0.1f;
-
-                gameObject.Tween(
-                    nameof(insideOutsideCameraTransitionTween), 
-                    currentSize, 
-                    tweenTargetSize, 
-                    duration, 
-                    TweenScaleFunctions.QuadraticEaseOut, 
-                    t => rectTransform.localScale = t.CurrentValue * Vector3.one);
-                return;
+                StartTween(currentSize, targetSize);
+                return true;
             }
 
+            return false;
+        }
+
+        private bool ManageFinishedTween()
+        {
             if (insideOutsideCameraTransitionTween != null)
             {
-                if (Math.Abs(currentSize - tweenTargetSize) > 0.1f)
-                {
-                    return;
-                }
+                if (insideOutsideCameraTransitionTween.State == TweenState.Stopped)
+                    return false;
                 
                 insideOutsideCameraTransitionTween = null;
             }
 
-            rectTransform.localScale = targetSize * Vector3.one;
+            return true;
+        }
+
+        private void StartTween(float currentSize, float targetSize)
+        {
+            RemoveCurrentTween();
+            
+            var duration = MarkerManager.HasInstance ? MarkerManager.Instance.SecondsOfTransitionsInsideOutsideCamera : 0.1f;
+
+            insideOutsideCameraTransitionTween = gameObject.Tween(
+                $"MarkerScale-{GetInstanceID()}", 
+                currentSize, 
+                targetSize, 
+                duration, 
+                TweenScaleFunctions.QuadraticEaseOut, 
+                t => rectTransform.localScale = t.CurrentValue * Vector3.one);
+        }
+
+        private void RemoveCurrentTween()
+        {
+            if (insideOutsideCameraTransitionTween != null)
+            {
+                TweenFactory.RemoveTween(insideOutsideCameraTransitionTween, TweenStopBehavior.DoNotModify);
+                insideOutsideCameraTransitionTween = null;
+            }
         }
 
         private float GetMarkerSizeWithCameraDistance()
@@ -160,21 +203,31 @@ namespace Canvases.Markers
             return Vector3.Dot(cameraToPosition, cameraTransform.forward) < 0;
         }
 
-        private void AdjustMarkerScreenPosition()
+        private void UpdateMarkerScreenPosition()
         {
             var screenPosition = currentCamera.WorldToScreenPoint(worldPosition);
+
+            rectTransform.position = ShowOutsideCameraBorders switch
+            {
+                true => GetScreenClampedPosition(screenPosition),
+                false => screenPosition
+            };
+        }
+
+        private Vector3 GetScreenClampedPosition(Vector3 screenPosition)
+        {
             var halfSize = rectTransform.sizeDelta * transform.lossyScale * 0.5f;
 
-            if (ShowOutsideCameraBorders && CameraIsBehind())
+            if (CameraIsBehind())
             {
                 screenPosition.x = -screenPosition.x;
                 screenPosition.y = -screenPosition.y;
             }
-
+                
             var clampedX = Mathf.Clamp(screenPosition.x, halfSize.x + Padding.x, Screen.width - halfSize.x - Padding.x);
             var clampedY = Mathf.Clamp(screenPosition.y, halfSize.y + Padding.y, Screen.height - halfSize.y - Padding.y);
             
-            rectTransform.position = new Vector3(clampedX, clampedY, 0f);
+            return new Vector3(clampedX, clampedY, 0f);
         }
 
         private bool IsInsideCamera()
