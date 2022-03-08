@@ -25,8 +25,10 @@ namespace Units.Player
         private InputAction sprint;
         private InputAction interact;
         private InputAction throwing;
+        private InputAction ready;
 
         private bool interactOnce;
+        private bool readyOnce;
         private bool dashOnce;
         private bool menuOnce;
 
@@ -56,6 +58,7 @@ namespace Units.Player
                 if (interactOnce) data.Buttons |= NetworkInputData.BUTTON_INTERACT_ONCE;
                 if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
                 if (throwing.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_THROW;
+                if (readyOnce) data.Buttons |= NetworkInputData.BUTTON_READY_ONCE;
 
                 data.Move = move.ReadV2();
             }
@@ -63,6 +66,7 @@ namespace Units.Player
             input.Set(data);
 
             interactOnce = false;
+            readyOnce = false;
             dashOnce = false;
             menuOnce = false;
         }
@@ -75,13 +79,16 @@ namespace Units.Player
             sprint = PlayerInputAction.Player.Sprint;
             interact = PlayerInputAction.Player.Interact;
             throwing = PlayerInputAction.Player.Throw;
+            ready = PlayerInputAction.Player.Ready;
 
             PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;
+            ready.started += ActivateReadyOnce;
             dash.started += ActivateDashOnce;
         }
 
         private void ActivateInteractOnce(InputAction.CallbackContext ctx) => interactOnce = ctx.started;
+        private void ActivateReadyOnce(InputAction.CallbackContext ctx) => readyOnce = ctx.started;
         private void ActivateDashOnce(InputAction.CallbackContext ctx) => dashOnce = ctx.started;
         private void ActivateMenuOnce(InputAction.CallbackContext ctx) => menuOnce = ctx.started;
 

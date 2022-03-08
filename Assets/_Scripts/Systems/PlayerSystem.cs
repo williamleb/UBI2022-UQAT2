@@ -16,19 +16,26 @@ namespace Systems
 
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
-		private void Start()
-		{
-			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
-			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
-
+        private void Start()
+        {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
+			LevelSystem.Instance.OnGameLoad += SetPlayerPositionToSpawn;
 		}
 
+		// Since the NetworkRunner is deleted after a connection error (idk why),
+		// called by the runner to re-register actions
+		public void SubscribeNetworkEvents()
+        {
+			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
+			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
+		}
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
 			Debug.Log($"{playerRef} joined.");
 			playersJoined.Add(playerRef, runner);
 
+			// TODO
+			// - check number of player in game (rejoin?)
             if (LevelSystem.Instance.State != LevelSystem.LevelState.TRANSITION)
             {
 				SpawnPlayer(runner, playerRef);
@@ -46,7 +53,7 @@ namespace Systems
         {
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(playerPrefab,
-						new Vector3(Random.Range(0, 3), 0, Random.Range(0, 3)),
+						new Vector3(0, 0, 0),
 						Quaternion.identity,
 						playerRef);
 		}
@@ -57,6 +64,14 @@ namespace Systems
 			playersJoined.ToList().ForEach(
 				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
 		}
+
+		private void SetPlayerPositionToSpawn()
+        {
+            foreach (PlayerEntity playerEntity in playersEntity)
+            {
+				playerEntity.gameObject.transform.position = new Vector3(0,0,0);
+            }
+        }
 
 		public PlayerEntity Get(PlayerRef playerRef)
 		{
@@ -91,7 +106,6 @@ namespace Systems
 			Debug.Log("Player removed " + player.PlayerID);
 		}
 
-		//Called between lobby and game
 		public void DespawnAllPlayers()
         {
             foreach (PlayerEntity playerEntity in playersEntity.ToList())
