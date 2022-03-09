@@ -26,8 +26,8 @@ namespace Units.Player
 
         private void DashAwake()
         {
-            dashTimer = new TickTimer(data.DashDuration, false);
-            dashCooldown = new TickTimer(data.DashCoolDown, false);
+            dashTimer = new TickTimer(data.DashDuration);
+            dashCooldown = new TickTimer(data.DashCoolDown);
             dashTimer.OnTimerEnd += OnHitNothing;
             dashCooldown.OnTimerEnd += ResetDashCoolDown;
         }
@@ -120,7 +120,7 @@ namespace Units.Player
             print("Hit other entity");
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-            RPC_GetHitAndDropItems(networkObject.Id, otherEntity.CompareTag(Tags.PLAYER));
+            RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer());
             hasHitSomeoneThisFrame = true;
             IsDashing = false;
             ResetVelocity();

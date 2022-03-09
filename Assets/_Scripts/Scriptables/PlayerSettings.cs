@@ -78,6 +78,12 @@ namespace Scriptables
         [MinValue(0)]
         [MaxValue(1)]
         private float dashAimAssistForce = 0.5f;
+        
+        [Space]
+        [Header("Other settings")]
+        [Tooltip("Time in seconds before a player can be tackled again")]
+        [SerializeField]
+        private int immunityTime = 2;
 
         [SerializeField] private PlayerCameraSettings playerCameraSettings;
 
@@ -98,6 +104,7 @@ namespace Scriptables
         public float DashAimAssistAngle => dashAimAssistAngle;
         public float DashAimAssistForce => dashAimAssistForce;
         public float DashCoolDown => dashCoolDown;
+        public int ImmunityTime => immunityTime;
 
         [Serializable]
         public class PlayerCameraSettings

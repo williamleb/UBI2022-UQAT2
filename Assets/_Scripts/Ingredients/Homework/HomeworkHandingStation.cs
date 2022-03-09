@@ -47,7 +47,7 @@ namespace Units.AI
         private bool CanGiveHomework(Interacter interacter)
         {
             var interacterGameObject = interacter.gameObject;
-            if (!interacterGameObject.CompareTag(Tags.PLAYER) && !interacterGameObject.CompareTag(Tags.AI))
+            if (!interacterGameObject.IsAPlayerOrAI())
                 return false;
 
             var inventory = interacterGameObject.GetComponentInEntity<Inventory>();
@@ -70,7 +70,7 @@ namespace Units.AI
             var inventory = interacter.gameObject.GetComponentInEntity<Inventory>();
             Debug.Assert(inventory, $"{nameof(HomeworkHandingStation)} should only be interacted with by actors with an {nameof(Inventory)}");
 
-            if (interacter.gameObject.CompareTag(Tags.PLAYER))
+            if (interacter.gameObject.IsAPlayer())
                 HandHomework(interacter);
             
             inventory.RemoveHomework();

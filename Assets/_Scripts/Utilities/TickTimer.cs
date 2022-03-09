@@ -5,18 +5,12 @@ namespace Utilities
     public class TickTimer
     {
         public event Action OnTimerEnd;
-        
-        public float RemainingSeconds { get; private set; }
+
+        private float remainingSeconds;
 
         private float maxDuration;
 
-        public TickTimer(float duration)
-        {
-            maxDuration = duration;
-            Reset();
-        }
-        
-        public TickTimer(float duration, bool startImmediately)
+        public TickTimer(float duration, bool startImmediately = false)
         {
             maxDuration = duration;
             if (startImmediately)
@@ -25,7 +19,7 @@ namespace Utilities
             }
             else
             {
-                RemainingSeconds = 0;
+                remainingSeconds = 0;
             }
         }
 
@@ -37,26 +31,26 @@ namespace Utilities
 
         public void Cancel()
         {
-            RemainingSeconds = 0;
+            remainingSeconds = 0;
         }
 
         public void Reset()
         {
-            RemainingSeconds = maxDuration;
+            remainingSeconds = maxDuration;
         }
 
         public void Tick(float deltaTime)
         {
-            if (RemainingSeconds == 0f) return;
-            RemainingSeconds -= deltaTime;
+            if (remainingSeconds == 0f) return;
+            remainingSeconds -= deltaTime;
             CheckForTimerEnd();
         }
 
         private void CheckForTimerEnd()
         {
-            if (RemainingSeconds > 0) return;
+            if (remainingSeconds > 0) return;
 
-            RemainingSeconds = 0;
+            remainingSeconds = 0;
             
             OnTimerEnd?.Invoke();
         }

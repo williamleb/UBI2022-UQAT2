@@ -12,6 +12,7 @@ using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
 using PlayerSettings = Scriptables.PlayerSettings;
+using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
@@ -30,12 +31,14 @@ namespace Units.Player
         private PlayerInteracter interacter;
         private Inventory inventory;
 
+        private TickTimer immunityTimer;
+        private NetworkBool isImmune;
         private bool isThrowing;
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public bool IsReady { get; private set; }
-        
+
         private void Awake()
         {
             data = SettingsSystem.Instance.PlayerSetting;
@@ -45,9 +48,14 @@ namespace Units.Player
             
             inventory.AssignVelocityObject(this);
 
+            immunityTimer = new TickTimer(data.ImmunityTime);
+            immunityTimer.OnTimerEnd += ImmunityTimerOnTimerEnd;
+
             MovementAwake();
             DashAwake();
         }
+
+        private void ImmunityTimerOnTimerEnd() => isImmune = false;
 
         public override async void Spawned()
         {
@@ -100,6 +108,7 @@ namespace Units.Player
                 }
                 
                 AnimationUpdate();
+                immunityTimer.Tick(Runner.DeltaTime);
             }
         }
 
@@ -162,12 +171,15 @@ namespace Units.Player
             if (isPlayer)
             {
                 var player = networkObject.GetComponent<PlayerEntity>();
+                if (player.isImmune) return;
                 inv = player.inventory;
                 player.Hit();
                 player.AnimFallTrigger();
                 //TODO activate ragdoll
                 //when ragdoll is active, we should be able to push the body to move through
                 player.ResetVelocity();
+                immunityTimer.Reset();
+                isImmune = true;
             }
             else
             {
