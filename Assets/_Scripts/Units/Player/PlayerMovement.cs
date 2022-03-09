@@ -14,6 +14,7 @@ namespace Units.Player
         
         private float currentMaxMoveSpeed;
         private Vector3 velocity = Vector3.zero;
+        private Vector3 lastMoveDirection = Vector3.zero;
 
         private float CurrentMoveSpeed => nRb.Rigidbody.velocity.magnitude;
         private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
@@ -40,18 +41,19 @@ namespace Units.Player
 
         private void MoveUpdate(NetworkInputData inputData)
         {
-            SetMoveInput(inputData);
+            HandleMoveInput(inputData);
             CalculateVelocity();
             MovePlayer();
             RotatePlayer();
         }
 
 
-        private void SetMoveInput(NetworkInputData inputData)
+        private void HandleMoveInput(NetworkInputData inputData)
         {
             if (!IsDashing)
             {
                 MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+                if (HasMoveInput) lastMoveDirection = MoveDirection;
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
                 MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
                 ChangeMoveSpeed(inputData.IsSprint);
@@ -96,10 +98,7 @@ namespace Units.Player
 
         private void RotatePlayer()
         {
-            if (HasMoveInput)
-            {
-                transform.forward = Vector3.RotateTowards(transform.forward, MoveDirection, data.TurnRotationSpeed,data.TurnRotationSpeed);
-            }
+            transform.forward = Vector3.RotateTowards(transform.forward, lastMoveDirection, data.TurnRotationSpeed,data.TurnRotationSpeed);
         }
         
         private void ResetVelocity()

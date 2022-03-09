@@ -19,20 +19,12 @@ namespace Units.Player
             networkAnimator.Animator.SetBool(IsHolding,inventory.HasHomework);
         }
 
-        private void AnimStumbleTrigger()
-        {
-            networkAnimator.SetTrigger("stumble");
-        }
-
-        private void AnimFallTrigger()
-        {
-            networkAnimator.SetTrigger("fall");
-        }
+        private void AnimStumbleTrigger() => networkAnimator.SetTrigger("stumble");
+        private void AnimFallTrigger() => networkAnimator.SetTrigger("fall");
+        private void AnimGetUpTrigger() => networkAnimator.SetTrigger("GetUp");
 
         //Stop animation to allow ragdoll
-        
-        //Get up animation
-        
+
         //Aim
         
         //Launch

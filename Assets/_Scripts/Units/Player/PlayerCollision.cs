@@ -8,7 +8,11 @@ namespace Units.Player
         private async void Hit()
         {
             CanMove = false;
-            await Task.Delay((int)(currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS));
+            int delay = (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS);
+            delay = Mathf.Max(1000, delay);
+            await Task.Delay(delay - 1000);
+            AnimGetUpTrigger(); //Only plays the animation if fallen
+            await Task.Delay(1000);
             CanMove = true;
         }
 
@@ -19,16 +23,6 @@ namespace Units.Player
                 Hit();
                 AnimStumbleTrigger();
             }
-        }
-
-        private void OnCollisionStay(Collision collision)
-        {
-            
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            
         }
     }
 }
