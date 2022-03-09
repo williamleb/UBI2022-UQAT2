@@ -12,41 +12,57 @@ namespace Units.Player
     {
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
+        [SerializeField] private Transform tacklePoint;
+
         [Networked] private NetworkBool IsDashing { get; set; } = false;
 
         private TickTimer dashTimer;
+        private TickTimer dashCooldown;
         private bool hasHitSomeoneThisFrame;
+        private bool canDash = true;
+        
+        private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
+        private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
 
         private void DashAwake()
         {
-            dashTimer = new TickTimer(data.DashDuration);
+            dashTimer = new TickTimer(data.DashDuration, false);
+            dashCooldown = new TickTimer(data.DashCoolDown, false);
             dashTimer.OnTimerEnd += OnHitNothing;
+            dashCooldown.OnTimerEnd += ResetDashCoolDown;
         }
+
 
         private void DashUpdate(NetworkInputData inputData)
         {
             HandleDashInput(inputData);
             if (IsDashing) DetectCollision();
             dashTimer.Tick(Runner.DeltaTime);
+            dashCooldown.Tick(Runner.DeltaTime);
+        }
+        private void ResetDashCoolDown()
+        {
+            canDash = true;
         }
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash) Dash();
+            if (inputData.IsDash && canDash) Dash();
         }
 
         private void Dash()
         {
             if (!CanMove || inventory.HasHomework || IsDashing) return;
+            canDash = false;
             IsDashing = true;
             dashTimer.Reset();
+            dashCooldown.Reset();
             Vector3 dirToTarget = GetDirToTarget();
             velocity = GetDashDirection(dirToTarget) * data.DashForce;
         }
-
+        
         private Vector3 GetDirToTarget()
         {
-            List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
             Vector3 dirToTarget = Vector3.zero;
             if (Runner.LagCompensation.OverlapSphere(transform.position, data.DashMaxAimAssistRange, Object.InputAuthority, hits) > 0)
             {
@@ -82,22 +98,26 @@ namespace Units.Player
 
         private void OnHitNothing()
         {
-            IsDashing = false;
-            Hit();
+            if (!IsDashing) return;
+            print("Hit nothing");
             AnimFallTrigger();
+            Hit();
+            IsDashing = false;
         }
 
         private void OnHitObject()
         {
-            IsDashing = false;
+            print("Hit Object");
             Hit();
             ResetVelocity();
             //TODO activate ragdoll
             AnimStumbleTrigger();
+            IsDashing = false;
         }
 
         private void OnHitOtherEntity(GameObject otherEntity)
         {
+            print("Hit other entity");
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.CompareTag(Tags.PLAYER));
@@ -108,19 +128,31 @@ namespace Units.Player
 
         private void DetectCollision()
         {
-            if (Runner.LagCompensation.Raycast(transform.position + Vector3.up, transform.forward, 1f,
-                    Object.InputAuthority, out LagCompensatedHit hit, Physics.AllLayers, HitOptions.IncludePhysX))
+            GameObject closestHit = null;
+            float distance = float.MaxValue;
+            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position,1,Object.InputAuthority,collisions, options:HitOptions.IncludePhysX) > 0)
             {
-                GameObject go = hit.GameObject;
-                if (go.CompareTag(Tags.PLAYER) || go.CompareTag(Tags.AI))
+                foreach (LagCompensatedHit collision in collisions)
                 {
-                    OnHitOtherEntity(go);
+                    if (collision.GameObject == gameObject) continue;
+                    float dst = Vector3.Distance(transform.position, collision.GameObject.transform.position);
+                    if (dst < distance)
+                    {
+                        closestHit = collision.GameObject;
+                        distance = dst;
+                    }
+                }
+
+                if (!closestHit) return;
+                
+                if (closestHit.IsAPlayerOrAI())
+                {
+                    OnHitOtherEntity(closestHit);
                 }
                 else
                 {
                     OnHitObject();
                 }
-
             }
         }
 

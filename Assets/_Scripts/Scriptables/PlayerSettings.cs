@@ -53,6 +53,10 @@ namespace Scriptables
         [Tooltip("Time in seconds before the dash has ended and we assumed the player missed and fumbles")]
         [SerializeField]
         private float dashDuration = 0.3f;
+        
+        [Tooltip("Time in seconds before the player can dash again")]
+        [SerializeField]
+        private float dashCoolDown = 1.5f;
 
         [Tooltip("Time in MS that the player is knockOut either by fumble or getting hit. " +
                  "This is increased by the speed of the player. The faster you go the longer the knockout time")]
@@ -93,6 +97,7 @@ namespace Scriptables
         public float DashMaxAimAssistRange => dashMaxAimAssistRange;
         public float DashAimAssistAngle => dashAimAssistAngle;
         public float DashAimAssistForce => dashAimAssistForce;
+        public float DashCoolDown => dashCoolDown;
 
         [Serializable]
         public class PlayerCameraSettings

@@ -49,6 +49,8 @@ GameObject:
   - component: {fileID: 3722890978772629318}
   - component: {fileID: 5506188373800945084}
   - component: {fileID: 8419462221372631601}
+  - component: {fileID: 1258915672279333070}
+  - component: {fileID: 1001097674528342328}
   m_Layer: 3
   m_Name: AIEntity
   m_TagString: AI
@@ -100,6 +102,7 @@ MonoBehaviour:
   - {fileID: 7344221456409342414}
   - {fileID: 3722890978772629318}
   - {fileID: 5506188373800945084}
+  - {fileID: 1258915672279333070}
   SimulationBehaviours: []
 --- !u!114 &3238944797167700348
 MonoBehaviour:
@@ -276,6 +279,39 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1258915672279333070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398730048398459857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  BroadRadius: 0
+  Offset: {x: 0, y: 0, z: 0}
+  Hitboxes: []
+--- !u!114 &1001097674528342328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398730048398459857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1014831617, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 2
+  SphereRadius: 0.75
+  BoxExtents: {x: 0, y: 0, z: 0}
+  Offset: {x: 0, y: 1, z: 0}
+  Root: {fileID: 0}
 --- !u!1 &5923932305402178342
 GameObject:
   m_ObjectHideFlags: 0

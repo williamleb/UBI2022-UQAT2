@@ -15,6 +15,19 @@ namespace Utilities
             maxDuration = duration;
             Reset();
         }
+        
+        public TickTimer(float duration, bool startImmediately)
+        {
+            maxDuration = duration;
+            if (startImmediately)
+            {
+                Reset();
+            }
+            else
+            {
+                RemainingSeconds = 0;
+            }
+        }
 
         public void Set(float newTime)
         {
