@@ -94,5 +94,10 @@ namespace Utilities.Extensions
         {
             return gameObject.CompareTag(Tags.PLAYER) || gameObject.GetParent().CompareTag(Tags.PLAYER);
         }
+        
+        public static bool IsAPlayerOrAI(this GameObject gameObject)
+        {
+            return gameObject.IsAPlayer() || gameObject.IsAnAI();
+        }
     }
 }

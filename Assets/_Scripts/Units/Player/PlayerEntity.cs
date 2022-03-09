@@ -30,11 +30,11 @@ namespace Units.Player
         private PlayerInteracter interacter;
         private Inventory inventory;
 
-        private bool isThrowing = false;
+        private bool isThrowing;
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
-        public bool IsReady { get; private set; } = false;
+        public bool IsReady { get; private set; }
         
         private void Awake()
         {
@@ -151,11 +151,11 @@ namespace Units.Player
 
         public void ExternalHit()
         {
-            RPC_DropItems(Object.Id, true);
+            RPC_GetHitAndDropItems(Object.Id, true);
         }
 
         [Rpc]
-        private void RPC_DropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
+        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             Inventory inv;
@@ -165,6 +165,9 @@ namespace Units.Player
                 inv = player.inventory;
                 player.Hit();
                 player.AnimFallTrigger();
+                //TODO activate ragdoll
+                //when ragdoll is active, we should be able to push the body to move through
+                player.ResetVelocity();
             }
             else
             {

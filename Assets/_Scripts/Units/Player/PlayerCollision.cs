@@ -20,15 +20,5 @@ namespace Units.Player
                 AnimStumbleTrigger();
             }
         }
-
-        private void OnCollisionStay(Collision collision)
-        {
-            
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            
-        }
     }
 }
