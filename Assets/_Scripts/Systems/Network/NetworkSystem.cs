@@ -94,7 +94,7 @@ namespace Systems.Network
                 SessionName = sessionName.ToLower(),
                 CustomLobbyName = customLobbyName,
                 GameMode = GameMode.Host,
-                SceneObjectProvider = LevelSystem.Instance.networkSceneObjectProvider
+                SceneObjectProvider = LevelSystem.Instance.NetworkSceneObjectProvider
             });
 
             if (result.Ok)
@@ -122,7 +122,7 @@ namespace Systems.Network
                 SessionName = sessionName.ToLower(),
                 CustomLobbyName = customLobbyName,
                 GameMode = GameMode.Client,
-                SceneObjectProvider = LevelSystem.Instance.networkSceneObjectProvider,
+                SceneObjectProvider = LevelSystem.Instance.NetworkSceneObjectProvider,
                 DisableClientSessionCreation = true
             });
 

@@ -142,13 +142,6 @@ namespace Managers.Rooms
             var middle2D = HandleUtility.WorldToGUIPoint(middle);
             GUI.Label(new Rect(middle2D.x, middle2D.y, 100, 100), gameObject.name, style);
             Handles.EndGUI();
-
-            if (lowerLeftPosition != null)
-            {
-                var middlePosition = MiddlePosition;
-                var roomMarkerTransform = roomMarker.transform;
-                Gizmos.DrawSphere(new Vector3(middlePosition.x, roomMarkerTransform.position.y, middlePosition.y), 1f);
-            }
         }
 #endif
     }

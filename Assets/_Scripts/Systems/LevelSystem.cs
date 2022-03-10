@@ -2,28 +2,39 @@ using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Scriptables;
 using Systems.Network;
 using Trisibo;
 using Units.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Utilities.Singleton;
 
 namespace Systems
 {
     public class LevelSystem : PersistentSingleton<LevelSystem>
     {
-        [SerializeField] private SceneField mainMenuSceneIndex;
-        [SerializeField] private SceneField lobbySceneIndex;
-        [SerializeField] private SceneField gameSceneIndex;
-
-        protected Scene loadedScene;
-
+        private const string SCENES_FOLDER_PATH = "Game";
+        
         public event Action OnLobbyLoad;
         public event Action OnGameLoad;
-        public INetworkSceneObjectProvider networkSceneObjectProvider { get; private set; }
+        
+        [SerializeField, FormerlySerializedAs("mainMenuSceneIndex")] private SceneField mainMenuOverride;
+        [SerializeField, FormerlySerializedAs("lobbySceneIndex")] private SceneField lobbyOverride;
+        [SerializeField, FormerlySerializedAs("gameSceneIndex")] private SceneField gameOverride;
 
+        private GameScenes scenes;
+        private Scene loadedScene;
+
+        public INetworkSceneObjectProvider NetworkSceneObjectProvider { get; private set; }
         public LevelState State { get; private set; }
+        public int ActiveSceneIndex { get; private set; }
+
+        private SceneField MainMenuScene => mainMenuOverride ?? scenes.MainMenu;
+        private SceneField LobbyScene => lobbyOverride ?? scenes.Lobby;
+        private SceneField GameScene => gameOverride ?? scenes.Game;
 
         public enum LevelState
         {
@@ -32,9 +43,27 @@ namespace Systems
             GAME
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            LoadScenes();
+        }
+
+        private void LoadScenes()
+        {
+            var sceneResources = Resources.LoadAll<GameScenes>(SCENES_FOLDER_PATH);
+
+            Debug.Assert(sceneResources.Any(), $"An object of type {nameof(GameScenes)} should be in the folder {SCENES_FOLDER_PATH}");
+            if (sceneResources.Length > 1)
+                Debug.LogWarning($"More than one object of type {nameof(GameScenes)} was found in the folder {SCENES_FOLDER_PATH}. Taking the first one.");
+
+            scenes = sceneResources.First();
+        }
+
         public void Start()
         {
-            networkSceneObjectProvider = gameObject.AddComponent<NetworkSceneMaganer>();
+            NetworkSceneObjectProvider = gameObject.AddComponent<NetworkSceneManager>();
         }
 
         // Since the NetworkRunner is deleted after a connection error (idk why),
@@ -43,35 +72,34 @@ namespace Systems
         {
             NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
         }
-
-        public int ActiveSceneIndex { get; private set; }
-
+        
         public void LoadLobby()
         {
             State = LevelState.TRANSITION;
 
             Debug.Log("Loading lobby scene.");
-            ActiveSceneIndex = lobbySceneIndex.BuildIndex;
-            NetworkSystem.Instance.NetworkRunner.SetActiveScene(lobbySceneIndex.BuildIndex);
+            ActiveSceneIndex = LobbyScene.BuildIndex;
+            NetworkSystem.Instance.NetworkRunner.SetActiveScene(LobbyScene.BuildIndex);
         }
 
         public void LoadGame()
         {
             State = LevelState.TRANSITION;
 
-            Debug.Log($"Loading scene with index {gameSceneIndex.BuildIndex}");
-            ActiveSceneIndex = gameSceneIndex.BuildIndex;
-            NetworkSystem.Instance.NetworkRunner.SetActiveScene(gameSceneIndex.BuildIndex);
+            Debug.Log($"Loading scene with index {GameScene.BuildIndex}");
+            ActiveSceneIndex = GameScene.BuildIndex;
+            NetworkSystem.Instance.NetworkRunner.SetActiveScene(GameScene.BuildIndex);
         }
+        
         private void ChangeLevelState(NetworkRunner networkRunner)
         {
-            if (ActiveSceneIndex == lobbySceneIndex.BuildIndex)
+            if (ActiveSceneIndex == LobbyScene.BuildIndex)
             {
                 Debug.Log("Invoking spawn player");
                 State = LevelState.LOBBY;
                 OnLobbyLoad?.Invoke();
             }
-            else if (ActiveSceneIndex == gameSceneIndex.BuildIndex)
+            else if (ActiveSceneIndex == GameScene.BuildIndex || NetworkSystem.Instance.DebugMode)
             {
                 State = LevelState.GAME;
                 OnGameLoad?.Invoke();
@@ -84,7 +112,7 @@ namespace Systems
             PlayerInputHandler.FetchInput = true;
         }
 
-        public class NetworkSceneMaganer : NetworkSceneManagerBase
+        public class NetworkSceneManager : NetworkSceneManagerBase
         {
             protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
             {

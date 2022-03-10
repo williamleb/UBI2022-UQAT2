@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
+using Scriptables;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -10,13 +11,34 @@ namespace Systems
 {
 	public class PlayerSystem : PersistentSingleton<PlayerSystem>
 	{
-		[SerializeField] private NetworkObject playerPrefab;
+		private const string PREFABS_FOLDER_PATH = "Game";
+		
+		private GamePrefabs prefabs;
+
 		private List<PlayerEntity> playersEntity = new List<PlayerEntity>();
 		private Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
-        private void Start()
+		protected override void Awake()
+		{
+			base.Awake();
+			
+			LoadPrefabs();
+		}
+		
+		private void LoadPrefabs()
+		{
+			var prefabResources = Resources.LoadAll<GamePrefabs>(PREFABS_FOLDER_PATH);
+
+			Debug.Assert(prefabResources.Any(), $"An object of type {nameof(GamePrefabs)} should be in the folder {PREFABS_FOLDER_PATH}");
+			if (prefabResources.Length > 1)
+				Debug.LogWarning($"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
+
+			prefabs = prefabResources.First();
+		}
+
+		private void Start()
         {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
 			LevelSystem.Instance.OnGameLoad += SetPlayerPositionToSpawn;
@@ -52,7 +74,7 @@ namespace Systems
 		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
         {
 			Debug.Log($"Spawning {playerRef}");
-			runner.Spawn(playerPrefab,
+			runner.Spawn(prefabs.PlayerPrefab,
 						new Vector3(0, 0, 0),
 						Quaternion.identity,
 						playerRef);
