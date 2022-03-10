@@ -63,7 +63,7 @@ namespace Units.Player
                 }
                 else
                 {
-                    currentMaxMoveSpeed = data.MoveMaximumSpeed;
+                    currentMaxMoveSpeed = Mathf.MoveTowards(currentMaxMoveSpeed, data.AimingMovementSpeed, data.AimingMovementDeceleration);
                 }
             }
             else
