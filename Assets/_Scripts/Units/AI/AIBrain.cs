@@ -11,6 +11,7 @@ namespace Units.AI
         private AIEntity entity;
         private BehaviorTree tree;
 
+        public Vector3 Position => entity.transform.position;
         public Inventory Inventory => entity.Inventory;
         public AIInteracter Interacter => entity.Interacter;
         public PlayerHitterDetection PlayerHitterDetection => entity.PlayerHitterDetection;

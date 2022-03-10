@@ -42,6 +42,11 @@ namespace Utilities.Extensions
             return (float) (num1 * (double) num1 + num2 * (double) num2 + num3 * (double) num3);
         }
         
+        public static float SqrDistanceWith(this Vector3 a, Vector3 b)
+        {
+            return SqrDistance(a, b);
+        }
+        
         // Inspired of reefwirrax's answer on https://answers.unity.com/questions/532297/rotate-a-vector-around-a-certain-point.html
         public static Vector3 RotateAround(this Vector3 point, Vector3 pivot, Vector3 angles) {
             var dir = point - pivot;

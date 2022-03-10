@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Canvases.Markers;
 using Fusion;
 using Interfaces;
