@@ -36,6 +36,9 @@ namespace Units.Player
 
         private void UpdatePossibleInteraction()
         {
+            if (!InteractionManager.HasInstance)
+                return;
+            
             if (NearestInteractionId == NO_INTERACTION)
             {
                 InteractionManager.Instance.SetNoInteractionAsPossible();
