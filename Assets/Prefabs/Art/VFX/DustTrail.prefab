@@ -51,21 +51,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.8571429
-      outSlope: 0.8571429
+      inSlope: 1
+      outSlope: 1
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.7
-      value: 0.6
-      inSlope: 1.0952381
-      outSlope: 1.0952381
-      tangentMode: 34
+      value: 0.7
+      inSlope: 0.9775804
+      outSlope: -0.022640832
+      tangentMode: 1
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0.50595236
+      outWeight: 0.41666698
     - serializedVersion: 3
       time: 1
       value: 1
@@ -81,27 +81,27 @@ MonoBehaviour:
   dustRound: {fileID: 3903099524714731095}
   dustEdgy: {fileID: 3903099524632997939}
   baseValues:
-    Lifetime: 0.2
+    Lifetime: 0.1
     StartSpeed: 5
-    StartSize: 0.5
+    StartSize: 1
     SimulationSpeed: 0.6
-    EmissionRateOverDistanceEdgy: 1
-    EmissionRateOverDistanceRound: 2
+    EmissionRateOverDistanceEdgy: 2
+    EmissionRateOverDistanceRound: 3
     Angle: 5
     Dampen: 0.1
-    ForceLifetimeConstantXMin: -5
-    ForceLifetimeConstantXMax: 5
+    ForceLifetimeConstantXMin: -3
+    ForceLifetimeConstantXMax: 3
   highValues:
     Lifetime: 0.3
     StartSpeed: 10
-    StartSize: 1
+    StartSize: 3
     SimulationSpeed: 1
-    EmissionRateOverDistanceEdgy: 5
+    EmissionRateOverDistanceEdgy: 4
     EmissionRateOverDistanceRound: 6
-    Angle: 64
+    Angle: 15
     Dampen: 0
-    ForceLifetimeConstantXMin: -20
-    ForceLifetimeConstantXMax: 20
+    ForceLifetimeConstantXMin: -10
+    ForceLifetimeConstantXMax: 10
 --- !u!1 &3903099524632997942
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,7 +848,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0.3
     radius:
-      value: 0.05
+      value: 0.01
       mode: 0
       spread: 0.25
       speed:
@@ -5653,7 +5653,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0.41
     radius:
-      value: 0.05
+      value: 0.01
       mode: 0
       spread: 0.25
       speed:
