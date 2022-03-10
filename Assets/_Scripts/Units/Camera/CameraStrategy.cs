@@ -1,4 +1,4 @@
-using Scriptables;
+using Systems.Settings;
 using UnityEngine;
 
 namespace Units.Camera

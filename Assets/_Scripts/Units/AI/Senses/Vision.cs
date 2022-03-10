@@ -13,6 +13,7 @@ namespace Units.AI.Senses
 {
     public class Vision : NetworkBehaviour
     {
+        [SerializeField] private Vector3 eyeCenter = Vector3.zero;
         [SerializeField, MinValue(0.1f)] private float near = 1f;
         [SerializeField, MinValue(0.2f)] private float far = 10f;
         [SerializeField, MinValue(0.1f)] private float nearLength = 2f;
@@ -131,7 +132,7 @@ namespace Units.AI.Senses
         private RaycastHit hit;
         private bool IsVisible(Collider objectCollider)
         {
-            if (!Physics.Raycast(transform.position, objectCollider.transform.position - transform.position, out hit))
+            if (!Physics.Raycast(transform.position + eyeCenter, objectCollider.transform.position - transform.position, out hit))
                 return false;
 
             if (!objectCollider.gameObject.CompareEntities(hit.collider.gameObject))
@@ -177,17 +178,19 @@ namespace Units.AI.Senses
 
         private void DrawSightFrustumGizmo()
         {
-            var position = transform.position;
             var upperLeftCorner = new Vector3(-farLength / 2f, 0f, far);
             var upperRightCorner = new Vector3(farLength / 2f, 0f, far);
             var lowerRightCorner = new Vector3(nearLength / 2f, 0f, near);
             var lowerLeftCorner = new Vector3(-nearLength / 2f, 0f, near);
             
             var frustumMesh = MeshUtils.CreateQuadMesh(upperLeftCorner, upperRightCorner, lowerRightCorner, lowerLeftCorner);
-            var thisTransform = transform;
 
+            var thisTransform = transform;
+            var position = thisTransform.position + eyeCenter;
+            
             Gizmos.color = Color.green;
-            Gizmos.DrawMesh(frustumMesh, thisTransform.position, thisTransform.rotation);
+            Gizmos.DrawMesh(frustumMesh, position, thisTransform.rotation);
+            Gizmos.DrawSphere(position, 0.25f);
         }
 
         private void DrawObjectsInSightGizmos()

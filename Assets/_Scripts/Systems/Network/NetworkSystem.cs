@@ -13,6 +13,7 @@ namespace Systems.Network
     {
         //TODO move lobby name out
         [SerializeField] private static string customLobbyName = "bababooeyLobby";
+        
         public NetworkRunner NetworkRunner { get; private set; }
         public bool DebugMode { get; set; } = true;
 

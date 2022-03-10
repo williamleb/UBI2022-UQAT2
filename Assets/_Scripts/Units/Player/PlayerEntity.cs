@@ -5,13 +5,14 @@ using Interfaces;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
+using Systems.Settings;
 using Units.AI;
 using Units.Camera;
 using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
-using PlayerSettings = Scriptables.PlayerSettings;
+using PlayerSettings = Systems.Settings.PlayerSettings;
 using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player

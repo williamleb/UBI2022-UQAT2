@@ -1,8 +1,7 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
-using Scriptables;
-using Systems;
+using Systems.Settings;
 using UnityEngine;
 
 namespace Units.AI.Actions.LoadSettings

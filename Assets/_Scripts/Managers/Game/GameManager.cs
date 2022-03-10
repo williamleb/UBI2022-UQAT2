@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Fusion;
+using Systems;
 using Systems.Network;
 using UnityEngine;
 using Utilities.Singleton;
@@ -13,13 +13,6 @@ namespace Managers.Game
     [RequireComponent(typeof(NetworkedGameData))]
     public class GameManager : Singleton<GameManager>
     {
-        // TODO Handle different phases with a behavior specified in scriptable objects
-        // Each phase has:
-        // Team or not
-        // Number of homework to hand in for the phase to finish
-        // Area to unlock
-        // Number of points for last homework
-
         public event Action OnBeginSpawn; // Only called on host
         public event Action OnEndSpawn; // Only called on host
         public event Action OnReset; // Only called on host
@@ -56,16 +49,16 @@ namespace Managers.Game
         private void Start()
         {
             networkedData.OnGameStateChanged += HandleGameStateChanged;
-            
-            NetworkSystem.Instance.OnPlayerJoinedEvent += OnPlayerJoined;
+
+            LevelSystem.Instance.OnGameLoad += OnGameLoaded;
         }
 
         protected override void OnDestroy()
         {
             networkedData.OnGameStateChanged -= HandleGameStateChanged;
             
-            if (NetworkSystem.HasInstance)
-                NetworkSystem.Instance.OnPlayerJoinedEvent -= OnPlayerJoined;
+            if (LevelSystem.HasInstance)
+                LevelSystem.Instance.OnGameLoad -= OnGameLoaded;
 
             if (spawnAndStartGameCoroutine != null)
             {
@@ -84,19 +77,16 @@ namespace Managers.Game
             currentState = newGameState;
             OnGameStateChanged?.Invoke(currentState);
         }
-        
-        private void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
+
+        private void OnGameLoaded()
         {
-            // TODO Remove this method once we have a good start condition not only based on the first player
-            // being spawned
             if (currentState == GameState.Running || IsSpawning)
                 return;
-
-
+            
             if (NetworkSystem.Instance.IsHost)
                 spawnAndStartGameCoroutine = StartCoroutine(SpawnAndStartGameRoutine());
         }
-
+        
         public void LockSpawn(MonoBehaviour spawnLock)
         {
             spawnLocks.Add(spawnLock);
@@ -152,7 +142,7 @@ namespace Managers.Game
             ++networkedData.PhaseTotalHomework;
             if (PhaseTotalHomework == NumberOfHomeworkToFinishPhase)
             {
-                EndGame(); // TODO Switch phase if still has phases
+                EndGame();
             }
         }
     }

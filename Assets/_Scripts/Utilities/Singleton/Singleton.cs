@@ -86,12 +86,16 @@ namespace Utilities.Singleton
         {
             get
             {
-                if (!HasInstance)
-                {
-                    CreateInstance();
-                }
-
+                CreateIfDoesNotExist();
                 return SharedInstance;
+            }
+        }
+
+        public static void CreateIfDoesNotExist()
+        {
+            if (!HasInstance)
+            {
+                CreateInstance();
             }
         }
 
