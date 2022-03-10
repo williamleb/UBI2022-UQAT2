@@ -33,7 +33,6 @@ namespace Units.Player
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
-        private bool isThrowing;
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
@@ -89,6 +88,8 @@ namespace Units.Player
             {
                 MoveUpdate(inputData);
                 DashUpdate(inputData);
+                ThrowUpdate(inputData);
+
                 if (inputData.IsInteractOnce && Runner.IsForward)
                 {
                     interacter.InteractWithClosestInteraction();
@@ -100,8 +101,6 @@ namespace Units.Player
                     Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
                 }
 
-                UpdateThrow(inputData);
-
                 if (inputData.IsMenu)
                 {
                     OnMenuPressed?.Invoke();
@@ -109,23 +108,6 @@ namespace Units.Player
                 
                 AnimationUpdate();
                 immunityTimer.Tick(Runner.DeltaTime);
-            }
-        }
-
-        private void UpdateThrow(NetworkInputData inputData)
-        {
-            // TODO This is temp until we have the right logic for the throw
-            if (inputData.IsThrow)
-            {
-                isThrowing = true;
-            }
-            else
-            {
-                if (isThrowing)
-                {
-                    isThrowing = false;
-                    inventory.DropEverything(transform.forward + Vector3.up * 0.25f, 2f);
-                }
             }
         }
 

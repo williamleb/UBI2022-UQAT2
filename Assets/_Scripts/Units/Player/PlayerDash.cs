@@ -32,7 +32,6 @@ namespace Units.Player
             dashCooldown.OnTimerEnd += ResetDashCoolDown;
         }
 
-
         private void DashUpdate(NetworkInputData inputData)
         {
             HandleDashInput(inputData);

@@ -75,6 +75,29 @@ namespace Scriptables
         [MaxValue(1)]
         private float dashAimAssistForce = 0.5f;
 
+        [Space] 
+        [Header("Throw config")] 
+        [Tooltip("The force at which the homework will be thrown by the player. A higher number means that the homework will be thrown farther and faster.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float maxThrowForce = 4f;
+        
+        [Tooltip("The min force at which the homework will be thrown by the player (e.g. if the player doesn't hold the throw button at all). A higher number means that the homework will be thrown farther and faster.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float minThrowForce = 1f;
+        
+        [Tooltip("How much the homework will be thrown vertically in the air. A value of 0 means the homework will be thrown horizontally, while a value of 1 means the homework will be thrown at an angle of 45 degrees.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float throwVerticality = 0.1f;
+        
+        [Tooltip("Number of seconds the player has to hold the throw button before it reaches full force determined by the 'maxThrowForce' variable." +
+                 "The force increases linearly between 0 and maxThrowForce when the timer goes from 0 to secondsBeforeMaxThrowForce.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float secondsBeforeMaxThrowForce = 3f;
+        
         [Space]
         [Header("Other settings")]
         [Tooltip("Time in seconds before a player can be tackled again")]
@@ -99,6 +122,10 @@ namespace Scriptables
         public float DashAimAssistAngle => dashAimAssistAngle;
         public float DashAimAssistForce => dashAimAssistForce;
         public float DashCoolDown => dashCoolDown;
+        public float MaxThrowForce => maxThrowForce;
+        public float MinThrowForce => minThrowForce;
+        public float ThrowVerticality => throwVerticality;
+        public float SecondsBeforeMaxThrowForce => secondsBeforeMaxThrowForce;
         public int ImmunityTime => immunityTime;
 
         [Serializable]
