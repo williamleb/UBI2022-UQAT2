@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Fusion;
 using Systems;
 using Systems.Network;
 using UnityEngine;
@@ -143,7 +142,7 @@ namespace Managers.Game
             ++networkedData.PhaseTotalHomework;
             if (PhaseTotalHomework == NumberOfHomeworkToFinishPhase)
             {
-                EndGame(); // TODO Switch phase if still has phases
+                EndGame();
             }
         }
     }
