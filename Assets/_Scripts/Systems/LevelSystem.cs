@@ -10,6 +10,7 @@ using Units.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Utilities.Event;
 using Utilities.Singleton;
 
 namespace Systems
@@ -18,8 +19,8 @@ namespace Systems
     {
         private const string SCENES_FOLDER_PATH = "Game";
         
-        public event Action OnLobbyLoad;
-        public event Action OnGameLoad;
+        public MemoryEvent OnLobbyLoad;
+        public MemoryEvent OnGameLoad;
         
         [SerializeField, FormerlySerializedAs("mainMenuSceneIndex")] private SceneField mainMenuOverride;
         [SerializeField, FormerlySerializedAs("lobbySceneIndex")] private SceneField lobbyOverride;
@@ -93,16 +94,19 @@ namespace Systems
         
         private void ChangeLevelState(NetworkRunner networkRunner)
         {
+            OnLobbyLoad.ClearMemory();
+            OnGameLoad.ClearMemory();
+            
             if (ActiveSceneIndex == LobbyScene.BuildIndex)
             {
                 Debug.Log("Invoking spawn player");
                 State = LevelState.LOBBY;
-                OnLobbyLoad?.Invoke();
+                OnLobbyLoad.InvokeWithMemory();
             }
             else if (ActiveSceneIndex == GameScene.BuildIndex || NetworkSystem.Instance.DebugMode)
             {
                 State = LevelState.GAME;
-                OnGameLoad?.Invoke();
+                OnGameLoad.InvokeWithMemory();
             }
             else
             {
