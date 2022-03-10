@@ -39,13 +39,6 @@ namespace Managers.Hallway
             return closestPoint;
         }
 
-        private int CompareDistance(HallwayPoint left, HallwayPoint right, Vector3 positionToCompare)
-        {
-            var leftPosition = left.transform.position;
-            var rightPosition = right.transform.position;
-            return VectorExtensions.SqrDistance(leftPosition, positionToCompare).CompareTo(VectorExtensions.SqrDistance(rightPosition, positionToCompare));
-        }
-
         public HallwayPoint GetNextPoint(HallwayPoint previousPoint)
         {
             var indexFound = -1;
