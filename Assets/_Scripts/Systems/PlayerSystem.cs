@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Scriptables;
 using Systems.Network;
 using Units.Player;
@@ -15,9 +16,11 @@ namespace Systems
 		
 		private GamePrefabs prefabs;
 
-		private List<PlayerEntity> playersEntity = new List<PlayerEntity>();
-		private Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
+		private PlayerEntity localPlayer;
+		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
+		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
+		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
 		protected override void Awake()
@@ -51,6 +54,7 @@ namespace Systems
 			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 		}
+		
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
 			Debug.Log($"{playerRef} joined.");
@@ -113,7 +117,10 @@ namespace Systems
 
 		//Called by the playerEntity on Spawned()
 		public void AddPlayer(PlayerEntity playerEntity)
-        {
+		{
+			if (playerEntity.Object.HasInputAuthority)
+				localPlayer = playerEntity;
+			
 			playersEntity.Add(playerEntity);
 		}
 
@@ -122,6 +129,9 @@ namespace Systems
 			if (player == null || !playersEntity.Contains(player))
 				return;
 
+			if (player == localPlayer)
+				localPlayer = null;
+			
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
 			playersJoined.Remove(player.PlayerID);
@@ -129,7 +139,9 @@ namespace Systems
 		}
 
 		public void DespawnAllPlayers()
-        {
+		{
+			localPlayer = null;
+			
             foreach (PlayerEntity playerEntity in playersEntity.ToList())
             {
 				playerEntity.TriggerDespawn();

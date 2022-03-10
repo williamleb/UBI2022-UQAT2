@@ -1,6 +1,7 @@
 ﻿using System;
 using DigitalRuby.Tween;
 using Fusion;
+using Systems;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -78,7 +79,17 @@ namespace Canvases.Markers
 
         private void Start()
         {
+            InitIfLocalPlayerIsAlreadySpawned();
             gameObject.SetActive(false);
+        }
+
+        private void InitIfLocalPlayerIsAlreadySpawned()
+        {
+            var localPlayer = PlayerSystem.Instance.LocalPlayer;
+            if (localPlayer)
+            {
+                Init(localPlayer.Object);
+            }
         }
 
         protected virtual void Init(NetworkObject networkObject)
