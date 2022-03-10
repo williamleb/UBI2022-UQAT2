@@ -23,8 +23,20 @@ namespace Managers.Hallway
             if (!hallwayPoints.Any())
                 return null;
             
-            hallwayPoints.Sort((left, right) => CompareDistance(left, right, position));
-            return hallwayPoints.First();
+            var closestPoint = hallwayPoints.First();
+            var minDistance = float.MaxValue;
+            
+            for (var i = 0; i < hallwayPoints.Count; ++i)
+            {
+                var distance = position.SqrDistanceWith(hallwayPoints[i].transform.position);
+                if (distance < minDistance)
+                {
+                    closestPoint = hallwayPoints[i];
+                    minDistance = distance;
+                }
+            }
+
+            return closestPoint;
         }
 
         private int CompareDistance(HallwayPoint left, HallwayPoint right, Vector3 positionToCompare)
