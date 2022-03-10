@@ -1,6 +1,5 @@
-﻿using Scriptables;
-using Sirenix.OdinInspector;
-using Systems;
+﻿using Sirenix.OdinInspector;
+using Systems.Settings;
 using UnityEngine;
 
 namespace Units.AI.Senses

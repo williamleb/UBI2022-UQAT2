@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using Fusion;
 using Interfaces;
-using Systems;
+using Systems.Settings;
 using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;

@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Scriptables
+namespace Systems.Settings
 {
     [CreateAssetMenu(menuName = "Settings/AI Settings")]
     public class AISettings : ScriptableObject

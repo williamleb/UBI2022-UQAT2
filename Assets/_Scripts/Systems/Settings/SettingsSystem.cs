@@ -1,9 +1,8 @@
 ﻿using System.Linq;
-using Scriptables;
 using UnityEngine;
 using Utilities.Singleton;
 
-namespace Systems
+namespace Systems.Settings
 {
     public class SettingsSystem : PersistentSingleton<SettingsSystem>
     {

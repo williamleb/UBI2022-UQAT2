@@ -2,7 +2,7 @@
 using Fusion;
 using Ingredients.Homework;
 using Interfaces;
-using Systems;
+using Systems.Settings;
 using UnityEngine;
 
 namespace Units
