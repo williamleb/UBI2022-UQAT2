@@ -98,6 +98,16 @@ namespace Scriptables
         [MinValue(0f)]
         private float secondsBeforeMaxThrowForce = 3f;
         
+        [Tooltip("The speed at which the player should move when they are aiming before throwing.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float aimingMovementSpeed = 3f;
+        
+        [Tooltip("The acceleration at which the player will come from its regular movement speed to its aiming speed.")] 
+        [SerializeField]
+        [MinValue(0f)]
+        private float aimingMovementDeceleration = 0.1f;
+        
         [Space]
         [Header("Other settings")]
         [Tooltip("Time in seconds before a player can be tackled again")]
@@ -126,6 +136,8 @@ namespace Scriptables
         public float MinThrowForce => minThrowForce;
         public float ThrowVerticality => throwVerticality;
         public float SecondsBeforeMaxThrowForce => secondsBeforeMaxThrowForce;
+        public float AimingMovementSpeed => aimingMovementSpeed;
+        public float AimingMovementDeceleration => aimingMovementDeceleration;
         public int ImmunityTime => immunityTime;
 
         [Serializable]

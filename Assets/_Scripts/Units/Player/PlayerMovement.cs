@@ -52,12 +52,19 @@ namespace Units.Player
         {
             if (HasMoveInput)
             {
-                bool canSprint = isSprinting && !inventory.HasHomework;
-                //Add other speed related logic. Boosters, slow when holding golden homework?
-                float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
-                float sprintAcceleration =
-                    (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
-                currentMaxMoveSpeed = Mathf.MoveTowards(currentMaxMoveSpeed, maxMoveSpeed, sprintAcceleration);
+                if (!IsAiming)
+                {
+                    bool canSprint = isSprinting && !inventory.HasHomework;
+                    //Add other speed related logic. Boosters, slow when holding golden homework?
+                    float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
+                    float sprintAcceleration =
+                        (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
+                    currentMaxMoveSpeed = Mathf.MoveTowards(currentMaxMoveSpeed, maxMoveSpeed, sprintAcceleration);
+                }
+                else
+                {
+                    currentMaxMoveSpeed = data.MoveMaximumSpeed;
+                }
             }
             else
             {

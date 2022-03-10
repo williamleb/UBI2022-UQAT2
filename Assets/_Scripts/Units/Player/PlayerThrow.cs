@@ -50,7 +50,6 @@ namespace Units.Player
             // TODO Rumble controller with more force (with ThrowForcePercent)
 
             var forcePercent = ThrowForcePercent;
-            Debug.Log($"Force percent: {forcePercent}");
             Gamepad.current.SetMotorSpeeds(forcePercent, Math.Abs(forcePercent - 1f) < 0.1f ? 0.75f : 0.25f);
         }
 
