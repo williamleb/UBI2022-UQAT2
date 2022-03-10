@@ -68,7 +68,7 @@ namespace Units.AI.Senses
             var thisTransform = transform;
             var halfExtents = new Vector3(farLength / 2f, 10f, far);
             
-            if (Runner.GetPhysicsScene().OverlapBox(thisTransform.position, halfExtents, colliders, thisTransform.rotation, LayerMask.GetMask(Layers.NAME_GAMEPLAY)) <= 0) return;
+            if (Runner.GetPhysicsScene().OverlapBox(thisTransform.position, halfExtents, colliders, thisTransform.rotation, Layers.GAMEPLAY_MASK) <= 0) return;
 
             foreach (var objectCollider in colliders)
             {

@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Fusion;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -16,12 +18,31 @@ namespace Units.Player
             CanMove = true;
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionStay(Collision collision)
         {
-            if (IsMovingFast && collision.gameObject.isStatic)
+            if (IsMovingFast)
             {
-                Hit();
-                AnimStumbleTrigger();
+                Vector3 collisionDirection = (collision.contacts[0].point.Flat() - transform.position).normalized;
+                // ReSharper disable once Unity.InefficientPropertyAccess
+                float collisionDot = Vector3.Dot(transform.forward, collisionDirection);
+
+                //We didn't hit it, it hit us and it will affect us
+                if (!(collisionDot > 0.65)) return;
+
+                //Hit a wall
+                if (collision.gameObject.isStatic)
+                {
+                    ResetVelocity();
+                    Hit();
+                    AnimStumbleTrigger();
+                }
+                //Hit another player or AI
+                else if (collision.gameObject.IsAPlayerOrAI())
+                {
+                    NetworkObject no = collision.gameObject.GetComponent<NetworkObject>();
+                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer());
+                    RPC_GetHitAndDropItems(Object.Id, true);
+                }
             }
         }
     }

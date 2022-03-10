@@ -30,19 +30,16 @@ namespace Scriptables
         [SerializeField]
         private float sprintBraking = 10f;
 
-        [MinValue(0)][MaxValue(1)] [SerializeField] private float sprintFumbleThreshold = 0.75f;
+        [MinValue(0)] [MaxValue(1)] [SerializeField]
+        private float sprintFumbleThreshold = 0.75f;
 
         [Space]
         [Header("Turn config")]
-        [Tooltip("VISUAL ONLY Rotation step to turn towards new direction, " +
-                 "higher means bigger steps faster snap to new rotation")]
+        [Tooltip("Rotation speed to turn towards new direction, " +
+                 "higher means bigger steps faster snap to new rotation" +
+                 "This number is divided by the player's velocity thus increasing the turn radius at high speed.")]
         [SerializeField]
-        private float turnRotationSpeed = 0.2f;
-
-        [Tooltip("Turn rate the factor that divides the move acceleration when turning. Higher means slower turns")]
-        [SerializeField]
-        [MinValue(1.1f)]
-        private float turnRate = 2f;
+        private float turnRotationSpeed = 10f;
 
         [Space]
         [Header("Dash configuration")]
@@ -53,32 +50,31 @@ namespace Scriptables
         [Tooltip("Time in seconds before the dash has ended and we assumed the player missed and fumbles")]
         [SerializeField]
         private float dashDuration = 0.3f;
-        
-        [Tooltip("Time in seconds before the player can dash again")]
-        [SerializeField]
+
+        [Tooltip("Time in seconds before the player can dash again")] [SerializeField]
         private float dashCoolDown = 1.5f;
 
         [Tooltip("Time in MS that the player is knockOut either by fumble or getting hit. " +
                  "This is increased by the speed of the player. The faster you go the longer the knockout time")]
         [SerializeField]
         private int knockOutTimeInMS = 500;
-        
-        [Tooltip("The max distance from the player another entity can be to apply aim assist")]
-        [SerializeField]
+
+        [Tooltip("The max distance from the player another entity can be to apply aim assist")] [SerializeField]
         private float dashMaxAimAssistRange = 2f;
-        
-        [Tooltip("The target angle in front of the player in degrees on each side of the direction of the player (45° means a full 90° of view angle)")]
+
+        [Tooltip(
+            "The target angle in front of the player in degrees on each side of the direction of the player (45° means a full 90° of view angle)")]
         [SerializeField]
         [MinValue(0)]
         [MaxValue(180)]
         private float dashAimAssistAngle = 45f;
-        
+
         [Tooltip("The amount of correction applied to the dash direction [0,1]")]
         [SerializeField]
         [MinValue(0)]
         [MaxValue(1)]
         private float dashAimAssistForce = 0.5f;
-        
+
         [Space]
         [Header("Other settings")]
         [Tooltip("Time in seconds before a player can be tackled again")]
@@ -95,7 +91,6 @@ namespace Scriptables
         public float DashDuration => dashDuration;
         public int KnockOutTimeInMS => knockOutTimeInMS;
         public float TurnRotationSpeed => turnRotationSpeed;
-        public float TurnRate => turnRate;
         public float SprintBraking => sprintBraking;
         public float SprintAcceleration => sprintAcceleration;
         public PlayerCameraSettings PlayerCameraSetting => playerCameraSettings;

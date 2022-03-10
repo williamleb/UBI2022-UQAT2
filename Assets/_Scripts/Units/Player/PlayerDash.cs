@@ -20,7 +20,7 @@ namespace Units.Player
         private TickTimer dashCooldown;
         private bool hasHitSomeoneThisFrame;
         private bool canDash = true;
-        
+
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
 
@@ -40,6 +40,7 @@ namespace Units.Player
             dashTimer.Tick(Runner.DeltaTime);
             dashCooldown.Tick(Runner.DeltaTime);
         }
+
         private void ResetDashCoolDown()
         {
             canDash = true;
@@ -58,13 +59,15 @@ namespace Units.Player
             dashTimer.Reset();
             dashCooldown.Reset();
             Vector3 dirToTarget = GetDirToTarget();
-            velocity = GetDashDirection(dirToTarget) * data.DashForce;
+            transform.forward = GetDashDirection(dirToTarget);
+            velocity = data.DashForce;
         }
-        
+
         private Vector3 GetDirToTarget()
         {
             Vector3 dirToTarget = Vector3.zero;
-            if (Runner.LagCompensation.OverlapSphere(transform.position, data.DashMaxAimAssistRange, Object.InputAuthority, hits) > 0)
+            if (Runner.LagCompensation.OverlapSphere(transform.position, data.DashMaxAimAssistRange,
+                    Object.InputAuthority, hits, Layers.GAMEPLAY_MASK) > 0)
             {
                 float distanceToTarget = float.MaxValue;
                 foreach (LagCompensatedHit hit in hits)
@@ -92,9 +95,16 @@ namespace Units.Player
             return dirToTarget;
         }
 
-        private Vector3 GetDashDirection(Vector3 dirToTarget) => dirToTarget == Vector3.zero ? transform.forward : Vector3.Lerp(transform.forward, dirToTarget, data.DashAimAssistForce);
-        private bool HasLineOfSight(Vector3 dirToHit, float distanceToHit, out LagCompensatedHit obstacle) => Runner.LagCompensation.Raycast(transform.position, dirToHit, distanceToHit, Object.InputAuthority, out obstacle, Physics.AllLayers, HitOptions.IncludePhysX);
-        private bool DirectionInViewAngle(Vector3 dirToHit) => (Vector3.Angle(transform.forward, dirToHit) < data.DashAimAssistAngle);
+        private Vector3 GetDashDirection(Vector3 dirToTarget) => dirToTarget == Vector3.zero
+            ? transform.forward
+            : Vector3.Lerp(transform.forward, dirToTarget, data.DashAimAssistForce);
+
+        private bool HasLineOfSight(Vector3 dirToHit, float distanceToHit, out LagCompensatedHit obstacle) =>
+            Runner.LagCompensation.Raycast(transform.position, dirToHit, distanceToHit, Object.InputAuthority,
+                out obstacle, Physics.AllLayers, HitOptions.IncludePhysX);
+
+        private bool DirectionInViewAngle(Vector3 dirToHit) =>
+            (Vector3.Angle(transform.forward, dirToHit) < data.DashAimAssistAngle);
 
         private void OnHitNothing()
         {
@@ -130,7 +140,8 @@ namespace Units.Player
         {
             GameObject closestHit = null;
             float distance = float.MaxValue;
-            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position,1,Object.InputAuthority,collisions, options:HitOptions.IncludePhysX) > 0)
+            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, 1, Object.InputAuthority, collisions,
+                    options: HitOptions.IncludePhysX) > 0)
             {
                 foreach (LagCompensatedHit collision in collisions)
                 {
@@ -144,7 +155,7 @@ namespace Units.Player
                 }
 
                 if (!closestHit) return;
-                
+
                 if (closestHit.IsAPlayerOrAI())
                 {
                     OnHitOtherEntity(closestHit);
