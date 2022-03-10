@@ -13,10 +13,10 @@ namespace Units.Player
 
         private void AnimationUpdate()
         {
-            networkAnimator.Animator.SetBool(IsPlayerMove,IsPlayerMoving);
-            networkAnimator.Animator.SetFloat(PlayerSpeed, CurrentMoveSpeed/data.MoveMaximumSpeed);
-            networkAnimator.Animator.SetBool(Dashing,IsDashing);
-            networkAnimator.Animator.SetBool(IsHolding,inventory.HasHomework);
+            networkAnimator.Animator.SetBool(IsPlayerMove, IsPlayerMoving);
+            networkAnimator.Animator.SetFloat(PlayerSpeed, velocity / data.MoveMaximumSpeed);
+            networkAnimator.Animator.SetBool(Dashing, IsDashing);
+            networkAnimator.Animator.SetBool(IsHolding, inventory.HasHomework);
         }
 
         private void AnimStumbleTrigger() => networkAnimator.SetTrigger("stumble");
@@ -26,11 +26,11 @@ namespace Units.Player
         //Stop animation to allow ragdoll
 
         //Aim
-        
+
         //Launch
-        
+
         //Pickup
-        
+
         //Hold
     }
 }

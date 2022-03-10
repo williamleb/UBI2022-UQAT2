@@ -51,7 +51,7 @@ namespace Managers.Interactions
         {
             Collider[] colliders = new Collider[4];
             interactionsInReach.Clear();
-            if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, LayerMask.GetMask(Layers.NAME_GAMEPLAY), QueryTriggerInteraction.UseGlobal) <= 0) return;
+            if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Layers.GAMEPLAY_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
             foreach (Collider interact in colliders)
             {
                 if (interact && interact.CompareTag(Tags.INTERACTION))
