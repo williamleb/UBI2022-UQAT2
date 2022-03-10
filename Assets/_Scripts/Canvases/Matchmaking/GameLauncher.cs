@@ -35,7 +35,7 @@ namespace Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage("Erreur lors de la création d'une partie."));
+                StartCoroutine(DisplayErrorMessage("Erreur lors de la crÃ©ation d'une partie."));
                 UICurtain.SetActive(false);
                 hostUI.SetActive(true);
             }
@@ -55,7 +55,7 @@ namespace Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage("Erreur lors de la connection à la partie."));
+                StartCoroutine(DisplayErrorMessage("Erreur lors de la connection Ã  la partie."));
                 UICurtain.SetActive(false);
                 clientUI.SetActive(true);
             }
