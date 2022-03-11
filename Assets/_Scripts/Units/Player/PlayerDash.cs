@@ -155,7 +155,7 @@ namespace Units.Player
                 {
                     OnHitOtherEntity(closestHit);
                 }
-                else
+                else if (closestHit.CompareTag(Tags.COLLIDABLE))
                 {
                     OnHitObject();
                 }

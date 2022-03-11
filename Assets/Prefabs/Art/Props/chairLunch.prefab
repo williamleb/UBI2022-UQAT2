@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5636806320791440798}
   m_Layer: 0
   m_Name: chairLunch
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +102,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tabouret (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2290a2d7d0cf9ad47a25b5fdca30a774, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2290a2d7d0cf9ad47a25b5fdca30a774, type: 3}
+--- !u!1 &6324387996257315142 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2290a2d7d0cf9ad47a25b5fdca30a774, type: 3}
+  m_PrefabInstance: {fileID: 6558882138796872727}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6669670465618392060 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2290a2d7d0cf9ad47a25b5fdca30a774, type: 3}
   m_PrefabInstance: {fileID: 6558882138796872727}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &359527307032720915
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6324387996257315142}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 37.581562, y: 39.27018, z: 89.15385}
+  m_Center: {x: 0, y: 0, z: 44.576916}
+--- !u!208 &3439851692218426740
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6324387996257315142}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 18.791, y: 19.635, z: 44.577003}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 0, z: 44.577003}
+  m_TimeToStationary: 0.5

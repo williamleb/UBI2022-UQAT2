@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4772471644012214052}
   m_Layer: 0
   m_Name: vendingMachine
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -191,6 +191,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_vendingMachine
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7742780737561719692, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     - target: {fileID: 8424073627695423409, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -198,7 +206,7 @@ PrefabInstance:
     - target: {fileID: 8835409689826365435, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: dd348935a55a1a84e8162502c68f1f2f, type: 2}
+      objectReference: {fileID: 2100000, guid: f882e796685a3bb458a1066470a5e7b6, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
 --- !u!4 &4141413559212001742 stripped
@@ -206,3 +214,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
   m_PrefabInstance: {fileID: 4536242812775837221}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6160953715373530537 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7742780737561719692, guid: 4a4f708f3ef8c3b4d82a48b93099fc11, type: 3}
+  m_PrefabInstance: {fileID: 4536242812775837221}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7134796105762710710
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160953715373530537}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.45170945, y: 0.7262942, z: 0.30204645}
+  m_Center: {x: 0.0050270413, y: -0.013147265, z: -0.14896981}
+--- !u!208 &2083460440472084068
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160953715373530537}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.22600001, y: 0.363, z: 0.15100001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0.0050000004, y: -0.013, z: -0.149}
+  m_TimeToStationary: 0.5

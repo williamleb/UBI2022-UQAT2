@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8767562176266673993}
   m_Layer: 0
   m_Name: chairPoo
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +102,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Toilet (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e723ddac8b16a324884a28aa5773019a, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e723ddac8b16a324884a28aa5773019a, type: 3}
+--- !u!1 &9195894932060230780 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e723ddac8b16a324884a28aa5773019a, type: 3}
+  m_PrefabInstance: {fileID: 8313372688060967213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8418829780512902854 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e723ddac8b16a324884a28aa5773019a, type: 3}
   m_PrefabInstance: {fileID: 8313372688060967213}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &6779007602914768138
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9195894932060230780}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 23.08399, y: 28.217947, z: 35.778683}
+  m_Center: {x: -1.463921, y: -2.565191, z: 17.889341}
+--- !u!208 &1619277063477238220
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9195894932060230780}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 11.542001, y: 14.109, z: 17.889}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: -1.4640001, y: -2.565, z: 17.889}
+  m_TimeToStationary: 0.5
