@@ -8,11 +8,14 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        [Networked] private NetworkBool IsAiming { get; set; } = false;
+        [Header("Throw rumble")] 
+        [SerializeField] private AnimationCurve lowFrequencyThrowRumbleCurve;
+        [SerializeField] private AnimationCurve highFrequencyThrowRumbleCurve;
 
         private RumbleKey throwRumbleKey;
         private float throwForceTimer = 0f;
-
+        
+        [Networked] private NetworkBool IsAiming { get; set; } = false;
         private float ThrowForcePercent => data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
 
         private void InitThrow()
@@ -53,11 +56,8 @@ namespace Units.Player
 
             throwForceTimer = Math.Min(throwForceTimer + Runner.DeltaTime, data.SecondsBeforeMaxThrowForce);
             
-            // TODO Rumble controller with more force (with ThrowForcePercent)
-
             var forcePercent = ThrowForcePercent;
-            var isFinished = Math.Abs(forcePercent - 1f) < 0.1f;
-            RumbleSystem.Instance.SetRumble(throwRumbleKey, isFinished ? 0.5f : forcePercent * 0.25f, isFinished ? 0.5f : 0f);
+            RumbleSystem.Instance.SetRumble(throwRumbleKey, lowFrequencyThrowRumbleCurve.Evaluate(forcePercent), highFrequencyThrowRumbleCurve.Evaluate(forcePercent));
         }
 
         private bool CanThrow()

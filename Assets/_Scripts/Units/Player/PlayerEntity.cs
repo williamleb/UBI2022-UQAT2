@@ -26,7 +26,7 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         
-        [SerializeField][Required] private CameraStrategy mainCamera;
+        [SerializeField] private CameraStrategy mainCamera;
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
