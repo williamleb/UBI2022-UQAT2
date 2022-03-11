@@ -60,7 +60,8 @@ namespace Units.Player
         public override async void Spawned()
         {
             base.Spawned();
-
+            InitThrow();
+            
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)

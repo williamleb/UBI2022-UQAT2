@@ -8,12 +8,18 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        [Networked] private NetworkBool IsAiming { get; set; } = false; 
+        [Networked] private NetworkBool IsAiming { get; set; } = false;
 
+        private RumbleKey throwRumbleKey;
         private float throwForceTimer = 0f;
 
         private float ThrowForcePercent => data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
 
+        private void InitThrow()
+        {
+            throwRumbleKey = RumbleSystem.Instance.GenerateNewRumbleKeyFromBehaviour(this);
+        }
+        
         private void ThrowUpdate(NetworkInputData inputData)
         {
             if (!CanThrow())
@@ -50,7 +56,7 @@ namespace Units.Player
             // TODO Rumble controller with more force (with ThrowForcePercent)
 
             var forcePercent = ThrowForcePercent;
-            RumbleSystem.Instance.SetRumble(this, forcePercent, Math.Abs(forcePercent - 1f) < 0.1f ? 0.75f : 0.25f);
+            RumbleSystem.Instance.SetRumble(throwRumbleKey, forcePercent * 0.5f, Math.Abs(forcePercent - 1f) < 0.1f ? 0.5f : 0f);
         }
 
         private bool CanThrow()
@@ -73,14 +79,14 @@ namespace Units.Player
 
         private void CancelAiming()
         {
-            RumbleSystem.Instance.StopRumble(this);
+            RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
             // TODO Stop aiming animation
         }
 
         private void Throw()
         {
-            RumbleSystem.Instance.StopRumble(this);
+            RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
             // TODO Stop aiming animation
             // TODO Throw animation
