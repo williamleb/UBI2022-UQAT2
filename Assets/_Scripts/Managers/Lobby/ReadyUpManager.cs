@@ -49,7 +49,6 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
             countdownText.gameObject.SetActive(false);
             StopCoroutine(startCoroutine);
             startCoroutine = null;
-            ResetIsReadyAllPlayer();
         }
 
         if (startCoroutine == null && allPlayersReady)
