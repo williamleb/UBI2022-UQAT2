@@ -7,7 +7,8 @@ namespace Units.Player
     public partial class PlayerEntity
     {
         //Vector3 = transform initial local position of bones
-        private List<(Collider, Vector3)> ragdollColliders = new List<(Collider, Vector3)>();
+        //Quaternion = transform's initial local rotation of bones
+        private List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
         private List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private Collider playerCollider;
         [SerializeField] private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
@@ -28,7 +29,8 @@ namespace Units.Player
                 }
                 else
                 {
-                    ragdollColliders.Add((collider, collider.gameObject.transform.localPosition));
+                    Transform colTransform = collider.transform;
+                    ragdollColliders.Add((collider, colTransform.localPosition, colTransform.localRotation));
                     collider.isTrigger = true;
 
                     var rigidBody = collider.gameObject.GetComponent<Rigidbody>();
@@ -44,14 +46,18 @@ namespace Units.Player
             networkAnimator.Animator.enabled = !IsActivate;
             playerCollider.enabled = !IsActivate;
 
-            //Item1 = collider, Item2 = local position
-            foreach ((Collider, Vector3) colliderAndLocalPosition in ragdollColliders)
+            //Item1 = collider, Item2 = local position, Item3 = local rotation
+            foreach ((Collider, Vector3, Quaternion) element in ragdollColliders)
             {
-                colliderAndLocalPosition.Item1.isTrigger = !IsActivate;
+                element.Item1.isTrigger = !IsActivate;
 
                 //Reset bones to local position
                 if (!IsActivate)
-                    colliderAndLocalPosition.Item1.gameObject.transform.localPosition = colliderAndLocalPosition.Item2;
+                {
+                    Transform elementTransform = element.Item1.transform;
+                    elementTransform.localPosition = element.Item2;
+                    elementTransform.localRotation = element.Item3;
+                }
             }
 
             foreach (Rigidbody rigidbody in ragdollRigidbody)

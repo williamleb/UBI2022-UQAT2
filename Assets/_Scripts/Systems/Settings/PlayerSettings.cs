@@ -7,6 +7,8 @@ namespace Systems.Settings
     [CreateAssetMenu(menuName = "Settings/Player Settings")]
     public class PlayerSettings : ScriptableObject
     {
+        [SerializeField] private Archetypes archetypes;
+        
         [Header("Player movement ")] [Tooltip("Walking speed")] [SerializeField]
         private float moveMaximumSpeed = 7f;
 
@@ -31,6 +33,7 @@ namespace Systems.Settings
         private float sprintBraking = 10f;
 
         [MinValue(0)] [MaxValue(1)] [SerializeField]
+        [Tooltip("% of the sprint maximum speed the player need to go to trigger a fumble")]
         private float sprintFumbleThreshold = 0.75f;
 
         [Space]
@@ -116,6 +119,7 @@ namespace Systems.Settings
 
         [SerializeField] private PlayerCameraSettings playerCameraSettings;
 
+        public Archetypes PlayerArchetypes => archetypes;
         public float MoveMaximumSpeed => moveMaximumSpeed;
         public float SprintMaximumSpeed => sprintMaximumSpeed;
         public float MoveAcceleration => moveAcceleration;
@@ -148,6 +152,15 @@ namespace Systems.Settings
             public float PosZ;
             public float RotX;
             public float FieldOfView;
+        }
+
+        [Serializable]
+        public enum Archetypes
+        {
+            Base,
+            Runner,
+            Plaqueur,
+            Lanceur,
         }
     }
 }
