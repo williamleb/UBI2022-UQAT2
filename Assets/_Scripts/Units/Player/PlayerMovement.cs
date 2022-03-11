@@ -32,7 +32,6 @@ namespace Units.Player
             RotatePlayer();
         }
 
-
         private void HandleMoveInput(NetworkInputData inputData)
         {
             if (!IsDashing)
