@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8937347773666222664}
   m_Layer: 0
   m_Name: deskSmall
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +102,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_StudentDesk01
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
+--- !u!1 &5322830342296346021 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
+  m_PrefabInstance: {fileID: 4980721906269528308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4797931546580272927 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
   m_PrefabInstance: {fileID: 4980721906269528308}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &4135946462498345237
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322830342296346021}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 23, z: 29}
+  m_Center: {x: 14, y: 14.4, z: 15.865147}
+--- !u!208 &4441668531694170879
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322830342296346021}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 17.842001, y: 16.648, z: 16.035}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 15.400001, y: 12.403001, z: 15.865001}
+  m_TimeToStationary: 0.5

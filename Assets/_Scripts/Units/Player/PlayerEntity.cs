@@ -53,6 +53,7 @@ namespace Units.Player
 
             MovementAwake();
             DashAwake();
+            RagdollAwake();
         }
 
         private void ImmunityTimerOnTimerEnd() => isImmune = false;
@@ -157,11 +158,11 @@ namespace Units.Player
                 var player = networkObject.GetComponent<PlayerEntity>();
                 if (player.isImmune) return;
                 inv = player.inventory;
-                player.Hit();
-                player.AnimFallTrigger();
-                //TODO activate ragdoll
-                //when ragdoll is active, we should be able to push the body to move through
                 player.ResetVelocity();
+
+                //TODO Change RPC to get information about hit direction and then pass it to Hit().
+                player.Hit();
+
                 immunityTimer.Reset();
                 isImmune = true;
             }

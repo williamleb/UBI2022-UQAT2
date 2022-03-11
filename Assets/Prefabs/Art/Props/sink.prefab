@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8729175675157050337}
   m_Layer: 0
   m_Name: sink
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +102,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Sink (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dca0f962256bca54e9659843d075125b, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dca0f962256bca54e9659843d075125b, type: 3}
+--- !u!1 &6510007266272593123 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: dca0f962256bca54e9659843d075125b, type: 3}
+  m_PrefabInstance: {fileID: 6240116392355363250}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5842261293663493721 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dca0f962256bca54e9659843d075125b, type: 3}
   m_PrefabInstance: {fileID: 6240116392355363250}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &5132065819034874374
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6510007266272593123}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 23.720968, y: 20.51436, z: 17.035526}
+  m_Center: {x: 1.065063, y: 1.5992682, z: 4.478151}
+--- !u!208 &6335222398972684991
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6510007266272593123}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 11.860001, y: 10.257001, z: 8.518001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 1.065, y: 1.5990001, z: 4.478}
+  m_TimeToStationary: 0.5

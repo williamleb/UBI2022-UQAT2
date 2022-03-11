@@ -109,18 +109,15 @@ namespace Units.Player
         {
             if (!IsDashing) return;
             print("Hit nothing");
-            AnimFallTrigger();
-            Hit();
+            Hit(transform.forward);
             IsDashing = false;
         }
 
         private void OnHitObject()
         {
             print("Hit Object");
-            Hit();
             ResetVelocity();
-            //TODO activate ragdoll
-            AnimStumbleTrigger();
+            Hit(-transform.forward);
             IsDashing = false;
         }
 
@@ -132,7 +129,6 @@ namespace Units.Player
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer());
             hasHitSomeoneThisFrame = true;
             IsDashing = false;
-            ResetVelocity();
         }
 
         private void DetectCollision()
@@ -144,7 +140,7 @@ namespace Units.Player
             {
                 foreach (LagCompensatedHit collision in collisions)
                 {
-                    if (collision.GameObject == gameObject) continue;
+                    if (collision.GameObject == gameObject || collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
                     float dst = Vector3.Distance(transform.position, collision.GameObject.transform.position);
                     if (dst < distance)
                     {
@@ -159,7 +155,7 @@ namespace Units.Player
                 {
                     OnHitOtherEntity(closestHit);
                 }
-                else
+                else if (closestHit.CompareTag(Tags.COLLIDABLE))
                 {
                     OnHitObject();
                 }

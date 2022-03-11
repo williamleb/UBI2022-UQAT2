@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6859427300389157113}
   m_Layer: 0
   m_Name: chairClass
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,6 +102,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Chair01 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d7f445851bc22a849b74c8978268bcba, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7f445851bc22a849b74c8978268bcba, type: 3}
 --- !u!1 &4617065852272782247 stripped
@@ -140,3 +144,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 23.359146, y: 10.773293, z: 22.206055}
   m_Center: {x: 9.563654, y: 20.551998, z: 29.681879}
+--- !u!208 &8343118432830344305
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4617065852272782247}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 11.794001, y: 14.580001, z: 20.454}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 9.679001, y: 11.787001, z: 20.257002}
+  m_TimeToStationary: 0.5

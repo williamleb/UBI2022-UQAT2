@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4770734135293459371}
   m_Layer: 0
   m_Name: bench
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +102,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bench 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d37af1490f222ec49aebed4eaa677b14, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d37af1490f222ec49aebed4eaa677b14, type: 3}
+--- !u!1 &2073167978774190765 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d37af1490f222ec49aebed4eaa677b14, type: 3}
+  m_PrefabInstance: {fileID: 1154107443903588348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1697452329654845463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d37af1490f222ec49aebed4eaa677b14, type: 3}
   m_PrefabInstance: {fileID: 1154107443903588348}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &8764704169456210090
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073167978774190765}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 24.72033, y: 52.595947, z: 32.545555}
+  m_Center: {x: -11.85797, y: -17.873465, z: 16.247128}
+--- !u!208 &8849238413141018207
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073167978774190765}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 12.360001, y: 26.298, z: 16.273}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: -11.858001, y: -17.873001, z: 16.247002}
+  m_TimeToStationary: 0.5
