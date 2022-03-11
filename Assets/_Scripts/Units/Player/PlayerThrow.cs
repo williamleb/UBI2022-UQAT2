@@ -56,7 +56,8 @@ namespace Units.Player
             // TODO Rumble controller with more force (with ThrowForcePercent)
 
             var forcePercent = ThrowForcePercent;
-            RumbleSystem.Instance.SetRumble(throwRumbleKey, forcePercent * 0.5f, Math.Abs(forcePercent - 1f) < 0.1f ? 0.5f : 0f);
+            var isFinished = Math.Abs(forcePercent - 1f) < 0.1f;
+            RumbleSystem.Instance.SetRumble(throwRumbleKey, isFinished ? 0.5f : forcePercent * 0.25f, isFinished ? 0.5f : 0f);
         }
 
         private bool CanThrow()
