@@ -27,7 +27,7 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         
-        [SerializeField][Required] private CameraStrategy mainCamera;
+        [SerializeField] private CameraStrategy mainCamera;
         
         private PlayerSettings data;
         private PlayerInteracter interacter;
@@ -63,6 +63,8 @@ namespace Units.Player
         {
             base.Spawned();
             OnAwake();
+            InitThrow();
+            
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)
