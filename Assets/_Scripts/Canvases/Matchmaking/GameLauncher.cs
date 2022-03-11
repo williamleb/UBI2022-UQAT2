@@ -1,5 +1,6 @@
 using System.Collections;
 using Systems.Network;
+using Systems.Settings;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace Matchmaking
 {
     public class GameLauncher : MonoBehaviour
     {
+
+        private MatchmakingSettings data;
+
         [SerializeField] private GameObject hostUI;
         [SerializeField] private GameObject clientUI;
         [SerializeField] private GameObject UICurtain;
@@ -18,6 +22,7 @@ namespace Matchmaking
 
         void Start()
         {
+            data = SettingsSystem.MatchmakingSettings;
             NetworkSystem.Instance.DebugMode = false;
         }
 
@@ -35,7 +40,7 @@ namespace Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage("Erreur lors de la création d'une partie."));
+                StartCoroutine(DisplayErrorMessage(data.ErrorMessageCreatingGame));
                 UICurtain.SetActive(false);
                 hostUI.SetActive(true);
             }
@@ -55,7 +60,7 @@ namespace Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage("Erreur lors de la connection à la partie."));
+                StartCoroutine(DisplayErrorMessage(data.ErrorMessageJoiningGame));
                 UICurtain.SetActive(false);
                 clientUI.SetActive(true);
             }
