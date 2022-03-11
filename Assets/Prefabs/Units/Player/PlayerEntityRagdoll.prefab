@@ -340,6 +340,7 @@ Transform:
   - {fileID: 3536100283719149548}
   - {fileID: 3536100283858223402}
   - {fileID: 8085168904217667897}
+  - {fileID: 471995106933837442}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -365,8 +366,94 @@ MonoBehaviour:
     RawGuidValue: 6056d61fb63436244a209b34900f5df6
   NestedObjects:
   - {fileID: 6267851169511409763}
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 5716062156299285219}
   SimulationBehaviours: []
+--- !u!1001 &3505565612886008366
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 985372298615590180}
+    m_Modifications:
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.97629607
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.21643952
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524492995757, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: m_Name
+      value: DustTrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524632997939, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3903099524714731095, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9220501645796872397, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+      propertyPath: targetToFollow
+      value: 
+      objectReference: {fileID: 8085168904217667897}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+--- !u!4 &471995106933837442 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3903099524492995756, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+  m_PrefabInstance: {fileID: 3505565612886008366}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5716062156299285219 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9220501645796872397, guid: 9873668586cc98242bdf239cab9d9f01, type: 3}
+  m_PrefabInstance: {fileID: 3505565612886008366}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70256815b119f094daaeb1ddecd8399e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3536100284109717099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -768,6 +855,10 @@ PrefabInstance:
       propertyPath: ragdollTransform
       value: 
       objectReference: {fileID: 7744487053013967683}
+    - target: {fileID: 3136995461962552439, guid: 8ea56e13fa838f345ac31dbfeb12cef4, type: 3}
+      propertyPath: dustTrailController
+      value: 
+      objectReference: {fileID: 5716062156299285219}
     - target: {fileID: 3136995461962552442, guid: 8ea56e13fa838f345ac31dbfeb12cef4, type: 3}
       propertyPath: m_Name
       value: PlayerRagdoll
