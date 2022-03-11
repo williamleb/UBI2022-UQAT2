@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 99853861322346959}
   m_Layer: 0
   m_Name: stall02
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,6 +95,10 @@ PrefabInstance:
       value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
@@ -106,10 +110,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Stall02
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
+--- !u!1 &2809049468206531384 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
+  m_PrefabInstance: {fileID: 3042980113051188841}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3292253610263648642 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
   m_PrefabInstance: {fileID: 3042980113051188841}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &1801928601858205794
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2809049468206531384}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7395440972073171220, guid: 01a9a1836b96cd746a405091f194c64c, type: 3}
+--- !u!208 &6616617410863444237
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2809049468206531384}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 28.470001, y: 23.525002, z: 37.863003}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 12.913001, y: -22.163, z: 37.849003}
+  m_TimeToStationary: 0.5

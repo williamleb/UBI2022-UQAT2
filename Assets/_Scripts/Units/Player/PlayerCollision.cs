@@ -2,6 +2,7 @@
 using Fusion;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Units.Player
 {
@@ -53,8 +54,8 @@ namespace Units.Player
                 //We didn't hit it, it hit us and it will affect us
                 if (!(collisionDot > 0.65)) return;
 
-                //Hit a wall
-                if (collision.gameObject.isStatic)
+                //Hit a wall or other collidable
+                if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
                 {
                     Debug.Log("Hit a wall");
                     ResetVelocity();
