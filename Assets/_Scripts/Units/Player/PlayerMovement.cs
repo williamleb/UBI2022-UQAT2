@@ -2,11 +2,13 @@ using Fusion;
 using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
+using VFX;
 
 namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        [SerializeField] private DustTrailController dustTrailController;
         private NetworkRigidbody nRb;
         [Networked] private NetworkBool CanMove { get; set; } = true;
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
@@ -30,6 +32,7 @@ namespace Units.Player
             CalculateVelocity();
             MovePlayer();
             RotatePlayer();
+            dustTrailController.UpdateDustTrail(velocity/data.SprintMaximumSpeed);
         }
 
         private void HandleMoveInput(NetworkInputData inputData)
