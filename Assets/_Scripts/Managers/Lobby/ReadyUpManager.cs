@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Systems;
+using Systems.Settings;
 using TMPro;
 using Units.Player;
 using UnityEngine;
@@ -10,25 +11,24 @@ using Utilities.Singleton;
 public class ReadyUpManager : Singleton<ReadyUpManager>
 {
     private bool allPlayersReady;
-    [SerializeField] private int countDownSeconds = 10;
-    [SerializeField] private TextMeshProUGUI countdownText;
-    [SerializeField] private bool allowSoloPlay = true;
-
-    [SerializeField] private GameObject readyUpMessage;
-
+    private MatchmakingSettings data;
     private Coroutine startCoroutine;
-
     private PlayerSystem playerSystem;
+
+    [SerializeField] private TextMeshProUGUI countdownText;
+    [SerializeField] private GameObject readyUpMessage;
 
     private void Start()
     {
+        data = SettingsSystem.MatchmakingSettings;
+
         countdownText.gameObject.SetActive(false);
         playerSystem = PlayerSystem.Instance;
     }
 
     void Update()
     {
-        allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && allowSoloPlay);
+        allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
 
         foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
         {
@@ -60,9 +60,9 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
 
     IEnumerator StartGameCoroutine()
     {
-        for (int i = countDownSeconds; i > 0; i--)
+        for (int i = data.CountDownTime; i > 0; i--)
         {
-            countdownText.text = $"Game starts in {i}.";
+            countdownText.text = $"{data.CountDownMessage} {i}.";
             yield return new WaitForSeconds(0.25f);
 
             countdownText.text += $".";
