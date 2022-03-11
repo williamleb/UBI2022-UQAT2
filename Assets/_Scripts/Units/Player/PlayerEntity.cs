@@ -38,7 +38,8 @@ namespace Units.Player
         
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
-        public bool IsReady { get; private set; }
+
+        [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
 
         private void OnAwake()
         {

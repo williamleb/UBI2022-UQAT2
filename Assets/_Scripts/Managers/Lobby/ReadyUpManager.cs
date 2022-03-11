@@ -76,5 +76,15 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
         }
 
         LevelSystem.Instance.LoadGame();
+
+        ResetIsReadyAllPlayer();
+    }
+
+    private void ResetIsReadyAllPlayer()
+    {
+        foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
+        {
+            playerEntity.IsReady = false;
+        }
     }
 }
