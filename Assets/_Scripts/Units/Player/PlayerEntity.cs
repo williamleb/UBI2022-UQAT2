@@ -162,7 +162,6 @@ namespace Units.Player
                 inv = player.inventory;
                 player.ResetVelocity();
 
-                //TODO Change RPC to get information about hit direction and then pass it to Hit().
                 player.Hit(forceDirection, forceMagnitude);
 
                 immunityTimer.Reset();
