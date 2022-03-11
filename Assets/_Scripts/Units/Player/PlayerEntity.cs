@@ -13,6 +13,7 @@ using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
 using PlayerSettings = Systems.Settings.PlayerSettings;
+using Random = UnityEngine.Random;
 using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
@@ -39,10 +40,10 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public bool IsReady { get; private set; }
 
-        private void Awake()
+        private void OnAwake()
         {
-            data = SettingsSystem.Instance.PlayerSetting;
-
+            data = SettingsSystem.Instance.PlayerSetting[Random.Range(0,SettingsSystem.Instance.PlayerSetting.Length)];
+            print(data.PlayerArchetypes);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
             
@@ -61,7 +62,7 @@ namespace Units.Player
         public override async void Spawned()
         {
             base.Spawned();
-
+            OnAwake();
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)
