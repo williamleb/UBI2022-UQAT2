@@ -49,6 +49,7 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
             countdownText.gameObject.SetActive(false);
             StopCoroutine(startCoroutine);
             startCoroutine = null;
+            ResetIsReadyAllPlayer();
         }
 
         if (startCoroutine == null && allPlayersReady)
@@ -76,5 +77,15 @@ public class ReadyUpManager : Singleton<ReadyUpManager>
         }
 
         LevelSystem.Instance.LoadGame();
+
+        ResetIsReadyAllPlayer();
+    }
+
+    private void ResetIsReadyAllPlayer()
+    {
+        foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
+        {
+            playerEntity.IsReady = false;
+        }
     }
 }
