@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Fusion;
 using Interfaces;
-using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Systems.Settings;
@@ -13,7 +12,6 @@ using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
 using PlayerSettings = Systems.Settings.PlayerSettings;
-using Random = UnityEngine.Random;
 using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
@@ -26,16 +24,16 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
-        
+
         [SerializeField] private CameraStrategy mainCamera;
-        
+
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
-        
+
         public int PlayerID { get; private set; }
         public Vector3 Velocity => nRb.Rigidbody.velocity;
 
@@ -47,7 +45,7 @@ namespace Units.Player
             print(data.PlayerArchetypes);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
-            
+
             inventory.AssignVelocityObject(this);
 
             immunityTimer = new TickTimer(data.ImmunityTime);
@@ -65,12 +63,12 @@ namespace Units.Player
             base.Spawned();
             OnAwake();
             InitThrow();
-            
+
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)
             {
-                mainCamera.Init(transform, data.PlayerCameraSetting);
+                mainCamera.Init(data.PlayerCameraSetting);
             }
             else
             {
@@ -111,7 +109,7 @@ namespace Units.Player
                 {
                     OnMenuPressed?.Invoke();
                 }
-                
+
                 AnimationUpdate();
                 immunityTimer.Tick(Runner.DeltaTime);
             }

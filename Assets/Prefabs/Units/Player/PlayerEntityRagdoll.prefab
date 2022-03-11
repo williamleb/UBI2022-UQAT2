@@ -63,6 +63,7 @@ MonoBehaviour:
   MoveSpeed: 2
   MyCamera: {fileID: 6673044231460945073}
   cameraBounds: {fileID: 3536100283719149550}
+  target: {fileID: 267980881122502678}
 --- !u!1 &3536100283858223401
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +192,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6673044231460945078}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 15, z: -15}
+  m_LocalPosition: {x: 0, y: 15, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3536100283719149548}
@@ -309,6 +310,36 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1 &6816481407787605307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 267980881122502678}
+  m_Layer: 3
+  m_Name: CameraPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &267980881122502678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6816481407787605307}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 985372298615590180}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8586700964149085410
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +372,7 @@ Transform:
   - {fileID: 3536100283858223402}
   - {fileID: 8085168904217667897}
   - {fileID: 471995106933837442}
+  - {fileID: 267980881122502678}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -851,6 +883,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 3536100283719149549}
+    - target: {fileID: 3136995461962552439, guid: 8ea56e13fa838f345ac31dbfeb12cef4, type: 3}
+      propertyPath: cameraPoint
+      value: 
+      objectReference: {fileID: 267980881122502678}
     - target: {fileID: 3136995461962552439, guid: 8ea56e13fa838f345ac31dbfeb12cef4, type: 3}
       propertyPath: ragdollTransform
       value: 
