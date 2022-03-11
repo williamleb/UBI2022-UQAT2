@@ -126,7 +126,7 @@ namespace Units.Player
             print("Hit other entity");
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-            RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer());
+            RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
             hasHitSomeoneThisFrame = true;
             IsDashing = false;
         }

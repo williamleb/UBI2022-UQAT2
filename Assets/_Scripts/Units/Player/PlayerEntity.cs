@@ -148,11 +148,11 @@ namespace Units.Player
 
         public void ExternalHit()
         {
-            RPC_GetHitAndDropItems(Object.Id, true);
+            RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied);
         }
 
         [Rpc]
-        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer)
+        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer, Vector3 forceDirection = default, float forceMagnitude = default)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             Inventory inv;
@@ -163,8 +163,7 @@ namespace Units.Player
                 inv = player.inventory;
                 player.ResetVelocity();
 
-                //TODO Change RPC to get information about hit direction and then pass it to Hit().
-                player.Hit();
+                player.Hit(forceDirection, forceMagnitude);
 
                 immunityTimer.Reset();
                 isImmune = true;
