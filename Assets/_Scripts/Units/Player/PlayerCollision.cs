@@ -65,8 +65,8 @@ namespace Units.Player
                 else if (collision.gameObject.IsAPlayerOrAI())
                 {
                     NetworkObject no = collision.gameObject.GetComponent<NetworkObject>();
-                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer());
-                    RPC_GetHitAndDropItems(Object.Id, true);
+                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),transform.forward);
+                    RPC_GetHitAndDropItems(Object.Id, true, -transform.forward);
                 }
             }
         }

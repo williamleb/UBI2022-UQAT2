@@ -65,6 +65,10 @@ namespace Systems.Settings
         [Tooltip("The max distance from the player another entity can be to apply aim assist")] [SerializeField]
         private float dashMaxAimAssistRange = 2f;
 
+        [Tooltip("Force applied on the ragdoll of the tackled entity following a tackle")]
+        [SerializeField]
+        private float dashForceApplied = 30f;
+
         [Tooltip(
             "The target angle in front of the player in degrees on each side of the direction of the player (45° means a full 90° of view angle)")]
         [SerializeField]
@@ -136,6 +140,7 @@ namespace Systems.Settings
         public float DashAimAssistAngle => dashAimAssistAngle;
         public float DashAimAssistForce => dashAimAssistForce;
         public float DashCoolDown => dashCoolDown;
+        public float DashForceApplied => dashForceApplied;
         public float MaxThrowForce => maxThrowForce;
         public float MinThrowForce => minThrowForce;
         public float ThrowVerticality => throwVerticality;
