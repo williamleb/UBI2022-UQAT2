@@ -42,7 +42,7 @@ namespace Units.Player
 
         private void OnAwake()
         {
-            data = SettingsSystem.Instance.PlayerSetting[Random.Range(0,SettingsSystem.Instance.PlayerSetting.Length)];
+            data = SettingsSystem.Instance.PlayerSetting.RandomElement();
             print(data.PlayerArchetypes);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
