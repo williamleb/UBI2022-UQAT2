@@ -148,6 +148,8 @@ namespace Systems.Settings
         public float AimingMovementSpeed => aimingMovementSpeed;
         public float AimingMovementDeceleration => aimingMovementDeceleration;
         public int ImmunityTime => immunityTime;
+        public float CameraPointSpeed => playerCameraSettings.CameraPointSpeed;
+        public Vector3 CameraPointOffset => playerCameraSettings.CameraPointOffset;
 
         [Serializable]
         public class PlayerCameraSettings
@@ -157,6 +159,9 @@ namespace Systems.Settings
             public float PosZ;
             public float RotX;
             public float FieldOfView;
+
+            [Space] public float CameraPointSpeed;
+            public Vector3 CameraPointOffset;
         }
 
         [Serializable]

@@ -13,7 +13,7 @@ namespace Units.Camera
         [Header("Boundaries")] [SerializeField]
         private CameraBounds cameraBounds;
 
-        private Transform target;
+        [SerializeField] private Transform target;
         private PlayerSettings.PlayerCameraSettings data;
         private Vector3 offset;
         private Vector3 averageTarget;
@@ -26,9 +26,8 @@ namespace Units.Camera
             if (MyCamera == null && UnityEngine.Camera.main != null) MyCamera = UnityEngine.Camera.main;
         }
 
-        public void Init(Transform targetTransform, PlayerSettings.PlayerCameraSettings cameraSettings)
+        public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
         {
-            target = targetTransform;
             data = cameraSettings;
             initialized = true;
             UpdateCamera();

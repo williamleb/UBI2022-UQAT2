@@ -9,10 +9,12 @@ namespace Units.Player
     public partial class PlayerEntity
     {
         [SerializeField] private DustTrailController dustTrailController;
+        [SerializeField] private Transform cameraPoint;
         private NetworkRigidbody nRb;
         [Networked] private NetworkBool CanMove { get; set; } = true;
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
 
+        private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
         private float velocity;
         private Vector3 lastMoveDirection = Vector3.zero;
@@ -33,6 +35,16 @@ namespace Units.Player
             MovePlayer();
             RotatePlayer();
             dustTrailController.UpdateDustTrail(velocity/data.SprintMaximumSpeed);
+            UpdateCameraPointPosition();
+        }
+
+        private void UpdateCameraPointPosition()
+        {
+            float targetX = lastMoveDirection.x * data.CameraPointOffset.x;
+            float targetZ = lastMoveDirection.z * data.CameraPointOffset.z;
+            Vector3 target = new Vector3(targetX, 0, targetZ);
+            cameraPointOffset = Vector3.MoveTowards(cameraPointOffset, target, data.CameraPointSpeed * Runner.DeltaTime);
+            cameraPoint.position = transform.position + cameraPointOffset;
         }
 
         private void HandleMoveInput(NetworkInputData inputData)
