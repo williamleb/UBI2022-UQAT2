@@ -17,6 +17,8 @@ namespace VFX
         //[SerializeField] private ParticleSystemValues midValues;
         [SerializeField] private ParticleSystemValues highValues;
 
+        [Networked (OnChanged = nameof(UpdateParticleSystems))] private float LerpValue { get; set; }
+
         private Vector3 offset;
 
         private void Awake() => offset = transform.localPosition;
@@ -39,12 +41,16 @@ namespace VFX
                 dustRound.Stop();
             }
 
-            float value = interpolation.Evaluate(Mathf.Clamp01(interpolationValue));
-            UpdateParticleSystem(dustEdgy, value, true, -targetToFollow.forward);
-            UpdateParticleSystem(dustRound, value, false, -targetToFollow.forward);
+            LerpValue = interpolation.Evaluate(Mathf.Clamp01(interpolationValue));
         }
 
-        private void UpdateParticleSystem(ParticleSystem ps, float lerpValue, bool isEdgy, Vector3 direction)
+        private static void UpdateParticleSystems(Changed<DustTrailController> changed)
+        {
+            changed.Behaviour.UpdateParticleSystem(changed.Behaviour.dustEdgy, changed.Behaviour.LerpValue, true);
+            changed.Behaviour.UpdateParticleSystem(changed.Behaviour.dustRound, changed.Behaviour.LerpValue, false);
+        }
+        
+        private void UpdateParticleSystem(ParticleSystem ps, float lerpValue, bool isEdgy)
         {
             var mainModule = ps.main;
             mainModule.startLifetime = Mathf.Lerp(baseValues.Lifetime, highValues.Lifetime, lerpValue);
@@ -66,6 +72,7 @@ namespace VFX
             lvolModule.dampen = Mathf.Lerp(baseValues.Dampen, highValues.Dampen, lerpValue);
 
             var folModule = ps.forceOverLifetime;
+            Vector3 direction = -targetToFollow.forward;
             Vector3 baseMin = direction * baseValues.ForceLifetimeConstantXMin;
             Vector3 baseMax = direction * baseValues.ForceLifetimeConstantXMax;
             Vector3 highMin = direction * highValues.ForceLifetimeConstantXMin;
