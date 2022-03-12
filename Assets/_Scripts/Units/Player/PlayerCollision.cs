@@ -17,29 +17,34 @@ namespace Units.Player
             int delay = (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS);
             delay = Mathf.Max(2000, delay);
 
-            if (forceDirection != default)
+            if (Object.HasStateAuthority)
             {
-                if (Object.HasStateAuthority)
+                isGettingUpB = false;
+                isGettingUpF = false;
+                
+                if (forceDirection != default)
+                {
                     RPC_ToggleRagdoll(true, forceDirection, forceMagnitude);
-            }
-            else
-            {
-                if (Object.HasStateAuthority)
+                }
+                else
+                {
                     RPC_ToggleRagdoll(true);
+                }
             }
 
             await Task.Delay(delay - 1000);
 
-            gameObject.transform.position = new Vector3(ragdollTransform.position.x, 0, ragdollTransform.position.z);
+            transform.position = ragdollTransform.position.Flat();
             await Task.Delay(1); //Delay one frame
 
             if (Object.HasStateAuthority)
             {
+                isGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
+                isGettingUpB = !isGettingUpF;
+                AnimationUpdate();
                 RPC_ToggleRagdoll(false);
             }
 
-            //TODO Play get up anim
-            //AnimGetUpTrigger(); //Only plays the animation if fallen
             CanMove = true;
         }
 

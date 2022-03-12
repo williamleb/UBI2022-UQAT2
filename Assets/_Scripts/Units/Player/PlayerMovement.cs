@@ -13,6 +13,8 @@ namespace Units.Player
         private NetworkRigidbody nRb;
         [Networked] private NetworkBool CanMove { get; set; } = true;
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
+        
+        public Vector3 Velocity => nRb.Rigidbody.velocity;
 
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;

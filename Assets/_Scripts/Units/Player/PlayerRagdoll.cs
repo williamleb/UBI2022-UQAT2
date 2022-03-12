@@ -8,10 +8,11 @@ namespace Units.Player
     {
         //Vector3 = transform initial local position of bones
         //Quaternion = transform's initial local rotation of bones
-        private List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
-        private List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
+        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
+        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private Collider playerCollider;
         [SerializeField] private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
+        [SerializeField] private Transform ragdollPelvis;
 
         private void RagdollAwake()
         {
@@ -21,19 +22,19 @@ namespace Units.Player
         private void InitializeRagdoll()
         {
             var collidersInPlayer = GetComponentsInChildren<Collider>();
-            foreach (Collider collider in collidersInPlayer)
+            foreach (Collider col in collidersInPlayer)
             {
-                if (collider.transform.gameObject == transform.gameObject)
+                if (col.transform.gameObject == transform.gameObject)
                 {
-                    playerCollider = collider;
+                    playerCollider = col;
                 }
                 else
                 {
-                    Transform colTransform = collider.transform;
-                    ragdollColliders.Add((collider, colTransform.localPosition, colTransform.localRotation));
-                    collider.isTrigger = true;
+                    Transform colTransform = col.transform;
+                    ragdollColliders.Add((col, colTransform.localPosition, colTransform.localRotation));
+                    col.isTrigger = true;
 
-                    var rigidBody = collider.gameObject.GetComponent<Rigidbody>();
+                    var rigidBody = col.gameObject.GetComponent<Rigidbody>();
                     rigidBody.isKinematic = true;
                     ragdollRigidbody.Add(rigidBody);
                 }
@@ -41,31 +42,30 @@ namespace Units.Player
         }
 
         [Rpc(RpcSources.StateAuthority,RpcTargets.All)]
-        public void RPC_ToggleRagdoll(NetworkBool IsActivate, Vector3 forceDirection = default, float forceMagnitude = default)
+        private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = default)
         {
-            networkAnimator.Animator.enabled = !IsActivate;
-            playerCollider.enabled = !IsActivate;
-
-            //Item1 = collider, Item2 = local position, Item3 = local rotation
-            foreach ((Collider, Vector3, Quaternion) element in ragdollColliders)
+            networkAnimator.Animator.enabled = !isActivate;
+            playerCollider.enabled = !isActivate;
+            
+            foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
             {
-                element.Item1.isTrigger = !IsActivate;
+                col.isTrigger = !isActivate;
 
                 //Reset bones to local position
-                if (!IsActivate)
+                if (!isActivate)
                 {
-                    Transform elementTransform = element.Item1.transform;
-                    elementTransform.localPosition = element.Item2;
-                    elementTransform.localRotation = element.Item3;
+                    Transform elementTransform = col.transform;
+                    elementTransform.localPosition = localPos;
+                    elementTransform.localRotation = localRot;
                 }
             }
 
-            foreach (Rigidbody rigidbody in ragdollRigidbody)
+            foreach (Rigidbody rb in ragdollRigidbody)
             {
-                rigidbody.isKinematic = !IsActivate;
+                rb.isKinematic = !isActivate;
 
-                if (IsActivate && forceDirection != default)
-                    rigidbody.AddForce(forceDirection * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
+                if (isActivate && forceDirection != default)
+                    rb.AddForce(forceDirection * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
             }
         }
     }

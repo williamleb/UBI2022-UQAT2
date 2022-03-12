@@ -35,13 +35,12 @@ namespace Units.Player
         private NetworkBool isImmune;
 
         public int PlayerID { get; private set; }
-        public Vector3 Velocity => nRb.Rigidbody.velocity;
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
 
         private void OnAwake()
         {
-            data = SettingsSystem.Instance.PlayerSetting.RandomElement();
+            data = SettingsSystem.PlayerSettings.RandomElement();
             print(data.PlayerArchetypes);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
