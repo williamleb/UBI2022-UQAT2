@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Utilities.Singleton;
 
@@ -19,10 +18,10 @@ namespace Systems.Settings
         private MatchmakingSettings matchmakingSetting;
         private HomeworkSettings homeworkSetting;
 
-        public PlayerSettings[] PlayerSetting => playerSettings;
-        public AISettings AISetting => aiSetting;
-        public MatchmakingSettings MatchmakingSetting => matchmakingSetting;
-        public HomeworkSettings HomeworkSetting => homeworkSetting;
+        private PlayerSettings[] PlayerSetting => playerSettings;
+        private AISettings AISetting => aiSetting;
+        private MatchmakingSettings MatchmakingSetting => matchmakingSetting;
+        private HomeworkSettings HomeworkSetting => homeworkSetting;
 
         protected override void Awake()
         {
@@ -38,20 +37,21 @@ namespace Systems.Settings
         {
             var loadedSettingsList = Resources.LoadAll<T>(SETTINGS_FOLDER_PATH);
 
-            Debug.Assert(loadedSettingsList.Any(), $"An object of type {typeof(T).Name} should be in the folder {SETTINGS_FOLDER_PATH}");
+            Debug.Assert(loadedSettingsList.Any(),
+                $"An object of type {typeof(T).Name} should be in the folder {SETTINGS_FOLDER_PATH}");
             if (loadedSettingsList.Length > 1)
-                Debug.LogWarning($"More than one object of type {typeof(T).Name} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
+                Debug.LogWarning(
+                    $"More than one object of type {typeof(T).Name} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
 
             memberToInitialize = loadedSettingsList.First();
         }
-        
+
         private void LoadAllSettings<T>(out T[] memberToInitialize) where T : ScriptableObject
         {
             var loadedSettingsList = Resources.LoadAll<T>(SETTINGS_FOLDER_PATH);
 
-            Debug.Assert(loadedSettingsList.Any(), $"An object of type {typeof(T).Name} should be in the folder {SETTINGS_FOLDER_PATH}");
-            if (loadedSettingsList.Length > 1)
-                Debug.LogWarning($"More than one object of type {typeof(T).Name} was found in the folder {SETTINGS_FOLDER_PATH}. Taking the first one.");
+            Debug.Assert(loadedSettingsList.Any(),
+                $"An object of type {typeof(T).Name} should be in the folder {SETTINGS_FOLDER_PATH}");
 
             memberToInitialize = loadedSettingsList;
         }
