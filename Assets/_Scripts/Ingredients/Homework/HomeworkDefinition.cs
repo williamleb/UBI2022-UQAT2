@@ -5,6 +5,7 @@ using Fusion;
 using Interfaces;
 using Managers.Game;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Ingredients.Homework
@@ -12,6 +13,11 @@ namespace Ingredients.Homework
     [CreateAssetMenu(menuName = "Game/Homework Definition", fileName = "HomeworkDefinition")]
     public class HomeworkDefinition : ScriptableObject, IProbabilityObject
     {
+        [Header("Identifier")] 
+        [Tooltip("Name of the homework type. Must be unique")] 
+        [ValidateInput(nameof(ValidateHomeworkType), "You must give a unique name to this homework type")]
+        [SerializeField] private string homeworkType = "Default";
+        
         [Header("Points")]
         [SerializeField] private int pointsGiven = 1;
         
@@ -33,9 +39,23 @@ namespace Ingredients.Homework
         [Header("Prefab")]
         [SerializeField, Required] private NetworkObject homeworkPrefab;
 
+        public string Type => homeworkType;
+
+        public int Points => pointsGiven;
+        
         public float Probability => GameManager.HasInstance
             ? probabilityOverGameProgression.Evaluate(GameManager.Instance.GameProgression)
             : probabilityOverGameProgression.Evaluate(0.5f);
+        public int MaxAmountAtTheSameTime => maxAmountAtTheSameTime;
+        public int Cooldown => cooldown;
+        public IEnumerable<Burst> Bursts => bursts;
+
+        public NetworkObject Prefab => homeworkPrefab;
+
+        private bool ValidateHomeworkType()
+        {
+            return !homeworkType.IsNullOrWhitespace() && !homeworkType.Equals("Default");
+        }
 
         private bool ValidateProbabilityValues()
         {

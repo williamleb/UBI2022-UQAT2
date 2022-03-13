@@ -2,6 +2,7 @@
 using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using Systems.Sound;
 using Units;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Ingredients.Homework
 
         private Transform holdingTransform;
 
+        public string Type { get; private set; }
+        
         [Networked(OnChanged = nameof(OnStateChanged))]
         private State HomeworkState { get; set; }
         
@@ -103,6 +106,12 @@ namespace Ingredients.Homework
             holdingTransform = inventory.HomeworkHoldingTransform;
         }
 
+        public void AssignType(string type)
+        {
+            Debug.Assert(!type.IsNullOrWhitespace());
+            Type = type;
+        }
+
         public void Free()
         {
             HomeworkState = State.Free;
@@ -145,6 +154,11 @@ namespace Ingredients.Homework
             if (HomeworkManager.HasInstance)
             {
                 HomeworkManager.Instance.RegisterHomework(this);
+            }
+
+            if (Type.IsNullOrWhitespace())
+            {
+                Type = "Default";
             }
 
             UpdateHomeworkMarkerVisibility();

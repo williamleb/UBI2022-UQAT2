@@ -1,4 +1,5 @@
-﻿using Canvases.Markers;
+﻿using System.Linq;
+using Canvases.Markers;
 using Fusion;
 using Ingredients.Homework;
 using Interfaces;
@@ -20,6 +21,7 @@ namespace Units
         private int HeldHomeworkId { get; set; }
 
         public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
+        public HomeworkDefinition HeldHomeworkDefinition => HasHomework ? SettingsSystem.HomeworkSettings.HomeworkDefinitions.FirstOrDefault(definition => definition.Type.Equals(GetCurrentHomework().Type)) : null;
         public Transform HomeworkHoldingTransform => homeworkHoldingTransform;
 
         private Vector3 VelocityContribution => velocityObject != null ? velocityObject.Velocity * SettingsSystem.HomeworkSettings.CurrentObjectContributionToHomeworkFalling : Vector3.zero;

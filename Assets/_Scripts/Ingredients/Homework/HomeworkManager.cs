@@ -5,7 +5,6 @@ using System.Linq;
 using Fusion;
 using JetBrains.Annotations;
 using Managers.Game;
-using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using Systems.Network;
 using Systems.Settings;
@@ -20,12 +19,14 @@ namespace Ingredients.Homework
     {
         private const float SECURITY_NET_POSITION = 10f;
         
-        [SerializeField, Required] private NetworkObject homeworkPrefab;
-        
         private readonly Dictionary<int, Homework> homeworks = new Dictionary<int, Homework>();
         private HomeworkSpawnPoint[] spawnPoints = Array.Empty<HomeworkSpawnPoint>();
-        
+
         private readonly List<Homework> homeworksToSpawn = new List<Homework>();
+
+        private readonly Dictionary<string, int> cooldowns = new Dictionary<string, int>();
+        private readonly List<BurstWithType> allBurstToDo = new List<BurstWithType>();
+        private readonly List<BurstWithType> activeBursts = new List<BurstWithType>();
 
         private HomeworkSettings settings;
 
@@ -103,9 +104,15 @@ namespace Ingredients.Homework
         private void OnGameStateChanged(GameState newGameState)
         {
             if (newGameState == GameState.Running)
+            {
+                InitializeCooldowns();
+                InitializeBursts();
                 StartHomeworkRoutines();
+            }
             else
+            {
                 StopHomeworkRoutines();
+            }
         }
 
         private void StartHomeworkRoutines()
@@ -135,7 +142,7 @@ namespace Ingredients.Homework
             {
                 var secondsToWaitBeforeSpawn = Random.Range(settings.MinSecondsBeforeHomeworkSpawn, settings.MaxSecondsBeforeHomeworkSpawn);
                 yield return new WaitForSeconds(secondsToWaitBeforeSpawn);
-                yield return new WaitUntil(IsAnyHomeworkFree);
+                yield return new WaitUntil(DoesNotHaveMaximumAmountOfHomeworksActivated);
                 
                 ActivateHomework();
             }
@@ -176,16 +183,19 @@ namespace Ingredients.Homework
         private void SpawnHomeworks()
         {
             GameManager.Instance.LockSpawn(this);
-            
-            for (var i = 0; i < settings.MaxNumberOfHomeworksInPlay; ++i)
+
+            foreach (var homeworkDefinition in settings.HomeworkDefinitions)
             {
-                NetworkSystem.Instance.Spawn(homeworkPrefab, Vector3.down * 1000f, Quaternion.identity, null, ManageHomeworkBeforeSpawned);
+                for (var i = 0; i < Math.Min(settings.MaxNumberOfHomeworksInPlay, homeworkDefinition.MaxAmountAtTheSameTime); ++i)
+                {
+                    NetworkSystem.Instance.Spawn(homeworkDefinition.Prefab, Vector3.down * 1000f, Quaternion.identity, null, (runner, o) =>  ManageHomeworkBeforeSpawned(runner, o, homeworkDefinition.Type));
+                }
             }
         }
 
         private void ActivateHomework()
         {
-            var homeworkToActivate = GetNextFreeHomework();
+            var homeworkToActivate = ChooseHomeworkToSpawn();
             if (!homeworkToActivate)
                 return;
 
@@ -193,30 +203,23 @@ namespace Ingredients.Homework
             if (!spawnPoint)
                 return;
             
+            UpdateCooldown(homeworkToActivate.Type);
             homeworkToActivate.Activate(spawnPoint.transform);
         }
 
-        private bool IsAnyHomeworkFree()
+        private bool DoesNotHaveMaximumAmountOfHomeworksActivated()
         {
-            return homeworks.Values.Any(homework => homework.IsFree);
+            return homeworks.Values.Count(homework => !homework.IsFree) < settings.MaxNumberOfHomeworksInPlay;
         }
 
-        private Homework GetNextFreeHomework()
-        {
-            foreach (var homework in homeworks.Values)
-            {
-                if (homework.IsFree)
-                {
-                    return homework;
-                }
-            }
-            
-            return null;
-        }
-        
         private bool IsEveryHomeworkFree()
         {
             return homeworks.Values.Count(homework => homework.IsFree) == homeworks.Count;
+        }
+
+        private bool AnyLeftToSpawnForType(HomeworkDefinition homeworkDefinition)
+        {
+            return homeworks.Values.Count(homework => !homework.IsFree && homework.Type.Equals(homeworkDefinition.Type)) < homeworkDefinition.MaxAmountAtTheSameTime;
         }
 
         private bool HasAnyHomeworkNear(Vector3 homeworkSpawnerPosition)
@@ -232,12 +235,168 @@ namespace Ingredients.Homework
             return validSpawnPoints.Any() ? validSpawnPoints.WeightedRandomElement() : null;
         }
 
-        private void ManageHomeworkBeforeSpawned(NetworkRunner runner, NetworkObject homeworkObject)
+        private void ManageHomeworkBeforeSpawned(NetworkRunner runner, NetworkObject homeworkObject, string type)
         {
             var homework = homeworkObject.GetComponent<Homework>();
             Debug.Assert(homework);
+            homework.AssignType(type);
             homework.Free();
             homeworksToSpawn.Add(homework);
+        }
+
+        private HomeworkDefinition GetHomeworkDefinitionFromType(string type)
+        {
+            foreach (var definition in settings.HomeworkDefinitions)
+            {
+                if (definition.Type.Equals(type))
+                    return definition;
+            }
+            
+            Debug.Assert(false);
+            return null;
+        }
+
+        private Homework ChooseHomeworkToSpawn()
+        {
+            var homeworkFromBurst = GetHomeworkFromBurst();
+            if (homeworkFromBurst)
+                return homeworkFromBurst;
+
+            var chosenHomeworkDefinition = 
+                settings.HomeworkDefinitions
+                    .Where(AnyLeftToSpawnForType)
+                    .Where(IsCooldownFinished)
+                    .WeightedRandomElement();
+
+            return GetNextFreeHomeworkOfType(chosenHomeworkDefinition.Type);
+        }
+        
+        [CanBeNull]
+        private Homework GetNextFreeHomeworkOfType(string type)
+        {
+            foreach (var homework in homeworks.Values)
+            {
+                if (homework.IsFree && homework.Type.Equals(type))
+                {
+                    return homework;
+                }
+            }
+            
+            return null;
+        }
+        
+        private void InitializeCooldowns()
+        {
+            cooldowns.Clear();
+            foreach (var homeworkDefinition in settings.HomeworkDefinitions)
+            {
+                cooldowns.Add(homeworkDefinition.Type, 0);
+            }
+        }
+
+        private void UpdateCooldown(string typeThatJustSpawned)
+        {
+            foreach (var type in cooldowns.Keys.ToList())
+            {
+                cooldowns[type]--;
+            }
+            
+            if (cooldowns.ContainsKey(typeThatJustSpawned))
+            {
+                cooldowns[typeThatJustSpawned] = GetHomeworkDefinitionFromType(typeThatJustSpawned).Cooldown;
+            }
+        }
+
+        private bool IsCooldownFinished(HomeworkDefinition homrworkDefinition)
+        {
+            if (!cooldowns.ContainsKey(homrworkDefinition.Type))
+                return true;
+
+            return cooldowns[homrworkDefinition.Type] <= 0;
+        }
+
+        private readonly List<BurstWithType> burstsToRemove = new List<BurstWithType>();
+        private readonly List<BurstWithType> burstsThatCanBeDone = new List<BurstWithType>();
+        [CanBeNull]
+        private Homework GetHomeworkFromBurst()
+        {
+            UpdateActiveBursts();
+
+            burstsThatCanBeDone.Clear();
+            burstsToRemove.Clear();
+
+            foreach (var burst in activeBursts)
+            {
+                var homeworkDefinition = GetHomeworkDefinitionFromType(burst.HomeworkType);
+                if (!AnyLeftToSpawnForType(homeworkDefinition))
+                {
+                    burstsToRemove.Add(burst);
+                    continue;
+                }
+
+                if (Random.Range(0f, 1f) < burst.Burst.Probability)
+                {
+                    if (!burst.Burst.Retry)
+                    {
+                        burstsToRemove.Add(burst);
+                    }
+                    continue;
+                }
+                
+                burstsThatCanBeDone.Add(burst);
+            }
+
+            foreach (var burstToRemove in burstsToRemove)
+            {
+                activeBursts.Remove(burstToRemove);
+            }
+
+            if (!burstsThatCanBeDone.Any())
+                return null;
+
+            var burstDefinitionToDo = burstsThatCanBeDone.Select(burst => GetHomeworkDefinitionFromType(burst.HomeworkType)).WeightedRandomElement();
+            return GetNextFreeHomeworkOfType(burstDefinitionToDo.Type);
+        }
+        
+        private void UpdateActiveBursts()
+        {
+            burstsToRemove.Clear();
+            foreach (var burstToDo in allBurstToDo)
+            {
+                if (burstToDo.Burst.AtProgress <= GameManager.Instance.GameProgression)
+                {
+                    burstsToRemove.Add(burstToDo);
+                }
+            }
+
+            foreach (var burstToUpdate in burstsToRemove)
+            {
+                allBurstToDo.Remove(burstToUpdate);
+                activeBursts.Add(burstToUpdate);
+            }
+        }
+        
+        private void InitializeBursts()
+        {
+            allBurstToDo.Clear();
+            foreach (var homeworkDefinition in settings.HomeworkDefinitions)
+            {
+                foreach (var burst in homeworkDefinition.Bursts)
+                {
+                    var burstToAdd = new BurstWithType()
+                    {
+                        HomeworkType = homeworkDefinition.Type,
+                        Burst = burst
+                    };
+                    allBurstToDo.Add(burstToAdd);
+                }
+            }
+        }
+
+        private struct BurstWithType
+        {
+            public string HomeworkType;
+            public HomeworkDefinition.Burst Burst;
         }
     }
 }
