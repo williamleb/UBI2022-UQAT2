@@ -26,8 +26,8 @@ namespace Canvases.HUDs
 
         private void OnPhaseTotalHomeworkChanged()
         {
-            var progress = GameManager.Instance.PhaseTotalHomework /
-                           (float) GameManager.Instance.NumberOfHomeworkToFinishPhase;
+            var progress = GameManager.Instance.HomeworksHanded /
+                           (float) GameManager.Instance.HomeworksNeededToFinishGame;
             
             progressBar.Value = progress;
         }
