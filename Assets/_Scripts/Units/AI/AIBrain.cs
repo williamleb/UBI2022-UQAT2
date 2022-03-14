@@ -88,5 +88,10 @@ namespace Units.AI
 
             return direction.sqrMagnitude < closeDistance * closeDistance;
         }
+
+        public void SetSpeed(float speed)
+        {
+            
+        }
     }
 }

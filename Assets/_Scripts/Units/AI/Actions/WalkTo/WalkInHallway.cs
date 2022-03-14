@@ -54,6 +54,8 @@ namespace Units.AI.Actions
                 return;
 
             hallwayPointToWalkTo = hallwayToWalkIn.GetNextPoint(hallwayPointToWalkTo);
+            
+            // Brain.Agent TODO Set speed
         }
         
         private void InitHallwayToWalkIn()

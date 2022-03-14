@@ -17,6 +17,7 @@ namespace Managers.Hallway
         
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
+        public int Size => hallwayPoints.Count;
 
         public HallwayPoint GetClosestPointTo(Vector3 position)
         {
@@ -41,18 +42,24 @@ namespace Managers.Hallway
 
         public HallwayPoint GetNextPoint(HallwayPoint previousPoint)
         {
+            var indexFound = GetIndexOfPoint(previousPoint);
+            var newIndex = (indexFound + 1) % hallwayPoints.Count;
+            return hallwayPoints[newIndex];
+        }
+
+        public int GetIndexOfPoint(HallwayPoint point)
+        {
             var indexFound = -1;
             for (var i = 0; i < hallwayPoints.Count; ++i)
             {
-                if (hallwayPoints[i] == previousPoint)
+                if (hallwayPoints[i] == point)
                 {
                     indexFound = i;
                     break;
                 }
             }
 
-            var newIndex = (indexFound + 1) % hallwayPoints.Count;
-            return hallwayPoints[newIndex];
+            return indexFound;
         }
         
         public override void Spawned()
