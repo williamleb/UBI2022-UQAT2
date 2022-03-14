@@ -20,6 +20,8 @@ namespace Systems.Settings
 
         [Header("Student settings")] 
         [SerializeField] private float secondsDownAfterBeingHit = 5f;
+        [Tooltip("Seconds between the moment a homework is placed in the world and the moment an AI is made aware of its existence (so they can go fetch it)")]
+        [SerializeField, MinMaxSlider(0f, 30f, true)] private Vector2 secondsToNoticeHomework = new Vector2(5f, 10f);
         
         public float VisionNear => visionNear;
         public float VisionFar => visionFar;
@@ -36,5 +38,7 @@ namespace Systems.Settings
 
 
         public float SecondsDownAfterBeingHit => secondsDownAfterBeingHit;
+        public float MinSecondsToNoticeHomework => secondsToNoticeHomework.x;
+        public float MaxSecondsToNoticeHomework => secondsToNoticeHomework.y;
     }
 }

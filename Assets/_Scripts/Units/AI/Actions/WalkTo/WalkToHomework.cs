@@ -27,7 +27,7 @@ namespace Units.AI.Actions
             if (!homeworkToWalkTo)
                 return TaskStatus.Failure;
 
-            if (homeworkToWalkTo.HomeworkState != Homework.State.InWorld)
+            if (!homeworkToWalkTo.IsInWorld)
             {
                 TransformToWalkTo.SetValue(null);
                 return TaskStatus.Failure;

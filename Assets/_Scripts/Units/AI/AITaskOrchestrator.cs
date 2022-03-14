@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Ingredients.Homework;
+using Systems.Settings;
 using Utilities.Extensions;
 using Utilities.Singleton;
 
@@ -9,8 +12,12 @@ namespace Units.AI.Actions
     {
         private readonly List<Homework> homeworkSubscriptions = new List<Homework>();
 
+        private AISettings settings;
+
         private void Start()
         {
+            settings = SettingsSystem.AISettings;
+            
             if (HomeworkManager.HasInstance)
                 HomeworkManager.Instance.OnHomeworkRegistered += RegisterToHomeworkStateChanged;
         }
@@ -34,9 +41,9 @@ namespace Units.AI.Actions
             base.OnDestroy();
         }
 
-        private void OnHomeworkStateChanged(Homework homework, Homework.State newState)
+        private void OnHomeworkStateChanged(Homework homework)
         {
-            if (newState != Homework.State.InWorld)
+            if (!homework.IsInWorld)
                 return;
 
             AssignTask(homework);
@@ -47,10 +54,16 @@ namespace Units.AI.Actions
             AssignTask(homework);
         }
 
-        private void AssignTask(Homework homework)
+        private async void AssignTask(Homework homework)
         {
+            var secondsToNoticeHomeworks = UnityEngine.Random.Range(settings.MinSecondsToNoticeHomework, settings.MaxSecondsToNoticeHomework);
+            await Task.Delay(TimeSpan.FromSeconds(secondsToNoticeHomeworks));
+            
             var nearestStudent = GetNearestStudentThatCanReceiveTasksFrom(homework);
             if (!nearestStudent)
+                return;
+
+            if (!homework.IsInWorld)
                 return;
 
             nearestStudent.TaskSensor.GiveHomeworkTask(homework);

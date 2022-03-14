@@ -15,14 +15,14 @@ namespace Ingredients.Homework
     {
         private static readonly int isSpawned = Animator.StringToHash("IsSpawned");
 
-        public enum State : byte
+        private enum State : byte
         {
             InWorld = 0,
             Taken,
             Free
         }
 
-        public event Action<Homework, State> EventOnStateChanged;
+        public event Action<Homework> EventOnStateChanged;
 
         [SerializeField, Required] private GameObject visual;
         [SerializeField] private SpriteMarkerReceptor homeworkMarker;
@@ -35,10 +35,12 @@ namespace Ingredients.Homework
         private Transform holdingTransform;
 
         [Networked(OnChanged = nameof(OnStateChanged))]
-        public State HomeworkState { get; private set; }
+        private State HomeworkState { get; set; }
         
         public int HomeworkId => Id.GetHashCode();
         public bool IsFree => HomeworkState == State.Free;
+        public bool IsInWorld => HomeworkState == State.InWorld;
+        public bool IsTaken => HomeworkState == State.Taken;
 
         private void Awake()
         {
@@ -174,7 +176,7 @@ namespace Ingredients.Homework
             animator.SetBool(isSpawned, HomeworkState != State.Free);
             
             UpdateHomeworkMarkerVisibility();     
-            EventOnStateChanged?.Invoke(this, HomeworkState);
+            EventOnStateChanged?.Invoke(this);
         }
 
         public override void FixedUpdateNetwork()
