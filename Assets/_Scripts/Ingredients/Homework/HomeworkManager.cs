@@ -10,6 +10,7 @@ using Sirenix.Utilities;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
+using Utilities.Event;
 using Utilities.Extensions;
 using Utilities.Singleton;
 using Random = UnityEngine.Random;
@@ -19,7 +20,9 @@ namespace Ingredients.Homework
     public class HomeworkManager : Singleton<HomeworkManager>
     {
         private const float SECURITY_NET_POSITION = 10f;
-        
+
+        public MemoryEvent<Homework> OnHomeworkRegistered;
+
         [SerializeField, Required] private NetworkObject homeworkPrefab;
         
         private readonly Dictionary<int, Homework> homeworks = new Dictionary<int, Homework>();
@@ -35,12 +38,14 @@ namespace Ingredients.Homework
         public void RegisterHomework(Homework homework)
         {
             homeworks.Add(homework.HomeworkId, homework);
+            OnHomeworkRegistered.InvokeWithMemory(homework);
             UpdateHomeworkSpawned(homework);
         }
 
         public void UnregisterHomework(Homework homework)
         {
             homeworks.Remove(homework.HomeworkId);
+            OnHomeworkRegistered.RemoveFromMemory(homework);
         }
         
         private void UpdateHomeworkSpawned(Homework homework)
