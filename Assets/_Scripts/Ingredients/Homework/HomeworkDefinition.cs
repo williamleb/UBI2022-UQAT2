@@ -15,7 +15,7 @@ namespace Ingredients.Homework
     {
         [Header("Identifier")] 
         [Tooltip("Name of the homework type. Must be unique")] 
-        [ValidateInput(nameof(ValidateHomeworkType), "You must give a unique name to this homework type")]
+        [ValidateInput(nameof(ValidateHomeworkType), "You must give a unique name under 8 characters to this homework type")]
         [SerializeField] private string homeworkType = "Default";
         
         [Header("Points")]
@@ -54,7 +54,7 @@ namespace Ingredients.Homework
 
         private bool ValidateHomeworkType()
         {
-            return !homeworkType.IsNullOrWhitespace() && !homeworkType.Equals("Default");
+            return !homeworkType.IsNullOrWhitespace() && !homeworkType.Equals("Default") && homeworkType.Length <= 8;
         }
 
         private bool ValidateProbabilityValues()

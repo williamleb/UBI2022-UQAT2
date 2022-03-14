@@ -32,6 +32,7 @@ namespace Ingredients.Homework
 
         private Transform holdingTransform;
 
+        [Networked, Capacity(8)]
         public string Type { get; private set; }
         
         [Networked(OnChanged = nameof(OnStateChanged))]
