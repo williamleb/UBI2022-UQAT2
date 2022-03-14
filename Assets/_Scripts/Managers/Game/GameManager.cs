@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Systems;
 using Systems.Network;
+using Systems.Settings;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities.Singleton;
 
 namespace Managers.Game
@@ -22,20 +24,21 @@ namespace Managers.Game
             add => networkedData.OnPhaseTotalHomeworkChanged += value;
             remove => networkedData.OnPhaseTotalHomeworkChanged -= value;
         }
-        
-        [SerializeField] private int totalNumberOfHomeworkToFinishPhase = 10; // TODO Replace with current phase info
+
+        private GameSettings settings;
         
         private NetworkedGameData networkedData;
         private GameState currentState;
 
         private Coroutine spawnAndStartGameCoroutine = null;
-        private HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
+        private readonly HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
 
-        public int PhaseTotalHomework => networkedData.PhaseTotalHomework;
-        public int NumberOfHomeworkToFinishPhase => totalNumberOfHomeworkToFinishPhase;
+        public int HomeworksHanded => networkedData.PhaseTotalHomework;
+        public int HomeworksNeededToFinishGame => settings.NumberOfHomeworksToFinishGame;
         public GameState CurrentState => currentState;
         public bool IsSpawning => spawnAndStartGameCoroutine != null;
-        public bool IsNextHomeworkLastForPhase => NumberOfHomeworkToFinishPhase <= PhaseTotalHomework + 1;
+        public bool IsNextHomeworkLastForPhase => HomeworksNeededToFinishGame <= HomeworksHanded + 1;
+        public float GameProgression => HomeworksHanded / (float)HomeworksNeededToFinishGame; // Between 0 and 1
 
         public bool IsRunning => currentState == GameState.Running;
 
@@ -43,6 +46,7 @@ namespace Managers.Game
         {
             base.Awake();
 
+            settings = SettingsSystem.GameSettings;
             networkedData = GetComponent<NetworkedGameData>();
         }
         
@@ -140,7 +144,7 @@ namespace Managers.Game
         public void IncrementHomeworksGivenForPhase()
         {
             ++networkedData.PhaseTotalHomework;
-            if (PhaseTotalHomework == NumberOfHomeworkToFinishPhase)
+            if (HomeworksHanded == HomeworksNeededToFinishGame)
             {
                 EndGame();
             }

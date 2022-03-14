@@ -1,4 +1,5 @@
-﻿using Managers.Interactions;
+﻿using Ingredients.Homework;
+using Managers.Interactions;
 using Managers.Score;
 using Units.Player;
 using UnityEngine;
@@ -69,22 +70,23 @@ namespace Units.AI
         {
             var inventory = interacter.gameObject.GetComponentInEntity<Inventory>();
             Debug.Assert(inventory, $"{nameof(HomeworkHandingStation)} should only be interacted with by actors with an {nameof(Inventory)}");
-
+            Debug.Assert(inventory.HasHomework);
+            
             if (interacter.gameObject.IsAPlayer())
-                HandHomework(interacter);
+                HandHomework(interacter, inventory.HeldHomeworkDefinition);
             
             inventory.RemoveHomework();
             entityThatHasGivenHomeworkThisFrame = interacter;
         }
 
-        private void HandHomework(Interacter interacter)
+        private void HandHomework(Interacter interacter, HomeworkDefinition homeworkDefinition)
         {
             if (!ScoreManager.HasInstance)
                 return;
             
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
-            ScoreManager.Instance.HandHomework(player);
+            ScoreManager.Instance.HandHomework(player, homeworkDefinition);
         }
         
         private void LateUpdate()
