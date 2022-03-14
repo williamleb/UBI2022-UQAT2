@@ -16,8 +16,8 @@ namespace Units.Player
         private float throwForceTimer;
         
         [Networked] private NetworkBool IsAiming { get; set; } = false;
+        [Networked] private NetworkBool IsThrowing { get; set; } = false;
         
-        private bool isThrowing;
         private float ThrowForcePercent => data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
 
         private void InitThrow()
@@ -73,13 +73,13 @@ namespace Units.Player
         {
             throwForceTimer = 0f;
             IsAiming = true;
-            isThrowing = false;
+            IsThrowing = false;
         }
 
         private void CancelAiming()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
-            isThrowing = false;
+            IsThrowing = false;
             IsAiming = false;
         }
 
@@ -88,7 +88,7 @@ namespace Units.Player
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
             IsAiming = false;
-            isThrowing = true;
+            IsThrowing = true;
 
             var throwForce = Math.Max(data.MinThrowForce, ThrowForcePercent * data.MaxThrowForce);
             inventory.DropEverything(transform.forward + Vector3.up * data.ThrowVerticality, throwForce);

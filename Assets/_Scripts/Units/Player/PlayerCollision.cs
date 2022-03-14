@@ -19,8 +19,8 @@ namespace Units.Player
 
             if (Object.HasStateAuthority)
             {
-                isGettingUpB = false;
-                isGettingUpF = false;
+                IsGettingUpB = false;
+                IsGettingUpF = false;
                 
                 if (forceDirection != default)
                 {
@@ -39,8 +39,8 @@ namespace Units.Player
 
             if (Object.HasStateAuthority)
             {
-                isGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
-                isGettingUpB = !isGettingUpF;
+                IsGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
+                IsGettingUpB = !IsGettingUpF;
                 AnimationUpdate();
                 RPC_ToggleRagdoll(false);
             }
