@@ -267,7 +267,7 @@ namespace Ingredients.Homework
                     .Where(AnyLeftToSpawnForType)
                     .Where(IsCooldownFinished)
                     .WeightedRandomElement();
-
+            
             return GetNextFreeHomeworkOfType(chosenHomeworkDefinition.Type);
         }
         
@@ -321,7 +321,7 @@ namespace Ingredients.Homework
         private Homework GetHomeworkFromBurst()
         {
             UpdateActiveBursts();
-
+            
             burstsThatCanBeDone.Clear();
             burstsToRemove.Clear();
 
@@ -334,7 +334,8 @@ namespace Ingredients.Homework
                     continue;
                 }
 
-                if (Random.Range(0f, 1f) < burst.Burst.Probability)
+                var shouldActivateHomework = Random.Range(0f, 1f) <= burst.Burst.Probability;
+                if (!shouldActivateHomework)
                 {
                     if (!burst.Burst.Retry)
                     {
@@ -355,6 +356,7 @@ namespace Ingredients.Homework
                 return null;
 
             var burstDefinitionToDo = burstsThatCanBeDone.Select(burst => GetHomeworkDefinitionFromType(burst.HomeworkType)).WeightedRandomElement();
+            activeBursts.RemoveAt(activeBursts.FindIndex(burst => burst.HomeworkType == burstDefinitionToDo.Type));
             return GetNextFreeHomeworkOfType(burstDefinitionToDo.Type);
         }
         
