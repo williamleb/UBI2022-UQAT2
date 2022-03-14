@@ -13,9 +13,11 @@ namespace Units.Player
         [SerializeField] private AnimationCurve highFrequencyThrowRumbleCurve;
 
         private RumbleKey throwRumbleKey;
-        private float throwForceTimer = 0f;
+        private float throwForceTimer;
         
         [Networked] private NetworkBool IsAiming { get; set; } = false;
+        
+        private bool isThrowing;
         private float ThrowForcePercent => data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
 
         private void InitThrow()
@@ -33,7 +35,7 @@ namespace Units.Player
                 return;
             }
 
-            if (inputData.IsThrow)
+            if (inputData.IsThrow && !inMenu)
             {
                 UpdateAim();
             }
@@ -48,11 +50,7 @@ namespace Units.Player
 
         private void UpdateAim()
         {
-            if (!IsAiming)
-            {
-                IsAiming = true;
-                StartAiming();
-            }
+            if (!IsAiming) StartAiming();
 
             throwForceTimer = Math.Min(throwForceTimer + Runner.DeltaTime, data.SecondsBeforeMaxThrowForce);
             
@@ -74,25 +72,23 @@ namespace Units.Player
         private void StartAiming()
         {
             throwForceTimer = 0f;
-
-            // TODO Start aiming animation
+            IsAiming = true;
+            isThrowing = false;
         }
 
         private void CancelAiming()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
-
-            // TODO Stop aiming animation
+            isThrowing = false;
+            IsAiming = false;
         }
 
         private void Throw()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
-            // TODO Stop aiming animation
-            // TODO Throw animation
-            
             IsAiming = false;
+            isThrowing = true;
 
             var throwForce = Math.Max(data.MinThrowForce, ThrowForcePercent * data.MaxThrowForce);
             inventory.DropEverything(transform.forward + Vector3.up * data.ThrowVerticality, throwForce);

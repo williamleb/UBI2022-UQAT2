@@ -197,5 +197,10 @@ namespace Canvases.InputSystem
             UpdateActionLabel();
             UpdateBindingDisplay();
         }
+
+        public void SelectMainBinding()
+        {
+            mainBindingReferences.Button.Select();
+        }
     }
 }

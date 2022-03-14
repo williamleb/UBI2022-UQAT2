@@ -22,7 +22,6 @@ namespace Units.Player
         private Vector3 lastMoveDirection = Vector3.zero;
         private bool isTurningAround;
         private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
-        private bool IsPlayerMoving => nRb.Rigidbody.velocity.sqrMagnitude > 0.05;
         private bool IsMovingFast => velocity >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
 
         private void MovementAwake()
@@ -51,7 +50,7 @@ namespace Units.Player
 
         private void HandleMoveInput(NetworkInputData inputData)
         {
-            if (!IsDashing)
+            if (!IsDashing && !inMenu)
             {
                 MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
                 if (HasMoveInput) lastMoveDirection = MoveDirection;
@@ -61,6 +60,12 @@ namespace Units.Player
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
                 MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
                 ChangeMoveSpeed(inputData.IsSprint);
+            }
+
+            if (inMenu)
+            {
+                MoveDirection = Vector3.zero;
+                ChangeMoveSpeed(false);
             }
         }
 

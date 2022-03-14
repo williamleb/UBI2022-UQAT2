@@ -33,6 +33,7 @@ namespace Units.Player
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
+        private bool inMenu;
 
         public int PlayerID { get; private set; }
 
@@ -92,13 +93,13 @@ namespace Units.Player
                 MoveUpdate(inputData);
                 DashUpdate(inputData);
                 ThrowUpdate(inputData);
-
-                if (inputData.IsInteractOnce && Runner.IsForward)
+                
+                if (inputData.IsInteractOnce && Runner.IsForward && !inMenu)
                 {
                     interacter.InteractWithClosestInteraction();
                 }
 
-                if (inputData.IsReadyOnce)
+                if (inputData.IsReadyOnce && !inMenu)
                 {
                     IsReady = !IsReady;
                     Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
@@ -106,6 +107,8 @@ namespace Units.Player
 
                 if (inputData.IsMenu)
                 {
+                    inMenu = !inMenu;
+                    if (inMenu) IsReady = false;
                     OnMenuPressed?.Invoke();
                 }
 

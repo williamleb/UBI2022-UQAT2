@@ -12,10 +12,12 @@ namespace Units.Player
         private static readonly int IsHolding = Animator.StringToHash("isHolding");
         private static readonly int GetUpF = Animator.StringToHash("GetUpF");
         private static readonly int GetUpB = Animator.StringToHash("GetUpB");
+        private static readonly int Aiming = Animator.StringToHash("isAiming");
+        private static readonly int IsThrowing = Animator.StringToHash("isThrowing");
         
         private bool isGettingUpF;
         private bool isGettingUpB;
-        
+
         private void AnimationUpdate()
         {
             networkAnimator.Animator.SetBool(IsPlayerMove, CanMove);
@@ -24,16 +26,10 @@ namespace Units.Player
             networkAnimator.Animator.SetBool(IsHolding, inventory.HasHomework);
             networkAnimator.Animator.SetBool(GetUpF,isGettingUpF);
             networkAnimator.Animator.SetBool(GetUpB,isGettingUpB);
+            networkAnimator.Animator.SetBool(Aiming,IsAiming);
+            networkAnimator.Animator.SetBool(IsThrowing,isThrowing);
         }
 
-        //Stop animation to allow ragdoll
-
-        //Aim
-
-        //Launch
-
         //Pickup
-
-        //Hold
     }
 }

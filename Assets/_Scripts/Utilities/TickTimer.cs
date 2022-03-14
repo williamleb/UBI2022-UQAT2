@@ -51,7 +51,7 @@ namespace Utilities
             if (remainingSeconds > 0) return;
 
             remainingSeconds = 0;
-            
+
             OnTimerEnd?.Invoke();
         }
     }

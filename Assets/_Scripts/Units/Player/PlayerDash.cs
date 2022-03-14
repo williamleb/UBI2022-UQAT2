@@ -47,7 +47,7 @@ namespace Units.Player
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash && canDash) Dash();
+            if (inputData.IsDash && canDash && !inMenu) Dash();
         }
 
         private void Dash()
