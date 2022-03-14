@@ -23,6 +23,8 @@ namespace Canvases.InputSystem
         private PlayerInputAction playerInputActionRef;
         private PlayerInputHandler playerInputHandler;
 
+        private RebindActionUI firstButton;
+
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
 
         private void Awake() => PlayerEntity.OnPlayerSpawned += Init;
@@ -49,21 +51,28 @@ namespace Canvases.InputSystem
         {
             currentControlScheme.Text = $"< {deviceName.ToUpper()} >";
             ReadOnlyArray<InputAction> inputActions = playerInputActionRef.Player.Get().actions;
+            bool first = true;
             foreach (var inputAction in inputActions)
             {
                 foreach (var mainBinding in BindingsIconsUtil.GetRelevantMainBindings(inputAction, deviceName))
                 {
-                    SpawnButton(inputAction, mainBinding);
+                    SpawnButton(inputAction, mainBinding, first);
+                    first = false;
                 }
             }
         }
 
-        private void SpawnButton(InputAction inputAction, int mainBindingIndex)
+        private void SpawnButton(InputAction inputAction, int mainBindingIndex, bool first)
         {
             RebindActionUI actionButton = Instantiate(rebindPrefab, scrollRectContent);
             rebindUIs.Add(actionButton);
             actionButton.name = $"Rebind UI for {inputAction.name}";
             actionButton.Initialize(mainBindingIndex, inputAction, rebindOverlayText, OnUpdateBindingUIEvent);
+            if (first)
+            {
+                firstButton = actionButton;
+                firstButton.SelectMainBinding();
+            }
         }
 
         private void OnUpdateBindingUIEvent(string deviceLayoutName, string mainControlPath) => UpdateAllRebindUI();
@@ -101,7 +110,6 @@ namespace Canvases.InputSystem
             {
                 rebindMenuContent.Hide();
                 background.Hide();
-                Time.timeScale = 1;
                 playerInputHandler.SaveSettings();
             }
             else
@@ -112,8 +120,7 @@ namespace Canvases.InputSystem
                 {
                     OnInputDeviceChanged(playerInputHandler.CurrentDevice);
                 }
-
-                Time.timeScale = 0;
+                firstButton.SelectMainBinding();
             }
         }
     }

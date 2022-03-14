@@ -57,10 +57,10 @@ namespace Systems.Settings
         [Tooltip("Time in seconds before the player can dash again")] [SerializeField]
         private float dashCoolDown = 1.5f;
 
-        [Tooltip("Time in MS that the player is knockOut either by fumble or getting hit. " +
+        [Tooltip("Time in seconds that the player is knockOut either by fumble or getting hit. " +
                  "This is increased by the speed of the player. The faster you go the longer the knockout time")]
         [SerializeField]
-        private int knockOutTimeInMS = 500;
+        private float knockOutTimeInSeconds = 0.5f;
 
         [Tooltip("The max distance from the player another entity can be to apply aim assist")] [SerializeField]
         private float dashMaxAimAssistRange = 2f;
@@ -130,7 +130,7 @@ namespace Systems.Settings
         public float MoveDeceleration => moveDeceleration;
         public float DashForce => dashForce;
         public float DashDuration => dashDuration;
-        public int KnockOutTimeInMS => knockOutTimeInMS;
+        public float KnockOutTimeInSeconds => knockOutTimeInSeconds;
         public float TurnRotationSpeed => turnRotationSpeed;
         public float SprintBraking => sprintBraking;
         public float SprintAcceleration => sprintAcceleration;

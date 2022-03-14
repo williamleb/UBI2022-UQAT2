@@ -30,8 +30,8 @@ namespace Ingredients.Homework
 
         private HomeworkSettings settings;
 
-        private Coroutine activateHomeworkCoroutine = null;
-        private Coroutine verifyHomeworkStateCoroutine = null;
+        private Coroutine activateHomeworkCoroutine;
+        private Coroutine verifyHomeworkStateCoroutine;
 
         public void RegisterHomework(Homework homework)
         {
@@ -165,7 +165,7 @@ namespace Ingredients.Homework
         {
             foreach (var homework in homeworks.Values)
             {
-                if (homework.transform.position.y < -SECURITY_NET_POSITION)
+                if (homework && homework.transform.position.y < -SECURITY_NET_POSITION)
                 {
                     homework.Free();
                 }

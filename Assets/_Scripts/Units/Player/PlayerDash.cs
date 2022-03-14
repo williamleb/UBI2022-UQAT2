@@ -4,7 +4,6 @@ using Systems.Network;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
-using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
@@ -24,20 +23,12 @@ namespace Units.Player
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
 
-        private void DashAwake()
-        {
-            dashTimer = new TickTimer(data.DashDuration);
-            dashCooldown = new TickTimer(data.DashCoolDown);
-            dashTimer.OnTimerEnd += OnHitNothing;
-            dashCooldown.OnTimerEnd += ResetDashCoolDown;
-        }
-
         private void DashUpdate(NetworkInputData inputData)
         {
             HandleDashInput(inputData);
             if (IsDashing) DetectCollision();
-            dashTimer.Tick(Runner.DeltaTime);
-            dashCooldown.Tick(Runner.DeltaTime);
+            if (dashTimer.Expired(Runner)) OnHitNothing();
+            if (dashCooldown.Expired(Runner)) ResetDashCoolDown();
         }
 
         private void ResetDashCoolDown()
@@ -47,7 +38,7 @@ namespace Units.Player
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash && canDash) Dash();
+            if (inputData.IsDash && canDash && !inMenu) Dash();
         }
 
         private void Dash()
@@ -55,8 +46,8 @@ namespace Units.Player
             if (!CanMove || inventory.HasHomework || IsDashing) return;
             canDash = false;
             IsDashing = true;
-            dashTimer.Reset();
-            dashCooldown.Reset();
+            dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
+            dashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
             Vector3 dirToTarget = GetDirToTarget();
             transform.forward = GetDashDirection(dirToTarget);
             velocity = data.DashForce;
@@ -140,7 +131,8 @@ namespace Units.Player
             {
                 foreach (LagCompensatedHit collision in collisions)
                 {
-                    if (collision.GameObject == gameObject || collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
+                    if (collision.GameObject == gameObject ||
+                        collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
                     float dst = Vector3.Distance(transform.position, collision.GameObject.transform.position);
                     if (dst < distance)
                     {
@@ -172,13 +164,15 @@ namespace Units.Player
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(transform.position, data.DashMaxAimAssistRange);
+                Vector3 pos = transform.position;
+                Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
                 Vector3 viewAngleA = new Vector3(Mathf.Sin(data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
                     Mathf.Cos(data.DashAimAssistAngle * Mathf.Deg2Rad));
                 Vector3 viewAngleB = new Vector3(Mathf.Sin(-data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
                     Mathf.Cos(-data.DashAimAssistAngle * Mathf.Deg2Rad));
-                Gizmos.DrawLine(transform.position, transform.position + viewAngleA * data.DashMaxAimAssistRange);
-                Gizmos.DrawLine(transform.position, transform.position + viewAngleB * data.DashMaxAimAssistRange);
+
+                Gizmos.DrawLine(pos, pos + viewAngleA * data.DashMaxAimAssistRange);
+                Gizmos.DrawLine(pos, pos + viewAngleB * data.DashMaxAimAssistRange);
             }
         }
     }

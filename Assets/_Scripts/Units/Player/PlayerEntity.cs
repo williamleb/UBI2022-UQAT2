@@ -12,7 +12,6 @@ using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
 using PlayerSettings = Systems.Settings.PlayerSettings;
-using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
@@ -33,6 +32,7 @@ namespace Units.Player
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
+        private bool inMenu;
 
         public int PlayerID { get; private set; }
 
@@ -47,11 +47,7 @@ namespace Units.Player
 
             inventory.AssignVelocityObject(this);
 
-            immunityTimer = new TickTimer(data.ImmunityTime);
-            immunityTimer.OnTimerEnd += ImmunityTimerOnTimerEnd;
-
             MovementAwake();
-            DashAwake();
             RagdollAwake();
         }
 
@@ -93,24 +89,30 @@ namespace Units.Player
                 DashUpdate(inputData);
                 ThrowUpdate(inputData);
 
-                if (inputData.IsInteractOnce && Runner.IsForward)
+                if (Runner.IsForward)
                 {
-                    interacter.InteractWithClosestInteraction();
-                }
+                    if (inputData.IsInteractOnce && !inMenu)
+                    {
+                        interacter.InteractWithClosestInteraction();
+                    }
 
-                if (inputData.IsReadyOnce)
-                {
-                    IsReady = !IsReady;
-                    Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
-                }
+                    if (inputData.IsReadyOnce && !inMenu)
+                    {
+                        IsReady = !IsReady;
+                        Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
+                    }
 
-                if (inputData.IsMenu)
-                {
-                    OnMenuPressed?.Invoke();
+                    if (inputData.IsMenu)
+                    {
+                        inMenu = !inMenu;
+                        if (inMenu) IsReady = false;
+                        OnMenuPressed?.Invoke();
+                    }
+
+                    if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
                 }
 
                 AnimationUpdate();
-                immunityTimer.Tick(Runner.DeltaTime);
             }
         }
 
@@ -162,7 +164,7 @@ namespace Units.Player
 
                 player.Hit(forceDirection, forceMagnitude);
 
-                immunityTimer.Reset();
+                immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
                 isImmune = true;
             }
             else

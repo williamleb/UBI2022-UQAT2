@@ -13,17 +13,20 @@ namespace VFX
         [SerializeField] private ParticleSystem dustEdgy;
 
         [SerializeField] private ParticleSystemValues baseValues;
-
-        //[SerializeField] private ParticleSystemValues midValues;
         [SerializeField] private ParticleSystemValues highValues;
 
-        [Networked (OnChanged = nameof(UpdateParticleSystems))] private float LerpValue { get; set; }
+        [Networked(OnChanged = nameof(UpdateParticleSystems))]
+        private float LerpValue { get; set; }
 
         private Vector3 offset;
 
         private void Awake() => offset = transform.localPosition;
 
-        private void LateUpdate() => transform.position = targetToFollow.position - targetToFollow.forward + offset;
+        private void LateUpdate()
+        {
+            if (targetToFollow)
+                transform.position = targetToFollow.position - targetToFollow.forward + offset;
+        }
 
         public void UpdateDustTrail(float interpolationValue)
         {
@@ -49,7 +52,7 @@ namespace VFX
             changed.Behaviour.UpdateParticleSystem(changed.Behaviour.dustEdgy, changed.Behaviour.LerpValue, true);
             changed.Behaviour.UpdateParticleSystem(changed.Behaviour.dustRound, changed.Behaviour.LerpValue, false);
         }
-        
+
         private void UpdateParticleSystem(ParticleSystem ps, float lerpValue, bool isEdgy)
         {
             var mainModule = ps.main;
