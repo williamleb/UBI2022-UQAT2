@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 using Utilities.Extensions;
@@ -11,11 +12,24 @@ namespace Units.Player
         // forceDirection : direction in which the hit acts on the player
         // forceMagnitude : magnitude of the force that acts on the player. Default = network rigidbody velocity
 
-        private async void Hit(Vector3 forceDirection = default, float forceMagnitude = default)
+        private Coroutine hitCoroutine;
+        
+        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default)
+        {
+            if (hitCoroutine != null)
+            {
+                StopCoroutine(hitCoroutine);
+                hitCoroutine = null;
+            }
+
+            hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude));
+        }
+
+        private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude)
         {
             CanMove = false;
-            int delay = (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInMS);
-            delay = Mathf.Max(2000, delay);
+            int delay = (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+            delay = Mathf.Max(2, delay);
 
             if (Object.HasStateAuthority)
             {
@@ -32,17 +46,17 @@ namespace Units.Player
                 }
             }
 
-            await Task.Delay(delay - 1000);
+            yield return new WaitForSeconds(delay - 1);
 
             transform.position = ragdollTransform.position.Flat();
-            await Task.Delay(1); //Delay one frame
+            yield return new WaitForEndOfFrame();
 
             if (Object.HasStateAuthority)
             {
+                RPC_ToggleRagdoll(false);
                 IsGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
                 IsGettingUpB = !IsGettingUpF;
                 AnimationUpdate();
-                RPC_ToggleRagdoll(false);
             }
 
             CanMove = true;
