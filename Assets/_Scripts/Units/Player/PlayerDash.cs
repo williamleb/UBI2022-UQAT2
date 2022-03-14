@@ -36,9 +36,11 @@ namespace Units.Player
         {
             HandleDashInput(inputData);
             if (IsDashing) DetectCollision();
-            print(Runner.IsResimulation);
-            dashTimer.Tick(Runner.DeltaTime);
-            dashCooldown.Tick(Runner.DeltaTime);
+            if (Runner.IsForward)
+            {
+                dashTimer.Tick(Runner.DeltaTime);
+                dashCooldown.Tick(Runner.DeltaTime);
+            }
         }
 
         private void ResetDashCoolDown()
@@ -173,13 +175,15 @@ namespace Units.Player
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(transform.position, data.DashMaxAimAssistRange);
+                Vector3 pos = transform.position;
+                Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
                 Vector3 viewAngleA = new Vector3(Mathf.Sin(data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
                     Mathf.Cos(data.DashAimAssistAngle * Mathf.Deg2Rad));
                 Vector3 viewAngleB = new Vector3(Mathf.Sin(-data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
                     Mathf.Cos(-data.DashAimAssistAngle * Mathf.Deg2Rad));
-                Gizmos.DrawLine(transform.position, transform.position + viewAngleA * data.DashMaxAimAssistRange);
-                Gizmos.DrawLine(transform.position, transform.position + viewAngleB * data.DashMaxAimAssistRange);
+                
+                Gizmos.DrawLine(pos, pos + viewAngleA * data.DashMaxAimAssistRange);
+                Gizmos.DrawLine(pos, pos + viewAngleB * data.DashMaxAimAssistRange);
             }
         }
     }

@@ -113,10 +113,10 @@ namespace Units.Player
                         if (inMenu) IsReady = false;
                         OnMenuPressed?.Invoke();
                     }   
+                    immunityTimer.Tick(Runner.DeltaTime);
                 }
 
                 AnimationUpdate();
-                immunityTimer.Tick(Runner.DeltaTime);
             }
         }
 
