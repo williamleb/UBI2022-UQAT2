@@ -12,7 +12,6 @@ using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
 using PlayerSettings = Systems.Settings.PlayerSettings;
-using TickTimer = Utilities.TickTimer;
 
 namespace Units.Player
 {
@@ -48,11 +47,7 @@ namespace Units.Player
 
             inventory.AssignVelocityObject(this);
 
-            immunityTimer = new TickTimer(data.ImmunityTime);
-            immunityTimer.OnTimerEnd += ImmunityTimerOnTimerEnd;
-
             MovementAwake();
-            DashAwake();
             RagdollAwake();
         }
 
@@ -112,8 +107,9 @@ namespace Units.Player
                         inMenu = !inMenu;
                         if (inMenu) IsReady = false;
                         OnMenuPressed?.Invoke();
-                    }   
-                    immunityTimer.Tick(Runner.DeltaTime);
+                    }
+
+                    if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
                 }
 
                 AnimationUpdate();
@@ -168,7 +164,7 @@ namespace Units.Player
 
                 player.Hit(forceDirection, forceMagnitude);
 
-                immunityTimer.Reset();
+                immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
                 isImmune = true;
             }
             else
