@@ -36,6 +36,7 @@ namespace Units.Player
         {
             HandleDashInput(inputData);
             if (IsDashing) DetectCollision();
+            print(Runner.IsResimulation);
             dashTimer.Tick(Runner.DeltaTime);
             dashCooldown.Tick(Runner.DeltaTime);
         }
