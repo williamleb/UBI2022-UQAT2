@@ -14,6 +14,14 @@ namespace Units.AI
     {
         [SerializeField] private SharedTransform targetHomeworkTask;
 
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = false;
+        }
+
         public override TaskStatus OnUpdate()
         {
             if (!AITaskOrchestrator.HasInstance)
@@ -29,6 +37,14 @@ namespace Units.AI
             targetHomeworkTask.SetValue(null);
             AITaskOrchestrator.Instance.TransferHomeworkTask(homeworkTask);
             return TaskStatus.Success;
+        }
+
+        public override void OnEnd()
+        {
+            base.OnEnd();
+            
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = true;
         }
     }
 }
