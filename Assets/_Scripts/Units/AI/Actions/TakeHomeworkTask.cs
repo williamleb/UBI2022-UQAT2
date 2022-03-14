@@ -28,7 +28,7 @@ namespace Units.AI.Actions
             if (!Brain.TaskSensor.HasHomeworkTask)
                 return TaskStatus.Failure;
             
-            targetHomeworkTask.SetValue(Brain.TaskSensor.TakeHomeworkTask());
+            targetHomeworkTask.SetValue(Brain.TaskSensor.TakeHomeworkTask().transform);
             return TaskStatus.Success;
         }
 

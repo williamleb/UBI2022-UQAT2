@@ -4,7 +4,7 @@ using BehaviorDesigner.Runtime.Tasks;
 using Systems.Settings;
 using UnityEngine;
 
-namespace Units.AI.Actions.LoadSettings
+namespace Units.AI.Actions
 {
     [Serializable]
     [TaskCategory("AI/Load Settings")]

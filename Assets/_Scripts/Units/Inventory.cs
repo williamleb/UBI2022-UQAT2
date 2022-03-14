@@ -19,6 +19,7 @@ namespace Units
         [Networked(OnChanged = nameof(OnHeldHomeworkChanged))]
         private int HeldHomeworkId { get; set; }
 
+        public Homework HeldHomework => HasHomework ? GetCurrentHomework() : null;
         public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
         public Transform HomeworkHoldingTransform => homeworkHoldingTransform;
 

@@ -35,7 +35,7 @@ namespace Ingredients.Homework
         private Transform holdingTransform;
 
         [Networked(OnChanged = nameof(OnStateChanged))]
-        private State HomeworkState { get; set; }
+        public State HomeworkState { get; private set; }
         
         public int HomeworkId => Id.GetHashCode();
         public bool IsFree => HomeworkState == State.Free;

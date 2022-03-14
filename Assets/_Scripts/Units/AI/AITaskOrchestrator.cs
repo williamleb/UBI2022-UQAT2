@@ -3,7 +3,7 @@ using Ingredients.Homework;
 using Utilities.Extensions;
 using Utilities.Singleton;
 
-namespace Units.AI
+namespace Units.AI.Actions
 {
     public class AITaskOrchestrator : Singleton<AITaskOrchestrator>
     {
@@ -39,6 +39,16 @@ namespace Units.AI
             if (newState != Homework.State.InWorld)
                 return;
 
+            AssignTask(homework);
+        }
+
+        public void TransferHomeworkTask(Homework homework)
+        {
+            AssignTask(homework);
+        }
+
+        private void AssignTask(Homework homework)
+        {
             var nearestStudent = GetNearestStudentThatCanReceiveTasksFrom(homework);
             if (!nearestStudent)
                 return;

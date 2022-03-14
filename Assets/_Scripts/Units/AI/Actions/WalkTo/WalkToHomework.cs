@@ -1,5 +1,6 @@
 ﻿using System;
 using BehaviorDesigner.Runtime.Tasks;
+using Ingredients.Homework;
 
 namespace Units.AI.Actions
 {
@@ -8,12 +9,31 @@ namespace Units.AI.Actions
     [TaskDescription("Make the AI walk towards a homework.")]
     public class WalkToHomework : WalkToTransform
     {
+        private Homework homeworkToWalkTo = null;
+        
         public override void OnStart()
         {
             base.OnStart();
 
             if (Brain.TaskSensor)
                 Brain.TaskSensor.CanReceiveTask = false;
+
+            if (TransformToWalkTo.Value)
+                homeworkToWalkTo = TransformToWalkTo.Value.GetComponent<Homework>();
+        }
+        
+        protected override TaskStatus OnUpdateImplementation()
+        {
+            if (!homeworkToWalkTo)
+                return TaskStatus.Failure;
+
+            if (homeworkToWalkTo.HomeworkState != Homework.State.InWorld)
+            {
+                TransformToWalkTo.SetValue(null);
+                return TaskStatus.Failure;
+            }
+
+            return TaskStatus.Running;
         }
 
         public override void OnEnd()
@@ -21,7 +41,7 @@ namespace Units.AI.Actions
             base.OnEnd();
             
             if (Brain.TaskSensor)
-                Brain.TaskSensor.CanReceiveTask = false;
+                Brain.TaskSensor.CanReceiveTask = true;
         }
     }
 }
