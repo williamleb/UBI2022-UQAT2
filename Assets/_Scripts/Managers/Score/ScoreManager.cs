@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
+using Ingredients.Homework;
 using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
@@ -46,13 +47,12 @@ namespace Managers.Score
             OnScoreUnregistered?.Invoke(player);
         }
         
-        public void HandHomework(PlayerEntity playerEntity)
+        public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
                 return;
             
             // TODO Manage teams (add points to all team)
-            // TODO Manage different types of homework (fake, golden)
 
             var player = playerEntity.Object.InputAuthority;
             var score = GetScoreForPlayer(player);
@@ -64,7 +64,7 @@ namespace Managers.Score
             }
             else
             {
-                score.Add(1);
+                score.Add(handedHomeworkDefinition.Points);
             }
             
             if (GameManager.HasInstance)
