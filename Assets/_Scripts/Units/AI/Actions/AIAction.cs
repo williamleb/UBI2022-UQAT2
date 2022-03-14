@@ -1,10 +1,13 @@
-﻿using BehaviorDesigner.Runtime.Tasks;
+﻿using System;
+using BehaviorDesigner.Runtime.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Extensions;
+using Action = BehaviorDesigner.Runtime.Tasks.Action;
 
 namespace Units.AI.Actions
 {
+    [Serializable]
     [TaskCategory("AI")]
     public abstract class AIAction : Action
     {

@@ -30,6 +30,7 @@ namespace Units.AI
         private NetworkMecanimAnimator networkAnimator;
         private PlayerHitterDetection playerHitterDetection;
         private HomeworkHandingStation homeworkHandingStation;
+        private AITaskSensor taskSensor;
         private AIBrain brain;
 
         private Transform aiColliderTransform;
@@ -44,6 +45,7 @@ namespace Units.AI
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
+        public AITaskSensor TaskSensor => taskSensor;
         public Vector3 Velocity => agent.velocity;
 
         public bool IsHit => hitCoroutine != null;
@@ -57,6 +59,7 @@ namespace Units.AI
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
             playerHitterDetection = GetComponent<PlayerHitterDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
+            taskSensor = GetComponent<AITaskSensor>();
             
             inventory.AssignVelocityObject(this);
         }

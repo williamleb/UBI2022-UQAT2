@@ -21,6 +21,9 @@ namespace Units.AI.Actions
         {
             base.OnBeforeStart();
             SetNewDestination();
+
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = false;
         }
 
         protected override TaskStatus OnUpdateImplementation()
@@ -54,9 +57,11 @@ namespace Units.AI.Actions
 
         public override void OnEnd()
         {
-            interactionToWalkTo = null;
-            
             base.OnEnd();
+            interactionToWalkTo = null;
+
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = true;
         }
     }
 }

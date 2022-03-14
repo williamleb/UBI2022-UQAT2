@@ -1,4 +1,5 @@
-﻿using Canvases.Markers;
+﻿using System;
+using Canvases.Markers;
 using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
@@ -22,6 +23,8 @@ namespace Ingredients.Homework
             Free
         }
 
+        public event Action<Homework> EventOnStateChanged;
+
         [SerializeField, Required] private GameObject visual;
         [SerializeField] private SpriteMarkerReceptor homeworkMarker;
 
@@ -40,6 +43,8 @@ namespace Ingredients.Homework
         
         public int HomeworkId => Id.GetHashCode();
         public bool IsFree => HomeworkState == State.Free;
+        public bool IsInWorld => HomeworkState == State.InWorld;
+        public bool IsTaken => HomeworkState == State.Taken;
 
         private void Awake()
         {
@@ -185,7 +190,8 @@ namespace Ingredients.Homework
             rb.isKinematic = HomeworkState != State.InWorld;
             animator.SetBool(isSpawned, HomeworkState != State.Free);
             
-            UpdateHomeworkMarkerVisibility();            
+            UpdateHomeworkMarkerVisibility();     
+            EventOnStateChanged?.Invoke(this);
         }
 
         public override void FixedUpdateNetwork()

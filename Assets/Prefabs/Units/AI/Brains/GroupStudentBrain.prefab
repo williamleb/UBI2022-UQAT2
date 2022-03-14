@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3277535868480097401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3277535868480097400}
+  - component: {fileID: 3277535868480097402}
+  - component: {fileID: 3277535868480097405}
+  m_Layer: 0
+  m_Name: GroupStudentBrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3277535868480097400
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3277535868480097402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74af5e29875f4a0c8be147253a3fc578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3277535868480097405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startWhenEnabled: 1
+  asynchronousLoad: 0
+  pauseWhenDisabled: 0
+  restartWhenComplete: 0
+  logTaskChanges: 0
+  group: 0
+  resetValuesOnRestart: 0
+  externalBehavior: {fileID: 0}
+  mBehaviorSource:
+    behaviorName: GroupStudentBrain
+    behaviorDescription: Brain for a lone student that picks up homeworks and give
+      them to the teacher
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(474.456543,30)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(-9.62686,122.719505)"},"ID":1,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(6.66665459,121.666672)"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-1165.87939,97.7844543)"},"ID":3,"Name":"Selector","Instant":true,"AbortTypeabortType":"Self","Children":[{"Type":"Units.AI.Conditionals.IsGameState","NodeData":{"Offset":"(-107.160286,138.194641)"},"ID":4,"Name":"Is
+        game running","Instant":true,"GameStategameState":"Running","SharedBoolfailOnNoGameManagerInstance":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(89.35503,150.854675)"},"ID":5,"Name":"Idle","Instant":true}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-733.854736,247.934723)"},"ID":6,"Name":"Selector","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-176.9581,127.344788)"},"ID":7,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.IsHit","NodeData":{"Offset":"(-0.6451607,142.903214)"},"ID":8,"Name":"Is
+        Hit","Instant":true,"AIBrainbrain":0}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(93.29758,139.605881)"},"ID":9,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.StopMoving","NodeData":{"Offset":"(-126.519707,137.29364)"},"ID":10,"Name":"Stop
+        Moving","Instant":true,"AIBrainbrain":1},{"Type":"Units.AI.Actions.PlayAnimation","NodeData":{"Offset":"(19.9088364,140.865082)"},"ID":11,"Name":"Play
+        Animation","Instant":true,"SharedStringanimationName":{"Type":"BehaviorDesigner.Runtime.SharedString","Name":null,"StringmValue":"Fall"},"SharedIntanimationLayerIndex":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolwaitUntilAnimationIsFinished":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"AIBrainbrain":2},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(150.26593,140.865082)"},"ID":12,"Name":"Idle","Instant":true}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-227.098862,425.643677)"},"ID":13,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-87.6883545,131.288177)"},"ID":14,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.CanInteractWithHomework","NodeData":{"Offset":"(-3.17454147,145.144226)"},"ID":15,"Name":"Can
+        Interact With Homework","Instant":true,"AIBrainbrain":3}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(544.9277,146.852783)"},"ID":16,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.InteractWithHomework","NodeData":{"Offset":"(-418.328583,136.666931)"},"ID":17,"Name":"Interact
+        With Homework","Instant":true,"AIBrainbrain":4},{"Type":"Units.AI.Conditionals.HasAHomework","NodeData":{"Offset":"(-257.5056,142.9071)"},"ID":18,"Name":"Has
+        A Homework","Instant":true,"AIBrainbrain":5},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-127.770142,138.474365)"},"ID":19,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Conditionals.CompareHomeworkWithInventory","NodeData":{"Offset":"(-286.931335,148.782227)"},"ID":20,"Name":"Compare
+        Homework With Inventory","Instant":true,"SharedTransformtargetHomework":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"},"SharedBoolsuccessOnNoHomework":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"AIBrainbrain":6},{"Type":"Units.AI.TransferHomeworkTask","NodeData":{"Offset":"(-38.8543549,146.859131)"},"ID":21,"Name":"Transfer
+        Homework Task","Instant":true,"SharedTransformtargetHomeworkTask":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"},"AIBrainbrain":7}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(138.638275,112.79834)"},"ID":22,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Conditionals.CanInteractWithTeacher","NodeData":{"Offset":"(-85.36163,130.798248)"},"ID":23,"Name":"Can
+        Interact With Teacher","Instant":true,"AIBrainbrain":8},{"Type":"Units.AI.Actions.WalkToTeacherInteraction","NodeData":{"Offset":"(114.638428,130.798248)"},"ID":24,"Name":"Walk
+        To Teacher Interaction","Instant":true,"AIBrainbrain":9}]},{"Type":"Units.AI.Actions.InteractWithTeacher","NodeData":{"Offset":"(339.0816,113.579727)"},"ID":25,"Name":"Interact
+        With Teacher","Instant":true,"AIBrainbrain":10}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(478.207642,163.235962)"},"ID":26,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-114.052,114.2937)"},"ID":27,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.HasAHomework","NodeData":{"Offset":"(-0.386230469,132.625427)"},"ID":28,"Name":"Has
+        A Homework","Instant":true,"AIBrainbrain":11}]},{"Type":"Units.AI.Actions.ThrowHomework","NodeData":{"Offset":"(107.73877,136.375366)"},"ID":29,"Name":"Throw
+        Homework","Instant":true,"SharedVector3direction":{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":null,"Vector3mValue":"(0,0,0)"},"SharedFloatforce":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0},"AIBrainbrain":12}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(1195.77637,754.2494)"},"ID":30,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-113.333878,136.190475)"},"ID":31,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Actions.CheckIfTransformExist","NodeData":{"Offset":"(-16.3654785,176.567017)"},"ID":32,"Name":"Check
+        If Transform Exist","Instant":true,"SharedTransformtransformToEvaluate":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"}}]},{"Type":"Units.AI.Actions.WalkToHomework","NodeData":{"Offset":"(86.15381,153.333221)"},"ID":33,"Name":"Walk
+        To Homework","Instant":true,"SharedTransformtransformToWalkTo":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"},"SharedFloatdistanceToStop":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"AIBrainbrain":13}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(1597.72546,745.035156)"},"ID":34,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-143.001144,125.288574)"},"ID":35,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.HasHomeworkTask","NodeData":{"Offset":"(-2.364563,129.663574)"},"ID":36,"Name":"Has
+        Homework Task","Instant":true,"AIBrainbrain":14}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(90,140)"},"ID":37,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.TakeHomeworkTask","NodeData":{"Offset":"(-41.7838135,151.134827)"},"ID":38,"Name":"Take
+        Homework Task","Instant":true,"SharedTransformtargetHomeworkTask":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"},"AIBrainbrain":15},{"Type":"Units.AI.Actions.WalkToHomework","NodeData":{"Offset":"(146.549683,154.468323)"},"ID":39,"Name":"Walk
+        To Homework","Instant":true,"SharedTransformtransformToWalkTo":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"},"SharedFloatdistanceToStop":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"AIBrainbrain":16}]}]},{"Type":"Units.AI.Actions.WalkInHallway","NodeData":{"Offset":"(1832.68372,175.025635)"},"ID":40,"Name":"Walk
+        In Hallway","Instant":true,"SharedBoolendsOnFirstHallwayPointReached":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatdistanceFromHallwayPointToFinish":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":2},"AIBrainbrain":17},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(2024.57227,179.29866)"},"ID":41,"Name":"Idle","Instant":true}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetHomeworkTask","IsShared":true,"Tooltip":"Homework
+        task that has been assigned to this AI"}]}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.2
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1

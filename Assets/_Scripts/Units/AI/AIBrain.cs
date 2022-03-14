@@ -16,6 +16,7 @@ namespace Units.AI
         public AIInteracter Interacter => entity.Interacter;
         public PlayerHitterDetection PlayerHitterDetection => entity.PlayerHitterDetection;
         public HomeworkHandingStation HomeworkHandingStation => entity.HomeworkHandingStation;
+        public AITaskSensor TaskSensor => entity.TaskSensor;
         
         public bool HasReachedItsDestination => !entity.Agent.pathPending &&
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&

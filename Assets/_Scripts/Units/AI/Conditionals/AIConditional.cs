@@ -1,10 +1,12 @@
-﻿using BehaviorDesigner.Runtime.Tasks;
+﻿using System;
+using BehaviorDesigner.Runtime.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities.Extensions;
 
 namespace Units.AI.Conditionals
 {
+    [Serializable]
     [TaskCategory("AI")]
     public abstract class AIConditional : Conditional
     {

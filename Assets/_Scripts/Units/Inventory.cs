@@ -20,6 +20,7 @@ namespace Units
         [Networked(OnChanged = nameof(OnHeldHomeworkChanged))]
         private int HeldHomeworkId { get; set; }
 
+        public Homework HeldHomework => HasHomework ? GetCurrentHomework() : null;
         public bool HasHomework => HeldHomeworkId != NO_HOMEWORK;
         public HomeworkDefinition HeldHomeworkDefinition => HasHomework ? SettingsSystem.HomeworkSettings.HomeworkDefinitions.FirstOrDefault(definition => definition.Type.Equals(GetCurrentHomework().Type)) : null;
         public Transform HomeworkHoldingTransform => homeworkHoldingTransform;

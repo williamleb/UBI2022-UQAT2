@@ -19,6 +19,8 @@ namespace Units.AI.Actions
 
         protected override Vector3 Destination => transformToWalkTo.Value.position;
 
+        protected SharedTransform TransformToWalkTo => transformToWalkTo;
+
         protected override TaskStatus OnUpdateImplementation()
         {
             if (!transformToWalkTo.Value)

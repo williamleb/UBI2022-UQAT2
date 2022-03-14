@@ -14,6 +14,9 @@ namespace Units.AI.Actions
         {
             base.OnStart();
             SetNewDestination();
+
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = false;
         }
 
         public override TaskStatus OnUpdate()
@@ -56,6 +59,9 @@ namespace Units.AI.Actions
         public override void OnEnd()
         {
             interactionToInteractWith = null;
+            
+            if (Brain.TaskSensor)
+                Brain.TaskSensor.CanReceiveTask = true;
         }
 
         protected virtual bool FilterInteraction(Interaction interaction) => interaction;
