@@ -93,23 +93,26 @@ namespace Units.Player
                 MoveUpdate(inputData);
                 DashUpdate(inputData);
                 ThrowUpdate(inputData);
-                
-                if (inputData.IsInteractOnce && Runner.IsForward && !inMenu)
-                {
-                    interacter.InteractWithClosestInteraction();
-                }
 
-                if (inputData.IsReadyOnce && !inMenu)
+                if (Runner.IsForward)
                 {
-                    IsReady = !IsReady;
-                    Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
-                }
+                    if (inputData.IsInteractOnce && !inMenu)
+                    {
+                        interacter.InteractWithClosestInteraction();
+                    }
 
-                if (inputData.IsMenu)
-                {
-                    inMenu = !inMenu;
-                    if (inMenu) IsReady = false;
-                    OnMenuPressed?.Invoke();
+                    if (inputData.IsReadyOnce && !inMenu)
+                    {
+                        IsReady = !IsReady;
+                        Debug.Log($"Toggle ready for player id {PlayerID} : {IsReady}");
+                    }
+
+                    if (inputData.IsMenu)
+                    {
+                        inMenu = !inMenu;
+                        if (inMenu) IsReady = false;
+                        OnMenuPressed?.Invoke();
+                    }   
                 }
 
                 AnimationUpdate();
