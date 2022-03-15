@@ -40,6 +40,7 @@ namespace Units.AI
         private AITaskSensor taskSensor;
         private AIBrain brain;
 
+        private AISettings settings;
         private Transform aiColliderTransform;
         private Coroutine hitCoroutine = null;
 
@@ -59,6 +60,8 @@ namespace Units.AI
 
         public bool IsHit => hitCoroutine != null;
 
+        public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -69,8 +72,10 @@ namespace Units.AI
             playerHitterDetection = GetComponent<PlayerHitterDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
             taskSensor = GetComponent<AITaskSensor>();
-            
+            settings = SettingsSystem.AISettings;
+
             inventory.AssignVelocityObject(this);
+
         }
 
         // Those three methods should only be called before the AI entity is spawned
@@ -201,7 +206,7 @@ namespace Units.AI
 
         private IEnumerator HitRoutine()
         {
-            var secondsToWait = SettingsSystem.AISettings.SecondsDownAfterBeingHit;
+            var secondsToWait = settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
             hitCoroutine = null;
         }

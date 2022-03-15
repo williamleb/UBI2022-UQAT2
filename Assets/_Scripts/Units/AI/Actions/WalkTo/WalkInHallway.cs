@@ -13,11 +13,11 @@ namespace Units.AI.Actions
     [TaskDescription("Walk in the hallway.")]
     public class WalkInHallway : WalkTo
     {
-        private Hallway hallwayToWalkIn;
-        private HallwayPoint hallwayPointToWalkTo;
-
         [SerializeField] private SharedBool endsOnFirstHallwayPointReached = false;
         [SerializeField] private SharedFloat distanceFromHallwayPointToFinish = 2f;
+        
+        private Hallway hallwayToWalkIn;
+        private HallwayPoint hallwayPointToWalkTo;
 
         protected override Vector3 Destination => hallwayPointToWalkTo.transform.position;
         protected override bool EndsOnDestinationReached => endsOnFirstHallwayPointReached.Value;
@@ -44,6 +44,8 @@ namespace Units.AI.Actions
                 
                 SeekNextPoint();
             }
+            
+            Brain.SetSpeed(Brain.BaseSpeed - hallwayToWalkIn.GetProgress(hallwayPointToWalkTo, Brain.Position) * 2.5f);
 
             return TaskStatus.Running;
         }
@@ -54,8 +56,6 @@ namespace Units.AI.Actions
                 return;
 
             hallwayPointToWalkTo = hallwayToWalkIn.GetNextPoint(hallwayPointToWalkTo);
-            
-            // Brain.Agent TODO Set speed
         }
         
         private void InitHallwayToWalkIn()
@@ -74,6 +74,8 @@ namespace Units.AI.Actions
         {
             hallwayToWalkIn = null;
             hallwayPointToWalkTo = null;
+            
+            Brain.ResetSpeed();
             
             base.OnEnd();
         }

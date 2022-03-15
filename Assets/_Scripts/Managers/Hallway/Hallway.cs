@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using BehaviorDesigner.Runtime.ObjectDrawers;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
@@ -40,11 +42,52 @@ namespace Managers.Hallway
             return closestPoint;
         }
 
-        public HallwayPoint GetNextPoint(HallwayPoint previousPoint)
+        public HallwayPoint GetNextPoint(HallwayPoint point)
         {
-            var indexFound = GetIndexOfPoint(previousPoint);
+            var indexFound = GetIndexOfPoint(point);
             var newIndex = (indexFound + 1) % hallwayPoints.Count;
             return hallwayPoints[newIndex];
+        }
+        
+        public HallwayPoint GetPreviousPoint(HallwayPoint point)
+        {
+            var indexFound = GetIndexOfPoint(point);
+            var newIndex = (indexFound + hallwayPoints.Count - 1) % hallwayPoints.Count;
+            return hallwayPoints[newIndex];
+        }
+        
+        public float GetProgress(HallwayPoint destination, Vector3 currentPosition)
+        {
+            var index = GetIndexOfPoint(destination);
+            if (index == -1)
+                return 0f;
+            
+            var passedIndex = (index + hallwayPoints.Count - 1) % hallwayPoints.Count;
+            var indexProgress = passedIndex / (float) hallwayPoints.Count;
+
+            var distanceToPassedPoint = currentPosition.SqrDistanceWith(hallwayPoints[passedIndex].transform.position);
+            var distanceToDestinationPoint = currentPosition.SqrDistanceWith(destination.transform.position);
+            var interIndexProgression = distanceToPassedPoint / (distanceToDestinationPoint + distanceToPassedPoint);
+            interIndexProgression *= 1f / hallwayPoints.Count;
+
+            return indexProgress + interIndexProgression;
+        }
+
+        public Vector3 GetPointForProgress(float progress)
+        {
+            if (progress < 0f)
+                return hallwayPoints.First().transform.position;
+            if (progress > 1f)
+                return hallwayPoints.Last().transform.position;
+
+            var progressForIndex = 1f / hallwayPoints.Count;
+            var index = (int)(progress / progressForIndex);
+            var progressForInterIndex = progress - (index * progressForIndex);
+            progressForInterIndex *= hallwayPoints.Count;
+            var nextIndex = (index + 1) % hallwayPoints.Count;
+
+            return (1 - progressForInterIndex) * hallwayPoints[index].transform.position +
+                   progressForInterIndex * hallwayPoints[nextIndex].transform.position;
         }
 
         public int GetIndexOfPoint(HallwayPoint point)
@@ -106,6 +149,14 @@ namespace Managers.Hallway
         private bool ValidateHallwayPoints()
         {
             return hallwayPoints.Count > 1;
+        }
+
+        // TODO Remove
+        [SerializeField, PropertyRange(0f, 1f)] private float progress = 0f; 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(GetPointForProgress(progress) + Vector3.up, 0.5f);
         }
     }
 }
