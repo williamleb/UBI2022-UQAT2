@@ -18,6 +18,7 @@ namespace Units.AI.Actions
         
         private Hallway hallwayToWalkIn;
         private HallwayPoint hallwayPointToWalkTo;
+        private HallwayProgress hallwayProgress;
 
         protected override Vector3 Destination => hallwayPointToWalkTo.transform.position;
         protected override bool EndsOnDestinationReached => endsOnFirstHallwayPointReached.Value;
@@ -29,7 +30,11 @@ namespace Units.AI.Actions
         protected override void OnBeforeStart()
         {
             base.OnBeforeStart();
+            
+            hallwayProgress = new HallwayProgress();
             InitHallwayToWalkIn();
+            if (hallwayToWalkIn)
+                UpdateHallwayProgress();
         }
 
         protected override TaskStatus OnUpdateImplementation()
@@ -45,9 +50,16 @@ namespace Units.AI.Actions
                 SeekNextPoint();
             }
             
+            UpdateHallwayProgress();
             Brain.SetSpeed(Brain.BaseSpeed - hallwayToWalkIn.GetProgress(hallwayPointToWalkTo, Brain.Position) * 2.5f);
 
             return TaskStatus.Running;
+        }
+
+        private void UpdateHallwayProgress()
+        {
+            hallwayProgress.Destination = hallwayPointToWalkTo;
+            hallwayProgress.Position = Brain.Position;
         }
 
         private void SeekNextPoint()
@@ -66,14 +78,19 @@ namespace Units.AI.Actions
             hallwayToWalkIn = HallwayManager.Instance.GetRandomHallway();
             if (!hallwayToWalkIn)
                 return;
-                
+            
+            hallwayToWalkIn.JoinGroup(hallwayProgress);                
             hallwayPointToWalkTo = hallwayToWalkIn.GetClosestPointTo(Brain.Position);
         }
 
         public override void OnEnd()
         {
+            if (hallwayToWalkIn)
+                hallwayToWalkIn.LeaveGroup(hallwayProgress);
+            
             hallwayToWalkIn = null;
             hallwayPointToWalkTo = null;
+            hallwayProgress = null;
             
             Brain.ResetSpeed();
             

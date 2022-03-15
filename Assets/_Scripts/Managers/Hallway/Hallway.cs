@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BehaviorDesigner.Runtime.ObjectDrawers;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
+using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
 
@@ -15,11 +15,51 @@ namespace Managers.Hallway
         [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
         [SerializeField, ValidateInput(nameof(ValidateHallwayPoints), "There must be at least one hallway point")] private List<HallwayPoint> hallwayPoints = new List<HallwayPoint>();
 
-        private bool advanceToNextPoint = false;
-        
+        private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
+        private float groupAverageProgress = 0f;
+
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
         public int Size => hallwayPoints.Count;
+
+        public void JoinGroup(HallwayProgress entity)
+        {
+            hallwayGroup.Add(entity);
+        }
+
+        public void LeaveGroup(HallwayProgress entity)
+        {
+            hallwayGroup.Remove(entity);
+        }
+
+        private void UpdateGroupAverageProgress()
+        {
+            if (!hallwayGroup.Any())
+                return;
+            
+            var averageX = 0f;
+            var averageY = 0f;
+            foreach (var entity in hallwayGroup)
+            {
+                var circularProgress = GetProgress(entity.Destination, entity.Position) * 2 * Mathf.PI;
+                averageX += Mathf.Cos(circularProgress);
+                averageY += Mathf.Sin(circularProgress);
+            }
+
+            averageX /= hallwayGroup.Count;
+            averageY /= hallwayGroup.Count;
+
+            var averageCircularProgress = Mathf.Atan2(averageY, averageX);
+            if (averageCircularProgress < 0f)
+                averageCircularProgress += 2 * Mathf.PI;
+            
+            groupAverageProgress = averageCircularProgress / (2 * Mathf.PI);
+        }
+
+        private void Update()
+        {
+            UpdateGroupAverageProgress();
+        }
 
         public HallwayPoint GetClosestPointTo(Vector3 position)
         {
@@ -152,11 +192,17 @@ namespace Managers.Hallway
         }
 
         // TODO Remove
-        [SerializeField, PropertyRange(0f, 1f)] private float progress = 0f; 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(GetPointForProgress(progress) + Vector3.up, 0.5f);
+            Gizmos.DrawSphere(GetPointForProgress(groupAverageProgress) + Vector3.up, 0.5f);
+
+            foreach (var entity in hallwayGroup)
+            {
+                var progress = GetProgress(entity.Destination, entity.Position);
+                Gizmos.DrawSphere(GetPointForProgress(progress) + Vector3.up, 0.2f);
+                
+            }
         }
     }
 }
