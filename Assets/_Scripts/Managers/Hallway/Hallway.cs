@@ -113,6 +113,27 @@ namespace Managers.Hallway
             return indexProgress + interIndexProgression;
         }
 
+        // Returns a value between -0.5 and 0.5
+        public float GetProgressInRelationToAverage(HallwayPoint destination, Vector3 currentPosition)
+        {
+            var progress = GetProgress(destination, currentPosition);
+
+            float forwardProgressRelation;
+            float backwardProgressRelation;
+            if (groupAverageProgress < progress)
+            {
+                forwardProgressRelation = 1f - progress + groupAverageProgress;
+                backwardProgressRelation = progress - groupAverageProgress;
+            }
+            else
+            {
+                forwardProgressRelation = groupAverageProgress - progress;
+                backwardProgressRelation = 1 - groupAverageProgress + progress;
+            }
+            
+            return forwardProgressRelation < backwardProgressRelation ? -backwardProgressRelation : forwardProgressRelation;
+        }
+
         public Vector3 GetPointForProgress(float progress)
         {
             if (progress < 0f)

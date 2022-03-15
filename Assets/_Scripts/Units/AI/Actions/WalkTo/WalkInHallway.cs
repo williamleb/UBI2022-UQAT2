@@ -3,6 +3,7 @@ using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using Managers.Hallway;
 using Managers.Interactions;
+using Systems.Settings;
 using UnityEngine;
 using Utilities.Extensions;
 
@@ -51,7 +52,8 @@ namespace Units.AI.Actions
             }
             
             UpdateHallwayProgress();
-            Brain.SetSpeed(Brain.BaseSpeed - hallwayToWalkIn.GetProgress(hallwayPointToWalkTo, Brain.Position) * 2.5f);
+            var progressInRelationToGroup = hallwayToWalkIn.GetProgressInRelationToAverage(hallwayPointToWalkTo, Brain.Position);
+            Brain.SetSpeed(Brain.BaseSpeed + SettingsSystem.AISettings.VariationOfSpeedBasedOnPositionComparedToGroup.Evaluate(progressInRelationToGroup));
 
             return TaskStatus.Running;
         }
