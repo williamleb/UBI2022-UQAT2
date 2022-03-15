@@ -160,8 +160,13 @@ namespace Managers.Hallway
         [Button("BuildHallwayFromChildObjects")]
         private void BuildHallwayFromChildObjects()
         {
+            AddChildrenAsHallwayPoints();
+            AlignHallwayPointWithPath();
+        }
+
+        private void AddChildrenAsHallwayPoints()
+        {
             hallwayPoints.Clear();
-                
             foreach (Transform child in transform)
             {
                 var hallwayPoint = child.GetComponent<HallwayPoint>();
@@ -169,6 +174,23 @@ namespace Managers.Hallway
                     continue;
                 
                 hallwayPoints.Add(hallwayPoint);
+            }
+        }
+
+        private void AlignHallwayPointWithPath()
+        {
+            foreach (var currentPoint in hallwayPoints)
+            {
+                var currentPosition = currentPoint.transform.position;
+                var previousPointPosition = GetPreviousPoint(currentPoint).transform.position;
+                var nextPointPosition = GetNextPoint(currentPoint).transform.position;
+
+                var previousDirection = (currentPosition - previousPointPosition).normalized;
+                var nextDirection = (nextPointPosition - currentPosition).normalized;
+
+                var newForward = (previousDirection + nextDirection).normalized;
+
+                currentPoint.transform.forward = newForward;
             }
         }
 

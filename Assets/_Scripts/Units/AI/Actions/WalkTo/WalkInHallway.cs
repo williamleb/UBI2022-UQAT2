@@ -20,7 +20,7 @@ namespace Units.AI.Actions
         private HallwayPoint hallwayPointToWalkTo;
         private HallwayProgress hallwayProgress;
 
-        protected override Vector3 Destination => hallwayPointToWalkTo.transform.position;
+        protected override Vector3 Destination => hallwayPointToWalkTo.GetRandomPosition();
         protected override bool EndsOnDestinationReached => endsOnFirstHallwayPointReached.Value;
         protected override bool UpdateDestination => hallwayPointToWalkTo != null;
         protected override bool SetDestinationOnStart => hallwayPointToWalkTo != null;
@@ -42,7 +42,7 @@ namespace Units.AI.Actions
             if (!hallwayPointToWalkTo)
                 return TaskStatus.Failure;
 
-            if (Brain.Position.SqrDistanceWith(Destination) < distanceFromHallwayPointToFinish.Value * distanceFromHallwayPointToFinish.Value)
+            if (hallwayPointToWalkTo.HasPassedThisPoint(Brain.Position) || Brain.Position.SqrDistanceWith(Destination) < distanceFromHallwayPointToFinish.Value * distanceFromHallwayPointToFinish.Value)
             {
                 if (endsOnFirstHallwayPointReached.Value)
                     return TaskStatus.Success;
