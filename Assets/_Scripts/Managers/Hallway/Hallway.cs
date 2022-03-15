@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
-using Units.AI;
 using UnityEngine;
 using Utilities.Extensions;
 
@@ -232,20 +230,6 @@ namespace Managers.Hallway
         private bool ValidateHallwayPoints()
         {
             return hallwayPoints.Count > 1;
-        }
-
-        // TODO Remove
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(GetPointForProgress(groupAverageProgress) + Vector3.up, 0.5f);
-
-            foreach (var entity in hallwayGroup)
-            {
-                var progress = GetProgress(entity.Destination, entity.Position);
-                Gizmos.DrawSphere(GetPointForProgress(progress) + Vector3.up, 0.2f);
-                
-            }
         }
     }
 }

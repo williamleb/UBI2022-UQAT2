@@ -5,6 +5,7 @@ using Managers.Hallway;
 using Managers.Interactions;
 using Systems.Settings;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Utilities.Extensions;
 
 namespace Units.AI.Actions
@@ -19,9 +20,10 @@ namespace Units.AI.Actions
         
         private Hallway hallwayToWalkIn;
         private HallwayPoint hallwayPointToWalkTo;
+        private Vector3 positionToWalkTo;
         private HallwayProgress hallwayProgress;
 
-        protected override Vector3 Destination => hallwayPointToWalkTo.GetRandomPosition();
+        protected override Vector3 Destination => positionToWalkTo;
         protected override bool EndsOnDestinationReached => endsOnFirstHallwayPointReached.Value;
         protected override bool UpdateDestination => hallwayPointToWalkTo != null;
         protected override bool SetDestinationOnStart => hallwayPointToWalkTo != null;
@@ -70,6 +72,7 @@ namespace Units.AI.Actions
                 return;
 
             hallwayPointToWalkTo = hallwayToWalkIn.GetNextPoint(hallwayPointToWalkTo);
+            positionToWalkTo = hallwayPointToWalkTo.GetRandomPosition();
         }
         
         private void InitHallwayToWalkIn()
@@ -83,6 +86,7 @@ namespace Units.AI.Actions
             
             hallwayToWalkIn.JoinGroup(hallwayProgress);                
             hallwayPointToWalkTo = hallwayToWalkIn.GetClosestPointTo(Brain.Position);
+            positionToWalkTo = hallwayPointToWalkTo.GetRandomPosition();
         }
 
         public override void OnEnd()
