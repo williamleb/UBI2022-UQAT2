@@ -179,6 +179,11 @@ namespace Managers.Hallway
                 HallwayManager.Instance.UnregisterHallway(this);
         }
 
+        private bool ValidateHallwayPoints()
+        {
+            return hallwayPoints.Count > 1;
+        }
+        
 #if UNITY_EDITOR
         [Button("BuildHallwayFromChildObjects")]
         private void BuildHallwayFromChildObjects()
@@ -251,11 +256,6 @@ namespace Managers.Hallway
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private bool ValidateHallwayPoints()
-        {
-            return hallwayPoints.Count > 1;
         }
 #endif
     }

@@ -11,6 +11,7 @@ namespace Units.AI.Actions
                 return TaskStatus.Failure;
                 
             Brain.PlayerBadBehaviorDetection.MarkBadBehaviorAsSeen();
+            Brain.PlayerBadBehaviorDetection.DeactivateUntilNextPoll();
             return TaskStatus.Success;
         }
     }

@@ -14,8 +14,25 @@ namespace Units.AI.Senses
         private AIEntity aiEntity;
         private AISettings settings;
 
-        public PlayerEntity PlayerThatHadBadBehavior { get; private set; } = null;
+        private bool deactivateUntilNextPoll = false;
+
+        private PlayerEntity playerThatHadBadBehavior = null;
+
         public bool HasSeenPlayerWithBadBehavior => PlayerThatHadBadBehavior != null;
+        public PlayerEntity PlayerThatHadBadBehavior
+        {
+            get
+            {
+                deactivateUntilNextPoll = false;
+                return playerThatHadBadBehavior;
+            }
+            private set => playerThatHadBadBehavior = value;
+        }
+
+        public void DeactivateUntilNextPoll()
+        {
+            deactivateUntilNextPoll = true;
+        }
         
         private void Awake()
         {
@@ -36,6 +53,9 @@ namespace Units.AI.Senses
 
         private void OnHit(GameObject hitter)
         {
+            if (deactivateUntilNextPoll)
+                return;
+            
             if (!hitter.IsAPlayer()) 
                 return;
             
@@ -50,6 +70,9 @@ namespace Units.AI.Senses
 
         private void Update()
         {
+            if (deactivateUntilNextPoll)
+                return;
+            
             if (HasSeenPlayerWithBadBehavior)
                 return;
             
