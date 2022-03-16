@@ -13,7 +13,7 @@ namespace Units.Player
 
         private Coroutine hitCoroutine;
         
-        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default)
+        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
             if (hitCoroutine != null)
             {
@@ -21,13 +21,16 @@ namespace Units.Player
                 hitCoroutine = null;
             }
 
-            hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude));
+            hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude, overrideHitDuration));
         }
 
-        private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude)
+        private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration)
         {
             CanMove = false;
-            int delay = (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+            
+            var delay = 
+                overrideHitDuration > 0f ? overrideHitDuration : 
+                (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
             delay = Mathf.Max(2, delay);
 
             if (Object.HasStateAuthority)
@@ -45,7 +48,7 @@ namespace Units.Player
                 }
             }
 
-            yield return new WaitForSeconds(delay - 1);
+            yield return new WaitForSeconds(delay - 1); 
 
             transform.position = ragdollTransform.position.Flat();
             yield return new WaitForEndOfFrame();

@@ -15,6 +15,8 @@ namespace _Scripts.Units.AI.Actions
     public class Hit : AIAction
     {
         [SerializeField] private SharedTransform entityToHitTransform = null;
+        [SerializeField] private SharedBool overrideImmobilizationTime = false;
+        [SerializeField] private SharedFloat immobilizationTime = 0f;
 
         public override TaskStatus OnUpdate()
         {
@@ -36,20 +38,30 @@ namespace _Scripts.Units.AI.Actions
         {
             var playerEntity = playerGameObject.GetComponentInEntity<PlayerEntity>();
             Debug.Assert(playerEntity);
-            playerEntity.ExternalHit();
+            
+            if (overrideImmobilizationTime.Value)
+                playerEntity.ExternalHit(immobilizationTime.Value);
+            else
+                playerEntity.ExternalHit();
         }
 
         private void HitAI(GameObject aiGameObject)
         {
             var aiEntity = aiGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(aiEntity);
-            aiEntity.Hit(Brain.Entity.gameObject);
+            
+            if (overrideImmobilizationTime.Value)
+                aiEntity.Hit(Brain.Entity.gameObject, immobilizationTime.Value);
+            else
+                aiEntity.Hit(Brain.Entity.gameObject);
         }
 
         public override void OnReset()
         {
             base.OnReset();
             entityToHitTransform = null;
+            overrideImmobilizationTime = false;
+            immobilizationTime = 0f;
         }
     }
 }

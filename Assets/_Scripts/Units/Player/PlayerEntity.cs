@@ -145,13 +145,13 @@ namespace Units.Player
             }
         }
 
-        public void ExternalHit()
+        public void ExternalHit(float overrideHitDuration = -1f)
         {
-            RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied);
+            RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied, overrideHitDuration);
         }
 
-        [Rpc]
-        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer, Vector3 forceDirection = default, float forceMagnitude = default)
+        [Rpc] 
+        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer, Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
             var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
             Inventory inv;
@@ -162,7 +162,7 @@ namespace Units.Player
                 inv = player.inventory;
                 player.ResetVelocity();
 
-                player.Hit(forceDirection, forceMagnitude);
+                player.Hit(forceDirection, forceMagnitude, overrideHitDuration);
 
                 immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
                 isImmune = true;
@@ -172,7 +172,7 @@ namespace Units.Player
                 var aiEntity = networkObject.GetComponentInEntity<AIEntity>();
                 Debug.Assert(aiEntity);
                 inv = aiEntity.Inventory;
-                aiEntity.Hit(gameObject);
+                aiEntity.Hit(gameObject, overrideHitDuration);
             }
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");

@@ -201,7 +201,7 @@ namespace Units.AI
             brain.AssignEntity(this);
         }
 
-        public void Hit(GameObject hitter)
+        public void Hit(GameObject hitter, float overrideHitDuration = -1)
         {
             // Teachers cannot be hit
             if (IsTeacher)
@@ -213,12 +213,12 @@ namespace Units.AI
             }
             
             OnHit?.Invoke(hitter);
-            hitCoroutine = StartCoroutine(HitRoutine());
+            hitCoroutine = StartCoroutine(HitRoutine(overrideHitDuration));
         }
 
-        private IEnumerator HitRoutine()
+        private IEnumerator HitRoutine(float overrideHitDuration)
         {
-            var secondsToWait = settings.SecondsDownAfterBeingHit;
+            var secondsToWait = overrideHitDuration > 0f ? overrideHitDuration : settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
             hitCoroutine = null;
         }

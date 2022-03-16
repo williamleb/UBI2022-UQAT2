@@ -12,6 +12,8 @@ namespace Units.AI.Actions
     {
         [SerializeField] private SharedFloat secondsToChaseBadBehavior;
         [SerializeField] private SharedFloat chaseBadBehaviorSpeed;
+        [SerializeField] private SharedFloat secondsOfImmobilizationBadBehavior;
+        [SerializeField] private SharedInt badBehaviorPointsToLose;
 
         private AISettings settings = null;
 
@@ -26,6 +28,8 @@ namespace Units.AI.Actions
 
             secondsToChaseBadBehavior?.SetValue(settings.SecondsToChaseBadBehavior);
             chaseBadBehaviorSpeed?.SetValue(settings.ChaseBadBehaviorSpeed);
+            secondsOfImmobilizationBadBehavior?.SetValue(settings.SecondsOfImmobilisationBadBehavior);
+            badBehaviorPointsToLose?.SetValue(settings.BadBehaviorPointsToLose);
         }
 
         public override TaskStatus OnUpdate()
@@ -38,6 +42,8 @@ namespace Units.AI.Actions
             base.OnReset();
             secondsToChaseBadBehavior = null;
             chaseBadBehaviorSpeed = null;
+            secondsOfImmobilizationBadBehavior = null;
+            badBehaviorPointsToLose = null;
         }
     }
 }
