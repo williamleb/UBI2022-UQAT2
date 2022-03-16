@@ -13,10 +13,51 @@ namespace Managers.Hallway
         [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
         [SerializeField, ValidateInput(nameof(ValidateHallwayPoints), "There must be at least one hallway point")] private List<HallwayPoint> hallwayPoints = new List<HallwayPoint>();
 
-        private bool advanceToNextPoint = false;
-        
+        private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
+        private float groupAverageProgress = 0f;
+
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
+        public int Size => hallwayPoints.Count;
+
+        public void JoinGroup(HallwayProgress entity)
+        {
+            hallwayGroup.Add(entity);
+        }
+
+        public void LeaveGroup(HallwayProgress entity)
+        {
+            hallwayGroup.Remove(entity);
+        }
+
+        private void UpdateGroupAverageProgress()
+        {
+            if (!hallwayGroup.Any())
+                return;
+            
+            var averageX = 0f;
+            var averageY = 0f;
+            foreach (var entity in hallwayGroup)
+            {
+                var circularProgress = GetProgress(entity.Destination, entity.Position) * 2 * Mathf.PI;
+                averageX += Mathf.Cos(circularProgress);
+                averageY += Mathf.Sin(circularProgress);
+            }
+
+            averageX /= hallwayGroup.Count;
+            averageY /= hallwayGroup.Count;
+
+            var averageCircularProgress = Mathf.Atan2(averageY, averageX);
+            if (averageCircularProgress < 0f)
+                averageCircularProgress += 2 * Mathf.PI;
+            
+            groupAverageProgress = averageCircularProgress / (2 * Mathf.PI);
+        }
+
+        private void Update()
+        {
+            UpdateGroupAverageProgress();
+        }
 
         public HallwayPoint GetClosestPointTo(Vector3 position)
         {
@@ -39,20 +80,88 @@ namespace Managers.Hallway
             return closestPoint;
         }
 
-        public HallwayPoint GetNextPoint(HallwayPoint previousPoint)
+        public HallwayPoint GetNextPoint(HallwayPoint point)
+        {
+            var indexFound = GetIndexOfPoint(point);
+            var newIndex = (indexFound + 1) % hallwayPoints.Count;
+            return hallwayPoints[newIndex];
+        }
+        
+        public HallwayPoint GetPreviousPoint(HallwayPoint point)
+        {
+            var indexFound = GetIndexOfPoint(point);
+            var newIndex = (indexFound + hallwayPoints.Count - 1) % hallwayPoints.Count;
+            return hallwayPoints[newIndex];
+        }
+        
+        public float GetProgress(HallwayPoint destination, Vector3 currentPosition)
+        {
+            var index = GetIndexOfPoint(destination);
+            if (index == -1)
+                return 0f;
+            
+            var passedIndex = (index + hallwayPoints.Count - 1) % hallwayPoints.Count;
+            var indexProgress = passedIndex / (float) hallwayPoints.Count;
+
+            var distanceToPassedPoint = currentPosition.SqrDistanceWith(hallwayPoints[passedIndex].transform.position);
+            var distanceToDestinationPoint = currentPosition.SqrDistanceWith(destination.transform.position);
+            var interIndexProgression = distanceToPassedPoint / (distanceToDestinationPoint + distanceToPassedPoint);
+            interIndexProgression *= 1f / hallwayPoints.Count;
+
+            return indexProgress + interIndexProgression;
+        }
+
+        // Returns a value between -0.5 and 0.5
+        public float GetProgressInRelationToAverage(HallwayPoint destination, Vector3 currentPosition)
+        {
+            var progress = GetProgress(destination, currentPosition);
+
+            float forwardProgressRelation;
+            float backwardProgressRelation;
+            if (groupAverageProgress < progress)
+            {
+                forwardProgressRelation = 1f - progress + groupAverageProgress;
+                backwardProgressRelation = progress - groupAverageProgress;
+            }
+            else
+            {
+                forwardProgressRelation = groupAverageProgress - progress;
+                backwardProgressRelation = 1 - groupAverageProgress + progress;
+            }
+            
+            return forwardProgressRelation < backwardProgressRelation ? -backwardProgressRelation : forwardProgressRelation;
+        }
+
+        public Vector3 GetPointForProgress(float progress)
+        {
+            if (progress < 0f)
+                return hallwayPoints.First().transform.position;
+            if (progress > 1f)
+                return hallwayPoints.Last().transform.position;
+
+            var progressForIndex = 1f / hallwayPoints.Count;
+            var index = (int)(progress / progressForIndex);
+            var progressForInterIndex = progress - (index * progressForIndex);
+            progressForInterIndex *= hallwayPoints.Count;
+            var nextIndex = (index + 1) % hallwayPoints.Count;
+
+            return (1 - progressForInterIndex) * hallwayPoints[index].transform.position +
+                   progressForInterIndex * hallwayPoints[nextIndex].transform.position;
+        }
+
+        public int GetIndexOfPoint(HallwayPoint point)
         {
             var indexFound = -1;
             for (var i = 0; i < hallwayPoints.Count; ++i)
             {
-                if (hallwayPoints[i] == previousPoint)
+                if (hallwayPoints[i] == point)
                 {
                     indexFound = i;
                     break;
                 }
             }
 
-            var newIndex = (indexFound + 1) % hallwayPoints.Count;
-            return hallwayPoints[newIndex];
+            return indexFound;
         }
         
         public override void Spawned()
@@ -70,8 +179,13 @@ namespace Managers.Hallway
         [Button("BuildHallwayFromChildObjects")]
         private void BuildHallwayFromChildObjects()
         {
+            AddChildrenAsHallwayPoints();
+            AlignHallwayPointWithPath();
+        }
+
+        private void AddChildrenAsHallwayPoints()
+        {
             hallwayPoints.Clear();
-                
             foreach (Transform child in transform)
             {
                 var hallwayPoint = child.GetComponent<HallwayPoint>();
@@ -79,6 +193,23 @@ namespace Managers.Hallway
                     continue;
                 
                 hallwayPoints.Add(hallwayPoint);
+            }
+        }
+
+        private void AlignHallwayPointWithPath()
+        {
+            foreach (var currentPoint in hallwayPoints)
+            {
+                var currentPosition = currentPoint.transform.position;
+                var previousPointPosition = GetPreviousPoint(currentPoint).transform.position;
+                var nextPointPosition = GetNextPoint(currentPoint).transform.position;
+
+                var previousDirection = (currentPosition - previousPointPosition).normalized;
+                var nextDirection = (nextPointPosition - currentPosition).normalized;
+
+                var newForward = (previousDirection + nextDirection).normalized;
+
+                currentPoint.transform.forward = newForward;
             }
         }
 

@@ -2,6 +2,7 @@
 using Systems.Network;
 using Fusion;
 using Managers.Game;
+using Units.AI.Senses;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Singleton;
@@ -12,10 +13,12 @@ namespace Units.AI
     {
         private AIEntity teacher = null;
         private readonly List<AIEntity> students = new List<AIEntity>();
+        private readonly List<AIEntity> janitors = new List<AIEntity>();
 
         private readonly List<AIEntity> aisToSpawn = new List<AIEntity>();
 
         public AIEntity Teacher => teacher;
+        public IEnumerable<AIEntity> Janitors => janitors;
         public IEnumerable<AIEntity> Students => students;
 
         public void RegisterTeacher(AIEntity teacherAI)
@@ -42,6 +45,18 @@ namespace Units.AI
         public void UnregisterStudent(AIEntity student)
         {
             students.Remove(student);
+        }
+        
+        public void RegisterJanitor(AIEntity janitor)
+        {
+            janitors.Add(janitor);
+            
+            UpdateAISpawned(janitor);
+        }
+
+        public void UnregisterJanitor(AIEntity janitor)
+        {
+            janitors.Remove(janitor);
         }
 
         private void UpdateAISpawned(AIEntity aiEntity)
@@ -106,7 +121,10 @@ namespace Units.AI
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
 
             var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
+            var janitorVision = aiObject.GetComponent<JanitorVision>();
+
             if (homeworkHandingStation) entity.MarkAsTeacher();
+            else if (janitorVision) entity.MarkAsJanitor();
             else entity.MarkAsStudent();
         }
     }

@@ -11,6 +11,7 @@ namespace Units.AI
         private AIEntity entity;
         private BehaviorTree tree;
 
+        public float BaseSpeed => entity.BaseSpeed;
         public Vector3 Position => entity.transform.position;
         public Inventory Inventory => entity.Inventory;
         public AIInteracter Interacter => entity.Interacter;
@@ -87,6 +88,16 @@ namespace Units.AI
             var direction = destination - entity.transform.position;
 
             return direction.sqrMagnitude < closeDistance * closeDistance;
+        }
+
+        public void SetSpeed(float speed)
+        {
+            entity.Agent.speed = speed;
+        }
+
+        public void ResetSpeed()
+        {
+            entity.Agent.speed = BaseSpeed;
         }
     }
 }

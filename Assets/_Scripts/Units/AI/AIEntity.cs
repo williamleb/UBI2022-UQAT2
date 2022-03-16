@@ -17,6 +17,13 @@ namespace Units.AI
     {
         private static readonly int walking = Animator.StringToHash("IsWalking");
         
+        private enum AIType : byte
+        {
+            Student = 0,
+            Teacher,
+            Janitor
+        }
+        
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
@@ -33,10 +40,13 @@ namespace Units.AI
         private AITaskSensor taskSensor;
         private AIBrain brain;
 
+        private AISettings settings;
         private Transform aiColliderTransform;
         private Coroutine hitCoroutine = null;
 
-        [Networked] public bool IsTeacher { get; private set; }
+        [Networked, Capacity(8)] private AIType Type { get; set; }
+        private bool IsTeacher => Type == AIType.Teacher;
+        private bool IsJanitor => Type == AIType.Janitor;
 
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
@@ -50,6 +60,8 @@ namespace Units.AI
 
         public bool IsHit => hitCoroutine != null;
 
+        public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -60,13 +72,16 @@ namespace Units.AI
             playerHitterDetection = GetComponent<PlayerHitterDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
             taskSensor = GetComponent<AITaskSensor>();
-            
+            settings = SettingsSystem.AISettings;
+
             inventory.AssignVelocityObject(this);
+
         }
 
-        // Those two methods should only be called before the AI entity is spawned
-        public void MarkAsTeacher() => IsTeacher = true;
-        public void MarkAsStudent() => IsTeacher = false;
+        // Those three methods should only be called before the AI entity is spawned
+        public void MarkAsTeacher() => Type = AIType.Teacher;
+        public void MarkAsStudent() => Type = AIType.Student;
+        public void MarkAsJanitor() => Type = AIType.Janitor;
 
         public override void Spawned()
         {
@@ -142,6 +157,8 @@ namespace Units.AI
 
             if (IsTeacher)
                 AIManager.Instance.RegisterTeacher(this);
+            else if (IsJanitor)
+                AIManager.Instance.RegisterJanitor(this);
             else
                 AIManager.Instance.RegisterStudent(this);
         }
@@ -153,6 +170,8 @@ namespace Units.AI
 
             if (IsTeacher)
                 AIManager.Instance.UnregisterTeacher(this);
+            else if (IsJanitor)
+                AIManager.Instance.UnregisterJanitor(this);
             else
                 AIManager.Instance.UnregisterStudent(this);
         }
@@ -187,7 +206,7 @@ namespace Units.AI
 
         private IEnumerator HitRoutine()
         {
-            var secondsToWait = SettingsSystem.AISettings.SecondsDownAfterBeingHit;
+            var secondsToWait = settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
             hitCoroutine = null;
         }
