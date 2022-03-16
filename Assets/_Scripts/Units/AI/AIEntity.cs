@@ -1,6 +1,7 @@
 using System.Collections;
 using Fusion;
 using Interfaces;
+using Managers.Hallway;
 using Systems.Settings;
 using Units.AI.Senses;
 using UnityEngine;
@@ -47,6 +48,8 @@ namespace Units.AI
         [Networked, Capacity(8)] private AIType Type { get; set; }
         private bool IsTeacher => Type == AIType.Teacher;
         private bool IsJanitor => Type == AIType.Janitor;
+        
+        [Networked, Capacity(8)] public HallwayColor AssignedHallway{ get; private set; }
 
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
@@ -75,13 +78,14 @@ namespace Units.AI
             settings = SettingsSystem.AISettings;
 
             inventory.AssignVelocityObject(this);
-
         }
 
         // Those three methods should only be called before the AI entity is spawned
         public void MarkAsTeacher() => Type = AIType.Teacher;
         public void MarkAsStudent() => Type = AIType.Student;
         public void MarkAsJanitor() => Type = AIType.Janitor;
+
+        public void AssignHallway(HallwayColor hallwayColor) => AssignedHallway = hallwayColor;
 
         public override void Spawned()
         {

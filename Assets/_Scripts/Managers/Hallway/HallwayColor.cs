@@ -1,8 +1,8 @@
 ﻿namespace Managers.Hallway
 {
-    public enum HallwayColor
+    public enum HallwayColor : byte
     {
-        White,
+        White = 0,
         Red,
         Green,
         Blue,
