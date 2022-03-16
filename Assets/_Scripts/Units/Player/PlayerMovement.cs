@@ -15,6 +15,9 @@ namespace Units.Player
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
         
         public Vector3 Velocity => nRb.Rigidbody.velocity;
+        public float WalkMaxSpeed => data.MoveMaximumSpeed;
+        public float SprintMaxSpeed => data.SprintMaximumSpeed;
+        public float CurrentSpeed => Velocity.magnitude;
 
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;

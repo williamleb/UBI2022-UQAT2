@@ -1,4 +1,5 @@
 ﻿using System;
+using Systems.Settings;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -11,6 +12,7 @@ namespace Units.AI.Senses
     {
         private Vision vision;
         private AIEntity aiEntity;
+        private AISettings settings;
 
         public PlayerEntity PlayerThatHadBadBehavior { get; private set; } = null;
         public bool HasSeenPlayerWithBadBehavior => PlayerThatHadBadBehavior != null;
@@ -19,6 +21,7 @@ namespace Units.AI.Senses
         {
             vision = GetComponent<Vision>();
             aiEntity = GetComponent<AIEntity>();
+            settings = SettingsSystem.AISettings;
         }
 
         private void Start()
@@ -56,12 +59,15 @@ namespace Units.AI.Senses
                 if (player.HasHitSomeoneThisFrame)
                 {
                     PlayerThatHadBadBehavior = player;
+                    return;
                 }
-                
-                // TODO Detect sprint
-                // TODO Detect dash in him
-                
-                Debug.Log($"Player velocity: {player.Velocity.magnitude}");
+
+                var speedToConsiderBadBehavior = settings.PercentOfDashConsideredBadBehavior * (player.SprintMaxSpeed - player.WalkMaxSpeed) + player.WalkMaxSpeed;
+                if (player.CurrentSpeed > speedToConsiderBadBehavior)
+                {
+                    PlayerThatHadBadBehavior = player;
+                    return;
+                }
             }
         }
     }
