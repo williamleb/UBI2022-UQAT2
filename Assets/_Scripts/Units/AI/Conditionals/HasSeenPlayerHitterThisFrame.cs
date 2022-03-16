@@ -14,13 +14,13 @@ namespace Units.AI.Conditionals
 
         public override TaskStatus OnUpdate()
         {
-            if (!Brain.PlayerHitterDetection)
+            if (!Brain.PlayerBadBehaviorDetection)
                 return TaskStatus.Failure;
 
-            var hasSeenPlayerHitter = Brain.PlayerHitterDetection.HasAPlayerHitSomeoneThisFrame;
+            var hasSeenPlayerHitter = Brain.PlayerBadBehaviorDetection.HasAPlayerHaveBadBehaviorThisFrame;
             if (hasSeenPlayerHitter)
             {
-                outPlayerHitterTransform.SetValue(Brain.PlayerHitterDetection.PlayerThatHitSomeoneThisFrame.transform);
+                outPlayerHitterTransform.SetValue(Brain.PlayerBadBehaviorDetection.PlayerHadBadBehaviorThisFrame.transform);
             }
 
             return hasSeenPlayerHitter ? TaskStatus.Success : TaskStatus.Failure;

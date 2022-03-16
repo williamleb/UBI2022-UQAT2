@@ -36,7 +36,7 @@ namespace Units.AI
         private AIInteracter interacter;
         private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
-        private PlayerHitterDetection playerHitterDetection;
+        private PlayerBadBehaviorDetection playerBadBehaviorDetection;
         private HomeworkHandingStation homeworkHandingStation;
         private AITaskSensor taskSensor;
         private AIBrain brain;
@@ -56,7 +56,7 @@ namespace Units.AI
         public AIInteracter Interacter => interacter;
         public Animator Animator => animator;
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
-        public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
+        public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => playerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
         public AITaskSensor TaskSensor => taskSensor;
         public Vector3 Velocity => agent.velocity;
@@ -72,7 +72,7 @@ namespace Units.AI
             interacter = GetComponent<AIInteracter>();
             animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
-            playerHitterDetection = GetComponent<PlayerHitterDetection>();
+            playerBadBehaviorDetection = GetComponent<PlayerBadBehaviorDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
             taskSensor = GetComponent<AITaskSensor>();
             settings = SettingsSystem.AISettings;
