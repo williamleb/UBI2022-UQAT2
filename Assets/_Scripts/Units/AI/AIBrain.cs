@@ -20,6 +20,7 @@ namespace Units.AI
         public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => entity.PlayerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => entity.HomeworkHandingStation;
         public AITaskSensor TaskSensor => entity.TaskSensor;
+        public AIEntity Entity => entity;
         
         public bool HasReachedItsDestination => !entity.Agent.pathPending &&
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&

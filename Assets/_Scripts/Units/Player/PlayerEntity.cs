@@ -172,7 +172,7 @@ namespace Units.Player
                 var aiEntity = networkObject.GetComponentInEntity<AIEntity>();
                 Debug.Assert(aiEntity);
                 inv = aiEntity.Inventory;
-                aiEntity.Hit();
+                aiEntity.Hit(gameObject);
             }
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");

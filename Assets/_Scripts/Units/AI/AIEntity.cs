@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Fusion;
 using Interfaces;
@@ -17,7 +18,9 @@ namespace Units.AI
     public class AIEntity : NetworkBehaviour, IVelocityObject
     {
         private static readonly int walking = Animator.StringToHash("IsWalking");
-        
+
+        public event Action<GameObject> OnHit; 
+
         private enum AIType : byte
         {
             Student = 0,
@@ -198,13 +201,18 @@ namespace Units.AI
             brain.AssignEntity(this);
         }
 
-        public void Hit()
+        public void Hit(GameObject hitter)
         {
+            // Teachers cannot be hit
+            if (IsTeacher)
+                return;
+            
             if (hitCoroutine != null)
             {
                 StopHitRoutine();
             }
             
+            OnHit?.Invoke(hitter);
             hitCoroutine = StartCoroutine(HitRoutine());
         }
 

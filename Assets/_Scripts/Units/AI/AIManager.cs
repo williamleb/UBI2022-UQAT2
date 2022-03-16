@@ -107,7 +107,7 @@ namespace Units.AI
                 spawnLocationTransform.position, 
                 spawnLocationTransform.rotation, 
                 null, 
-                (runner, aiObject) => SetupAIEntityBeforeSpawn(runner, aiObject, spawnLocation.AssignedHallway));
+                (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway));
             
             var entity = entityGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(entity);
@@ -116,7 +116,7 @@ namespace Units.AI
             aisToSpawn.Add(entity);
         }
 
-        private void SetupAIEntityBeforeSpawn(NetworkRunner runner, NetworkObject aiObject, HallwayColor assignedHallway)
+        private void SetupAIEntityBeforeSpawn(NetworkObject aiObject, HallwayColor assignedHallway)
         {
             var entity = aiObject.GetComponent<AIEntity>();
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");

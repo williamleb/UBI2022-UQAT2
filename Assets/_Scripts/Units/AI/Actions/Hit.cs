@@ -43,7 +43,7 @@ namespace _Scripts.Units.AI.Actions
         {
             var aiEntity = aiGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(aiEntity);
-            aiEntity.Hit();
+            aiEntity.Hit(Brain.Entity.gameObject);
         }
 
         public override void OnReset()
