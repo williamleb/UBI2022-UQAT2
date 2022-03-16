@@ -11,13 +11,13 @@ namespace Managers.Hallway
 {
     public class Hallway : NetworkBehaviour, IProbabilityObject
     {
-        private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
         [SerializeField, ValidateInput(nameof(ValidateHallwayPoints), "There must be at least one hallway point")] private List<HallwayPoint> hallwayPoints = new List<HallwayPoint>();
         [SerializeField] private HallwayColor color = HallwayColor.White;
         [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
 
+        private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
         private float groupAverageProgress = 0f;
-
+        
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
         public int Size => hallwayPoints.Count;

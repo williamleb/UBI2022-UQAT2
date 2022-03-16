@@ -27,7 +27,7 @@ namespace Units.AI
             Teacher,
             Janitor
         }
-        
+
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
@@ -81,6 +81,7 @@ namespace Units.AI
             settings = SettingsSystem.AISettings;
 
             inventory.AssignVelocityObject(this);
+
         }
 
         // Those three methods should only be called before the AI entity is spawned

@@ -5,6 +5,7 @@ using Managers.Hallway;
 using Managers.Interactions;
 using Systems.Settings;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Utilities.Extensions;
 
 namespace Units.AI.Actions
@@ -19,7 +20,6 @@ namespace Units.AI.Actions
         [SerializeField] private SharedBool regroup = true;
         [SerializeField] private SharedBool randomHallway = false;
 
-        
         private Hallway hallwayToWalkIn;
         private HallwayPoint hallwayPointToWalkTo;
         private Vector3 positionToWalkTo;
