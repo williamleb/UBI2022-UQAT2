@@ -70,6 +70,20 @@ namespace Managers.Score
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();
         }
+
+        public void RemoveScore(PlayerEntity playerEntity, int numberOfPointsToLose)
+        {
+            if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
+                return;
+            
+            // TODO Manage teams (remove points to team)
+
+            var player = playerEntity.Object.InputAuthority;
+            var score = GetScoreForPlayer(player);
+            if (!score) Debug.LogWarning($"Tried to remove for player {player.PlayerId} which doesn't have any score");
+
+            score.Remove(numberOfPointsToLose);
+        }
         
         public PlayerRef FindPlayerWithHighestScore()
         {

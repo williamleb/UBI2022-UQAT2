@@ -17,10 +17,13 @@ namespace Systems.Settings
         [SerializeField, MinValue(0.2f)] private float visionFar = 10f;
         [SerializeField, MinValue(0.1f)] private float visionNearLength = 2f;
         [SerializeField, MinValue(0.2f)] private float visionFarLength = 20f;
-        [SerializeField, ReadOnly] private float secondsOfImmobilisationBadBehavior = 1.5f; // Not yet implemented
-        [SerializeField] private float secondsToChaseBadBehavior = 5f;
-        [SerializeField] private float baseJanitorSpeed = 3.5f;
-        [SerializeField] private float chaseBadBehaviorSpeed = 7f;
+        [SerializeField, MinValue(0f)] private float secondsOfImmobilisationBadBehavior = 4f;
+        [SerializeField, MinValue(0f)] private float secondsToChaseBadBehavior = 5f;
+        [SerializeField, MinValue(0f)] private float baseJanitorSpeed = 3.5f;
+        [SerializeField, MinValue(0f)] private float chaseBadBehaviorSpeed = 7f;
+        [SerializeField, MinValue(0)] private int badBehaviorPointsToLose = 1;
+        [Tooltip("At what point on the transition between walk and dash that we consider it a bad behavior")]
+        [SerializeField, MinValue(0f)] private float percentOfDashConsideredBadBehavior = 0.75f;
 
         [Header("Student settings")] 
         [SerializeField] private float secondsDownAfterBeingHit = 5f;
@@ -46,6 +49,8 @@ namespace Systems.Settings
         public float SecondsToChaseBadBehavior => secondsToChaseBadBehavior;
         public float BaseJanitorSpeed => baseJanitorSpeed;
         public float ChaseBadBehaviorSpeed => chaseBadBehaviorSpeed;
+        public int BadBehaviorPointsToLose => badBehaviorPointsToLose;
+        public float PercentOfDashConsideredBadBehavior => percentOfDashConsideredBadBehavior;
 
         public float SecondsDownAfterBeingHit => secondsDownAfterBeingHit;
         public float MinSecondsToNoticeHomework => secondsToNoticeHomework.x;

@@ -80,12 +80,6 @@ namespace Ingredients.Homework
 
         private void Start()
         {
-            spawnPoints = FindObjectsOfType<HomeworkSpawnPoint>();
-            if (spawnPoints.IsNullOrEmpty())
-            {
-                Debug.LogWarning("No spawn points for homeworks found in the scene. We won't be able to spawn homeworks.");
-            }
-
             settings = SettingsSystem.HomeworkSettings;
 
             if (GameManager.HasInstance)
@@ -110,6 +104,7 @@ namespace Ingredients.Homework
         {
             if (newGameState == GameState.Running)
             {
+                InitializeSpawnPoints();
                 InitializeCooldowns();
                 InitializeBursts();
                 StartHomeworkRoutines();
@@ -117,6 +112,15 @@ namespace Ingredients.Homework
             else
             {
                 StopHomeworkRoutines();
+            }
+        }
+        
+        private void InitializeSpawnPoints()
+        {
+            spawnPoints = FindObjectsOfType<HomeworkSpawnPoint>();
+            if (spawnPoints.IsNullOrEmpty())
+            {
+                Debug.LogWarning("No spawn points for homeworks found in the scene. We won't be able to spawn homeworks.");
             }
         }
 

@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3277535868480097401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3277535868480097400}
+  - component: {fileID: 3277535868480097402}
+  - component: {fileID: 3277535868480097405}
+  m_Layer: 0
+  m_Name: JanitorBrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3277535868480097400
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3277535868480097402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74af5e29875f4a0c8be147253a3fc578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3277535868480097405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277535868480097401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startWhenEnabled: 1
+  asynchronousLoad: 0
+  pauseWhenDisabled: 0
+  restartWhenComplete: 0
+  logTaskChanges: 0
+  group: 0
+  resetValuesOnRestart: 0
+  externalBehavior: {fileID: 0}
+  mBehaviorSource:
+    behaviorName: JanitorBrain
+    behaviorDescription: Basic AI that follows waypoints
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(387.5,30)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-50.35275,143.867981)"},"ID":1,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.LoadJanitorSettings","NodeData":{"Offset":"(-1390.04309,167.014709)"},"ID":2,"Name":"Load
+        Janitor Settings","Instant":true,"SharedFloatsecondsToChaseBadBehavior":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsToChaseBadBehavior","IsShared":true,"Tooltip":"Number
+        of seconds the AI will try to chase the player who hit someone","SinglemValue":2},"SharedFloatchaseBadBehaviorSpeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"chaseBadBehaviorSpeed","IsShared":true,"Tooltip":"The
+        speed at which this AI chases a bad behavior","SinglemValue":7},"SharedFloatsecondsOfImmobilizationBadBehavior":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsOfImmobilizationBadBehavior","IsShared":true,"Tooltip":"The
+        number of seconds the player should be immobilized after being caught for
+        a bad behavior","SinglemValue":4},"SharedIntbadBehaviorPointsToLose":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"badBehaviorPointsToLose","IsShared":true,"Int32mValue":1}},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-1082.43665,171.805237)"},"ID":3,"Name":"Selector","Instant":true,"AbortTypeabortType":"Self","Children":[{"Type":"Units.AI.Conditionals.IsGameState","NodeData":{"Offset":"(-75.38968,197.083069)"},"ID":4,"Name":"Is
+        game running","Instant":true,"GameStategameState":"Running","SharedBoolfailOnNoGameManagerInstance":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(70.8091,210.972046)"},"ID":5,"Name":"Idle","Instant":true}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-479.58313,170)"},"ID":6,"Name":"Selector","Instant":true,"AbortTypeabortType":"LowerPriority","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-130,140)"},"ID":7,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Conditionals.HasSeenPlayerWithBadBehavior","NodeData":{"Offset":"(-85.0848846,134.488464)"},"ID":8,"Name":"Has
+        Seen Player With Bad Behavior","Instant":true,"SharedTransformoutPlayerHitterTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},"SharedBoolmarkAsSeen":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"AIBrainbrain":0}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(110.294212,123.639526)"},"ID":9,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.SetBool","NodeData":{"Offset":"(-105.493637,145.413544)"},"ID":10,"Name":"Set
+        has player hitter","Instant":true,"SharedBoolboolToSet":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"hasPlayerHitter","IsShared":true,"Tooltip":"Wheter
+        or not the AI detected a new player hitter","BooleanmValue":false},"SharedBoolnewValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true}}]}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-70.0029755,447.1134)"},"ID":11,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-97.86645,131.733643)"},"ID":12,"Name":"Inverter","Instant":true,"Children":[{"Type":"Units.AI.Actions.EvaluateBool","NodeData":{"Offset":"(-5.71645546,134.5385)"},"ID":13,"Name":"Has
+        player hitter","Instant":true,"SharedBoolboolToEvaluate":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"hasPlayerHitter","IsShared":true,"Tooltip":"Wheter
+        or not the AI detected a new player hitter","BooleanmValue":false},"SharedBoolinvert":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(153.038757,118.216721)"},"ID":14,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.ParallelComplete","NodeData":{"Offset":"(-97.05879,138.235321)"},"ID":15,"Name":"Parallel
+        Complete","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-65.8735046,115.655029)"},"ID":16,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Parallel","NodeData":{"Offset":"(-96.27057,139.257568)"},"ID":17,"Name":"Parallel","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"Units.AI.Actions.WalkToTransform","NodeData":{"Offset":"(-95.5556,124.444458)"},"ID":18,"Name":"Walk
+        To Transform","Instant":true,"SharedTransformtransformToWalkTo":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},"SharedFloatdistanceToStop":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":2.5},"SharedBooloverrideSpeed":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedFloatspeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"chaseBadBehaviorSpeed","IsShared":true,"Tooltip":"The
+        speed at which this AI chases a bad behavior","SinglemValue":7},"AIBrainbrain":1},{"Type":"Units.AI.RotateTowards","NodeData":{"Offset":"(74.37984,125.066772)"},"ID":19,"Name":"Rotate
+        Towards","Instant":true,"SharedTransformtowards":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},"SharedFloatspeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":10},"SharedFloattolerance":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0.1},"AIBrainbrain":2}]},{"Type":"_Scripts.Units.AI.Actions.Hit","NodeData":{"Offset":"(70.1264954,145.655029)"},"ID":20,"Name":"Hit","Instant":true,"SharedTransformentityToHitTransform":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},"SharedBooloverrideImmobilizationTime":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedFloatimmobilizationTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsOfImmobilizationBadBehavior","IsShared":true,"Tooltip":"The
+        number of seconds the player should be immobilized after being caught for
+        a bad behavior","SinglemValue":4},"AIBrainbrain":3},{"Type":"Units.AI.Actions.MakePlayerLoseScore","NodeData":{"Offset":"(249.100525,150.741455)"},"ID":21,"Name":"Make
+        Player Lose Score","Instant":true,"SharedTransformtargetPlayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},"SharedIntscoreToRemove":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"badBehaviorPointsToLose","IsShared":true,"Int32mValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Wait","NodeData":{"Offset":"(114.229332,122.24942)"},"ID":22,"Name":"Timeout","Instant":true,"SharedFloatwaitTime":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsToChaseBadBehavior","IsShared":true,"Tooltip":"Number
+        of seconds the AI will try to chase the player who hit someone","SinglemValue":2},"SharedBoolrandomWait":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatrandomWaitMin":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1},"SharedFloatrandomWaitMax":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}}]},{"Type":"Units.AI.Actions.SetBool","NodeData":{"Offset":"(109.333496,151.654846)"},"ID":23,"Name":"Set
+        has no player hitter","Instant":true,"SharedBoolboolToSet":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"hasPlayerHitter","IsShared":true,"Tooltip":"Wheter
+        or not the AI detected a new player hitter","BooleanmValue":false},"SharedBoolnewValue":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false}},{"Type":"Units.AI.Actions.MarkPlayerWithBadBehaviorAsSeen","NodeData":{"Offset":"(341.538422,152.820511)"},"ID":24,"Name":"Mark
+        Player With Bad Behavior As Seen","Instant":true,"AIBrainbrain":4}]}]},{"Type":"Units.AI.Actions.WalkInHallway","NodeData":{"Offset":"(233.78891,204.883728)"},"ID":25,"Name":"Walk
+        In Hallway","Instant":true,"SharedBoolendsOnFirstHallwayPointReached":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatdistanceFromHallwayPointToFinish":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":2},"SharedBoolregroup":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedBoolrandomHallway":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedBooloverrideSpeed":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"SharedFloatspeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0},"AIBrainbrain":5},{"Type":"BehaviorDesigner.Runtime.Tasks.Idle","NodeData":{"Offset":"(426.573425,186.363678)"},"ID":26,"Name":"Idle","Instant":true}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"playerHitterTarget","IsShared":true,"Tooltip":"Target
+        to the player hitter that this AI has seen"},{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":"hasPlayerHitter","IsShared":true,"Tooltip":"Wheter
+        or not the AI detected a new player hitter","BooleanmValue":false},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsToChaseBadBehavior","IsShared":true,"Tooltip":"Number
+        of seconds the AI will try to chase the player who hit someone","SinglemValue":2},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"chaseBadBehaviorSpeed","IsShared":true,"Tooltip":"The
+        speed at which this AI chases a bad behavior","SinglemValue":7},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"secondsOfImmobilizationBadBehavior","IsShared":true,"Tooltip":"The
+        number of seconds the player should be immobilized after being caught for
+        a bad behavior","SinglemValue":4},{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"badBehaviorPointsToLose","IsShared":true,"Int32mValue":1}]}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        - {fileID: 3277535868480097402}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.2
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1

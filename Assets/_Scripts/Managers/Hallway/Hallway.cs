@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using Interfaces;
@@ -10,15 +11,17 @@ namespace Managers.Hallway
 {
     public class Hallway : NetworkBehaviour, IProbabilityObject
     {
-        [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
         [SerializeField, ValidateInput(nameof(ValidateHallwayPoints), "There must be at least one hallway point")] private List<HallwayPoint> hallwayPoints = new List<HallwayPoint>();
+        [SerializeField] private HallwayColor color = HallwayColor.White;
+        [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
 
         private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
         private float groupAverageProgress = 0f;
-
+        
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
         public int Size => hallwayPoints.Count;
+        public HallwayColor Color => color;
 
         public void JoinGroup(HallwayProgress entity)
         {
@@ -176,6 +179,12 @@ namespace Managers.Hallway
                 HallwayManager.Instance.UnregisterHallway(this);
         }
 
+        private bool ValidateHallwayPoints()
+        {
+            return hallwayPoints.Count > 1;
+        }
+        
+#if UNITY_EDITOR
         [Button("BuildHallwayFromChildObjects")]
         private void BuildHallwayFromChildObjects()
         {
@@ -218,7 +227,12 @@ namespace Managers.Hallway
             if (hallwayPoints.Count < 2)
                 return;
 
-            Gizmos.color = Color.white;
+            foreach (var point in hallwayPoints)
+            {
+                point.GizmoColor = GetGizmoColor();
+            }
+
+            Gizmos.color = GetGizmoColor(); 
             for (var i = 0; i < hallwayPoints.Count; ++i)
             {
                 Gizmos.DrawLine(
@@ -227,9 +241,22 @@ namespace Managers.Hallway
             }
         }
 
-        private bool ValidateHallwayPoints()
+        private Color GetGizmoColor()
         {
-            return hallwayPoints.Count > 1;
+            switch (color)
+            {
+                case HallwayColor.White:
+                    return UnityEngine.Color.white;
+                case HallwayColor.Red:
+                    return new Color32(0xff, 0xab, 0x91, 0xff);
+                case HallwayColor.Green:
+                    return new Color32(0xc5, 0xe1, 0xa5, 0xff);
+                case HallwayColor.Blue:
+                    return new Color32(0x81, 0xd4, 0xfa, 0xff);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+#endif
     }
 }

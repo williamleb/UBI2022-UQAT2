@@ -1,5 +1,6 @@
 ﻿using System;
 using BehaviorDesigner.Runtime;
+using Managers.Hallway;
 using Units.AI.Senses;
 using UnityEngine;
 
@@ -13,11 +14,13 @@ namespace Units.AI
 
         public float BaseSpeed => entity.BaseSpeed;
         public Vector3 Position => entity.transform.position;
+        public HallwayColor AssignedHallway => entity.AssignedHallway;
         public Inventory Inventory => entity.Inventory;
         public AIInteracter Interacter => entity.Interacter;
-        public PlayerHitterDetection PlayerHitterDetection => entity.PlayerHitterDetection;
+        public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => entity.PlayerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => entity.HomeworkHandingStation;
         public AITaskSensor TaskSensor => entity.TaskSensor;
+        public AIEntity Entity => entity;
         
         public bool HasReachedItsDestination => !entity.Agent.pathPending &&
                                                 entity.Agent.remainingDistance <= entity.Agent.stoppingDistance &&

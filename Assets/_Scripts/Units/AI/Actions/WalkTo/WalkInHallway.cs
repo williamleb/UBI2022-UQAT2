@@ -17,7 +17,9 @@ namespace Units.AI.Actions
     {
         [SerializeField] private SharedBool endsOnFirstHallwayPointReached = false;
         [SerializeField] private SharedFloat distanceFromHallwayPointToFinish = 2f;
-        
+        [SerializeField] private SharedBool regroup = true;
+        [SerializeField] private SharedBool randomHallway = false;
+
         private Hallway hallwayToWalkIn;
         private HallwayPoint hallwayPointToWalkTo;
         private Vector3 positionToWalkTo;
@@ -54,8 +56,7 @@ namespace Units.AI.Actions
             }
             
             UpdateHallwayProgress();
-            var progressInRelationToGroup = hallwayToWalkIn.GetProgressInRelationToAverage(hallwayPointToWalkTo, Brain.Position);
-            Brain.SetSpeed(Brain.BaseSpeed + SettingsSystem.AISettings.VariationOfSpeedBasedOnPositionComparedToGroup.Evaluate(progressInRelationToGroup));
+            UpdateSpeed();
 
             return TaskStatus.Running;
         }
@@ -64,6 +65,15 @@ namespace Units.AI.Actions
         {
             hallwayProgress.Destination = hallwayPointToWalkTo;
             hallwayProgress.Position = Brain.Position;
+        }
+        
+        private void UpdateSpeed()
+        {
+            if (regroup.Value)
+            {
+                var progressInRelationToGroup = hallwayToWalkIn.GetProgressInRelationToAverage(hallwayPointToWalkTo, Brain.Position);
+                Brain.SetSpeed(Brain.BaseSpeed + SettingsSystem.AISettings.VariationOfSpeedBasedOnPositionComparedToGroup.Evaluate(progressInRelationToGroup));
+            }
         }
 
         private void SeekNextPoint()
@@ -80,7 +90,7 @@ namespace Units.AI.Actions
             if (!HallwayManager.HasInstance)
                 return;
 
-            hallwayToWalkIn = HallwayManager.Instance.GetRandomHallway();
+            hallwayToWalkIn = randomHallway.Value ? HallwayManager.Instance.GetRandomHallway() : HallwayManager.Instance.GetHallway(Brain.AssignedHallway);
             if (!hallwayToWalkIn)
                 return;
             
@@ -107,6 +117,8 @@ namespace Units.AI.Actions
         {
             base.OnReset();
             endsOnFirstHallwayPointReached = false;
+            regroup = true;
+            randomHallway = false;
         }
     }
 }

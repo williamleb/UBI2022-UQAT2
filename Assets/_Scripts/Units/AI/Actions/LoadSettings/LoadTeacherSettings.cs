@@ -14,7 +14,6 @@ namespace Units.AI.Actions
         [SerializeField] private SharedFloat maxSecondsToStayInARoom;
         [SerializeField] private SharedFloat minSecondsToChangePositionInARoom;
         [SerializeField] private SharedFloat maxSecondsToChangePositionInARoom;
-        [SerializeField] private SharedFloat secondsToChaseBadBehavior;
         [SerializeField] private SharedFloat secondsToShowRoomIndicator;
 
         private AISettings settings = null;
@@ -32,7 +31,6 @@ namespace Units.AI.Actions
             maxSecondsToStayInARoom?.SetValue(settings.MaxSecondsToStayInARoom);
             minSecondsToChangePositionInARoom?.SetValue(settings.MinSecondsToChangePositionInARoom);
             maxSecondsToChangePositionInARoom?.SetValue(settings.MaxSecondsToChangePositionInARoom);
-            secondsToChaseBadBehavior?.SetValue(settings.SecondsToChaseBadBehavior);
             secondsToShowRoomIndicator?.SetValue(settings.SecondsToShowRoomIndicator);
         }
 
@@ -48,6 +46,7 @@ namespace Units.AI.Actions
             maxSecondsToStayInARoom = null;
             minSecondsToChangePositionInARoom = null;
             maxSecondsToChangePositionInARoom = null;
+            secondsToShowRoomIndicator = null;
         }
     }
 }

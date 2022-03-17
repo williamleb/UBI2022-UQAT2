@@ -32,9 +32,12 @@ namespace Managers.Hallway
             return Vector3.Dot(position - objectPosition, forward) < 0;
         }
         
+#if UNITY_EDITOR
+        public Color GizmoColor { get; set; } = Color.white;
+        
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.white;
+            Gizmos.color = GizmoColor;
 
             var thisTransform = transform;
             var gizmoPosition = thisTransform.position;
@@ -51,5 +54,6 @@ namespace Managers.Hallway
             
             Gizmos.DrawIcon(gizmoPosition + Vector3.up * 2f, "d_Record Off@2x", true, Color.white);
         }
+#endif
     }
 }

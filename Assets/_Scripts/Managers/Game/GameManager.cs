@@ -5,7 +5,6 @@ using Systems;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities.Singleton;
 
 namespace Managers.Game
@@ -103,6 +102,8 @@ namespace Managers.Game
 
         private IEnumerator SpawnAndStartGameRoutine()
         {
+            // TODO Make level here and wait until level is made
+            
             spawnLocks.Clear();
             yield return null;
             

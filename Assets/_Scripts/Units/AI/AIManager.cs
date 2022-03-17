@@ -2,6 +2,7 @@
 using Systems.Network;
 using Fusion;
 using Managers.Game;
+using Managers.Hallway;
 using Units.AI.Senses;
 using UnityEngine;
 using Utilities.Extensions;
@@ -106,7 +107,7 @@ namespace Units.AI
                 spawnLocationTransform.position, 
                 spawnLocationTransform.rotation, 
                 null, 
-                SetupAIEntityBeforeSpawn);
+                (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway));
             
             var entity = entityGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(entity);
@@ -115,10 +116,12 @@ namespace Units.AI
             aisToSpawn.Add(entity);
         }
 
-        private void SetupAIEntityBeforeSpawn(NetworkRunner runner, NetworkObject aiObject)
+        private void SetupAIEntityBeforeSpawn(NetworkObject aiObject, HallwayColor assignedHallway)
         {
             var entity = aiObject.GetComponent<AIEntity>();
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
+            
+            entity.AssignHallway(assignedHallway);
 
             var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
             var janitorVision = aiObject.GetComponent<JanitorVision>();
