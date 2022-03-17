@@ -17,7 +17,7 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public float WalkMaxSpeed => data.MoveMaximumSpeed;
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
-        public float CurrentSpeed => Velocity.magnitude;
+        public float CurrentSpeed => velocity;
 
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
