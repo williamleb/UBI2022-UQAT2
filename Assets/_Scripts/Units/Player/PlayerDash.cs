@@ -154,7 +154,7 @@ namespace Units.Player
                 {
                     
                     Runner.GetPhysicsScene().Raycast(t.position, t.forward, out RaycastHit info);
-                    if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) > 0.70)
+                    if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
                     {
                         t.forward = Vector3.Reflect(t.forward, info.normal);
                     }
