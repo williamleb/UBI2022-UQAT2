@@ -118,6 +118,7 @@ namespace Units.Player
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
+            ResetVelocity();
             hasHitSomeoneThisFrame = true;
             IsDashing = false;
         }
@@ -126,7 +127,7 @@ namespace Units.Player
         {
             GameObject closestHit = null;
             float distance = float.MaxValue;
-            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, 1, Object.InputAuthority, collisions,
+            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, data.DashDetectionSphereRadius, Object.InputAuthority, collisions,
                     options: HitOptions.IncludePhysX) > 0)
             {
                 foreach (LagCompensatedHit collision in collisions)
@@ -163,6 +164,7 @@ namespace Units.Player
         {
             if (Application.isPlaying)
             {
+                //Tackle aim assist sphere + view angle
                 Gizmos.color = Color.red;
                 Vector3 pos = transform.position;
                 Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
@@ -173,6 +175,10 @@ namespace Units.Player
 
                 Gizmos.DrawLine(pos, pos + viewAngleA * data.DashMaxAimAssistRange);
                 Gizmos.DrawLine(pos, pos + viewAngleB * data.DashMaxAimAssistRange);
+
+                //Tackled detection orb
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(tacklePoint.position,data.DashDetectionSphereRadius);
             }
         }
     }
