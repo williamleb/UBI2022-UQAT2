@@ -59,13 +59,13 @@ namespace Units.AI.Senses
                 new Vector4(0, (2 * far * near)/(far - near), 0, 0));
         }
 
+        private readonly Collider[] colliders = new Collider[10];
         private void DetectObjectsInVision()
         {
             playersInSight.Clear();
             aisInSight.Clear();
             interactionsInSight.Clear();
             
-            var colliders = new Collider[10];
             var thisTransform = transform;
             var halfExtents = new Vector3(farLength / 2f, 10f, far);
             

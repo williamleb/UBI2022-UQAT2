@@ -47,9 +47,9 @@ namespace Managers.Interactions
             return VectorExtensions.SqrDistance(leftPosition, thisPosition).CompareTo(VectorExtensions.SqrDistance(rightPosition, thisPosition));
         }
 
+        private readonly Collider[] colliders = new Collider[4];
         private void DetectNearbyInteraction()
         {
-            Collider[] colliders = new Collider[4];
             interactionsInReach.Clear();
             if (Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Layers.GAMEPLAY_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
             foreach (Collider interact in colliders)

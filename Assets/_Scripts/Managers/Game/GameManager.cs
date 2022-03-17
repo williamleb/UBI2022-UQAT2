@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Systems;
@@ -29,7 +29,7 @@ namespace Managers.Game
         private NetworkedGameData networkedData;
         private GameState currentState;
 
-        private Coroutine spawnAndStartGameCoroutine = null;
+        private Coroutine spawnAndStartGameCoroutine;
         private readonly HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
 
         public int HomeworksHanded => networkedData.PhaseTotalHomework;

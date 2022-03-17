@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Fusion;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -48,7 +49,7 @@ namespace Units.Player
                 }
             }
 
-            yield return new WaitForSeconds(delay - 1); 
+            yield return Helpers.GetWait(delay - 1);
 
             transform.position = ragdollTransform.position.Flat();
             yield return new WaitForEndOfFrame();
@@ -68,9 +69,11 @@ namespace Units.Player
         {
             if (IsMovingFast)
             {
-                Vector3 collisionDirection = (collision.contacts[0].point.Flat() - transform.position).normalized;
+                Transform t = transform;
+                Vector3 f = t.forward;
+                Vector3 collisionDirection = (collision.contacts[0].point.Flat() - t.position).normalized;
                 // ReSharper disable once Unity.InefficientPropertyAccess
-                float collisionDot = Vector3.Dot(transform.forward, collisionDirection);
+                float collisionDot = Vector3.Dot(f, collisionDirection);
 
                 //We didn't hit it, it hit us and it will affect us
                 if (!(collisionDot > 0.65)) return;
@@ -80,14 +83,14 @@ namespace Units.Player
                 {
                     Debug.Log("Hit a wall");
                     ResetVelocity();
-                    Hit(-transform.forward);
+                    Hit(-f);
                 }
                 //Hit another player or AI
                 else if (collision.gameObject.IsAPlayerOrAI())
                 {
                     NetworkObject no = collision.gameObject.GetComponent<NetworkObject>();
-                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),transform.forward);
-                    RPC_GetHitAndDropItems(Object.Id, true, -transform.forward);
+                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f);
+                    RPC_GetHitAndDropItems(Object.Id, true, -f);
                 }
             }
         }

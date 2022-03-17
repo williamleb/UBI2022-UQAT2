@@ -1,9 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using Canvases.Markers;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Mesh;
 using Random = UnityEngine.Random;
@@ -26,7 +27,7 @@ namespace Managers.Rooms
         private Vector3 lowerLeftPosition;
         private Vector3 rotationAngles;
 
-        private Coroutine activateRoomMarkerCoroutine = null;
+        private Coroutine activateRoomMarkerCoroutine;
 
         public int RoomId => Id.GetHashCode();
         public float Probability => probability;
@@ -72,7 +73,7 @@ namespace Managers.Rooms
         private IEnumerator ActivateRoomMarkerRoutine(float secondsOfActivation)
         {
             roomMarker.Activate();
-            yield return new WaitForSeconds(secondsOfActivation);
+            yield return Helpers.GetWait(secondsOfActivation);
             roomMarker.Deactivate();
 
             activateRoomMarkerCoroutine = null;

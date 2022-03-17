@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Managers.Interactions;
 using Utilities.Singleton;
 
 namespace Managers.Rooms
 {
     public class RoomManager : Singleton<RoomManager>
     {
-        private Dictionary<int, Room> rooms = new Dictionary<int, Room>();
+        private readonly Dictionary<int, Room> rooms = new Dictionary<int, Room>();
 
         public IEnumerable<Room> Rooms => rooms.Values;
 
