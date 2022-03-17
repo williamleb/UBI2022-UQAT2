@@ -124,32 +124,43 @@ namespace Units.Player
 
         private void DetectCollision()
         {
-            GameObject closestHit = null;
+            LagCompensatedHit closestHit = new LagCompensatedHit();
             float distance = float.MaxValue;
             if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, 1, Object.InputAuthority, collisions,
                     options: HitOptions.IncludePhysX) > 0)
             {
+                Transform t = transform;
                 foreach (LagCompensatedHit collision in collisions)
                 {
                     if (collision.GameObject == gameObject ||
                         collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
-                    float dst = Vector3.Distance(transform.position, collision.GameObject.transform.position);
+                    float dst = Vector3.Distance(t.position, collision.GameObject.transform.position);
                     if (dst < distance)
                     {
-                        closestHit = collision.GameObject;
+                        closestHit = collision;
                         distance = dst;
                     }
                 }
 
-                if (!closestHit) return;
-
-                if (closestHit.IsAPlayerOrAI())
+                GameObject go = closestHit.GameObject;
+                if (!go) return;
+                
+                if (go.IsAPlayerOrAI())
                 {
-                    OnHitOtherEntity(closestHit);
+                    OnHitOtherEntity(go);
                 }
-                else if (closestHit.CompareTag(Tags.COLLIDABLE))
+                else if (go.CompareTag(Tags.COLLIDABLE))
                 {
-                    OnHitObject();
+                    
+                    Runner.GetPhysicsScene().Raycast(t.position, t.forward, out RaycastHit info);
+                    if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) > 0.70)
+                    {
+                        t.forward = Vector3.Reflect(t.forward, info.normal);
+                    }
+                    else
+                    {
+                        OnHitObject();
+                    }
                 }
             }
         }
