@@ -78,7 +78,7 @@ namespace Units.Player
             {
                 if (!IsAiming)
                 {
-                    bool canSprint = isSprinting && !inventory.HasHomework;
+                    bool canSprint = isSprinting && !inventory.HasHomework && velocity >= data.MoveMaximumSpeed;
                     //Add other speed related logic. Boosters, slow when holding golden homework?
                     float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                     float sprintAcceleration =
@@ -127,6 +127,7 @@ namespace Units.Player
         private void ResetVelocity()
         {
             velocity = 0;
+            currentMaxMoveSpeed = data.MoveMaximumSpeed;
         }
     }
 }

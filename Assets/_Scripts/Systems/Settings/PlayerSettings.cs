@@ -81,6 +81,10 @@ namespace Systems.Settings
         [MinValue(0)]
         [MaxValue(1)]
         private float dashAimAssistForce = 0.5f;
+        [Tooltip("The size of the detection sphere in front of the player. If set too big, it will detect walls on the player's sides instead of only in front")]
+        [SerializeField]
+        [MinValue(0)]
+        private float dashDetectionSphereRadius = 0.5f;
 
         [Space] 
         [Header("Throw config")] 
@@ -150,6 +154,7 @@ namespace Systems.Settings
         public int ImmunityTime => immunityTime;
         public float CameraPointSpeed => playerCameraSettings.CameraPointSpeed;
         public Vector3 CameraPointOffset => playerCameraSettings.CameraPointOffset;
+        public float DashDetectionSphereRadius => dashDetectionSphereRadius;
 
         [Serializable]
         public class PlayerCameraSettings
