@@ -1,5 +1,4 @@
 ﻿using Fusion;
-using Units.Player;
 using UnityEngine;
 
 namespace Systems.Network

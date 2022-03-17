@@ -1,90 +1,89 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Systems;
 using Systems.Settings;
 using TMPro;
 using Units.Player;
 using UnityEngine;
+using Utilities;
 using Utilities.Singleton;
 
-public class ReadyUpManager : Singleton<ReadyUpManager>
+namespace Managers.Lobby
 {
-    private bool allPlayersReady;
-    private MatchmakingSettings data;
-    private Coroutine startCoroutine;
-    private PlayerSystem playerSystem;
-
-    [SerializeField] private TextMeshProUGUI countdownText;
-    [SerializeField] private GameObject readyUpMessage;
-
-    private void Start()
+    public class ReadyUpManager : Singleton<ReadyUpManager>
     {
-        data = SettingsSystem.MatchmakingSettings;
+        private bool allPlayersReady;
+        private MatchmakingSettings data;
+        private Coroutine startCoroutine;
+        private PlayerSystem playerSystem;
 
-        countdownText.gameObject.SetActive(false);
-        playerSystem = PlayerSystem.Instance;
-    }
+        [SerializeField] private TextMeshProUGUI countdownText;
+        [SerializeField] private GameObject readyUpMessage;
 
-    void Update()
-    {
-        allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
-
-        foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
+        private void Start()
         {
-            if (playerEntity.Object.HasInputAuthority)
+            data = SettingsSystem.MatchmakingSettings;
+
+            countdownText.gameObject.SetActive(false);
+            playerSystem = PlayerSystem.Instance;
+        }
+
+        private void Update()
+        {
+            allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
+
+            foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
             {
-                if (playerEntity.IsReady)
-                    readyUpMessage.SetActive(false);
-                else
-                    readyUpMessage.SetActive(true);
+                if (playerEntity.Object.HasInputAuthority)
+                {
+                    readyUpMessage.SetActive(!playerEntity.IsReady);
+                }
+
+                if (!playerEntity.IsReady)
+                    allPlayersReady = false;
             }
 
-            if (!playerEntity.IsReady)
-                allPlayersReady = false;
+            if (startCoroutine != null && !allPlayersReady)
+            {
+                countdownText.gameObject.SetActive(false);
+                StopCoroutine(startCoroutine);
+                startCoroutine = null;
+            }
+
+            if (startCoroutine == null && allPlayersReady)
+            {
+                countdownText.gameObject.SetActive(true);
+                startCoroutine = StartCoroutine(StartGameCoroutine());
+            }
         }
 
-        if (startCoroutine != null && !allPlayersReady)
+        IEnumerator StartGameCoroutine()
         {
-            countdownText.gameObject.SetActive(false);
-            StopCoroutine(startCoroutine);
-            startCoroutine = null;
+            for (int i = data.CountDownTime; i > 0; i--)
+            {
+                countdownText.text = $"{data.CountDownMessage} {i}.";
+                yield return Helpers.GetWait(0.25f);
+
+                countdownText.text += ".";
+                yield return Helpers.GetWait(0.25f);
+
+                countdownText.text += ".";
+                yield return Helpers.GetWait(0.25f);
+
+                countdownText.text += ".";
+                yield return Helpers.GetWait(0.25f);
+            }
+
+            LevelSystem.Instance.LoadGame();
+
+            ResetIsReadyAllPlayer();
         }
 
-        if (startCoroutine == null && allPlayersReady)
+        private void ResetIsReadyAllPlayer()
         {
-            countdownText.gameObject.SetActive(true);
-            startCoroutine = StartCoroutine(StartGameCoroutine());
-        }
-    }
-
-    IEnumerator StartGameCoroutine()
-    {
-        for (int i = data.CountDownTime; i > 0; i--)
-        {
-            countdownText.text = $"{data.CountDownMessage} {i}.";
-            yield return new WaitForSeconds(0.25f);
-
-            countdownText.text += $".";
-            yield return new WaitForSeconds(0.25f);
-
-            countdownText.text += $".";
-            yield return new WaitForSeconds(0.25f);
-
-            countdownText.text += $".";
-            yield return new WaitForSeconds(0.25f);
-        }
-
-        LevelSystem.Instance.LoadGame();
-
-        ResetIsReadyAllPlayer();
-    }
-
-    private void ResetIsReadyAllPlayer()
-    {
-        foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
-        {
-            playerEntity.IsReady = false;
+            foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
+            {
+                playerEntity.IsReady = false;
+            }
         }
     }
 }

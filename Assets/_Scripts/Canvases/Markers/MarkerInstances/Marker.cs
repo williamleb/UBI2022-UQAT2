@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DigitalRuby.Tween;
 using Fusion;
 using Systems;
@@ -21,9 +21,9 @@ namespace Canvases.Markers
 
         private Action<Marker> release;
 
-        private bool justActivated = false;
-        private bool isOutsideCamera = false;
-        private FloatTween insideOutsideCameraTransitionTween = null;
+        private bool justActivated;
+        private bool isOutsideCamera;
+        private FloatTween insideOutsideCameraTransitionTween;
 
         public bool IsActivated => release != null;
 
@@ -33,7 +33,7 @@ namespace Canvases.Markers
             set => worldPosition = value;
         }
         
-        public bool ShowOutsideCameraBorders { get; set; } = false;
+        public bool ShowOutsideCameraBorders { get; set; }
         public Vector2 Padding { get; set; } = new Vector2(10f, 10f);
 
         public float Scale

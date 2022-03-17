@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,7 @@ using Sirenix.Utilities;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
+using Utilities;
 using Utilities.Event;
 using Utilities.Extensions;
 using Utilities.Singleton;
@@ -150,7 +151,7 @@ namespace Ingredients.Homework
             while (true)
             {
                 var secondsToWaitBeforeSpawn = Random.Range(settings.MinSecondsBeforeHomeworkSpawn, settings.MaxSecondsBeforeHomeworkSpawn);
-                yield return new WaitForSeconds(secondsToWaitBeforeSpawn);
+                yield return Helpers.GetWait(secondsToWaitBeforeSpawn);
                 yield return new WaitUntil(DoesNotHaveMaximumAmountOfHomeworksActivated);
                 
                 ActivateHomework();
@@ -162,7 +163,7 @@ namespace Ingredients.Homework
         {
             while (true)
             {
-                yield return new WaitForSeconds(1f);
+                yield return Helpers.GetWait(1f);
                 
                 FreeAllHomeworkPastSecurityNet();
                 ActivateHomeworkIfEveryHomeworkIsFree();
@@ -316,12 +317,12 @@ namespace Ingredients.Homework
             }
         }
 
-        private bool IsCooldownFinished(HomeworkDefinition homrworkDefinition)
+        private bool IsCooldownFinished(HomeworkDefinition homeworkDefinition)
         {
-            if (!cooldowns.ContainsKey(homrworkDefinition.Type))
+            if (!cooldowns.ContainsKey(homeworkDefinition.Type))
                 return true;
 
-            return cooldowns[homrworkDefinition.Type] <= 0;
+            return cooldowns[homeworkDefinition.Type] <= 0;
         }
 
         private readonly List<BurstWithType> burstsToRemove = new List<BurstWithType>();

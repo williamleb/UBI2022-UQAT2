@@ -10,7 +10,7 @@ namespace Canvases.Prompts
 {
     [RequireComponent(typeof(ImageUIComponent))]
     [RequireComponent(typeof(CanvasGroup))]
-    class Prompt : MonoBehaviour
+    public class Prompt : MonoBehaviour
     {
         [SerializeField, Tooltip("Action assigned to the prompt at start")]
         private InputActionReference actionAtStart;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -16,8 +16,8 @@ namespace Managers.Hallway
         [SerializeField, PropertyRange(0.01f, 1f)] private float probability = 0.5f;
 
         private readonly List<HallwayProgress> hallwayGroup = new List<HallwayProgress>();
-        private float groupAverageProgress = 0f;
-        
+        private float groupAverageProgress;
+
         public float Probability => probability;
         public int HallwayId => Id.GetHashCode();
         public int Size => hallwayPoints.Count;
@@ -70,12 +70,12 @@ namespace Managers.Hallway
             var closestPoint = hallwayPoints.First();
             var minDistance = float.MaxValue;
             
-            for (var i = 0; i < hallwayPoints.Count; ++i)
+            foreach (HallwayPoint t in hallwayPoints)
             {
-                var distance = position.SqrDistanceWith(hallwayPoints[i].transform.position);
+                var distance = position.SqrDistanceWith(t.transform.position);
                 if (distance < minDistance)
                 {
-                    closestPoint = hallwayPoints[i];
+                    closestPoint = t;
                     minDistance = distance;
                 }
             }

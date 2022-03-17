@@ -1,4 +1,3 @@
-﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace Canvases.Markers
     {
         [SerializeField] private float markerScale = 1.0f;
         [SerializeField] private bool lockInPlace = true;
-        [SerializeField] private bool showOutsideCameraBorders = false;
+        [SerializeField] private bool showOutsideCameraBorders;
         [SerializeField, ShowIf(nameof(showOutsideCameraBorders))] private Vector2 padding = new Vector2(10f, 10f);
         
         private T currentMarker;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Systems.Sound;
 using UnityEngine;
+using Utilities;
 
 namespace Ingredients.Bababooey
 {
@@ -25,7 +26,7 @@ namespace Ingredients.Bababooey
             {
                 SoundSystem.Instance.PlayBababooeySound();
                 
-                yield return new WaitForSeconds(1f);
+                yield return Helpers.GetWait(1f);
             }
         }
     }

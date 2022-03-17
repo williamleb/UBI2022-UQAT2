@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -9,7 +9,7 @@ namespace Managers.Hallway
 {
     public class HallwayManager : Singleton<HallwayManager>
     {
-        private Dictionary<int, Hallway> hallways = new Dictionary<int, Hallway>();
+        private readonly Dictionary<int, Hallway> hallways = new Dictionary<int, Hallway>();
 
         public IEnumerable<Hallway> Hallways => hallways.Values;
 

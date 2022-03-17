@@ -1,5 +1,4 @@
-﻿using System;
-using Canvases.Components;
+﻿using Canvases.Components;
 using Managers.Game;
 using Sirenix.OdinInspector;
 using UnityEngine;

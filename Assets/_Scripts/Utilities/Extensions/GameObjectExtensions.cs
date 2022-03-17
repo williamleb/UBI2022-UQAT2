@@ -1,7 +1,6 @@
 using Fusion;
 using UnityEngine;
 using Utilities.Unity;
-using Behaviour = Fusion.Behaviour;
 
 namespace Utilities.Extensions
 {
@@ -17,7 +16,7 @@ namespace Utilities.Extensions
         public static bool IsVisible(this GameObject gameObject) => gameObject.activeSelf;
 
         /// <summary>
-        /// First, look in the parent if it has the component, then the current gameobject
+        /// First, look in the parent if it has the component, then the current gameObject
         /// This is done because entities have their collider a level lower than their parent game object with contains
         /// most of their scripts.
         /// </summary>
