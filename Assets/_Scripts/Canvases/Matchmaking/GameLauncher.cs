@@ -3,8 +3,9 @@ using Systems.Network;
 using Systems.Settings;
 using TMPro;
 using UnityEngine;
+using Utilities;
 
-namespace Matchmaking
+namespace Canvases.Matchmaking
 {
     public class GameLauncher : MonoBehaviour
     {
@@ -13,6 +14,7 @@ namespace Matchmaking
 
         [SerializeField] private GameObject hostUI;
         [SerializeField] private GameObject clientUI;
+        // ReSharper disable once InconsistentNaming Reason: UI should be capitalized
         [SerializeField] private GameObject UICurtain;
         [SerializeField] private GameObject menuCanvas;
         
@@ -34,7 +36,7 @@ namespace Matchmaking
            
             var isGameCreated = await NetworkSystem.Instance.CreateGame(createGameTextField.text);
             
-            if (isGameCreated == true)
+            if (isGameCreated)
             {
                 menuCanvas.SetActive(false);
             }
@@ -54,7 +56,7 @@ namespace Matchmaking
 
             var isGameJoined = await NetworkSystem.Instance.TryJoinGame(joinGameTextField.text);
 
-            if (isGameJoined == true)
+            if (isGameJoined)
             {
                 menuCanvas.SetActive(false);
             }
@@ -70,7 +72,7 @@ namespace Matchmaking
         {
             errorMessage.gameObject.SetActive(true);
             errorMessage.text = message;
-            yield return new WaitForSeconds(5);
+            yield return Helpers.GetWait(5);
             errorMessage.gameObject.SetActive(false);
         }
     }

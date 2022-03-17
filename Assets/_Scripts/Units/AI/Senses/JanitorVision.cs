@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Units.AI.Senses
 {
-    public class TeacherVision : Vision
+    public class JanitorVision : Vision
     {
         [Header("Editor mode only")]
         [SerializeField] private AISettings editorOnlyTeacherSettings;

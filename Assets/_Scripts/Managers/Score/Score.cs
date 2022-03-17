@@ -32,7 +32,7 @@ namespace Managers.Score
 
         public void Remove(int scoreToRemove)
         {
-            Value -= scoreToRemove;
+            Value = Math.Max(0, Value - scoreToRemove);
         }
 
         public void Reset()

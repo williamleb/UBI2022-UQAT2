@@ -16,7 +16,7 @@ namespace Managers.Interactions
         
         [SerializeField] private PromptMarkerReceptor markerToShowWhenInteractionPossible;
 
-        private List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
+        private readonly List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
         
         private bool interactionEnabled = true;
         private bool interactionPossible;

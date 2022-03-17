@@ -2,6 +2,8 @@
 using Systems.Network;
 using Fusion;
 using Managers.Game;
+using Managers.Hallway;
+using Units.AI.Senses;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Singleton;
@@ -12,10 +14,12 @@ namespace Units.AI
     {
         private AIEntity teacher = null;
         private readonly List<AIEntity> students = new List<AIEntity>();
+        private readonly List<AIEntity> janitors = new List<AIEntity>();
 
         private readonly List<AIEntity> aisToSpawn = new List<AIEntity>();
 
         public AIEntity Teacher => teacher;
+        public IEnumerable<AIEntity> Janitors => janitors;
         public IEnumerable<AIEntity> Students => students;
 
         public void RegisterTeacher(AIEntity teacherAI)
@@ -42,6 +46,18 @@ namespace Units.AI
         public void UnregisterStudent(AIEntity student)
         {
             students.Remove(student);
+        }
+        
+        public void RegisterJanitor(AIEntity janitor)
+        {
+            janitors.Add(janitor);
+            
+            UpdateAISpawned(janitor);
+        }
+
+        public void UnregisterJanitor(AIEntity janitor)
+        {
+            janitors.Remove(janitor);
         }
 
         private void UpdateAISpawned(AIEntity aiEntity)
@@ -91,7 +107,7 @@ namespace Units.AI
                 spawnLocationTransform.position, 
                 spawnLocationTransform.rotation, 
                 null, 
-                SetupAIEntityBeforeSpawn);
+                (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway));
             
             var entity = entityGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(entity);
@@ -100,13 +116,18 @@ namespace Units.AI
             aisToSpawn.Add(entity);
         }
 
-        private void SetupAIEntityBeforeSpawn(NetworkRunner runner, NetworkObject aiObject)
+        private void SetupAIEntityBeforeSpawn(NetworkObject aiObject, HallwayColor assignedHallway)
         {
             var entity = aiObject.GetComponent<AIEntity>();
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
+            
+            entity.AssignHallway(assignedHallway);
 
             var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
+            var janitorVision = aiObject.GetComponent<JanitorVision>();
+
             if (homeworkHandingStation) entity.MarkAsTeacher();
+            else if (janitorVision) entity.MarkAsJanitor();
             else entity.MarkAsStudent();
         }
     }

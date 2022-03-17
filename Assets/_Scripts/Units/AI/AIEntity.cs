@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using Fusion;
 using Interfaces;
+using Managers.Hallway;
 using Systems.Settings;
 using Units.AI.Senses;
 using UnityEngine;
@@ -16,7 +18,16 @@ namespace Units.AI
     public class AIEntity : NetworkBehaviour, IVelocityObject
     {
         private static readonly int walking = Animator.StringToHash("IsWalking");
-        
+
+        public event Action<GameObject> OnHit; 
+
+        private enum AIType : byte
+        {
+            Student = 0,
+            Teacher,
+            Janitor
+        }
+
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
@@ -28,27 +39,34 @@ namespace Units.AI
         private AIInteracter interacter;
         private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
-        private PlayerHitterDetection playerHitterDetection;
+        private PlayerBadBehaviorDetection playerBadBehaviorDetection;
         private HomeworkHandingStation homeworkHandingStation;
         private AITaskSensor taskSensor;
         private AIBrain brain;
 
+        private AISettings settings;
         private Transform aiColliderTransform;
         private Coroutine hitCoroutine = null;
 
-        [Networked] public bool IsTeacher { get; private set; }
+        [Networked, Capacity(8)] private AIType Type { get; set; }
+        private bool IsTeacher => Type == AIType.Teacher;
+        private bool IsJanitor => Type == AIType.Janitor;
+        
+        [Networked, Capacity(8)] public HallwayColor AssignedHallway{ get; private set; }
 
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
         public Animator Animator => animator;
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
-        public PlayerHitterDetection PlayerHitterDetection => playerHitterDetection;
+        public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => playerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
         public AITaskSensor TaskSensor => taskSensor;
         public Vector3 Velocity => agent.velocity;
 
         public bool IsHit => hitCoroutine != null;
+
+        public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
 
         private void Awake()
         {
@@ -57,16 +75,21 @@ namespace Units.AI
             interacter = GetComponent<AIInteracter>();
             animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
-            playerHitterDetection = GetComponent<PlayerHitterDetection>();
+            playerBadBehaviorDetection = GetComponent<PlayerBadBehaviorDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
             taskSensor = GetComponent<AITaskSensor>();
-            
+            settings = SettingsSystem.AISettings;
+
             inventory.AssignVelocityObject(this);
+
         }
 
-        // Those two methods should only be called before the AI entity is spawned
-        public void MarkAsTeacher() => IsTeacher = true;
-        public void MarkAsStudent() => IsTeacher = false;
+        // Those three methods should only be called before the AI entity is spawned
+        public void MarkAsTeacher() => Type = AIType.Teacher;
+        public void MarkAsStudent() => Type = AIType.Student;
+        public void MarkAsJanitor() => Type = AIType.Janitor;
+
+        public void AssignHallway(HallwayColor hallwayColor) => AssignedHallway = hallwayColor;
 
         public override void Spawned()
         {
@@ -142,6 +165,8 @@ namespace Units.AI
 
             if (IsTeacher)
                 AIManager.Instance.RegisterTeacher(this);
+            else if (IsJanitor)
+                AIManager.Instance.RegisterJanitor(this);
             else
                 AIManager.Instance.RegisterStudent(this);
         }
@@ -153,6 +178,8 @@ namespace Units.AI
 
             if (IsTeacher)
                 AIManager.Instance.UnregisterTeacher(this);
+            else if (IsJanitor)
+                AIManager.Instance.UnregisterJanitor(this);
             else
                 AIManager.Instance.UnregisterStudent(this);
         }
@@ -175,19 +202,24 @@ namespace Units.AI
             brain.AssignEntity(this);
         }
 
-        public void Hit()
+        public void Hit(GameObject hitter, float overrideHitDuration = -1)
         {
+            // Teachers cannot be hit
+            if (IsTeacher)
+                return;
+            
             if (hitCoroutine != null)
             {
                 StopHitRoutine();
             }
             
-            hitCoroutine = StartCoroutine(HitRoutine());
+            OnHit?.Invoke(hitter);
+            hitCoroutine = StartCoroutine(HitRoutine(overrideHitDuration));
         }
 
-        private IEnumerator HitRoutine()
+        private IEnumerator HitRoutine(float overrideHitDuration)
         {
-            var secondsToWait = SettingsSystem.AISettings.SecondsDownAfterBeingHit;
+            var secondsToWait = overrideHitDuration > 0f ? overrideHitDuration : settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
             hitCoroutine = null;
         }

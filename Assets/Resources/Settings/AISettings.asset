@@ -12,15 +12,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411a921cc4034e08ab7711c8db6c8cf6, type: 3}
   m_Name: AISettings
   m_EditorClassIdentifier: 
+  secondsToStayInARoom: {x: 10, y: 15}
+  secondsToChangePositionsInARoom: {x: 3, y: 5}
+  secondsToShowRoomIndicator: 10
+  baseTeacherSpeed: 3.5
   visionNear: 1
   visionFar: 10
   visionNearLength: 2
   visionFarLength: 20
-  secondsOfImmobilisationBadBehavior: 1.5
-  secondsOfImmobilisationFakeHomework: 1.5
-  secondsToStayInARoom: {x: 10, y: 15}
-  secondsToChangePositionsInARoom: {x: 3, y: 5}
-  secondsToShowRoomIndicator: 10
+  secondsOfImmobilisationBadBehavior: 4
   secondsToChaseBadBehavior: 5
+  baseJanitorSpeed: 3.5
+  chaseBadBehaviorSpeed: 7
   secondsDownAfterBeingHit: 2
   secondsToNoticeHomework: {x: 5, y: 10}
+  baseStudentSpeed: 3.5
+  variationOfSpeedBasedOnPositionComparedToGroup:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.5
+      value: 2.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: -0.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

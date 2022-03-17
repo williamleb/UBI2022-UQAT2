@@ -13,7 +13,7 @@ namespace Canvases.HUDs
         [SerializeField, Required] private RectTransform hudScoreContainer;
         [SerializeField, Required] private GameObject hudScorePrefab;
         
-        private Dictionary<PlayerRef, HUDScore> hudScores = new Dictionary<PlayerRef, HUDScore>();
+        private readonly Dictionary<PlayerRef, HUDScore> hudScores = new Dictionary<PlayerRef, HUDScore>();
 
         private void Start()
         {
