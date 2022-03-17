@@ -82,6 +82,9 @@ namespace Units.Player
                 if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
                 {
                     Debug.Log("Hit a wall");
+                    
+                    //TODO if it has a rigidbody slap that object based on the current player's velocity and contact point.
+                    
                     ResetVelocity();
                     Hit(-f);
                 }
