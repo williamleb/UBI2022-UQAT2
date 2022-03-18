@@ -13,9 +13,11 @@ namespace Systems.Settings
         private const int NUMBER_OF_MATERIALS_CLOTHES = 6;
         
         [SerializeField, TableList] private List<HeadElement> headElements = new List<HeadElement>();
+        [SerializeField, TableList] private List<EyeElement> eyeElements = new List<EyeElement>();
 
         public int NumberOfHeadElements => headElements.Count;
         public int NumberOfHairColors => NUMBER_OF_MATERIALS_HAIR;
+        public int NumberOfEyeElements => eyeElements.Count;
 
         public GameObject GetHeadElementPrefab(int index)
         {
@@ -39,8 +41,44 @@ namespace Systems.Settings
             return headElements[headElementIndex].HairMaterialIndex;
         }
 
+        public GameObject GetFacePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].FacePrefab;
+        }
+        
+        public GameObject GetNosePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].NosePrefab;
+        }
+        
+        public GameObject GetLeftEyePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].LeftEyePrefab;
+        }
+        
+        public GameObject GetRightEyePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].RightEyePrefab;
+        }
+        
+        public GameObject GetAltLeftEyePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].LeftAltEyePrefab;
+        }
+        
+        public GameObject GetAltRightEyePrefabForEyes(int eyeIndex)
+        {
+            Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
+            return eyeElements[eyeIndex].RightAltEyePrefab;
+        }
+
         [Serializable]
-        public class HeadElement
+        private class HeadElement
         {
             [SerializeField] private string name;
             
@@ -77,6 +115,31 @@ namespace Systems.Settings
             {
                 return modelPrefab == null || modelPrefab.GetComponentInChildren<Renderer>() != null;
             }
+        }
+        
+        [Serializable]
+        private class EyeElement
+        {
+            [SerializeField] private string name;
+            
+            [PreviewField]
+            [SerializeField] private GameObject facePrefab;
+            
+            [PreviewField]
+            [SerializeField] private GameObject nosePrefab;
+
+            [VerticalGroup("EyePrefabs"), PreviewField] 
+            [SerializeField] private GameObject leftEyePrefab, rightEyePrefab;
+            
+            [VerticalGroup("AltEyePrefabs"), PreviewField] 
+            [SerializeField] private GameObject leftAltEyePrefab, rightAltEyePrefab;
+
+            public GameObject FacePrefab => facePrefab;
+            public GameObject NosePrefab => nosePrefab;
+            public GameObject LeftEyePrefab => leftEyePrefab;
+            public GameObject RightEyePrefab => rightEyePrefab;
+            public GameObject LeftAltEyePrefab => leftAltEyePrefab;
+            public GameObject RightAltEyePrefab => rightAltEyePrefab;
         }
     }
 }

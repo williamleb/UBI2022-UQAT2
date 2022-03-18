@@ -4,44 +4,44 @@ namespace Units.Player.Customisation
 {
     public class CustomizationPoint : MonoBehaviour
     {
-        private GameObject currentHead;
+        private GameObject currentElement;
 
-        public void LoadHead(GameObject head)
+        public void LoadElement(GameObject head)
         {
-            UnloadCurrentHead();
+            UnloadCurrentElement();
 
             if (head == null)
                 return;
 
-            currentHead = Instantiate(head, transform);
+            currentElement = Instantiate(head, transform);
         }
 
-        private void UnloadCurrentHead()
+        private void UnloadCurrentElement()
         {
-            if (currentHead == null)
+            if (currentElement == null)
                 return;
 
-            Destroy(currentHead);
+            Destroy(currentElement);
         }
 
-        public void LoadMaterialOnHead(Material material, int materialIndex)
+        public void LoadMaterialOnElement(Material material, int materialIndex)
         {
             if (material == null)
                 return;
 
-            if (currentHead == null)
+            if (currentElement == null)
                 return;
 
-            var renderer = currentHead.GetComponentInChildren<Renderer>();
-            if (renderer == null)
+            var meshRenderer = currentElement.GetComponentInChildren<Renderer>();
+            if (meshRenderer == null)
                 return;
 
-            if (materialIndex < 0 || materialIndex >= renderer.materials.Length)
+            if (materialIndex < 0 || materialIndex >= meshRenderer.materials.Length)
                 return;
 
-            var materials = renderer.materials;
+            var materials = meshRenderer.materials;
             materials[materialIndex] = material;
-            renderer.materials = materials;
+            meshRenderer.materials = materials;
         }
     }
 }
