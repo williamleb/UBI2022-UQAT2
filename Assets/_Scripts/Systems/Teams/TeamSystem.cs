@@ -147,7 +147,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         {
             stringBuilder.Append(teamSettings.TeamAdjectives[Random.Range(0, teamSettings.TeamAdjectives.Length)].Capitalize());
             stringBuilder.Append(" ");
-            stringBuilder.Append(teamSettings.TeamAdjectives[Random.Range(0, teamSettings.TeamAdjectives.Length)]);
+            stringBuilder.Append(teamSettings.TeamPronouns[Random.Range(0, teamSettings.TeamPronouns.Length)]);
         } while (string.IsNullOrEmpty(stringBuilder.ToString()) && IsNameAlreadyUsed(stringBuilder.ToString()));
         
         return stringBuilder.ToString();
