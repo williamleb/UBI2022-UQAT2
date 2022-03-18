@@ -84,6 +84,8 @@ namespace Units.Player.Customisation
             Head = Random.Range(0, settings.NumberOfHeadElements);
             HairColor = Random.Range(0, settings.NumberOfHairColors);
             Eyes = Random.Range(0, settings.NumberOfEyeElements);
+            Skin = Random.Range(0, settings.NumberOfSkinElements);
+            ClothesColor = Random.Range(0, settings.NumberOfClothesColorElements); // TODO Load that from the current team
         }
 
         private void UpdateHead()
