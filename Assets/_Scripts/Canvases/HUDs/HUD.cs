@@ -12,57 +12,58 @@ namespace Canvases.HUDs
         [Header("HUD Scores")]
         [SerializeField, Required] private RectTransform hudScoreContainer;
         [SerializeField, Required] private GameObject hudScorePrefab;
-        
-        private readonly Dictionary<PlayerRef, HUDScore> hudScores = new Dictionary<PlayerRef, HUDScore>();
+
+        //Dictionary<TeamId, HUDScore>
+        private readonly Dictionary<string, HUDScore> hudScores = new Dictionary<string, HUDScore>();
 
         private void Start()
         {
             if (!ScoreManager.HasInstance)
                 return;
-            
-            ScoreManager.Instance.OnScoreRegistered += OnScoreRegistered;
-            ScoreManager.Instance.OnScoreUnregistered += OnScoreUnregistered;
+
+            Team.OnTeamSpawned += OnTeamSpawn;
+            Team.OnTeamDespawned += OnTeamDespawned;
         }
 
         private void OnDestroy()
         {
             if (!ScoreManager.HasInstance)
                 return;
-            
-            ScoreManager.Instance.OnScoreRegistered -= OnScoreRegistered;
-            ScoreManager.Instance.OnScoreUnregistered -= OnScoreUnregistered;
+
+            Team.OnTeamSpawned -= OnTeamSpawn;
+            Team.OnTeamDespawned -= OnTeamDespawned;
         }
 
-        private void OnScoreRegistered(Score score, PlayerRef player)
+        private void OnTeamSpawn(Team team)
         {
-            SpawnScore(score, player);
+            SpawnScoreHud(team);
         }
 
-        private void OnScoreUnregistered(PlayerRef player)
+        private void OnTeamDespawned(Team team)
         {
-            DestroyScore(player);
+            DestroyScore(team);
         }
 
-        private void SpawnScore(Score score, PlayerRef player)
+        private void SpawnScoreHud(Team team)
         {
             var hudScoreGameObject = Instantiate(hudScorePrefab, hudScoreContainer);
-            hudScoreGameObject.name = $"HUDScore-Player{player.PlayerId}";
+            hudScoreGameObject.name = $"HUDScore-TeamId{team.TeamId}";
             
             var hudScore = hudScoreGameObject.GetComponent<HUDScore>();
             Debug.Assert(hudScore);
             
-            hudScore.Init(score);
-            hudScores.Add(player, hudScore);
+            hudScore.Init(team);
+            hudScores.Add(team.TeamId, hudScore);
             
             RedrawScoresLayout();
         }
 
-        private void DestroyScore(PlayerRef player)
+        private void DestroyScore(Team team)
         {
-            Debug.Assert(hudScores.ContainsKey(player));
-            var hudScore = hudScores[player];
+            Debug.Assert(hudScores.ContainsKey(team.TeamId));
+            var hudScore = hudScores[team.TeamId];
             
-            hudScores.Remove(player);
+            hudScores.Remove(team.TeamId);
             Destroy(hudScore.gameObject);
             
             RedrawScoresLayout();
