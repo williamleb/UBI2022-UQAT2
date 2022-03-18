@@ -14,7 +14,7 @@ namespace Ingredients.Homework
     [RequireComponent(typeof(Rigidbody))]
     public class Homework : NetworkBehaviour
     {
-        private static readonly int isSpawned = Animator.StringToHash("IsSpawned");
+        private static readonly int IsSpawned = Animator.StringToHash("IsSpawned");
 
         private enum State : byte
         {
@@ -188,7 +188,7 @@ namespace Ingredients.Homework
             }
 
             rb.isKinematic = HomeworkState != State.InWorld;
-            animator.SetBool(isSpawned, HomeworkState != State.Free);
+            animator.SetBool(IsSpawned, HomeworkState != State.Free);
             
             UpdateHomeworkMarkerVisibility();     
             EventOnStateChanged?.Invoke(this);

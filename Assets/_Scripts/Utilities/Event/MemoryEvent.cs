@@ -30,10 +30,7 @@ namespace Utilities.Event
         /// </summary>
         public void InvokeWithMemory(T parameter)
         {
-            if (memory == null)
-            {
-                memory = new List<T>();
-            }
+            memory ??= new List<T>();
             
             memory.Add(parameter);
             OnEvent?.Invoke(parameter);

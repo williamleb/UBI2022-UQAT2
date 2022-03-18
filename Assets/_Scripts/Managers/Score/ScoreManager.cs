@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -22,14 +22,11 @@ namespace Managers.Score
         
         [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
         
-        private Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
+        private readonly Dictionary<PlayerRef, Score> scores = new Dictionary<PlayerRef, Score>();
 
         public Score GetScoreForPlayer(PlayerRef player)
         {
-            if (!scores.ContainsKey(player))
-                return null;
-
-            return scores[player];
+            return !scores.ContainsKey(player) ? null : scores[player];
         }
 
         public void RegisterScore(Score score, PlayerRef player)
@@ -69,6 +66,20 @@ namespace Managers.Score
             
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();
+        }
+
+        public void RemoveScore(PlayerEntity playerEntity, int numberOfPointsToLose)
+        {
+            if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
+                return;
+            
+            // TODO Manage teams (remove points to team)
+
+            var player = playerEntity.Object.InputAuthority;
+            var score = GetScoreForPlayer(player);
+            if (!score) Debug.LogWarning($"Tried to remove for player {player.PlayerId} which doesn't have any score");
+
+            score.Remove(numberOfPointsToLose);
         }
         
         public PlayerRef FindPlayerWithHighestScore()

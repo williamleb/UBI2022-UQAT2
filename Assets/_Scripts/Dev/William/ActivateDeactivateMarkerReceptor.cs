@@ -1,5 +1,4 @@
 ﻿using Canvases.Markers;
-using Managers.Game;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

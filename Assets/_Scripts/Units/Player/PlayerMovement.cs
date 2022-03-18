@@ -15,6 +15,9 @@ namespace Units.Player
         [Networked] private Vector3 MoveDirection { get; set; } = Vector3.zero;
         
         public Vector3 Velocity => nRb.Rigidbody.velocity;
+        public float WalkMaxSpeed => data.MoveMaximumSpeed;
+        public float SprintMaxSpeed => data.SprintMaximumSpeed;
+        public float CurrentSpeed => velocity;
 
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
@@ -75,7 +78,7 @@ namespace Units.Player
             {
                 if (!IsAiming)
                 {
-                    bool canSprint = isSprinting && !inventory.HasHomework;
+                    bool canSprint = isSprinting && !inventory.HasHomework && velocity >= data.MoveMaximumSpeed;
                     //Add other speed related logic. Boosters, slow when holding golden homework?
                     float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                     float sprintAcceleration =
@@ -124,6 +127,7 @@ namespace Units.Player
         private void ResetVelocity()
         {
             velocity = 0;
+            currentMaxMoveSpeed = data.MoveMaximumSpeed;
         }
     }
 }

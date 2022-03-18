@@ -13,8 +13,8 @@ namespace Units.AI
     {
         private Interaction giveHomeworkInteraction;
 
-        private Interacter entityThatHasGivenHomeworkThisFrame = null;
-        private bool resetEntityThatHasGivenHomeworkThisFrame = false;
+        private Interacter entityThatHasGivenHomeworkThisFrame;
+        private bool resetEntityThatHasGivenHomeworkThisFrame;
         
         public Interacter EntityThatHasGivenHomeworkThisFrame
         {

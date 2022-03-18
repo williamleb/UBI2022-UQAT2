@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Fusion;
 using Utilities.Singleton;
 
 namespace Managers.Interactions
 {
     public class InteractionManager : Singleton<InteractionManager>
     {
-        private Dictionary<int, Interaction> interactions = new Dictionary<int, Interaction>();
+        private readonly Dictionary<int, Interaction> interactions = new Dictionary<int, Interaction>();
 
         public IEnumerable<Interaction> Interactions => interactions.Values;
 
