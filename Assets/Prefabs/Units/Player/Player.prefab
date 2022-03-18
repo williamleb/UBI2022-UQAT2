@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: 2234297121202098985}
   - component: {fileID: 1431901525149864851}
   - component: {fileID: 2140576430465650832}
+  - component: {fileID: 6548499351286663081}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -140,6 +141,7 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   _IsReady:
     _value: 0
+  _TeamId: 
   dustTrailController: {fileID: 0}
   cameraPoint: {fileID: 1177902824606155279}
   ragdollTransform: {fileID: 7933903629281857829}
@@ -375,6 +377,22 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!208 &6548499351286663081
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136995461962552442}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.3, y: 1, z: 0.3}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5885503664241514896
 GameObject:
   m_ObjectHideFlags: 0

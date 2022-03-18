@@ -53,9 +53,10 @@ namespace Units.Player
 
         private void HandleMoveInput(NetworkInputData inputData)
         {
+            MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+            
             if (!IsDashing && !inMenu)
             {
-                MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
                 if (HasMoveInput) lastMoveDirection = MoveDirection;
                 float directionDot = Vector3.Dot(transform.forward, lastMoveDirection);
                 if (directionDot <= -0.2 && velocity == 0) isTurningAround = true;
@@ -98,7 +99,7 @@ namespace Units.Player
 
         private void CalculateVelocity()
         {
-            if (HasMoveInput && !IsDashing && !isTurningAround)
+            if (CanMove && HasMoveInput && !IsDashing && !isTurningAround)
             {
                 velocity += data.MoveAcceleration * Runner.DeltaTime;
                 velocity = Mathf.Min(velocity, currentMaxMoveSpeed);

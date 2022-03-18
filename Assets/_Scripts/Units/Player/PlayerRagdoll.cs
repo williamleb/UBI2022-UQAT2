@@ -45,8 +45,8 @@ namespace Units.Player
         private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = default)
         {
             networkAnimator.Animator.enabled = !isActivate;
-            playerCollider.enabled = !isActivate;
-            
+            AnimationUpdate();
+
             foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
             {
                 col.isTrigger = !isActivate;
