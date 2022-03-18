@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 
 namespace Systems.Settings
 {
-    [CreateAssetMenu(menuName = "Settings/Customisation Settings")]
-    public class CustomisationSettings : ScriptableObject
+    [CreateAssetMenu(menuName = "Settings/Customization Settings")]
+    public class CustomizationSettings : ScriptableObject
     {
         private const int NUMBER_OF_MATERIALS_HAIR = 4;
         private const int NUMBER_OF_MATERIALS_CLOTHES = 6;
@@ -65,17 +65,17 @@ namespace Systems.Settings
             {
                 return index switch
                 {
-                    1 => hairMaterial1,
-                    2 => hairMaterial2,
-                    3 => hairMaterial3,
-                    4 => hairMaterial4,
+                    0 => hairMaterial1,
+                    1 => hairMaterial2,
+                    2 => hairMaterial3,
+                    3 => hairMaterial4,
                     _ => throw new IndexOutOfRangeException()
                 };
             }
             
             private bool ValidateModelPrefab()
             {
-                return modelPrefab == null || modelPrefab.GetComponentInChildren<MeshRenderer>() != null;
+                return modelPrefab == null || modelPrefab.GetComponentInChildren<Renderer>() != null;
             }
         }
     }
