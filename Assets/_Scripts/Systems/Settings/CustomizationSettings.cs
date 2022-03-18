@@ -11,13 +11,17 @@ namespace Systems.Settings
     {
         private const int NUMBER_OF_MATERIALS_HAIR = 4;
         private const int NUMBER_OF_MATERIALS_CLOTHES = 6;
-        
+
         [SerializeField, TableList] private List<HeadElement> headElements = new List<HeadElement>();
         [SerializeField, TableList] private List<EyeElement> eyeElements = new List<EyeElement>();
+        [SerializeField, TableList] private List<SkinElement> skinElements = new List<SkinElement>();
+        [SerializeField, TableList] private List<ClothesColorElement> clothesColorElements = new List<ClothesColorElement>();
 
         public int NumberOfHeadElements => headElements.Count;
         public int NumberOfHairColors => NUMBER_OF_MATERIALS_HAIR;
         public int NumberOfEyeElements => eyeElements.Count;
+        public int NumberOfSkinElements => skinElements.Count;
+        public int NumberOfClothesColorElements => clothesColorElements.Count;
 
         public GameObject GetHeadElementPrefab(int index)
         {
@@ -33,7 +37,7 @@ namespace Systems.Settings
 
             return headElements[headElementIndex].GetHairMaterial(hairMaterialIndex);
         }
-        
+
         public int GetHairMaterialIndex(int headElementIndex)
         {
             Debug.Assert(headElementIndex >= 0 && headElementIndex < headElements.Count);
@@ -46,35 +50,47 @@ namespace Systems.Settings
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].FacePrefab;
         }
-        
+
         public GameObject GetNosePrefabForEyes(int eyeIndex)
         {
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].NosePrefab;
         }
-        
+
         public GameObject GetLeftEyePrefabForEyes(int eyeIndex)
         {
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].LeftEyePrefab;
         }
-        
+
         public GameObject GetRightEyePrefabForEyes(int eyeIndex)
         {
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].RightEyePrefab;
         }
-        
+
         public GameObject GetAltLeftEyePrefabForEyes(int eyeIndex)
         {
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].LeftAltEyePrefab;
         }
-        
+
         public GameObject GetAltRightEyePrefabForEyes(int eyeIndex)
         {
             Debug.Assert(eyeIndex >= 0 && eyeIndex < eyeElements.Count);
             return eyeElements[eyeIndex].RightAltEyePrefab;
+        }
+
+        public Material GetSkin(int skinIndex)
+        {
+            Debug.Assert(skinIndex >= 0 && skinIndex < skinElements.Count);
+            return skinElements[skinIndex].SkinMaterial;
+        }
+        
+        public Material GetClothesColor(int clothesColorIndex)
+        {
+            Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < clothesColorElements.Count);
+            return clothesColorElements[clothesColorIndex].ClothesColorMaterial;
         }
 
         [Serializable]
@@ -140,6 +156,28 @@ namespace Systems.Settings
             public GameObject RightEyePrefab => rightEyePrefab;
             public GameObject LeftAltEyePrefab => leftAltEyePrefab;
             public GameObject RightAltEyePrefab => rightAltEyePrefab;
+        }
+        
+        [Serializable]
+        private class SkinElement
+        {
+            [SerializeField] private string name;
+            
+            [PreviewField]
+            [SerializeField] private Material skinMaterial;
+
+            public Material SkinMaterial => skinMaterial;
+        }
+        
+        [Serializable]
+        private class ClothesColorElement
+        {
+            [SerializeField] private string name;
+            
+            [PreviewField]
+            [SerializeField] private Material clothesColorMaterial;
+
+            public Material ClothesColorMaterial => clothesColorMaterial;
         }
     }
 }
