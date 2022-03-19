@@ -69,7 +69,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         areTeamsCreated = true;
     }
 
-    public Team AssignTeam(PlayerEntity player, string teamId = default)
+    public Team AssignTeam(PlayerEntity playerEntity, string teamId = default)
     {
         if (!NetworkSystem.Instance.IsHost)
             return null;
@@ -77,25 +77,28 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         if (!teams.Any() || !areTeamsCreated)
             CreateTeams();
 
+        if (!string.IsNullOrEmpty(playerEntity.TeamId))
+            return AssignNewTeam(playerEntity);
+
         if (string.IsNullOrEmpty(teamId))
-            return AssignFirstSmallestTeam(player);
+            return AssignFirstSmallestTeam(playerEntity);
 
         Team team = GetTeam(teamId);
 
         if (team != null)
         {
-            team.AddPlayer(player);
-            Debug.Log($"Team {team.Name} assigned to player id {player.Id}");
+            team.AssignPlayer(playerEntity);
+            Debug.Log($"Team {team.Name} assigned to player {playerEntity.Object.InputAuthority}. [From AssignTeam with specified teamId.]");
             return team;
         }
         else
         {
             Debug.LogError($"Error assigning player to team {teamId}. Assigning random team.");
-            return AssignFirstSmallestTeam(player);
+            return AssignFirstSmallestTeam(playerEntity);
         }
     }
 
-    private Team AssignFirstSmallestTeam(PlayerEntity player)
+    private Team AssignFirstSmallestTeam(PlayerEntity playerEntity)
     {
         Team smallestTeam = null;
         int currentLowestPlayerCount = int.MaxValue;
@@ -109,12 +112,57 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
             }
         }
 
-        player.TeamId = smallestTeam.TeamId;
-        smallestTeam.AddPlayer(player);
-        
-        Debug.Log($"Team {smallestTeam.Name} assigned to player id {player.PlayerID}");
+        playerEntity.TeamId = smallestTeam.TeamId;
+        smallestTeam.AssignPlayer(playerEntity);
+
+        Debug.Log($"Team {smallestTeam.Name} assigned to player {playerEntity.Object.InputAuthority}. [From AssignFirstSmallestTeam]");
 
         return smallestTeam;
+    }
+
+    //Cycle through all teams so as to make a predictable team change.
+    private Team AssignNewTeam(PlayerEntity playerEntity)
+    {
+        if (Teams.Count <= 1)
+        {
+            Debug.LogWarning("Cannot change teams since there is only one team ");
+            return null;
+        }
+
+        int teamIndex = GetTeamIndex(playerEntity.TeamId);
+        Team currentTeam = GetTeam(playerEntity.TeamId);
+
+        if (currentTeam != null)
+            currentTeam.RemovePlayer(playerEntity.Object.InputAuthority);
+
+        if (teamIndex == -1)
+        {
+            Debug.Log("Could not find the team index, assigning the first smallest team.");
+            return AssignFirstSmallestTeam(playerEntity);
+        }
+
+        Team newTeam;
+
+        if (teamIndex + 1 < Teams.Count)
+            newTeam = Teams[teamIndex + 1];
+        else
+            newTeam = Teams[0];
+
+        newTeam.AssignPlayer(playerEntity);
+        playerEntity.TeamId = newTeam.TeamId;
+
+        Debug.Log($"Team {newTeam.Name} assigned to player {playerEntity.Object.InputAuthority}");
+
+        return newTeam;
+    }
+
+    private int GetTeamIndex(string teamId)
+    {
+        for (int i = 0; i < Teams.Count; i++)
+            if (Teams[i].TeamId.Equals(teamId))
+                return i;
+
+        return -1;
     }
 
     public Team GetTeam(string teamId)

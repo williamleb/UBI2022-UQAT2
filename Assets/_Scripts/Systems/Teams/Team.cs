@@ -1,16 +1,14 @@
 using Fusion;
-using Managers.Score;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Systems;
 using Systems.Network;
 using Systems.Settings;
 using Units.Player;
 using UnityEngine;
 
-public class Team : NetworkBehaviour
+public class Team : NetworkBehaviour, IEquatable<Team>
 {
     public static event Action<Team> OnTeamSpawned;
     public static event Action<Team> OnTeamDespawned;
@@ -50,7 +48,7 @@ public class Team : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority,RpcTargets.All)]
-    public void AddPlayer(PlayerEntity playerEntity)
+    public void AssignPlayer(PlayerEntity playerEntity)
     {
         if (PlayersRefAndScore.Count <= teamSettings.MaxPlayerPerTeam)
         {
@@ -187,5 +185,12 @@ public class Team : NetworkBehaviour
     {
         var team = changed.Behaviour;
         team.OnScoreChanged?.Invoke(team.ScoreValue);
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Team team &&
+               base.Equals(obj) &&
+               TeamId == team.TeamId;
     }
 }

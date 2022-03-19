@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Settings/Team Settings")]
@@ -6,7 +7,7 @@ public class TeamSettings : ScriptableObject
     [Tooltip("Maximum number of players per team")] [SerializeField]
     private int maxPlayerPerTeam = 4;
 
-    [Tooltip("Number of team")] [SerializeField]
+    [Tooltip("Number of team")] [SerializeField] [MinValue(2)]
     private int numberOfTeam = 2;
 
     [Tooltip("Allow tackling between players of the same team")] [SerializeField] 
