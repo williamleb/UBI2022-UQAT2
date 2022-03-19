@@ -1,5 +1,4 @@
 using Fusion;
-using Managers.Game;
 using Scriptables;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
     private GamePrefabs prefabs;
     private bool areTeamsCreated = false;
 
-    private Dictionary<string, Team> teams = new Dictionary<string, Team>();
+    private readonly Dictionary<string, Team> teams = new Dictionary<string, Team>();
     public List<Team> Teams => teams.Values.ToList();
 
     protected override void Awake()

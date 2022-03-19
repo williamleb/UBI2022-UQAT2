@@ -1,8 +1,6 @@
 using System.Linq;
-using Fusion;
 using Ingredients.Homework;
 using Managers.Game;
-using Sirenix.OdinInspector;
 using Systems;
 using Units.Player;
 using UnityEngine;
@@ -11,9 +9,7 @@ using Utilities.Singleton;
 namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
-    {
-        [SerializeField, Required] private NetworkObject scorePrefab;
-        
+    {        
         [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
 
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
@@ -27,7 +23,6 @@ namespace Managers.Score
                 return;
             }
 
-            var player = playerEntity.Object.InputAuthority;
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to hand homework for team {playerEntity.TeamId} which doesn't exist");
             
@@ -116,6 +111,11 @@ namespace Managers.Score
             foreach (Team team in TeamSystem.Instance.Teams)
             {
                 team.ResetScore();
+            }
+
+            foreach (PlayerEntity playerEntity in PlayerSystem.Instance.AllPlayers)
+            {
+                playerEntity.PlayerScore = 0;
             }
         }
     }

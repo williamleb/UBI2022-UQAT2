@@ -1,7 +1,6 @@
 using Fusion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Systems;
 using Systems.Network;
@@ -20,7 +19,7 @@ public class Team : NetworkBehaviour, IEquatable<Team>
 
     //TODO The player list is NOT GUARANTEED to be up to date on clients
     //since RPCs are not part of the network state. 
-    private List<PlayerRef> playerList = new List<PlayerRef>();
+    private readonly List<PlayerRef> playerList = new List<PlayerRef>();
 
     public int PlayerCount => playerList.Count;
     public List<PlayerRef> PlayerList => playerList;
@@ -132,7 +131,7 @@ public class Team : NetworkBehaviour, IEquatable<Team>
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_ClearPlayerList()
     {
-        if (!NetworkSystem.Instance.IsHost)
+        if (NetworkSystem.Instance.IsHost)
             return;
 
         playerList.Clear();
