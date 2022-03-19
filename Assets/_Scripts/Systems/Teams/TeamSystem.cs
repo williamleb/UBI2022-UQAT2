@@ -1,4 +1,5 @@
 using Fusion;
+using Managers.Game;
 using Scriptables;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
 
         if (team != null)
         {
-            team.AssignPlayer(playerEntity);
+            team.RPC_AssignPlayer(playerEntity);
             Debug.Log($"Team {team.Name} assigned to player {playerEntity.Object.InputAuthority}. [From AssignTeam with specified teamId.]");
             return team;
         }
@@ -113,7 +114,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         }
 
         playerEntity.TeamId = smallestTeam.TeamId;
-        smallestTeam.AssignPlayer(playerEntity);
+        smallestTeam.RPC_AssignPlayer(playerEntity);
 
         Debug.Log($"Team {smallestTeam.Name} assigned to player {playerEntity.Object.InputAuthority}. [From AssignFirstSmallestTeam]");
 
@@ -133,7 +134,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         Team currentTeam = GetTeam(playerEntity.TeamId);
 
         if (currentTeam != null)
-            currentTeam.RemovePlayer(playerEntity.Object.InputAuthority);
+            currentTeam.RPC_RemovePlayer(playerEntity.Object.InputAuthority);
 
         if (teamIndex == -1)
         {
@@ -148,7 +149,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
         else
             newTeam = Teams[0];
 
-        newTeam.AssignPlayer(playerEntity);
+        newTeam.RPC_AssignPlayer(playerEntity);
         playerEntity.TeamId = newTeam.TeamId;
 
         Debug.Log($"Team {newTeam.Name} assigned to player {playerEntity.Object.InputAuthority}");
@@ -223,7 +224,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
 
         if (playerEntity && !string.IsNullOrEmpty(playerEntity.TeamId))
         {
-            GetTeam(playerEntity.TeamId).RemovePlayer(networkObject.InputAuthority);
+            GetTeam(playerEntity.TeamId).RPC_RemovePlayer(networkObject.InputAuthority);
         }
         else
         {
@@ -231,7 +232,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
             {
                 if (team.ContainPlayer(networkObject.InputAuthority))
                 {
-                    team.RemovePlayer(networkObject.InputAuthority);
+                    team.RPC_RemovePlayer(networkObject.InputAuthority);
                 }
             }
         }

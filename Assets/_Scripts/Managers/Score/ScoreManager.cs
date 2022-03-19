@@ -3,6 +3,7 @@ using Fusion;
 using Ingredients.Homework;
 using Managers.Game;
 using Sirenix.OdinInspector;
+using Systems;
 using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
@@ -32,11 +33,13 @@ namespace Managers.Score
             
             if (GameManager.HasInstance && GameManager.Instance.IsNextHomeworkLastForPhase)
             {
-                team.IncrementScore(player, scoreForLastHomework);
+                team.IncrementScore(scoreForLastHomework);
+                playerEntity.PlayerScore += scoreForLastHomework;
             }
             else
             {
-                team.IncrementScore(player, handedHomeworkDefinition.Points);
+                team.IncrementScore(handedHomeworkDefinition.Points);
+                playerEntity.PlayerScore += handedHomeworkDefinition.Points;
             }
             
             if (GameManager.HasInstance)
@@ -51,23 +54,21 @@ namespace Managers.Score
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to remove for team {playerEntity.TeamId} which doesn't exist");
 
-            team.DecrementScore(playerEntity.Object.InputAuthority, numberOfPointsToLose);
+            team.DecrementScore(numberOfPointsToLose);
+            playerEntity.PlayerScore -= numberOfPointsToLose;
         }
 
-        public PlayerRef FindPlayerWithHighestScore()
+        public PlayerEntity FindPlayerWithHighestScore()
         {
-            var teams = TeamSystem.Instance.Teams;
-            PlayerRef playerRefWithHighestScore = PlayerRef.None;
+            PlayerEntity playerRefWithHighestScore = null;
             int highestScore = int.MinValue;
 
-            foreach (Team team in teams)
+            foreach (PlayerEntity playerEntity in PlayerSystem.Instance.AllPlayers)
             {
-                var playerRefAndScore = team.GetPlayerWithHighestScore();
-
-                if (playerRefAndScore.score > highestScore)
+                if (playerEntity.PlayerScore > highestScore)
                 {
-                    highestScore = playerRefAndScore.score;
-                    playerRefWithHighestScore = playerRefAndScore.playerRef;
+                    highestScore = playerEntity.PlayerScore;
+                    playerRefWithHighestScore = playerEntity;
                 }
             }
 

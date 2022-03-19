@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Systems;
 using Systems.Network;
 using Systems.Settings;
 using Units.Player;
@@ -16,10 +17,13 @@ public class Team : NetworkBehaviour, IEquatable<Team>
 
     private TeamSettings teamSettings;
     private TeamSystem teamSystem;
-    //Dictionary<PlayerRef, score>
-    private Dictionary<PlayerRef, int> PlayersRefAndScore = new Dictionary<PlayerRef, int>();
 
-    public int PlayerCount => PlayersRefAndScore.Count;
+    //TODO The player list is NOT GUARANTEED to be up to date on clients
+    //since RPCs are not part of the network state. 
+    private List<PlayerRef> playerList = new List<PlayerRef>();
+
+    public int PlayerCount => playerList.Count;
+    public List<PlayerRef> PlayerList => playerList;
 
     [Networked] public string Name { get; private set; }
     [Networked] [Capacity(128)] public string TeamId { get; private set; }
@@ -48,104 +52,65 @@ public class Team : NetworkBehaviour, IEquatable<Team>
     }
 
     [Rpc(RpcSources.StateAuthority,RpcTargets.All)]
-    public void AssignPlayer(PlayerEntity playerEntity)
+    public void RPC_AssignPlayer(PlayerEntity playerEntity)
     {
-        if (PlayersRefAndScore.Count <= teamSettings.MaxPlayerPerTeam)
-        {
-            var playerRef = playerEntity.Object.InputAuthority;
+        var playerRef = playerEntity.Object.InputAuthority;
 
-            if (PlayersRefAndScore.ContainsKey(playerRef))
-            {
-                PlayersRefAndScore[playerRef] = 0;
-            }
-            else
-            {
-                PlayersRefAndScore.Add(playerRef, 0);
-            }
-
-            playerEntity.TeamId = TeamId;
-        }
+        if (!playerList.Contains(playerRef))
+            playerList.Add(playerRef);
         else
-        {
-            Debug.LogError($"Cannot add the player to the team {Name} because the team is full");
-        }
+            Debug.LogWarning($"Player {playerRef} was already assigned to team {TeamId}");
+
+        playerEntity.TeamId = TeamId;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RemovePlayer(PlayerRef playerRef)
+    public void RPC_RemovePlayer(PlayerRef playerRef)
     {
-        if (PlayersRefAndScore.ContainsKey(playerRef))
+        if (playerList.Contains(playerRef))
         {
-            PlayersRefAndScore.Remove(playerRef);
+            playerList.Remove(playerRef);
         }
     }
 
     public bool ContainPlayer(PlayerRef playerRef)
     {
-        return PlayersRefAndScore.ContainsKey(playerRef);
+        return playerList.Contains(playerRef);
     }
 
-    public int GetScoreForPlayer(PlayerRef player)
+    public PlayerEntity GetPlayerWithHighestScore()
     {
-        if (PlayersRefAndScore.TryGetValue(player, out int score))
-            return score;
-        else
-            return -1;
-    }
-
-    public (PlayerRef playerRef, int score) GetPlayerWithHighestScore()
-    {
+        PlayerEntity teamPlayerWithHighestScore = null;
         int highestScore = int.MinValue;
-        PlayerRef playerWithHighestScore = PlayerRef.None;
 
-        foreach (PlayerRef playerRef in PlayersRefAndScore.Keys.ToList())
+        foreach(PlayerRef playerRef in playerList)
         {
-            if (PlayersRefAndScore[playerRef] > highestScore)
+            var playerEntity = PlayerSystem.Instance.GetPlayerEntity(playerRef);
+           
+            if(playerEntity.PlayerScore > highestScore)
             {
-                highestScore = PlayersRefAndScore[playerRef];
-                playerWithHighestScore = playerRef;
+                teamPlayerWithHighestScore = playerEntity;
+                highestScore = playerEntity.PlayerScore;
             }
         }
 
-        return (playerWithHighestScore, highestScore);
+        return teamPlayerWithHighestScore;
     }
     
-    public void IncrementScore(PlayerRef player, int scoreToAdd)
+    public void IncrementScore(int scoreToAdd)
     {
         if (!NetworkSystem.Instance.IsHost)
             return;
 
         ScoreValue += scoreToAdd;
-        IncrementPlayerScore(player, scoreToAdd);
-
-        Debug.Log($"Player {player.PlayerId} score for team {TeamId}! Current player score : {PlayersRefAndScore[player]}");
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void IncrementPlayerScore(PlayerRef player, int scoreToAdd)
-    {
-        if (!PlayersRefAndScore.ContainsKey(player))
-            PlayersRefAndScore.Add(player, scoreToAdd);
-        else
-            PlayersRefAndScore[player] += scoreToAdd;
-    }
-
-    public void DecrementScore(PlayerRef player, int scoreToRemove)
+    public void DecrementScore(int scoreToRemove)
     {
         if (!NetworkSystem.Instance.IsHost)
             return;
 
         ScoreValue = Math.Max(0, ScoreValue - scoreToRemove);
-        DecrementPlayerScore(player, scoreToRemove);
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void DecrementPlayerScore(PlayerRef player, int scoreToRemove)
-    {
-        if (!PlayersRefAndScore.ContainsKey(player))
-            PlayersRefAndScore[player] -= scoreToRemove;
-        else
-            PlayersRefAndScore[player] = Math.Max(0, PlayersRefAndScore[player] - scoreToRemove);
     }
 
     public void ResetScore()
@@ -154,31 +119,23 @@ public class Team : NetworkBehaviour, IEquatable<Team>
             return;
 
         ScoreValue = 0;
-        ResetPlayersScore();
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void ResetPlayersScore()
-    {
-        foreach (int playerRef in PlayersRefAndScore.Keys.ToList())
-        {
-            PlayersRefAndScore[playerRef] = 0;
-        }
-    }
-
-    public void ClearTeam()
+    public void ClearPlayerList()
     {
         if (!NetworkSystem.Instance.IsHost)
             return;
 
-        ScoreValue = 0;
-        ClearPlayerAndScore();
+        playerList.Clear();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void ClearPlayerAndScore()
+    public void RPC_ClearPlayerList()
     {
-        PlayersRefAndScore.Clear();
+        if (!NetworkSystem.Instance.IsHost)
+            return;
+
+        playerList.Clear();
     }
 
     private static void OnValueChanged(Changed<Team> changed)
@@ -187,10 +144,10 @@ public class Team : NetworkBehaviour, IEquatable<Team>
         team.OnScoreChanged?.Invoke(team.ScoreValue);
     }
 
-    public override bool Equals(object obj)
+    public bool Equals(Team other)
     {
-        return obj is Team team &&
-               base.Equals(obj) &&
-               TeamId == team.TeamId;
+        return other is Team team &&
+                base.Equals(other) &&
+                TeamId == team.TeamId;
     }
 }
