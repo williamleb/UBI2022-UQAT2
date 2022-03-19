@@ -31,7 +31,7 @@ namespace Units.AI.Actions
             if (!ScoreManager.HasInstance)
                 return TaskStatus.Failure;
             
-            ScoreManager.Instance.RemoveScore(player, scoreToRemove.Value);
+            ScoreManager.Instance.DecrementScore(player, scoreToRemove.Value);
             return TaskStatus.Success;
         }
 

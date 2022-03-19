@@ -1,3 +1,4 @@
+using Fusion;
 using Scriptables;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
             return;
         
         CreateTeams();
+        PlayerEntity.OnPlayerDespawned += OnPlayerDespawned;
     }
 
     private void CreateTeams()
@@ -162,5 +164,28 @@ public class TeamSystem : PersistentSingleton<TeamSystem>
             Debug.LogWarning($"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
 
         prefabs = prefabResources.First();
+    }
+
+    private void OnPlayerDespawned(NetworkObject networkObject)
+    {
+        if (!NetworkSystem.Instance.IsHost)
+            return;
+
+        var playerEntity = PlayerSystem.Instance.GetPlayerEntity(networkObject.InputAuthority);
+
+        if (playerEntity && !string.IsNullOrEmpty(playerEntity.TeamId))
+        {
+            GetTeam(playerEntity.TeamId).RemovePlayer(networkObject.InputAuthority);
+        }
+        else
+        {
+            foreach (Team team in Teams)
+            {
+                if (team.ContainPlayer(networkObject.InputAuthority))
+                {
+                    team.RemovePlayer(networkObject.InputAuthority);
+                }
+            }
+        }
     }
 }
