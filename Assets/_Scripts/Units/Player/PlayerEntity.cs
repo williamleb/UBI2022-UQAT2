@@ -34,7 +34,7 @@ namespace Units.Player
         private NetworkBool isImmune;
         private bool inMenu;
 
-        public PlayerRef PlayerID { get; private set; }
+        public int PlayerID { get; private set; }
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked] [Capacity(128)] public string TeamId { get; set; }
@@ -60,7 +60,7 @@ namespace Units.Player
             OnAwake();
             InitThrow();
 
-            PlayerID = Object.InputAuthority;
+            PlayerID = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)
