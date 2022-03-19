@@ -134,7 +134,7 @@ namespace Systems
 			
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
-			playersJoined.Remove(player.PlayerID);
+			playersJoined.Remove(player.Object.InputAuthority);
 			Debug.Log("Player removed " + player.PlayerID);
 		}
 
