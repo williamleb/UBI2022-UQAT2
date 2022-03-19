@@ -52,16 +52,16 @@ namespace Units.Player
             yield return Helpers.GetWait(delay - 1);
 
             transform.position = ragdollTransform.position.Flat();
-            yield return new WaitForEndOfFrame();
 
             if (Object.HasStateAuthority)
             {
-                RPC_ToggleRagdoll(false);
                 IsGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
                 IsGettingUpB = !IsGettingUpF;
-                AnimationUpdate();
+                RPC_ToggleRagdoll(false);
             }
 
+            yield return Helpers.GetWait(0.3f);
+            
             CanMove = true;
         }
 
@@ -82,6 +82,9 @@ namespace Units.Player
                 if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
                 {
                     Debug.Log("Hit a wall");
+                    
+                    //TODO if it has a rigidbody slap that object based on the current player's velocity and contact point.
+                    
                     ResetVelocity();
                     Hit(-f);
                 }

@@ -17,7 +17,7 @@ namespace Units.AI
     [RequireComponent(typeof(AIInteracter))]
     public class AIEntity : NetworkBehaviour, IVelocityObject
     {
-        private static readonly int walking = Animator.StringToHash("IsWalking");
+        private static readonly int Walking = Animator.StringToHash("IsWalking");
 
         public event Action<GameObject> OnHit; 
 
@@ -31,9 +31,6 @@ namespace Units.AI
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
-        [SerializeField] 
-        private NetworkObject aiCollider;
-
         private NavMeshAgent agent;
         private Inventory inventory;
         private AIInteracter interacter;
@@ -45,8 +42,7 @@ namespace Units.AI
         private AIBrain brain;
 
         private AISettings settings;
-        private Transform aiColliderTransform;
-        private Coroutine hitCoroutine = null;
+        private Coroutine hitCoroutine;
 
         [Networked, Capacity(8)] private AIType Type { get; set; }
         private bool IsTeacher => Type == AIType.Teacher;
@@ -97,8 +93,6 @@ namespace Units.AI
             {
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
-                
-                SpawnCollider();
             }
 
             RegisterToManager();
@@ -106,43 +100,12 @@ namespace Units.AI
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            UnspawnCollider();
             UnregisterToManager();
-        }
-
-        private void SpawnCollider()
-        {
-            if (!aiCollider) 
-                return;
-            
-            var thisTransform = transform;
-            var aiColliderObject = Runner.Spawn(aiCollider, thisTransform.position, thisTransform.rotation);
-
-            aiColliderTransform = aiColliderObject.transform;
-        }
-
-        private void UnspawnCollider()
-        {
-            if (!aiColliderTransform)
-                return;
-            
-            Runner.Despawn(aiColliderTransform.GetComponent<NetworkObject>());
         }
 
         public override void FixedUpdateNetwork()
         {
-            UpdateCollider();
             UpdateWalkingAnimation();
-        }
-
-        private void UpdateCollider()
-        {
-            if (!aiColliderTransform)
-                return;
-
-            var thisTransform = transform;
-            aiColliderTransform.position = thisTransform.position;
-            aiColliderTransform.rotation = thisTransform.rotation;
         }
 
         private void UpdateWalkingAnimation()
@@ -155,7 +118,7 @@ namespace Units.AI
 
             // We will probably want to send the speed directly to the animator in the future and do a blend space
             var isWalking = agent.velocity.sqrMagnitude > 0.3f;
-            animator.SetBool(walking, isWalking);
+            animator.SetBool(Walking, isWalking);
         }
 
         private void RegisterToManager()

@@ -8,25 +8,25 @@ namespace Canvases.HUDs
     public class HUDScore : MonoBehaviour
     {
         [SerializeField, Required] private TextUIComponent scoreText;
-        [SerializeField, Required] private TextUIComponent playerIdText;
+        [SerializeField, Required] private TextUIComponent teamName;
         
-        private Score score;
+        private Team team;
 
-        public void Init(Score scoreToLookAt)
+        public void Init(Team teamToLookAt)
         {
-            Debug.Assert(scoreToLookAt);
-            score = scoreToLookAt;
+            Debug.Assert(teamToLookAt);
+            team = teamToLookAt;
 
-            scoreText.Text = $"{score.Value}";
-            playerIdText.Text = $"{score.Object.InputAuthority.PlayerId}";
+            scoreText.Text = $"{team.ScoreValue}";
+            teamName.Text = $"{team.Name}";
 
-            score.OnScoreChanged += OnScoreChanged;
+            team.OnScoreChanged += OnScoreChanged;
         }
 
         private void OnDestroy()
         {
-            if (score)
-                score.OnScoreChanged -= OnScoreChanged;
+            if (team)
+                team.OnScoreChanged -= OnScoreChanged;
         }
 
         private void OnScoreChanged(int newScore)

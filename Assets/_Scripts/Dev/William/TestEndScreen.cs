@@ -34,11 +34,11 @@ namespace Dev.William
             {
                 restartButton.Select();
 
-                var playerWithHighestScore = ScoreManager.HasInstance
-                    ? ScoreManager.Instance.FindPlayerWithHighestScore()
-                    : PlayerRef.None;
+                var teamWithHighestScore = ScoreManager.HasInstance
+                    ? ScoreManager.Instance.FindTeamWithHighestScore()
+                    : null;
                 
-                winnerText.Text = $"Winner: Player{playerWithHighestScore.PlayerId}";
+                winnerText.Text = $"Winner: Team {teamWithHighestScore.Name}";
             }
         }
 

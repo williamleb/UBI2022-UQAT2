@@ -34,9 +34,10 @@ namespace Units.Player
         private NetworkBool isImmune;
         private bool inMenu;
 
-        public int PlayerID { get; private set; }
+        public PlayerRef PlayerID { get; private set; }
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
+        [Networked] [Capacity(128)] public string TeamId { get; set; }
 
         private void OnAwake()
         {
@@ -59,6 +60,7 @@ namespace Units.Player
             OnAwake();
             InitThrow();
 
+            PlayerID = Object.InputAuthority;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
 
             if (Object.HasInputAuthority)
@@ -74,6 +76,11 @@ namespace Units.Player
             OnPlayerSpawned?.Invoke(Object);
 
             PlayerSystem.Instance.AddPlayer(this);
+
+            if (NetworkSystem.Instance.IsHost)
+            {
+                TeamSystem.Instance.AssignTeam(this);
+            }
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
