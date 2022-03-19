@@ -14,6 +14,7 @@ namespace Systems.Settings
         public static HomeworkSettings HomeworkSettings => Instance.HomeworkSetting;
         public static GameSettings GameSettings => Instance.GameSetting;
         public static TeamSettings TeamSettings => Instance.TeamSetting;
+        public static CustomizationSettings CustomizationSettings => Instance.CustomizationSetting;
 
         private PlayerSettings[] playerSettings;
         private AISettings aiSetting;
@@ -21,6 +22,7 @@ namespace Systems.Settings
         private HomeworkSettings homeworkSetting;
         private GameSettings gameSetting;
         private TeamSettings teamSetting;
+        private CustomizationSettings customizationSettings;
 
         private PlayerSettings[] PlayerSetting => playerSettings;
         private AISettings AISetting => aiSetting;
@@ -28,6 +30,7 @@ namespace Systems.Settings
         private HomeworkSettings HomeworkSetting => homeworkSetting;
         private GameSettings GameSetting => gameSetting;
         private TeamSettings TeamSetting => teamSetting;
+        private CustomizationSettings CustomizationSetting => customizationSettings;
 
         protected override void Awake()
         {
@@ -39,6 +42,7 @@ namespace Systems.Settings
             LoadSettings(out matchmakingSetting);
             LoadSettings(out gameSetting);
             LoadSettings(out teamSetting);
+            LoadSettings(out customizationSettings);
         }
 
         private void LoadSettings<T>(out T memberToInitialize) where T : ScriptableObject
