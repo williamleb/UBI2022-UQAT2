@@ -125,15 +125,12 @@ public class Team : NetworkBehaviour, IEquatable<Team>
         if (!NetworkSystem.Instance.IsHost)
             return;
 
-        playerList.Clear();
+        RPC_ClearPlayerList();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_ClearPlayerList()
     {
-        if (NetworkSystem.Instance.IsHost)
-            return;
-
         playerList.Clear();
     }
 
