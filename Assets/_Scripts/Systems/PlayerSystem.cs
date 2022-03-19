@@ -44,7 +44,7 @@ namespace Systems
 		private void Start()
         {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			LevelSystem.Instance.OnGameLoad += SetPlayerPositionToSpawn;
+			LevelSystem.Instance.OnGameLoad += SetPlayersPositionToSpawn;
 		}
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
@@ -71,7 +71,7 @@ namespace Systems
 		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
 			Debug.Log($"{playerRef} left.");
-			PlayerEntity player = Get(playerRef);
+			PlayerEntity player = GetPlayerEntity(playerRef);
 			RemovePlayer(player);
 		}
 
@@ -91,7 +91,7 @@ namespace Systems
 				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
 		}
 
-		private void SetPlayerPositionToSpawn()
+		private void SetPlayersPositionToSpawn()
         {
             foreach (PlayerEntity playerEntity in playersEntity)
             {
@@ -99,7 +99,7 @@ namespace Systems
             }
         }
 
-		public PlayerEntity Get(PlayerRef playerRef)
+		public PlayerEntity GetPlayerEntity(PlayerRef playerRef)
 		{
 			for (int i = playersEntity.Count - 1; i >= 0; i--)
 			{
@@ -134,7 +134,7 @@ namespace Systems
 			
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
-			playersJoined.Remove(player.PlayerID);
+			playersJoined.Remove(player.Object.InputAuthority);
 			Debug.Log("Player removed " + player.PlayerID);
 		}
 

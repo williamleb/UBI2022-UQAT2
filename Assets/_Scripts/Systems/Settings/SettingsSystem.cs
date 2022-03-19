@@ -13,6 +13,7 @@ namespace Systems.Settings
         public static MatchmakingSettings MatchmakingSettings => Instance.MatchmakingSetting;
         public static HomeworkSettings HomeworkSettings => Instance.HomeworkSetting;
         public static GameSettings GameSettings => Instance.GameSetting;
+        public static TeamSettings TeamSettings => Instance.TeamSetting;
         public static CustomizationSettings CustomizationSettings => Instance.CustomizationSetting;
 
         private PlayerSettings[] playerSettings;
@@ -20,6 +21,7 @@ namespace Systems.Settings
         private MatchmakingSettings matchmakingSetting;
         private HomeworkSettings homeworkSetting;
         private GameSettings gameSetting;
+        private TeamSettings teamSetting;
         private CustomizationSettings customizationSettings;
 
         private PlayerSettings[] PlayerSetting => playerSettings;
@@ -27,6 +29,7 @@ namespace Systems.Settings
         private MatchmakingSettings MatchmakingSetting => matchmakingSetting;
         private HomeworkSettings HomeworkSetting => homeworkSetting;
         private GameSettings GameSetting => gameSetting;
+        private TeamSettings TeamSetting => teamSetting;
         private CustomizationSettings CustomizationSetting => customizationSettings;
 
         protected override void Awake()
@@ -38,6 +41,7 @@ namespace Systems.Settings
             LoadSettings(out homeworkSetting);
             LoadSettings(out matchmakingSetting);
             LoadSettings(out gameSetting);
+            LoadSettings(out teamSetting);
             LoadSettings(out customizationSettings);
         }
 

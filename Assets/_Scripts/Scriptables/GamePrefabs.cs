@@ -7,7 +7,10 @@ namespace Scriptables
     public class GamePrefabs : ScriptableObject
     {
         [SerializeField] private NetworkObject playerPrefab;
+        [SerializeField] private NetworkObject teamPrefab;
 
         public NetworkObject PlayerPrefab => playerPrefab;
+        public NetworkObject TeamPrefab => teamPrefab;
+
     }
 }
