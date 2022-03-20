@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1269594187079664108}
   - component: {fileID: -1501891490769962128}
   - component: {fileID: 6770525089642896524}
+  - component: {fileID: 2124059851557257794}
   m_Layer: 0
   m_Name: SR1D_0
   m_TagString: Untagged
@@ -71,8 +72,38 @@ MonoBehaviour:
   NestedObjects:
   - {fileID: 5572548154508907992}
   - {fileID: 2994611099140281502}
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 2124059851557257794}
   SimulationBehaviours: []
+--- !u!114 &2124059851557257794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27536164872832446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _interpolationTarget: {fileID: 0}
+  DetachInterpTarget: 0
+  SyncParent: 1
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  SyncScale: 0
+  Space: 0
 --- !u!1 &1927488860485075475
 GameObject:
   m_ObjectHideFlags: 0
@@ -2560,17 +2591,6 @@ PrefabInstance:
       objectReference: {fileID: 8434300364896073443}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 215c0f80d36318c46b86b7d64ef80528, type: 3}
---- !u!114 &8434300364896073443 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6836589876171300295, guid: 215c0f80d36318c46b86b7d64ef80528, type: 3}
-  m_PrefabInstance: {fileID: 3165139091787033380}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5572548154508907992 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7402086269022912252, guid: 215c0f80d36318c46b86b7d64ef80528, type: 3}
@@ -2587,6 +2607,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3077636238174894801, guid: 215c0f80d36318c46b86b7d64ef80528, type: 3}
   m_PrefabInstance: {fileID: 3165139091787033380}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8434300364896073443 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6836589876171300295, guid: 215c0f80d36318c46b86b7d64ef80528, type: 3}
+  m_PrefabInstance: {fileID: 3165139091787033380}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3570107296860530385
 PrefabInstance:
   m_ObjectHideFlags: 0

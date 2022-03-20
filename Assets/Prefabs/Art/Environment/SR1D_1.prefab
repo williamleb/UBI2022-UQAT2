@@ -1693,6 +1693,7 @@ GameObject:
   - component: {fileID: 6306681785555712779}
   - component: {fileID: 2824129789027803429}
   - component: {fileID: -3190103957532263392}
+  - component: {fileID: 4651409001723355500}
   m_Layer: 0
   m_Name: SR1D_1
   m_TagString: Untagged
@@ -1753,8 +1754,38 @@ MonoBehaviour:
   NestedObjects:
   - {fileID: 2207470981272486217}
   - {fileID: 3353584282087047571}
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 4651409001723355500}
   SimulationBehaviours: []
+--- !u!114 &4651409001723355500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8170777487745403613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _interpolationTarget: {fileID: 0}
+  DetachInterpTarget: 0
+  SyncParent: 1
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  SyncScale: 0
+  Space: 0
 --- !u!1001 &30602814893537701
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3250,6 +3281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
+--- !u!4 &3205541098703590482 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7115139751709419020, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
+  m_PrefabInstance: {fileID: 5675190072073400926}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2207470981272486217 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5791858249728324375, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
@@ -3272,11 +3308,6 @@ MonoBehaviour:
   m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &3205541098703590482 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7115139751709419020, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
-  m_PrefabInstance: {fileID: 5675190072073400926}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5980305408658733587
 PrefabInstance:
   m_ObjectHideFlags: 0

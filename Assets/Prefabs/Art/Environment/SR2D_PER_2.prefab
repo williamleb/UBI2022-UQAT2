@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1885709467783668917}
   - component: {fileID: -2952298197282612230}
   - component: {fileID: -5179270084392207854}
+  - component: {fileID: -6565069485433765904}
   m_Layer: 0
   m_Name: SR2D_PER_2
   m_TagString: Untagged
@@ -69,8 +70,38 @@ MonoBehaviour:
   NetworkGuid:
     RawGuidValue: 5568277bb781f5d4eb0d113556660eaa
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: -6565069485433765904}
   SimulationBehaviours: []
+--- !u!114 &-6565069485433765904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514317348391791615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _interpolationTarget: {fileID: 0}
+  DetachInterpTarget: 0
+  SyncParent: 1
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  SyncScale: 0
+  Space: 0
 --- !u!1 &3724225123447514163
 GameObject:
   m_ObjectHideFlags: 0

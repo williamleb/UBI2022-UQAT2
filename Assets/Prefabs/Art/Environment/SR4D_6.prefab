@@ -1627,6 +1627,7 @@ GameObject:
   - component: {fileID: 2679943871123749591}
   - component: {fileID: 7493858997627034645}
   - component: {fileID: -527478671663999621}
+  - component: {fileID: 4556931803948879440}
   m_Layer: 0
   m_Name: SR4D_6
   m_TagString: Untagged
@@ -1687,8 +1688,38 @@ MonoBehaviour:
   NestedObjects:
   - {fileID: 5768586113247304039}
   - {fileID: 2153388040511993581}
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 4556931803948879440}
   SimulationBehaviours: []
+--- !u!114 &4556931803948879440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7160809485265877808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _interpolationTarget: {fileID: 0}
+  DetachInterpTarget: 0
+  SyncParent: 1
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  SyncScale: 0
+  Space: 0
 --- !u!1 &7637267215990382040
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,11 +1970,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ff4b1064298fc740afb813a787273f7, type: 3}
---- !u!4 &6030779292422411024 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4615546308778216556, guid: 9ff4b1064298fc740afb813a787273f7, type: 3}
-  m_PrefabInstance: {fileID: 1422037118079328124}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7518529756771105372 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8929294196293133600, guid: 9ff4b1064298fc740afb813a787273f7, type: 3}
@@ -1966,6 +1992,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &6030779292422411024 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4615546308778216556, guid: 9ff4b1064298fc740afb813a787273f7, type: 3}
+  m_PrefabInstance: {fileID: 1422037118079328124}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1464881557266760138
 PrefabInstance:
   m_ObjectHideFlags: 0
