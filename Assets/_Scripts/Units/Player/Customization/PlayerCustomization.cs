@@ -14,8 +14,6 @@ namespace Units.Player.Customisation
         [SerializeField, Required] private CustomizationPoint rightEyeCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint leftAltEyeCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint rightAltEyeCustomizationPoint;
-
-        [SerializeField] private bool showDebugMenu; // TODO Remove
         
         private CustomizationSettings settings;
         
@@ -179,60 +177,70 @@ namespace Units.Player.Customisation
             customisation.Behaviour.UpdateClothesColor(); 
         }
         
+#if UNITY_EDITOR
+        private bool showDebugMenu;
+
+        [Button("ToggleDebugMenu")]
+        private void ToggleDebugMenu()
+        {
+            showDebugMenu = !showDebugMenu;
+        }
+        
         private void OnGUI()
         {
             if (Runner.IsRunning && Object.HasInputAuthority && showDebugMenu)
             {
-                if (GUI.Button(new Rect(0, 40, 200, 40), "IncrementHead"))
+                if (GUI.Button(new Rect(0, 0, 200, 40), "IncrementHead"))
                 {
                     IncrementHead();
                 }
 
-                if (GUI.Button(new Rect(0, 80, 200, 40), "DecrementHead"))
+                if (GUI.Button(new Rect(0, 40, 200, 40), "DecrementHead"))
                 {
                     DecrementHead();
                 }
 
-                if (GUI.Button(new Rect(0, 120, 200, 40), "IncrementHairColor"))
+                if (GUI.Button(new Rect(0, 80, 200, 40), "IncrementHairColor"))
                 {
                     IncrementHairColor();
                 }
 
-                if (GUI.Button(new Rect(0, 160, 200, 40), "DecrementHairColor"))
+                if (GUI.Button(new Rect(0, 120, 200, 40), "DecrementHairColor"))
                 {
                     DecrementHairColor();
                 }
 
-                if (GUI.Button(new Rect(0, 200, 200, 40), "IncrementEyes"))
+                if (GUI.Button(new Rect(0, 160, 200, 40), "IncrementEyes"))
                 {
                     IncrementEyes();
                 }
 
-                if (GUI.Button(new Rect(0, 240, 200, 40), "DecrementEyes"))
+                if (GUI.Button(new Rect(0, 200, 200, 40), "DecrementEyes"))
                 {
                     DecrementEyes();
                 }
                 
-                if (GUI.Button(new Rect(0, 280, 200, 40), "IncrementSkin"))
+                if (GUI.Button(new Rect(0, 240, 200, 40), "IncrementSkin"))
                 {
                     IncrementSkin();
                 }
 
-                if (GUI.Button(new Rect(0, 320, 200, 40), "DecrementSkin"))
+                if (GUI.Button(new Rect(0, 280, 200, 40), "DecrementSkin"))
                 {
                     DecrementSkin();
                 }
                 
-                if (GUI.Button(new Rect(0, 360, 200, 40), "IncrementClothesColor"))
+                if (GUI.Button(new Rect(0, 320, 200, 40), "IncrementClothesColor"))
                 {
                     IncrementClothesColor();
                 }
 
-                if (GUI.Button(new Rect(0, 400, 200, 40), "DecrementClothesColor"))
+                if (GUI.Button(new Rect(0, 360, 200, 40), "DecrementClothesColor"))
                 {
                     DecrementClothesColor();
                 }
             }
+#endif
         }
     }
 }

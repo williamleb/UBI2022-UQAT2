@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Fusion;
 using Interfaces;
+using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Systems.Settings;
@@ -230,6 +231,46 @@ namespace Units.Player
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
                 Debug.LogWarning(
                     $"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+        }
+        
+        private bool showDebugMenu;
+        
+        [Button("ToggleDebugMenu")]
+        private void ToggleDebugMenu()
+        {
+            showDebugMenu = !showDebugMenu;
+        }
+
+        private void OnGUI()
+        {
+            if (Runner.IsRunning && Object.HasInputAuthority && showDebugMenu)
+            {
+                if (GUI.Button(new Rect(0, 0, 200, 40), "Base"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Base);
+                }
+
+                if (GUI.Button(new Rect(0, 40, 200, 40), "Runner"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Runner);
+                }
+
+                if (GUI.Button(new Rect(0, 80, 200, 40), "Thrower"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Thrower);
+                }
+
+                if (GUI.Button(new Rect(0, 120, 200, 40), "Dasher"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Dasher);
+                }
+            }
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_DebugChangeArchetypeOnHost(Archetype archetype)
+        {
+            Archetype = archetype;
         }
 #endif
     }
