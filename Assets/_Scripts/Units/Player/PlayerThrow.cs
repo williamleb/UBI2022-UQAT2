@@ -8,7 +8,7 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        [Header("Throw rumble")] 
+        [Header("Throw")] 
         [SerializeField] private AnimationCurve lowFrequencyThrowRumbleCurve;
         [SerializeField] private AnimationCurve highFrequencyThrowRumbleCurve;
 

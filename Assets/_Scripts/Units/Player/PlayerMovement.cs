@@ -8,6 +8,7 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        [Header("Movement")]
         [SerializeField] private DustTrailController dustTrailController;
         [SerializeField] private Transform cameraPoint;
         private NetworkRigidbody nRb;

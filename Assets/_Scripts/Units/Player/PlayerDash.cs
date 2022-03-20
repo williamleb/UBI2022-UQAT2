@@ -11,6 +11,7 @@ namespace Units.Player
     {
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
+        [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;

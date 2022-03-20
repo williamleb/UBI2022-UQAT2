@@ -27,9 +27,7 @@ namespace Units.Player
         public event Action OnMenuPressed;
         public event Action OnArchetypeChanged;
         public event Action OnTeamChanged;
-
-        [SerializeField] private CameraStrategy mainCamera;
-
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
@@ -75,18 +73,10 @@ namespace Units.Player
             base.Spawned();
             OnAwake();
             InitThrow();
+            InitCamera();
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
-
-            if (Object.HasInputAuthority)
-            {
-                mainCamera.Init(data.PlayerCameraSetting);
-            }
-            else
-            {
-                mainCamera.gameObject.Hide();
-            }
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
@@ -281,6 +271,16 @@ namespace Units.Player
                 if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
                 {
                     TeamSystem.Instance.AssignTeam(this);
+                }
+                
+                if (GUI.Button(new Rect(0, 200, 200, 40), "Custon on"))
+                {
+                    customizationCamera.Activate();
+                }
+                
+                if (GUI.Button(new Rect(0, 240, 200, 40), "Custon off"))
+                {
+                    mainCamera.Activate();
                 }
             }
         }
