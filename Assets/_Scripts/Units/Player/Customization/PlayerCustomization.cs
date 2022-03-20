@@ -263,7 +263,7 @@ namespace Units.Player.Customisation
                     DecrementClothesColor();
                 }
             }
-#endif
         }
+#endif
     }
 }

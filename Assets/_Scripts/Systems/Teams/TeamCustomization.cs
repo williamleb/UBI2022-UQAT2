@@ -21,8 +21,12 @@ namespace Systems.Teams
         private void CustomizationSpawned()
         {
             customizationSettings = SettingsSystem.CustomizationSettings;
-            RandomizeName();
-            RandomizeColor();
+
+            if (Object.HasStateAuthority)
+            {
+                RandomizeName();
+                RandomizeColor();
+            }
         }
         
         public void RandomizeName() => RPC_RandomizeName();
