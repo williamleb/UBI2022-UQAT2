@@ -1,13 +1,15 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using Units.Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Systems.Settings
 {
     [CreateAssetMenu(menuName = "Settings/Player Settings")]
     public class PlayerSettings : ScriptableObject
     {
-        [SerializeField] private Archetypes archetypes;
+        [FormerlySerializedAs("archetypes")] [SerializeField] private Archetype archetype;
         
         [Header("Player movement ")] [Tooltip("Walking speed")] [SerializeField]
         private float moveMaximumSpeed = 7f;
@@ -127,7 +129,7 @@ namespace Systems.Settings
 
         [SerializeField] private PlayerCameraSettings playerCameraSettings;
 
-        public Archetypes PlayerArchetypes => archetypes;
+        public Archetype PlayerArchetype => archetype;
         public float MoveMaximumSpeed => moveMaximumSpeed;
         public float SprintMaximumSpeed => sprintMaximumSpeed;
         public float MoveAcceleration => moveAcceleration;
@@ -167,15 +169,6 @@ namespace Systems.Settings
 
             [Space] public float CameraPointSpeed;
             public Vector3 CameraPointOffset;
-        }
-
-        [Serializable]
-        public enum Archetypes
-        {
-            Base,
-            Runner,
-            Plaqueur,
-            Lanceur,
         }
     }
 }

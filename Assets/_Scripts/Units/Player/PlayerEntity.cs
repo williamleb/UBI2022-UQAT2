@@ -23,6 +23,7 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
+        public event Action<PlayerEntity> OnArchetypeChanged;
 
         [SerializeField] private CameraStrategy mainCamera;
 
@@ -38,18 +39,29 @@ namespace Units.Player
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked] [Capacity(128)] public string TeamId { get; set; }
+        
+        [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
+        private Archetype Archetype { get; set; }
 
         private void OnAwake()
         {
-            data = SettingsSystem.PlayerSettings.RandomElement();
-            print(data.PlayerArchetypes);
+            data = SettingsSystem.Instance.GetPlayerSettings(Archetype.Base);
+            print(data.PlayerArchetype);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
 
             inventory.AssignVelocityObject(this);
 
+            AssignRandomArchetype(); // TODO Assign from hub
+            
             MovementAwake();
             RagdollAwake();
+        }
+
+        private void AssignRandomArchetype()
+        {
+            if (Object.HasStateAuthority)
+                Archetype = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
         }
 
         private void ImmunityTimerOnTimerEnd() => isImmune = false;
@@ -184,6 +196,17 @@ namespace Units.Player
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
             inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
+        }
+
+        private void UpdateArchetype()
+        {
+            data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
+            OnArchetypeChanged?.Invoke(this);
+        }
+
+        static private void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.UpdateArchetype();
         }
 
 #if UNITY_EDITOR

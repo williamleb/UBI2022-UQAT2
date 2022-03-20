@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
 
@@ -31,6 +33,17 @@ namespace Systems.Settings
         private GameSettings GameSetting => gameSetting;
         private TeamSettings TeamSetting => teamSetting;
         private CustomizationSettings CustomizationSetting => customizationSettings;
+
+        public PlayerSettings GetPlayerSettings(Archetype archetype)
+        {
+            foreach (var settings in playerSettings)
+            {
+                if (settings.PlayerArchetype == archetype)
+                    return settings;
+            }
+
+            throw new IndexOutOfRangeException();
+        }
 
         protected override void Awake()
         {
