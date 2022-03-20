@@ -52,6 +52,7 @@ namespace Systems.MapGeneration
                 Debug.Assert(randomRoom != null , $"Didn't find any matching room for settings {roomGenerationInfo.DoorLayout} - {roomGenerationInfo.RoomSize}");
                 Quaternion rotation = CalculateRotation(randomRoom.TopDirection,roomGenerationInfo.DesiredOrientation);
                 Vector3 position = roomGenerationInfo.transform.position +
+                                   Vector3.up * 0.01f +
                                    Vector3.forward * roomGenerationInfo.Height / 2 +
                                    Vector3.right * roomGenerationInfo.Width / 2;
                 NetworkSystem.Instance.Spawn(randomRoom.GetComponent<NetworkObject>(), position, rotation);
