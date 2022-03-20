@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using Fusion;
 using Scriptables;
 using Sirenix.OdinInspector;
+using Systems.Network;
 using UnityEngine;
 
 namespace Systems.MapGeneration
@@ -52,7 +54,7 @@ namespace Systems.MapGeneration
                 Vector3 position = roomGenerationInfo.transform.position +
                                    Vector3.forward * roomGenerationInfo.Height / 2 +
                                    Vector3.right * roomGenerationInfo.Width / 2;
-                Instantiate(randomRoom, position, rotation);
+                NetworkSystem.Instance.Spawn(randomRoom.GetComponent<NetworkObject>(), position, rotation);
             }
         }
 
