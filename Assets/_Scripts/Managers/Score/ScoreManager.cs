@@ -12,10 +12,6 @@ namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
-        [SerializeField, Required] private NetworkObject scorePrefab;
-        
-        [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
-
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
@@ -31,14 +27,7 @@ namespace Managers.Score
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to hand homework for team {playerEntity.TeamId} which doesn't exist");
             
-            if (GameManager.HasInstance && GameManager.Instance.IsNextHomeworkLastForPhase)
-            {
-                team.AddScore(player, scoreForLastHomework);
-            }
-            else
-            {
-                team.AddScore(player, handedHomeworkDefinition.Points);
-            }
+            team.AddScore(player, handedHomeworkDefinition.Points);
             
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();
