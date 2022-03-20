@@ -16,8 +16,9 @@ namespace Systems.Camera
         public UnityEngine.Camera MainCamera => mainCamera;
         public IEnumerable<VirtualCamera> VirtualCameras => virtualCameras;
 
-        private void Start()
+        protected override void Awake()
         {
+            base.Awake();
             InitializeMainCamera();
         }
 

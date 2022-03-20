@@ -59,7 +59,10 @@ namespace Canvases.HUDs
 
         private void OnTeamSpawn(Team team)
         {
-            SpawnScoreHud(team);
+            if (!hudScores.ContainsKey(team.TeamId))
+            {
+                SpawnScoreHud(team);
+            }
         }
 
         private void OnTeamDespawned(Team team)
