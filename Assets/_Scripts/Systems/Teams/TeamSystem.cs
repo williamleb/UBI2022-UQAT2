@@ -237,7 +237,7 @@ namespace Systems.Teams
 
         private void OnPlayerDespawned(NetworkObject networkObject)
         {
-            if (!NetworkSystem.Instance.IsHost)
+            if (!NetworkSystem.HasInstance || !NetworkSystem.Instance.IsHost)
                 return;
 
             var playerEntity = PlayerSystem.Instance.GetPlayerEntity(networkObject.InputAuthority);

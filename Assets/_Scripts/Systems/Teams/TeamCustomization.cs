@@ -2,7 +2,6 @@
 using Fusion;
 using Sirenix.OdinInspector;
 using Systems.Settings;
-using Units.Player;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -70,7 +69,7 @@ namespace Systems.Teams
             var color = (Color + customizationSettings.NumberOfTeamColors - 1) % customizationSettings.NumberOfTeamColors;
             while (IsColorTaken(color))
             {
-                color = (color + customizationSettings.NumberOfTeamColors - 1) % customizationSettings.NumberOfTeamColors;;
+                color = (color + customizationSettings.NumberOfTeamColors - 1) % customizationSettings.NumberOfTeamColors;
             }
 
             Color = color;
