@@ -64,7 +64,9 @@ namespace Canvases.HUDs
             var hudScore = hudScores[team.TeamId];
             
             hudScores.Remove(team.TeamId);
-            Destroy(hudScore.gameObject);
+            
+            if (hudScore)
+                Destroy(hudScore.gameObject);
             
             RedrawScoresLayout();
         }

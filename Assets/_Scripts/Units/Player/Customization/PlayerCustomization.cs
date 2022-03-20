@@ -1,7 +1,10 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using Sirenix.OdinInspector;
 using Systems.Settings;
 using UnityEngine;
+using Utilities.Extensions;
+using Random = UnityEngine.Random;
 
 namespace Units.Player.Customisation
 {
@@ -30,6 +33,12 @@ namespace Units.Player.Customisation
             
             settings = SettingsSystem.CustomizationSettings;
             if (Object.HasInputAuthority) Randomize();
+
+            if (Object.HasStateAuthority)
+            {
+                // Necessary, because if elements were randomized to 0, the OnChanged will not be called
+                RPC_ForceUpdateAll();
+            }
         }
         
         // Only call these methods on input authority
@@ -86,7 +95,19 @@ namespace Units.Player.Customisation
             HairColor = Random.Range(0, settings.NumberOfHairColors);
             Eyes = Random.Range(0, settings.NumberOfEyeElements);
             Skin = Random.Range(0, settings.NumberOfSkinElements);
-            ClothesColor = Random.Range(0, settings.NumberOfClothesColorElements); // TODO Load that from the current team
+            Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
+            ClothesColor = Random.Range(0, settings.NumberOfClothesColorElements);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_ForceUpdateAll()
+        {
+            UpdateHead();
+            UpdateHairColor();
+            UpdateEyes();
+            UpdateSkin();
+            UpdateClothes();
+            UpdateClothesColor();
         }
 
         private void UpdateHead()
@@ -138,8 +159,6 @@ namespace Units.Player.Customisation
         
         private void UpdateClothesColor()
         {
-            // TODO Change for the whole team
-
             Debug.Log($"Applying clothes color {ClothesColor}");
             foreach (var customizer in GetComponentsInChildren<ClothesColorCustomizer>())
             {

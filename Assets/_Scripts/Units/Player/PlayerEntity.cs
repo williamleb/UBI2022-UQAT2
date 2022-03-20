@@ -40,6 +40,7 @@ namespace Units.Player
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked] [Capacity(128)] public string TeamId { get; set; }
+        [Networked] public int PlayerScore { get; set; }
         
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
