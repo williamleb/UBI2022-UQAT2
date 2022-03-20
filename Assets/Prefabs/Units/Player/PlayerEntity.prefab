@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 1554716721723356609}
   - component: {fileID: 3379561191062257746}
   - component: {fileID: 4677931505725246664}
+  - component: {fileID: 845309829628765779}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -427,6 +428,7 @@ MonoBehaviour:
   - {fileID: 5796790835011035457}
   - {fileID: 3379561191062257746}
   - {fileID: 4677931505725246664}
+  - {fileID: 845309829628765779}
   SimulationBehaviours: []
 --- !u!114 &7276514254351836703
 MonoBehaviour:
@@ -447,6 +449,7 @@ MonoBehaviour:
   _IsReady:
     _value: 0
   _TeamId: 
+  _PlayerScore: 0
   _Archetype: 0
   dustTrailController: {fileID: 5716062156299285219}
   cameraPoint: {fileID: 267980881122502678}
@@ -719,7 +722,6 @@ MonoBehaviour:
   rightEyeCustomizationPoint: {fileID: 4341372318373905352}
   leftAltEyeCustomizationPoint: {fileID: 6198933042297676180}
   rightAltEyeCustomizationPoint: {fileID: 6812430391744979583}
-  showDebugMenu: 0
 --- !u!114 &4677931505725246664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -730,6 +732,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db6a10b82c604b47bfbbd6a1ccc98dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+--- !u!114 &845309829628765779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7276514254351836690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb15d9872604269a8ab512efe85aa7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0

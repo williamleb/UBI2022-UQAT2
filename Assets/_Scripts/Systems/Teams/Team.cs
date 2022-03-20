@@ -41,6 +41,7 @@ namespace Systems.Teams
             }
 
             CustomizationSpawned();
+            gameObject.name = $"Team - {Name}";
             
             ScoreValue = 0;
             teamSystem.RegisterTeam(this);

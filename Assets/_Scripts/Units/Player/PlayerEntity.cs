@@ -277,6 +277,11 @@ namespace Units.Player
                 {
                     RPC_DebugChangeArchetypeOnHost(Archetype.Dasher);
                 }
+                
+                if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
+                {
+                    TeamSystem.Instance.AssignTeam(this);
+                }
             }
         }
 

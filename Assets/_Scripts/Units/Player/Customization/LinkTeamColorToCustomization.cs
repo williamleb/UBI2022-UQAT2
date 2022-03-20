@@ -1,6 +1,7 @@
 ﻿using Fusion;
 using Systems.Teams;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player.Customisation
 {
@@ -46,7 +47,9 @@ namespace Units.Player.Customisation
                 currentTeam.OnColorChanged -= UpdateCustomization;
             }
 
-            currentTeam = TeamSystem.Instance.GetTeam(entity.TeamId);
+            if (!entity.TeamId.IsNullOrEmpty())
+                currentTeam = TeamSystem.Instance.GetTeam(entity.TeamId);
+            
             if (currentTeam)
             {
                 UpdateCustomization(currentTeam.Color);

@@ -1,6 +1,9 @@
 ﻿using System;
 using Fusion;
+using Sirenix.OdinInspector;
 using Systems.Settings;
+using Units.Player;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Systems.Teams
@@ -19,6 +22,7 @@ namespace Systems.Teams
         {
             customizationSettings = SettingsSystem.CustomizationSettings;
             RandomizeName();
+            RandomizeColor();
         }
         
         public void RandomizeName() => RPC_RandomizeName();
@@ -98,5 +102,41 @@ namespace Systems.Teams
         {
             changed.Behaviour.UpdateColor();
         }
+        
+        #if UNITY_EDITOR
+        
+        private bool showDebugMenu;
+        [Button("ToggleDebugMenu")]
+        private void ToggleDebugMenu()
+        {
+            showDebugMenu = !showDebugMenu;
+        }
+
+        private void OnGUI()
+        {
+            if (Runner.IsRunning && showDebugMenu)
+            {
+                if (GUI.Button(new Rect(0, 0, 200, 40), "RandomizeName"))
+                {
+                    RandomizeName();
+                }
+
+                if (GUI.Button(new Rect(0, 40, 200, 40), "RandomizeColor"))
+                {
+                    RandomizeColor();
+                }
+
+                if (GUI.Button(new Rect(0, 80, 200, 40), "IncrementColor"))
+                {
+                    IncrementColor();
+                }
+
+                if (GUI.Button(new Rect(0, 120, 200, 40), "DecrementColor"))
+                {
+                    DecrementColor();
+                }
+            }
+        }
+#endif
     }
 }
