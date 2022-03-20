@@ -83,10 +83,10 @@ namespace Units.Player.Customisation
         private void RPC_SetClothes(Archetype clothes) => Clothes = clothes;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_IncrementClothesColor() => ClothesColor = (ClothesColor + 1) % settings.NumberOfClothesColorElements;
+        private void RPC_IncrementClothesColor() => ClothesColor = (ClothesColor + 1) % settings.NumberOfTeamColors;
         
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_DecrementClothesColor() => ClothesColor = (ClothesColor + settings.NumberOfClothesColorElements - 1) % settings.NumberOfClothesColorElements;
+        private void RPC_DecrementClothesColor() => ClothesColor = (ClothesColor + settings.NumberOfTeamColors - 1) % settings.NumberOfTeamColors;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_Randomize()
@@ -96,7 +96,7 @@ namespace Units.Player.Customisation
             Eyes = Random.Range(0, settings.NumberOfEyeElements);
             Skin = Random.Range(0, settings.NumberOfSkinElements);
             Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
-            ClothesColor = Random.Range(0, settings.NumberOfClothesColorElements);
+            ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

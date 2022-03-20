@@ -12,18 +12,19 @@ namespace Systems.Settings
     public class CustomizationSettings : ScriptableObject
     {
         private const int NUMBER_OF_MATERIALS_HAIR = 4;
-        private const int NUMBER_OF_MATERIALS_CLOTHES = 6;
+        private const int NUMBER_OF_TEAM_COLORS = 6;
 
         [SerializeField, TableList] private List<HeadElement> headElements = new List<HeadElement>();
         [SerializeField, TableList] private List<EyeElement> eyeElements = new List<EyeElement>();
         [SerializeField, TableList] private List<SkinElement> skinElements = new List<SkinElement>();
         [SerializeField, TableList] private List<ClothesColorElement> clothesColorElements = new List<ClothesColorElement>();
+        [SerializeField, TableList] private List<ColorElement> colorElements = new List<ColorElement>();
 
         public int NumberOfHeadElements => headElements.Count;
         public int NumberOfHairColors => NUMBER_OF_MATERIALS_HAIR;
         public int NumberOfEyeElements => eyeElements.Count;
         public int NumberOfSkinElements => skinElements.Count;
-        public int NumberOfClothesColorElements => clothesColorElements.Count;
+        public int NumberOfTeamColors => NUMBER_OF_TEAM_COLORS;
 
         public GameObject GetHeadElementPrefab(int index)
         {
@@ -92,7 +93,7 @@ namespace Systems.Settings
         public Material GetClothesColor(Archetype archetype, int clothesColorIndex)
         {
             Debug.Assert(clothesColorElements.Any(element => element.Archetype == archetype));
-            Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < clothesColorElements.Count);
+            Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < NumberOfTeamColors);
 
             foreach (var element in clothesColorElements)
             {
@@ -103,6 +104,25 @@ namespace Systems.Settings
             }
 
             throw new IndexOutOfRangeException();
+        }
+        
+        public Color GetColor(int colorIndex)
+        {
+            Debug.Assert(colorIndex >= 0 && colorIndex < NumberOfTeamColors);
+            return colorElements[colorIndex].Color;
+        }
+
+        private void OnValidate()
+        {
+            while (colorElements.Count < NUMBER_OF_TEAM_COLORS)
+            {
+                colorElements.Add(new ColorElement());
+            }
+
+            while (colorElements.Count > NUMBER_OF_TEAM_COLORS)
+            {
+                colorElements.RemoveAt(colorElements.Count -  1);
+            }
         }
 
         [Serializable]
@@ -207,6 +227,17 @@ namespace Systems.Settings
                     _ => throw new IndexOutOfRangeException()
                 };
             }
+        }
+        
+        [Serializable]
+        private class ColorElement
+        {
+            [SerializeField] private string name;
+            
+            [SerializeField] private Color color;
+
+            public string Name => name;
+            public Color Color => color;
         }
     }
 }
