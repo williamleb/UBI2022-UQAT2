@@ -275,7 +275,7 @@ namespace Units.Player
                 
                 if (GUI.Button(new Rect(0, 200, 200, 40), "Custon on"))
                 {
-                    customizationCamera.Activate();
+                    customizationCamera.Activate(); 
                 }
                 
                 if (GUI.Button(new Rect(0, 240, 200, 40), "Custon off"))
