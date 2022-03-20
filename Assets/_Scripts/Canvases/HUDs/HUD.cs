@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using Fusion;
+using Managers.Game;
 using Managers.Score;
 using Sirenix.OdinInspector;
+using Systems.Teams;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,12 @@ namespace Canvases.HUDs
 
             Team.OnTeamSpawned += OnTeamSpawn;
             Team.OnTeamDespawned += OnTeamDespawned;
+
+            if (GameManager.HasInstance)
+            {
+                // If we came to the game scene from the lobby, we didn't notice the teams spawn, so this is necessary
+                GameManager.Instance.OnBeginSpawn += SpawnAllUnspawnedScoreHud;
+            }
         }
 
         private void OnDestroy()
@@ -32,6 +39,22 @@ namespace Canvases.HUDs
 
             Team.OnTeamSpawned -= OnTeamSpawn;
             Team.OnTeamDespawned -= OnTeamDespawned;
+            
+            if (GameManager.HasInstance)
+            {
+                GameManager.Instance.OnBeginSpawn -= SpawnAllUnspawnedScoreHud;
+            }
+        }
+
+        private void SpawnAllUnspawnedScoreHud()
+        {
+            foreach (var team in TeamSystem.Instance.Teams)
+            {
+                if (!hudScores.ContainsKey(team.TeamId))
+                {
+                    SpawnScoreHud(team);
+                }
+            }
         }
 
         private void OnTeamSpawn(Team team)
@@ -64,7 +87,9 @@ namespace Canvases.HUDs
             var hudScore = hudScores[team.TeamId];
             
             hudScores.Remove(team.TeamId);
-            Destroy(hudScore.gameObject);
+            
+            if (hudScore)
+                Destroy(hudScore.gameObject);
             
             RedrawScoresLayout();
         }

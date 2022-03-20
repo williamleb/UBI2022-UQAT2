@@ -1,6 +1,7 @@
 ﻿using Canvases.Components;
-using Managers.Score;
 using Sirenix.OdinInspector;
+using Systems.Settings;
+using Systems.Teams;
 using UnityEngine;
 
 namespace Canvases.HUDs
@@ -9,6 +10,7 @@ namespace Canvases.HUDs
     {
         [SerializeField, Required] private TextUIComponent scoreText;
         [SerializeField, Required] private TextUIComponent teamName;
+        [SerializeField] private ImageUIComponent teamColorImage;
         
         private Team team;
 
@@ -17,22 +19,38 @@ namespace Canvases.HUDs
             Debug.Assert(teamToLookAt);
             team = teamToLookAt;
 
-            scoreText.Text = $"{team.ScoreValue}";
-            teamName.Text = $"{team.Name}";
-
-            team.OnScoreChanged += OnScoreChanged;
+            UpdateScore(team.ScoreValue);
+            UpdateName(team.Name);
+            UpdateColor(team.Color);
+            
+            team.OnScoreChanged += UpdateScore;
+            team.OnNameChanged += UpdateName;
+            team.OnColorChanged += UpdateColor;
         }
 
         private void OnDestroy()
         {
             if (team)
-                team.OnScoreChanged -= OnScoreChanged;
+                team.OnScoreChanged -= UpdateScore;
         }
 
-        private void OnScoreChanged(int newScore)
+        private void UpdateScore(int newScore)
         {
             // TODO Kool animation
             scoreText.Text = $"{newScore}";
+        }
+
+        private void UpdateName(string newName)
+        {
+            teamName.Text = newName;
+        }
+
+        private void UpdateColor(int color)
+        {
+            if (!teamColorImage)
+                return;
+            
+            teamColorImage.Color = SettingsSystem.CustomizationSettings.GetColor(color);;
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Linq;
 using Ingredients.Homework;
 using Managers.Game;
 using Systems;
+using Systems.Teams;
 using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
@@ -9,9 +10,7 @@ using Utilities.Singleton;
 namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
-    {        
-        [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
-
+    {
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
@@ -26,16 +25,8 @@ namespace Managers.Score
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to hand homework for team {playerEntity.TeamId} which doesn't exist");
             
-            if (GameManager.HasInstance && GameManager.Instance.IsNextHomeworkLastForPhase)
-            {
-                team.IncrementScore(scoreForLastHomework);
-                playerEntity.PlayerScore += scoreForLastHomework;
-            }
-            else
-            {
-                team.IncrementScore(handedHomeworkDefinition.Points);
-                playerEntity.PlayerScore += handedHomeworkDefinition.Points;
-            }
+            team.IncrementScore(handedHomeworkDefinition.Points);
+            playerEntity.PlayerScore += handedHomeworkDefinition.Points;
             
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();

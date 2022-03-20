@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
+using Units.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,18 +12,19 @@ namespace Systems.Settings
     public class CustomizationSettings : ScriptableObject
     {
         private const int NUMBER_OF_MATERIALS_HAIR = 4;
-        private const int NUMBER_OF_MATERIALS_CLOTHES = 6;
+        private const int NUMBER_OF_TEAM_COLORS = 6;
 
         [SerializeField, TableList] private List<HeadElement> headElements = new List<HeadElement>();
         [SerializeField, TableList] private List<EyeElement> eyeElements = new List<EyeElement>();
         [SerializeField, TableList] private List<SkinElement> skinElements = new List<SkinElement>();
         [SerializeField, TableList] private List<ClothesColorElement> clothesColorElements = new List<ClothesColorElement>();
+        [SerializeField, TableList] private List<ColorElement> colorElements = new List<ColorElement>();
 
         public int NumberOfHeadElements => headElements.Count;
         public int NumberOfHairColors => NUMBER_OF_MATERIALS_HAIR;
         public int NumberOfEyeElements => eyeElements.Count;
         public int NumberOfSkinElements => skinElements.Count;
-        public int NumberOfClothesColorElements => clothesColorElements.Count;
+        public int NumberOfTeamColors => NUMBER_OF_TEAM_COLORS;
 
         public GameObject GetHeadElementPrefab(int index)
         {
@@ -87,10 +90,39 @@ namespace Systems.Settings
             return skinElements[skinIndex].SkinMaterial;
         }
         
-        public Material GetClothesColor(int clothesColorIndex)
+        public Material GetClothesColor(Archetype archetype, int clothesColorIndex)
         {
-            Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < clothesColorElements.Count);
-            return clothesColorElements[clothesColorIndex].ClothesColorMaterial;
+            Debug.Assert(clothesColorElements.Any(element => element.Archetype == archetype));
+            Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < NumberOfTeamColors);
+
+            foreach (var element in clothesColorElements)
+            {
+                if (element.Archetype == archetype)
+                {
+                    return element.GetClothesMaterial(clothesColorIndex);
+                }
+            }
+
+            throw new IndexOutOfRangeException();
+        }
+        
+        public Color GetColor(int colorIndex)
+        {
+            Debug.Assert(colorIndex >= 0 && colorIndex < NumberOfTeamColors);
+            return colorElements[colorIndex].Color;
+        }
+
+        private void OnValidate()
+        {
+            while (colorElements.Count < NUMBER_OF_TEAM_COLORS)
+            {
+                colorElements.Add(new ColorElement());
+            }
+
+            while (colorElements.Count > NUMBER_OF_TEAM_COLORS)
+            {
+                colorElements.RemoveAt(colorElements.Count -  1);
+            }
         }
 
         [Serializable]
@@ -105,7 +137,7 @@ namespace Systems.Settings
             // I don't use a fancy resizable list here because it would complexify the customisation logic too much
             // (I want to reduce dev time at this point of the project) and we already know we won't go over
             // 4 materials per hair
-            [VerticalGroup("Textures"), PreviewField] 
+            [VerticalGroup("Materials"), PreviewField] 
             [SerializeField] private Material hairMaterial1, hairMaterial2, hairMaterial3, hairMaterial4;
 
             [FormerlySerializedAs("hairTextureIndex")]
@@ -172,12 +204,40 @@ namespace Systems.Settings
         [Serializable]
         private class ClothesColorElement
         {
+            [SerializeField] private Archetype archetype;
+            
+            // I don't use a fancy resizable list here because it would complexify the customisation logic too much
+            // (I want to reduce dev time at this point of the project) and we already know we won't go over
+            // 6 materials per clothe
+            [VerticalGroup("Materials"), PreviewField] 
+            [SerializeField] private Material clothesMaterial1, clothesMaterial2, clothesMaterial3, clothesMaterial4, clothesMaterial5, clothesMaterial6;
+
+            public Archetype Archetype => archetype;
+            
+            public Material GetClothesMaterial(int index)
+            {
+                return index switch
+                {
+                    0 => clothesMaterial1,
+                    1 => clothesMaterial2,
+                    2 => clothesMaterial3,
+                    3 => clothesMaterial4,
+                    4 => clothesMaterial5,
+                    5 => clothesMaterial6,
+                    _ => throw new IndexOutOfRangeException()
+                };
+            }
+        }
+        
+        [Serializable]
+        private class ColorElement
+        {
             [SerializeField] private string name;
             
-            [PreviewField]
-            [SerializeField] private Material clothesColorMaterial;
+            [SerializeField] private Color color;
 
-            public Material ClothesColorMaterial => clothesColorMaterial;
+            public string Name => name;
+            public Color Color => color;
         }
     }
 }

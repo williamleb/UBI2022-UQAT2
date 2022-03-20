@@ -2,9 +2,11 @@ using System;
 using System.Threading.Tasks;
 using Fusion;
 using Interfaces;
+using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Systems.Settings;
+using Systems.Teams;
 using Units.AI;
 using Units.Camera;
 using UnityEditor;
@@ -23,6 +25,8 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
+        public event Action OnArchetypeChanged;
+        public event Action OnTeamChanged;
 
         [SerializeField] private CameraStrategy mainCamera;
 
@@ -37,20 +41,31 @@ namespace Units.Player
         public int PlayerId { get; private set; }
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
-        [Networked] [Capacity(128)] public string TeamId { get; set; }
+        [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
+        
+        [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
+        public Archetype Archetype { get; private set; }
 
         private void OnAwake()
         {
-            data = SettingsSystem.PlayerSettings.RandomElement();
-            print(data.PlayerArchetypes);
+            data = SettingsSystem.Instance.GetPlayerSettings(Archetype.Base);
+            print(data.PlayerArchetype);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
 
             inventory.AssignVelocityObject(this);
 
+            AssignRandomArchetype(); // TODO Assign from hub
+            
             MovementAwake();
             RagdollAwake();
+        }
+
+        private void AssignRandomArchetype()
+        {
+            if (Object.HasStateAuthority)
+                Archetype = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
         }
 
         private void ImmunityTimerOnTimerEnd() => isImmune = false;
@@ -187,6 +202,27 @@ namespace Units.Player
             inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
         }
 
+        private void UpdateArchetype()
+        {
+            data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
+            OnArchetypeChanged?.Invoke();
+        }
+        
+        private void UpdateTeam()
+        {
+            OnTeamChanged?.Invoke();
+        }
+
+        private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.UpdateArchetype();
+        }
+        
+        private static void OnNetworkTeamIdChanged(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.UpdateTeam();
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -208,6 +244,51 @@ namespace Units.Player
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
                 Debug.LogWarning(
                     $"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+        }
+        
+        private bool showDebugMenu;
+        
+        [Button("ToggleDebugMenu")]
+        private void ToggleDebugMenu()
+        {
+            showDebugMenu = !showDebugMenu;
+        }
+
+        private void OnGUI()
+        {
+            if (Runner.IsRunning && Object.HasInputAuthority && showDebugMenu)
+            {
+                if (GUI.Button(new Rect(0, 0, 200, 40), "Base"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Base);
+                }
+
+                if (GUI.Button(new Rect(0, 40, 200, 40), "Runner"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Runner);
+                }
+
+                if (GUI.Button(new Rect(0, 80, 200, 40), "Thrower"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Thrower);
+                }
+
+                if (GUI.Button(new Rect(0, 120, 200, 40), "Dasher"))
+                {
+                    RPC_DebugChangeArchetypeOnHost(Archetype.Dasher);
+                }
+                
+                if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
+                {
+                    TeamSystem.Instance.AssignTeam(this);
+                }
+            }
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_DebugChangeArchetypeOnHost(Archetype archetype)
+        {
+            Archetype = archetype;
         }
 #endif
     }
