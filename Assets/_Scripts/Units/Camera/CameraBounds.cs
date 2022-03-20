@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
+using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Units.Camera
 {
@@ -61,5 +64,25 @@ namespace Units.Camera
 
             return position;
         }
+        
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+                EditorApplication.delayCall += AssignTagAndLayer;
+        }
+
+        private void AssignTagAndLayer()
+        {
+            if (this == null)
+                return;
+
+            var thisGameObject = gameObject;
+
+            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.CAMERABOUNDS))
+                Debug.LogWarning(
+                    $"Camera bounds {thisGameObject.name} should have the tag {Tags.CAMERABOUNDS}. Instead, it has {thisGameObject.tag}");
+        }
+#endif
     }
 }
