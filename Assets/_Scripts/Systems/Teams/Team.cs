@@ -1,5 +1,4 @@
 using Fusion;
-using Managers.Score;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,29 +8,30 @@ using Systems.Settings;
 using Units.Player;
 using UnityEngine;
 
-public class Team : NetworkBehaviour
+public class Team : NetworkBehaviour, IEquatable<Team>
 {
     public static event Action<Team> OnTeamSpawned;
     public static event Action<Team> OnTeamDespawned;
     public event Action<int> OnScoreChanged;
 
-    private List<PlayerEntity> playerList { get; set;}
     private TeamSettings teamSettings;
     private TeamSystem teamSystem;
 
+    //TODO The player list is NOT GUARANTEED to be up to date on clients
+    //since RPCs are not part of the network state. 
+    private readonly List<PlayerRef> playerList = new List<PlayerRef>();
+
     public int PlayerCount => playerList.Count;
+    public List<PlayerRef> PlayerList => playerList;
 
     [Networked] public string Name { get; private set; }
     [Networked] [Capacity(128)] public string TeamId { get; private set; }
     [Networked(OnChanged = nameof(OnValueChanged))] public int ScoreValue { get; private set; }
-    [Networked] [Capacity(10)] public NetworkDictionary<PlayerRef, int> playerScore => default;
 
     public override async void Spawned()
     {
         teamSystem = TeamSystem.Instance;
         teamSettings = SettingsSystem.TeamSettings;
-
-        playerList = new List<PlayerEntity>();
 
         if (NetworkSystem.Instance.IsHost)
         {
@@ -51,63 +51,99 @@ public class Team : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority,RpcTargets.All)]
-    public void AddPlayer(PlayerEntity playerEntity)
+    public void RPC_AssignPlayer(PlayerEntity playerEntity)
     {
-        if (!NetworkSystem.Instance.IsHost)
-            return;
+        var playerRef = playerEntity.Object.InputAuthority;
 
-        if (playerList.Count <= teamSettings.MaxPlayerPerTeam)
-        {
-            playerList.Add(playerEntity);
-            playerEntity.TeamId = TeamId;
-        }
+        if (!playerList.Contains(playerRef))
+            playerList.Add(playerRef);
         else
+            Debug.LogWarning($"Player {playerRef} was already assigned to team {TeamId}");
+
+        playerEntity.TeamId = TeamId;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_RemovePlayer(PlayerRef playerRef)
+    {
+        if (playerList.Contains(playerRef))
         {
-            Debug.LogError($"Cannot add the player to the team {Name} because the team is full");
+            playerList.Remove(playerRef);
         }
     }
 
-    public int GetScoreForPlayer(PlayerRef player)
+    public bool ContainPlayer(PlayerRef playerRef)
     {
-        var score = playerScore;
-
-        if (score.TryGet(player, out int pScore))
-            return pScore;
-        else
-            return -1;
+        return playerList.Contains(playerRef);
     }
 
-    public void AddScore(PlayerRef player, int scoreToAdd)
+    public PlayerEntity GetPlayerWithHighestScore()
+    {
+        PlayerEntity teamPlayerWithHighestScore = null;
+        int highestScore = int.MinValue;
+
+        foreach(PlayerRef playerRef in playerList)
+        {
+            var playerEntity = PlayerSystem.Instance.GetPlayerEntity(playerRef);
+           
+            if(playerEntity.PlayerScore > highestScore)
+            {
+                teamPlayerWithHighestScore = playerEntity;
+                highestScore = playerEntity.PlayerScore;
+            }
+        }
+
+        return teamPlayerWithHighestScore;
+    }
+    
+    public void IncrementScore(int scoreToAdd)
     {
         if (!NetworkSystem.Instance.IsHost)
             return;
-
-        //Weird fix. Saw that on the discord, no idea why.
-        var score = playerScore;
-
-        if (!score.ContainsKey(player))
-            score.Add(player, scoreToAdd);
-        else
-            score[player] = score[player] + scoreToAdd;
 
         ScoreValue += scoreToAdd;
-
-        Debug.Log($"Player {player} score for team {TeamId}! Current player score : {score[player]}");
     }
 
-    public void RemoveScore(int scoreToRemove)
+    public void DecrementScore(int scoreToRemove)
     {
+        if (!NetworkSystem.Instance.IsHost)
+            return;
+
         ScoreValue = Math.Max(0, ScoreValue - scoreToRemove);
     }
 
     public void ResetScore()
     {
+        if (!NetworkSystem.Instance.IsHost)
+            return;
+
         ScoreValue = 0;
+    }
+
+    public void ClearPlayerList()
+    {
+        if (!NetworkSystem.Instance.IsHost)
+            return;
+
+        RPC_ClearPlayerList();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_ClearPlayerList()
+    {
+        playerList.Clear();
     }
 
     private static void OnValueChanged(Changed<Team> changed)
     {
-        var score = changed.Behaviour;
-        score.OnScoreChanged?.Invoke(score.ScoreValue);
+        var team = changed.Behaviour;
+        team.OnScoreChanged?.Invoke(team.ScoreValue);
+    }
+
+    public bool Equals(Team other)
+    {
+        return other is Team team &&
+                base.Equals(other) &&
+                TeamId == team.TeamId;
     }
 }
