@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Scriptables;
 using Sirenix.OdinInspector;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Systems.MapGeneration
@@ -47,9 +46,13 @@ namespace Systems.MapGeneration
             MapGenerationInfo mapGenerationInfo = mapLayouts.GetRandomMapLayout();
             foreach (RoomGenerationInfo roomGenerationInfo in mapGenerationInfo.Rooms)
             {
-                RoomInfo randomRoom = mapRooms.GetRandomMapRoom();
+                RoomInfo randomRoom = mapRooms.GetRandomMatchingRoom(roomGenerationInfo);
+                Debug.Assert(randomRoom != null , $"Didn't find any matching room for settings {roomGenerationInfo.DoorLayout} - {roomGenerationInfo.RoomSize}");
                 Quaternion rotation = CalculateRotation(randomRoom.TopDirection,roomGenerationInfo.DesiredOrientation);
-                Instantiate(randomRoom, roomGenerationInfo.transform.position, rotation);
+                Vector3 position = roomGenerationInfo.transform.position +
+                                   Vector3.forward * roomGenerationInfo.Height / 2 +
+                                   Vector3.right * roomGenerationInfo.Width / 2;
+                Instantiate(randomRoom, position, rotation);
             }
         }
 

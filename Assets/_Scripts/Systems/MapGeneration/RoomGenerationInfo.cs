@@ -14,16 +14,21 @@ namespace Systems.MapGeneration
         [SerializeField] private DesiredOrientation desiredOrientation;
         [SerializeField] private RoomSize roomSize;
         [SerializeField] private RoomFloorColor roomFloorColor;
-        [SerializeField] private bool largeRoomOrientation;
-
-
+        
+        private bool LargeRoomOrientation => desiredOrientation == DesiredOrientation.Top || desiredOrientation == DesiredOrientation.Bottom;
+        public float Height => roomSize == RoomSize.Lr ? LargeRoomOrientation? largeShortSide:largeLongSide : smallHeight;
+        public float Width => roomSize == RoomSize.Sr ? smallWidth : LargeRoomOrientation? largeLongSide: largeShortSide;
+        
+        private float smallHeight = 14.4f;
+        private float smallWidth = 14.4f;
+        
+        private float largeShortSide = 14.4f;
+        private float largeLongSide = 28.4f;
+        
         private void OnDrawGizmos()
         {
-            var height = roomSize == RoomSize.Lr ? largeRoomOrientation? 15f:30f : 15f;
-            var width = roomSize == RoomSize.Sr ? 15f : largeRoomOrientation? 30f:15f;
-
-            var size = new Vector3(width, 0, height);
-            var pos = transform.position + Vector3.up * 0.01f;
+            var size = new Vector3(Width, 0, Height);
+            var pos = transform.position + Vector3.up * 0.01f + size / 2f;
             switch (roomFloorColor)
             {
                 case RoomFloorColor.Floor:
@@ -63,171 +68,208 @@ namespace Systems.MapGeneration
             var doorSize = 2.5f;
             var doorPos = new Vector3(doorSize, 0, doorSize);
 
-            switch (doorLayout)
+            if (roomSize == RoomSize.Sr)
             {
-                case DoorLayout.DL1D:
-                    Gizmos.color = Color.green;
-                    switch (desiredOrientation)
-                    {
-                        case DesiredOrientation.Top:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Bottom:
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Left:
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Right:
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                switch (doorLayout)
+                {
+                    case DoorLayout.DL1D:
+                        Gizmos.color = Color.green;
+                        switch (desiredOrientation)
+                        {
+                            case DesiredOrientation.Top:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Bottom:
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Left:
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Right:
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
 
-                    Gizmos.color = Color.black;
-                    break;
-                case DoorLayout.DL2Dpar:
-                    switch (desiredOrientation)
-                    {
-                        case DesiredOrientation.Top:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Bottom:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        case DesiredOrientation.Left:
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        case DesiredOrientation.Right:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                        Gizmos.color = Color.black;
+                        break;
+                    case DoorLayout.DL2Dpar:
+                        switch (desiredOrientation)
+                        {
+                            case DesiredOrientation.Top:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Bottom:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            case DesiredOrientation.Left:
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            case DesiredOrientation.Right:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
 
-                    break;
-                case DoorLayout.DL2Dper:
-                    switch (desiredOrientation)
-                    {
-                        case DesiredOrientation.Top:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Bottom:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Left:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        case DesiredOrientation.Right:
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                        break;
+                    case DoorLayout.DL2Dper:
+                        switch (desiredOrientation)
+                        {
+                            case DesiredOrientation.Top:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Bottom:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Left:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            case DesiredOrientation.Right:
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
 
-                    break;
-                case DoorLayout.DL3D:
-                    switch (desiredOrientation)
-                    {
-                        case DesiredOrientation.Top:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Bottom:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Left:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        case DesiredOrientation.Right:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                        break;
+                    case DoorLayout.DL3D:
+                        switch (desiredOrientation)
+                        {
+                            case DesiredOrientation.Top:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Bottom:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Left:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            case DesiredOrientation.Right:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
 
-                    break;
-                case DoorLayout.DL4D:
-                    switch (desiredOrientation)
-                    {
-                        case DesiredOrientation.Top:
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Bottom:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        case DesiredOrientation.Left:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            break;
-                        case DesiredOrientation.Right:
-                            Gizmos.DrawCube(pos + Vector3.forward * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.DrawCube(pos + Vector3.back * (height / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.green;
-                            Gizmos.DrawCube(pos + Vector3.right * (width / 2 - doorSize / 2), doorPos);
-                            Gizmos.color = Color.black;
-                            Gizmos.DrawCube(pos + Vector3.left * (width / 2 - doorSize / 2), doorPos);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        break;
+                    case DoorLayout.DL4D:
+                        switch (desiredOrientation)
+                        {
+                            case DesiredOrientation.Top:
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Bottom:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            case DesiredOrientation.Left:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                break;
+                            case DesiredOrientation.Right:
+                                Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.green;
+                                Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2), doorPos);
+                                Gizmos.color = Color.black;
+                                Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2), doorPos);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            if (roomSize == RoomSize.Lr)
+            {
+                switch (desiredOrientation)
+                {
+                    case DesiredOrientation.Top:
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2) + Vector3.right * (Width / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.black;
+                        Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2) + Vector3.left * (Width / 4 - 0.1f), doorPos);
+                        break;
+                    case DesiredOrientation.Bottom:
+                        Gizmos.DrawCube(pos + Vector3.forward * (Height / 2 - doorSize / 2) + Vector3.right * (Width / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawCube(pos + Vector3.back * (Height / 2 - doorSize / 2) + Vector3.left * (Width / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.black;
+                        break;
+                    case DesiredOrientation.Left:
+                        Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2) + Vector3.back * (Height / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2) + Vector3.forward * (Height / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.black;
+                        break;
+                    case DesiredOrientation.Right:
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawCube(pos + Vector3.right * (Width / 2 - doorSize / 2) + Vector3.back * (Height / 4 - 0.1f), doorPos);
+                        Gizmos.color = Color.black;
+                        Gizmos.DrawCube(pos + Vector3.left * (Width / 2 - doorSize / 2) + Vector3.forward * (Height / 4 - 0.1f), doorPos);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
     }
