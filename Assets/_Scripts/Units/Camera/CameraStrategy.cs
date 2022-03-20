@@ -1,3 +1,5 @@
+using Cinemachine;
+using Sirenix.OdinInspector;
 using Systems.Settings;
 using UnityEngine;
 
@@ -8,7 +10,8 @@ namespace Units.Camera
         [Header("Base Settings")] [SerializeField]
         protected float MoveSpeed;
 
-        [SerializeField] protected UnityEngine.Camera MyCamera;
+        [SerializeField, Required] private CinemachineVirtualCamera virtualCamera;
+        private CinemachineCameraOffset cameraOffset;
 
         [Header("Boundaries")] [SerializeField]
         private CameraBounds cameraBounds;
@@ -23,7 +26,7 @@ namespace Units.Camera
 
         private void Awake()
         {
-            if (MyCamera == null && UnityEngine.Camera.main != null) MyCamera = UnityEngine.Camera.main;
+            cameraOffset = virtualCamera.GetComponent<CinemachineCameraOffset>();
         }
 
         public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
@@ -39,9 +42,9 @@ namespace Units.Camera
             CalculateAverages();
             CalculateOffset();
 
-            MyCamera.transform.localPosition = offset;
-            MyCamera.transform.rotation = Quaternion.Euler(data.RotX, 0, 0);
-            MyCamera.fieldOfView = data.FieldOfView;
+            cameraOffset.m_Offset = offset;
+            virtualCamera.transform.rotation = Quaternion.Euler(data.RotX, 0, 0);
+            virtualCamera.m_Lens.FieldOfView = data.FieldOfView;
 
             averageTarget = cameraBounds.StayWithinBounds(averageTarget, data.RotX, longestDistance);
 
