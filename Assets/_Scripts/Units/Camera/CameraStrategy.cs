@@ -1,5 +1,6 @@
 using Systems.Settings;
 using UnityEngine;
+using Utilities.Unity;
 
 namespace Units.Camera
 {
@@ -28,6 +29,7 @@ namespace Units.Camera
 
         public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
         {
+            cameraBounds = GameObject.FindWithTag(Tags.CAMERABOUNDS).GetComponent<CameraBounds>();
             data = cameraSettings;
             initialized = true;
             UpdateCamera();
@@ -43,7 +45,7 @@ namespace Units.Camera
             MyCamera.transform.rotation = Quaternion.Euler(data.RotX, 0, 0);
             MyCamera.fieldOfView = data.FieldOfView;
 
-            averageTarget = cameraBounds.StayWithinBounds(averageTarget, data.RotX, longestDistance);
+            averageTarget = cameraBounds.StayWithinBounds(MyCamera, averageTarget, data.RotX, longestDistance);
 
             UpdatePositionAndRotation();
         }
