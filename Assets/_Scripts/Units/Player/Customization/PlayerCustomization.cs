@@ -51,6 +51,7 @@ namespace Units.Player.Customisation
         public void IncrementSkin() => RPC_IncrementSkin();
         public void DecrementSkin() => RPC_DecrementSkin();
         public void SetClothes(Archetype clothes) => RPC_SetClothes(clothes);
+        public void SetClothesColor(int clothesColor) => RPC_SetClothesColor(clothesColor);
         public void IncrementClothesColor() => RPC_IncrementClothesColor();
         public void DecrementClothesColor() => RPC_DecrementClothesColor();
         public void Randomize() => RPC_Randomize();
@@ -81,6 +82,9 @@ namespace Units.Player.Customisation
         
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_SetClothes(Archetype clothes) => Clothes = clothes;
+        
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_SetClothesColor(int clothesColor) => ClothesColor = clothesColor;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_IncrementClothesColor() => ClothesColor = (ClothesColor + 1) % settings.NumberOfTeamColors;

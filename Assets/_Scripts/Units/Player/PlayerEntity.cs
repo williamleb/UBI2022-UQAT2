@@ -26,6 +26,7 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
         public event Action OnArchetypeChanged;
+        public event Action OnTeamChanged;
 
         [SerializeField] private CameraStrategy mainCamera;
 
@@ -40,7 +41,7 @@ namespace Units.Player
         public int PlayerID { get; private set; }
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
-        [Networked] [Capacity(128)] public string TeamId { get; set; }
+        [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
         
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
@@ -206,10 +207,20 @@ namespace Units.Player
             data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
             OnArchetypeChanged?.Invoke();
         }
+        
+        private void UpdateTeam()
+        {
+            OnTeamChanged?.Invoke();
+        }
 
-        static private void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
+        private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
         {
             changed.Behaviour.UpdateArchetype();
+        }
+        
+        private static void OnNetworkTeamIdChanged(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.UpdateTeam();
         }
 
 #if UNITY_EDITOR
