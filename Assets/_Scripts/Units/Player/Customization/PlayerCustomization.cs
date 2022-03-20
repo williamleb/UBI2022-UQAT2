@@ -23,7 +23,7 @@ namespace Units.Player.Customisation
         [Networked(OnChanged = nameof(OnHairColorChanged))] private int HairColor { get; set; }
         [Networked(OnChanged = nameof(OnEyesChanged))] private int Eyes { get; set; }
         [Networked(OnChanged = nameof(OnSkinChanged))] private int Skin { get; set; }
-        [Networked(OnChanged = nameof(OnClothesChanged))] private int Clothes { get; set; }
+        [Networked(OnChanged = nameof(OnClothesChanged))] private Archetype Clothes { get; set; }
         [Networked(OnChanged = nameof(OnClothesColorChanged))] private int ClothesColor { get; set; }
 
         public override void Spawned()
@@ -43,7 +43,7 @@ namespace Units.Player.Customisation
         public void DecrementEyes() => RPC_DecrementEyes();
         public void IncrementSkin() => RPC_IncrementSkin();
         public void DecrementSkin() => RPC_DecrementSkin();
-        
+        public void SetClothes(Archetype clothes) => RPC_SetClothes(clothes);
         public void IncrementClothesColor() => RPC_IncrementClothesColor();
         public void DecrementClothesColor() => RPC_DecrementClothesColor();
         public void Randomize() => RPC_Randomize();
@@ -72,6 +72,9 @@ namespace Units.Player.Customisation
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_DecrementSkin() => Skin = (Skin + settings.NumberOfSkinElements - 1) % settings.NumberOfSkinElements;
         
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_SetClothes(Archetype clothes) => Clothes = clothes;
+
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_IncrementClothesColor() => ClothesColor = (ClothesColor + 1) % settings.NumberOfClothesColorElements;
         
@@ -125,10 +128,12 @@ namespace Units.Player.Customisation
         
         private void UpdateClothes()
         {
-            // TODO Update when the player changes class
-
             Debug.Log($"Applying clothes {Clothes}");
-            // TODO
+            foreach (var customizer in GetComponentsInChildren<ClothesCustomizer>())
+            {
+                customizer.Activate(Clothes);
+            }
+            
             UpdateSkin();
             UpdateClothesColor();
         }
@@ -138,9 +143,9 @@ namespace Units.Player.Customisation
             // TODO Change for the whole team
 
             Debug.Log($"Applying clothes color {ClothesColor}");
-            foreach (var customizer in GetComponentsInChildren<ClothesCustomizer>())
+            foreach (var customizer in GetComponentsInChildren<ClothesColorCustomizer>())
             {
-                customizer.LoadMaterial(settings.GetClothesColor(ClothesColor));
+                customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor));
             }
         }
 

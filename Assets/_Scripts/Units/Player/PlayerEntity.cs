@@ -23,7 +23,7 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnMenuPressed;
-        public event Action<PlayerEntity> OnArchetypeChanged;
+        public event Action OnArchetypeChanged;
 
         [SerializeField] private CameraStrategy mainCamera;
 
@@ -41,7 +41,7 @@ namespace Units.Player
         [Networked] [Capacity(128)] public string TeamId { get; set; }
         
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
-        private Archetype Archetype { get; set; }
+        public Archetype Archetype { get; private set; }
 
         private void OnAwake()
         {
@@ -201,7 +201,7 @@ namespace Units.Player
         private void UpdateArchetype()
         {
             data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
-            OnArchetypeChanged?.Invoke(this);
+            OnArchetypeChanged?.Invoke();
         }
 
         static private void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)

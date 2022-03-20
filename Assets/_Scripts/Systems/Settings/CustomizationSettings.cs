@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
+using Units.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -87,10 +89,20 @@ namespace Systems.Settings
             return skinElements[skinIndex].SkinMaterial;
         }
         
-        public Material GetClothesColor(int clothesColorIndex)
+        public Material GetClothesColor(Archetype archetype, int clothesColorIndex)
         {
+            Debug.Assert(clothesColorElements.Any(element => element.Archetype == archetype));
             Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < clothesColorElements.Count);
-            return clothesColorElements[clothesColorIndex].ClothesColorMaterial;
+
+            foreach (var element in clothesColorElements)
+            {
+                if (element.Archetype == archetype)
+                {
+                    return element.GetClothesMaterial(clothesColorIndex);
+                }
+            }
+
+            throw new IndexOutOfRangeException();
         }
 
         [Serializable]
@@ -105,7 +117,7 @@ namespace Systems.Settings
             // I don't use a fancy resizable list here because it would complexify the customisation logic too much
             // (I want to reduce dev time at this point of the project) and we already know we won't go over
             // 4 materials per hair
-            [VerticalGroup("Textures"), PreviewField] 
+            [VerticalGroup("Materials"), PreviewField] 
             [SerializeField] private Material hairMaterial1, hairMaterial2, hairMaterial3, hairMaterial4;
 
             [FormerlySerializedAs("hairTextureIndex")]
@@ -172,12 +184,29 @@ namespace Systems.Settings
         [Serializable]
         private class ClothesColorElement
         {
-            [SerializeField] private string name;
+            [SerializeField] private Archetype archetype;
             
-            [PreviewField]
-            [SerializeField] private Material clothesColorMaterial;
+            // I don't use a fancy resizable list here because it would complexify the customisation logic too much
+            // (I want to reduce dev time at this point of the project) and we already know we won't go over
+            // 6 materials per clothe
+            [VerticalGroup("Materials"), PreviewField] 
+            [SerializeField] private Material clothesMaterial1, clothesMaterial2, clothesMaterial3, clothesMaterial4, clothesMaterial5, clothesMaterial6;
 
-            public Material ClothesColorMaterial => clothesColorMaterial;
+            public Archetype Archetype => archetype;
+            
+            public Material GetClothesMaterial(int index)
+            {
+                return index switch
+                {
+                    0 => clothesMaterial1,
+                    1 => clothesMaterial2,
+                    2 => clothesMaterial3,
+                    3 => clothesMaterial4,
+                    4 => clothesMaterial5,
+                    5 => clothesMaterial6,
+                    _ => throw new IndexOutOfRangeException()
+                };
+            }
         }
     }
 }

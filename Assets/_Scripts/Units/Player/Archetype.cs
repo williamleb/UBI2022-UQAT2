@@ -7,7 +7,7 @@ namespace Units.Player
     {
         Base = 0,
         Runner,
-        Plaqueur,
-        Lanceur,
+        Dasher,
+        Thrower,
     }
 }
