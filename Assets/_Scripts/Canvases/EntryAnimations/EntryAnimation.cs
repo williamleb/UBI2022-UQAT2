@@ -28,6 +28,8 @@ namespace Canvases.EntryAnimations
         private Queue<Animations> animationsToPlay = new Queue<Animations>();
 
         public bool IsEntered => isEntered;
+        public bool IsEnteredOrEntering => isEntered || isEntering;
+        public bool IsLeftOrLeaving => !isEntered || !isEntering;
 
         private void Awake()
         {
@@ -119,11 +121,6 @@ namespace Canvases.EntryAnimations
             yield return null;
             
             yield return new WaitUntil(IsAnimationFinished);
-
-            if (entering) // TODO Remove
-                Debug.Log("Entered ===========");
-            else 
-                Debug.Log("Left ============");
 
             isEntered = entering;
             if (entering)

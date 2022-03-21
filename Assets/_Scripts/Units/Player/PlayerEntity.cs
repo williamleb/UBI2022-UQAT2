@@ -8,7 +8,7 @@ using Systems.Network;
 using Systems.Settings;
 using Systems.Teams;
 using Units.AI;
-using Units.Camera;
+using Units.Player.Customisation;
 using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
@@ -20,6 +20,7 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
+    [RequireComponent(typeof(PlayerCustomization))]
     public partial class PlayerEntity : NetworkBehaviour, IVelocityObject
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
@@ -31,12 +32,14 @@ namespace Units.Player
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
+        private PlayerCustomization customization;
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
         private bool inMenu;
 
         public int PlayerId { get; private set; }
+        public PlayerCustomization Customization => customization;
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }

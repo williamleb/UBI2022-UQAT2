@@ -32,7 +32,7 @@ namespace Units.Player.Customisation
             base.Spawned();
             
             settings = SettingsSystem.CustomizationSettings;
-            if (Object.HasInputAuthority) Randomize();
+            if (Object.HasInputAuthority) Randomize(true);
 
             if (Object.HasStateAuthority)
             {
@@ -54,7 +54,7 @@ namespace Units.Player.Customisation
         public void SetClothesColor(int clothesColor) => RPC_SetClothesColor(clothesColor);
         public void IncrementClothesColor() => RPC_IncrementClothesColor();
         public void DecrementClothesColor() => RPC_DecrementClothesColor();
-        public void Randomize() => RPC_Randomize();
+        public void Randomize(bool randomizeGameplayElements = false) => RPC_Randomize(randomizeGameplayElements);
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_IncrementHead() => Head = (Head + 1) % settings.NumberOfHeadElements;
@@ -93,14 +93,18 @@ namespace Units.Player.Customisation
         private void RPC_DecrementClothesColor() => ClothesColor = (ClothesColor + settings.NumberOfTeamColors - 1) % settings.NumberOfTeamColors;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_Randomize()
+        private void RPC_Randomize(bool randomizeGameplayElements)
         {
             Head = Random.Range(0, settings.NumberOfHeadElements);
             HairColor = Random.Range(0, settings.NumberOfHairColors);
             Eyes = Random.Range(0, settings.NumberOfEyeElements);
             Skin = Random.Range(0, settings.NumberOfSkinElements);
-            Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
-            ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
+
+            if (randomizeGameplayElements)
+            {
+                Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
+                ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
+            }
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
