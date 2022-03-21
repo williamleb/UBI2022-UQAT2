@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fusion;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -22,11 +23,20 @@ namespace Systems.MapGeneration
         [Button(ButtonSizes.Large)]
         private void FindPropParent()
         {
+            if (propParent != null) return;
             GameObject pp = GameObject.Find("Props");
             if (pp)
+            {
+                if (!pp.TryGetComponent(out NetworkObject obj))
+                {
+                    pp.AddComponent<NetworkObject>();
+                }
                 propParent = pp.transform;
+            }
             else
-                Debug.LogWarning("Need to create a Prop gameObject to hold all props");
+            {
+                Debug.LogWarning("Need to create a 'Props' gameObject to hold all props");
+            }
         }
 
         private void OnValidate()

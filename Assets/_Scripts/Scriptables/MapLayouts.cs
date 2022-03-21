@@ -7,11 +7,11 @@ namespace Scriptables
     [CreateAssetMenu(menuName = "Game/Create MapLayouts", fileName = "MapLayouts", order = 0)]
     public class MapLayouts : ScriptableObject
     {
-        [SerializeField] private MapGenerationInfo[] mapLayouts;
+        [SerializeField] private MapReference[] mapReferences;
 
-        public MapGenerationInfo GetRandomMapLayout()
+        public MapReference GetRandomMapLayout()
         {
-            return mapLayouts.RandomElement();
+            return mapReferences.RandomElement();
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Systems;
+using Systems.MapGeneration;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
@@ -102,7 +103,8 @@ namespace Managers.Game
 
         private IEnumerator SpawnAndStartGameRoutine()
         {
-            // TODO Make level here and wait until level is made
+            MapGenerationSystem.Instance.GenerateMap();
+            yield return null;
             
             spawnLocks.Clear();
             yield return null;

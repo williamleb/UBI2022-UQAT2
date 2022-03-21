@@ -4,18 +4,20 @@ using Scriptables;
 using Sirenix.OdinInspector;
 using Systems.Network;
 using UnityEngine;
+using Utilities.Singleton;
 
 namespace Systems.MapGeneration
 {
-    public class MapGenerationSystem : MonoBehaviour
+    public class MapGenerationSystem : Singleton<MapGenerationSystem>
     {
         private const string MAP_FOLDER_PATH = "Game";
 
         private MapLayouts mapLayouts;
         private MapRooms mapRooms;
         
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             LoadLayouts();
             LoadRooms();
         }
@@ -43,9 +45,11 @@ namespace Systems.MapGeneration
         }
 
         [Button]
-        private void GenerateMap()
+        public void GenerateMap()
         {
-            MapGenerationInfo mapGenerationInfo = mapLayouts.GetRandomMapLayout();
+            MapReference mapReference = mapLayouts.GetRandomMapLayout();
+            MapGenerationInfo mapGenerationInfo = mapReference.MapGenerationInfo;
+            NetworkObject propPrefab = mapReference.PropPrefab;
             foreach (RoomGenerationInfo roomGenerationInfo in mapGenerationInfo.Rooms)
             {
                 RoomInfo randomRoom = mapRooms.GetRandomMatchingRoom(roomGenerationInfo);
@@ -57,6 +61,8 @@ namespace Systems.MapGeneration
                                    Vector3.right * roomGenerationInfo.Width / 2;
                 NetworkSystem.Instance.Spawn(randomRoom.GetComponent<NetworkObject>(), position, rotation);
             }
+
+            NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
         }
 
         private Quaternion CalculateRotation(DesiredOrientation randomRoomTopDirection, DesiredOrientation desiredOrientation)
