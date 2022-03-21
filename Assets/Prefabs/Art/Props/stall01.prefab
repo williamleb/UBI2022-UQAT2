@@ -38,6 +38,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 99853861322346959}
     m_Modifications:
+    - target: {fileID: 919132149155446097, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a6b2d1208201d16479615f7c758c0157, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -106,10 +110,6 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 0bb1c7eef49fd394996bf656963b548f, type: 3}
-      propertyPath: m_TagString
-      value: Collidable
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6b2d1208201d16479615f7c758c0157, type: 3}
 --- !u!1 &1964721616178483744 stripped
@@ -148,3 +148,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.46144, y: 47.04901, z: 75.725204}
   m_Center: {x: -0.34511667, y: -22.163029, z: 37.84948}
+--- !u!208 &204770623581381576
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964721616178483744}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 21.480001, y: 23.525002, z: 37.863003}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 19.904001, y: -22.163, z: 37.849003}
+  m_TimeToStationary: 0.5
