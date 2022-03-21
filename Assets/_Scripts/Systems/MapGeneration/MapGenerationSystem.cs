@@ -14,7 +14,7 @@ namespace Systems.MapGeneration
 
         private MapLayouts mapLayouts;
         private MapRooms mapRooms;
-        
+
         protected override void Awake()
         {
             base.Awake();
@@ -50,6 +50,8 @@ namespace Systems.MapGeneration
             MapReference mapReference = mapLayouts.GetRandomMapLayout();
             MapGenerationInfo mapGenerationInfo = mapReference.MapGenerationInfo;
             NetworkObject propPrefab = mapReference.PropPrefab;
+            NetworkObject hallways = mapReference.Hallways;
+            NetworkObject spawnPoints = mapReference.SpawnPoints;
             foreach (RoomGenerationInfo roomGenerationInfo in mapGenerationInfo.Rooms)
             {
                 RoomInfo randomRoom = mapRooms.GetRandomMatchingRoom(roomGenerationInfo);
@@ -63,6 +65,8 @@ namespace Systems.MapGeneration
             }
 
             NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
+            NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
+            NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
         }
 
         private Quaternion CalculateRotation(DesiredOrientation randomRoomTopDirection, DesiredOrientation desiredOrientation)
