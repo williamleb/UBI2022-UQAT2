@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Fusion;
 using Interfaces;
 using Managers.Hallway;
@@ -41,6 +42,12 @@ namespace Units.AI
         private AITaskSensor taskSensor;
         private AIBrain brain;
 
+        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
+        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
+        [SerializeField] private Transform ragdollTransform;
+        private bool isRagdoll;
+        private Collider aiCollider;
+
         private AISettings settings;
         private Coroutine hitCoroutine;
 
@@ -77,7 +84,7 @@ namespace Units.AI
             settings = SettingsSystem.AISettings;
 
             inventory.AssignVelocityObject(this);
-
+            aiCollider = GetComponent<CapsuleCollider>();
         }
 
         // Those three methods should only be called before the AI entity is spawned
@@ -96,6 +103,7 @@ namespace Units.AI
             }
 
             RegisterToManager();
+            InitializeRagdoll();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -105,6 +113,12 @@ namespace Units.AI
 
         public override void FixedUpdateNetwork()
         {
+            if (isRagdoll)
+            {
+                transform.position =  Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+                ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+            }
+
             UpdateWalkingAnimation();
         }
 
@@ -165,6 +179,62 @@ namespace Units.AI
             brain.AssignEntity(this);
         }
 
+        private void InitializeRagdoll()
+        {
+            if (Type != AIType.Student)
+                return;
+
+            var collidersInAIEntity = GetComponentsInChildren<Collider>();
+            foreach (Collider col in collidersInAIEntity)
+            {
+                if (col.transform.gameObject != transform.gameObject)
+                {
+                    Transform colTransform = col.transform;
+                    ragdollColliders.Add((col, colTransform.localPosition, colTransform.localRotation));
+                    col.isTrigger = true;
+
+                    var rigidBody = col.gameObject.GetComponent<Rigidbody>();
+                    rigidBody.isKinematic = true;
+                    ragdollRigidbody.Add(rigidBody);
+                }
+            }
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        public void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = default)
+        {
+            if (Type != AIType.Student)
+                return;
+
+            isRagdoll = isActivate;
+
+            agent.enabled = !isActivate;
+            animator.enabled = !isActivate;
+
+            if (aiCollider)
+                aiCollider.enabled = !isActivate;
+
+            foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
+            {
+                col.isTrigger = !isActivate;
+
+                if (!isActivate)
+                {
+                    Transform elementTransform = col.transform;
+                    elementTransform.localPosition = localPos;
+                    elementTransform.localRotation = localRot;
+                }
+            }
+
+            foreach (Rigidbody rb in ragdollRigidbody)
+            {
+                rb.isKinematic = !isActivate;
+
+                if (isActivate && forceDirection != default)
+                    rb.AddForce(forceDirection.normalized * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
+            }
+        }
+
         public void Hit(GameObject hitter, float overrideHitDuration = -1)
         {
             // Teachers cannot be hit
@@ -175,7 +245,8 @@ namespace Units.AI
             {
                 StopHitRoutine();
             }
-            
+
+            RPC_ToggleRagdoll(true, (transform.position - hitter.transform.position).Flat(), 10f);
             OnHit?.Invoke(hitter);
             hitCoroutine = StartCoroutine(HitRoutine(overrideHitDuration));
         }
@@ -184,6 +255,7 @@ namespace Units.AI
         {
             var secondsToWait = overrideHitDuration > 0f ? overrideHitDuration : settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
+            RPC_ToggleRagdoll(false);
             hitCoroutine = null;
         }
         
