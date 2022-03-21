@@ -38,7 +38,6 @@ namespace Units.Player
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
         private bool inMenu;
-        private bool inCustomization;
 
         public int PlayerId { get; private set; }
         public PlayerCustomization Customization => customization;
@@ -46,7 +45,8 @@ namespace Units.Player
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
-        
+        [Networked] private bool InCustomization { get; set; }
+
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
 
@@ -110,18 +110,18 @@ namespace Units.Player
 
                 if (Runner.IsForward)
                 {
-                    if (inputData.IsInteractOnce && !inMenu && !inCustomization)
+                    if (inputData.IsInteractOnce && !inMenu && !InCustomization)
                     {
                         interacter.InteractWithClosestInteraction();
                     }
 
-                    if (inputData.IsReadyOnce && !inMenu && !inCustomization)
+                    if (inputData.IsReadyOnce && !inMenu && !InCustomization)
                     {
                         IsReady = !IsReady;
                         Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
                     }
 
-                    if (inputData.IsMenu && !inCustomization)
+                    if (inputData.IsMenu && !InCustomization)
                     {
                         inMenu = !inMenu;
                         if (inMenu) IsReady = false;
@@ -211,11 +211,11 @@ namespace Units.Player
 
         public void StartCustomization()
         {
-            if (inCustomization)
+            if (InCustomization)
                 return;
 
             IsReady = false;
-            inCustomization = true;
+            RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
             if (MenuManager.HasInstance)
             {
@@ -225,12 +225,17 @@ namespace Units.Player
 
         public void StopCustomization()
         {
-            if (!inCustomization)
+            if (!InCustomization)
                 return;
 
-            inCustomization = false;
+            RPC_ChangeInCustomization(false);
             mainCamera.Activate();
-            // TODO Deactivate menu?
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_ChangeInCustomization(NetworkBool inCustomization)
+        {
+            InCustomization = inCustomization;
         }
 
         private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)

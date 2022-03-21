@@ -56,7 +56,7 @@ namespace Units.Player
         {
             MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
             
-            if (!IsDashing && !inMenu && !inCustomization)
+            if (!IsDashing && !inMenu && !InCustomization)
             {
                 if (HasMoveInput) lastMoveDirection = MoveDirection;
                 float directionDot = Vector3.Dot(transform.forward, lastMoveDirection);
@@ -67,7 +67,7 @@ namespace Units.Player
                 ChangeMoveSpeed(inputData.IsSprint);
             }
 
-            if (inMenu || inCustomization)
+            if (inMenu || InCustomization)
             {
                 MoveDirection = Vector3.zero;
                 ChangeMoveSpeed(false);
