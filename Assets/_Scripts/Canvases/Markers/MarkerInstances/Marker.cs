@@ -76,7 +76,9 @@ namespace Canvases.Markers
         private void Start()
         {
             currentCamera = CameraSystem.Instance.MainCamera;
-            gameObject.SetActive(false);
+            
+            if (!IsActivated)
+                gameObject.SetActive(false);
         }
 
         protected virtual void Update()
