@@ -1,9 +1,8 @@
-﻿using System;
-using Canvases.Components;
+﻿using Canvases.Components;
 using Systems.Teams;
 using UnityEngine;
 
-namespace Canvases.Customization
+namespace Canvases.Menu.Customization
 {
     public class CustomizationUIRandomizeTeamName : CustomizationUIButton
     {

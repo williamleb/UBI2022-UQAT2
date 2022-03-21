@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Canvases.EntryAnimations;
+﻿using Canvases.EntryAnimations;
 using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;
 
-namespace Canvases.Customization
+namespace Canvases.Menu.Customization
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class CustomizationUI : MonoBehaviour
+    public class CustomizationUI : MonoBehaviour, IMenu
     {
         [SerializeField, Required] private EntryAnimation entry;
 
@@ -55,6 +53,7 @@ namespace Canvases.Customization
             if (entry.IsLeftOrLeaving)
                 return;
 
+            entry.LeaveDown();
             canvasGroup.interactable = false;
         }
     }

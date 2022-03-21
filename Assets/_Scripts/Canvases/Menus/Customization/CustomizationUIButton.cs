@@ -1,9 +1,8 @@
-﻿using System;
-using Canvases.Components;
+﻿using Canvases.Components;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Canvases.Customization
+namespace Canvases.Menu.Customization
 {
     public abstract class CustomizationUIButton : CustomizationUIElement
     {

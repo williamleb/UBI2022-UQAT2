@@ -1,13 +1,13 @@
 ﻿using Units.Player;
 using UnityEngine;
 
-namespace Canvases.Customization
+namespace Canvases.Menu.Customization
 {
     public class CustomizationUIElement : MonoBehaviour
     {
         private PlayerEntity customizablePlayer;
 
-        protected PlayerEntity CustomizablePlayer;
+        protected PlayerEntity CustomizablePlayer => customizablePlayer;
 
         public void Activate(PlayerEntity player)
         {

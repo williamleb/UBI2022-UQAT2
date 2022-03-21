@@ -30,7 +30,7 @@ namespace Ingredients.Stations
             if (!player)
                 return;
             
-            // TODO Player start customization
+            player.StartCustomization();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Canvases.Menu;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
@@ -37,6 +38,7 @@ namespace Units.Player
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
         private bool inMenu;
+        private bool inCustomization;
 
         public int PlayerId { get; private set; }
         public PlayerCustomization Customization => customization;
@@ -54,6 +56,7 @@ namespace Units.Player
             print(data.PlayerArchetype);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
+            customization = GetComponent<PlayerCustomization>();
 
             inventory.AssignVelocityObject(this);
 
@@ -107,18 +110,18 @@ namespace Units.Player
 
                 if (Runner.IsForward)
                 {
-                    if (inputData.IsInteractOnce && !inMenu)
+                    if (inputData.IsInteractOnce && !inMenu && !inCustomization)
                     {
                         interacter.InteractWithClosestInteraction();
                     }
 
-                    if (inputData.IsReadyOnce && !inMenu)
+                    if (inputData.IsReadyOnce && !inMenu && !inCustomization)
                     {
                         IsReady = !IsReady;
                         Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
                     }
 
-                    if (inputData.IsMenu)
+                    if (inputData.IsMenu && !inCustomization)
                     {
                         inMenu = !inMenu;
                         if (inMenu) IsReady = false;
@@ -204,6 +207,29 @@ namespace Units.Player
         private void UpdateTeam()
         {
             OnTeamChanged?.Invoke();
+        }
+
+        public void StartCustomization()
+        {
+            if (inCustomization)
+                return;
+
+            inCustomization = true;
+            customizationCamera.Activate();
+            if (MenuManager.HasInstance)
+            {
+                MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this);
+            }
+        }
+
+        public void StopCustomization()
+        {
+            if (!inCustomization)
+                return;
+
+            inCustomization = false;
+            mainCamera.Activate();
+            // TODO Deactivate menu?
         }
 
         private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)

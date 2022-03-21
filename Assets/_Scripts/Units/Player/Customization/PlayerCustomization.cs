@@ -93,7 +93,7 @@ namespace Units.Player.Customisation
         private void RPC_DecrementClothesColor() => ClothesColor = (ClothesColor + settings.NumberOfTeamColors - 1) % settings.NumberOfTeamColors;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_Randomize(bool randomizeGameplayElements)
+        private void RPC_Randomize(NetworkBool randomizeGameplayElements)
         {
             Head = Random.Range(0, settings.NumberOfHeadElements);
             HairColor = Random.Range(0, settings.NumberOfHairColors);

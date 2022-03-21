@@ -1,4 +1,4 @@
-﻿namespace Canvases.Customization
+﻿namespace Canvases.Menu.Customization
 {
     public class CustomizationUIRandomize : CustomizationUIButton
     {
