@@ -1,4 +1,5 @@
-﻿using Canvases.Components;
+﻿using System;
+using Canvases.Components;
 using Canvases.EntryAnimations;
 using Sirenix.OdinInspector;
 using Units.Player;
@@ -9,6 +10,9 @@ namespace Canvases.Menu.Customization
     [RequireComponent(typeof(CanvasGroup))]
     public class CustomizationUI : MonoBehaviour, IMenu
     {
+        public event Action OnShow; 
+        public event Action OnHide; 
+
         [SerializeField, Required] private EntryAnimation entry;
         [SerializeField, Required] private ButtonUIComponent backButton;
         [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
@@ -27,12 +31,14 @@ namespace Canvases.Menu.Customization
         private void OnEnable()
         {
             entry.OnEntered += OnEntered;
+            entry.OnLeft += OnLeft;
             backButton.OnClick += OnBack;
         }
 
         private void OnDisable()
         {
             entry.OnEntered -= OnEntered;
+            entry.OnLeft -= OnLeft;
             backButton.OnClick += OnBack;
         }
 
@@ -54,6 +60,7 @@ namespace Canvases.Menu.Customization
             }
             
             entry.EnterDown();
+            OnShow?.Invoke();
         }
         
         private void OnEntered()
@@ -74,6 +81,11 @@ namespace Canvases.Menu.Customization
 
             entry.LeaveDown();
             canvasGroup.interactable = false;
+        }
+
+        private void OnLeft()
+        {
+            OnHide?.Invoke();
         }
     }
 }
