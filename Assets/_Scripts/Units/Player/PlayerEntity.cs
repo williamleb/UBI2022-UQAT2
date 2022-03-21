@@ -214,6 +214,7 @@ namespace Units.Player
             if (inCustomization)
                 return;
 
+            IsReady = false;
             inCustomization = true;
             customizationCamera.Activate();
             if (MenuManager.HasInstance)

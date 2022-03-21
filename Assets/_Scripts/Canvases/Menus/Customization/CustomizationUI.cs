@@ -53,7 +53,7 @@ namespace Canvases.Menu.Customization
                 element.Activate(playerEntity);
             }
             
-            entry.EnterUp();
+            entry.EnterDown();
         }
         
         private void OnEntered()
