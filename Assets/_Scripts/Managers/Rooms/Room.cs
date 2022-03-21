@@ -7,7 +7,6 @@ using UnityEngine;
 using Utilities;
 using Utilities.Extensions;
 using Utilities.Mesh;
-using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +17,7 @@ namespace Managers.Rooms
     {
         [SerializeField] private float width = 10f;
         [SerializeField] private float height = 10f;
+        [SerializeField] private Vector2 offset = new Vector2(-7.2f,-7.2f);
         
         [SerializeField] private SpriteMarkerReceptor roomMarker;
         
@@ -40,8 +40,8 @@ namespace Managers.Rooms
                 RoomManager.Instance.RegisterRoom(this);
 
             var thisTransform = transform;
-            lowerLeftPosition = thisTransform.position;
             rotationAngles = new Vector3(0f, thisTransform.eulerAngles.y, 0f);
+            lowerLeftPosition = thisTransform.position + offset.V2ToFlatV3().RotateAround(Vector3.up,rotationAngles);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -111,12 +111,11 @@ namespace Managers.Rooms
         private void OnDrawGizmosSelected()
         {
             var thisTransform = transform;
-            var lowerLeftCorner = thisTransform.position;
+            var rotationAnglesGizmo = new Vector3 (0f, thisTransform.eulerAngles.y, 0f);
+            var lowerLeftCorner = thisTransform.position + offset.V2ToFlatV3().RotateAround(Vector3.up,rotationAnglesGizmo);
             var upperLeftCorner = lowerLeftCorner + Vector3.forward * height;
             var lowerRightCorner = lowerLeftCorner + Vector3.right * width;
             var upperRightCorner = lowerRightCorner + Vector3.forward * height;
-            
-            var rotationAnglesGizmo = new Vector3 (0f, thisTransform.eulerAngles.y, 0f);
 
             upperLeftCorner = upperLeftCorner.RotateAround(lowerLeftCorner, rotationAnglesGizmo);
             lowerRightCorner = lowerRightCorner.RotateAround(lowerLeftCorner, rotationAnglesGizmo);
@@ -143,6 +142,20 @@ namespace Managers.Rooms
             var middle2D = HandleUtility.WorldToGUIPoint(middle);
             GUI.Label(new Rect(middle2D.x, middle2D.y, 100, 100), gameObject.name, style);
             Handles.EndGUI();
+        }
+
+        [Button]
+        private void OnValidate()
+        {
+            if (roomMarker != null) return;
+            foreach (Transform t in transform)
+            {
+                if(t.TryGetComponent(out SpriteMarkerReceptor marker))
+                {
+                    roomMarker = marker;
+                    break;
+                }
+            }
         }
 #endif
     }

@@ -66,6 +66,54 @@ Transform:
   m_Father: {fileID: 6306681785555712779}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2813938139086807209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2709528563633350877}
+  - component: {fileID: 4003622761939379136}
+  m_Layer: 0
+  m_Name: Marker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2709528563633350877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813938139086807209}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6306681785555712779}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4003622761939379136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813938139086807209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cddca4fe8df4561b5905eb905c0a851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  markerScale: 4
+  lockInPlace: 0
+  showOutsideCameraBorders: 1
+  padding: {x: 10, y: 10}
+  sprite: {fileID: 21300000, guid: 4c5c658bf7aba1a41a8a49c266844bec, type: 3}
 --- !u!1 &7767328348461759692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1694,6 +1742,7 @@ GameObject:
   - component: {fileID: 2824129789027803429}
   - component: {fileID: -3190103957532263392}
   - component: {fileID: 4651409001723355500}
+  - component: {fileID: -5379091692518583347}
   m_Layer: 0
   m_Name: SR1D_1
   m_TagString: Untagged
@@ -1713,6 +1762,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6724962686603779385}
+  - {fileID: 2709528563633350877}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1756,6 +1806,7 @@ MonoBehaviour:
   - {fileID: 3353584282087047571}
   NetworkedBehaviours:
   - {fileID: 4651409001723355500}
+  - {fileID: -5379091692518583347}
   SimulationBehaviours: []
 --- !u!114 &4651409001723355500
 MonoBehaviour:
@@ -1786,6 +1837,24 @@ MonoBehaviour:
     RotTeleportRadians: 1.5
   SyncScale: 0
   Space: 0
+--- !u!114 &-5379091692518583347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8170777487745403613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 369bbca2b249422aa9698b9d9775d914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  width: 14.4
+  height: 14.4
+  offset: {x: -7.2, y: -7.2}
+  roomMarker: {fileID: 4003622761939379136}
+  probability: 0.5
 --- !u!1001 &30602814893537701
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3281,11 +3350,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
---- !u!4 &3205541098703590482 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7115139751709419020, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
-  m_PrefabInstance: {fileID: 5675190072073400926}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2207470981272486217 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5791858249728324375, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
@@ -3308,6 +3372,11 @@ MonoBehaviour:
   m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &3205541098703590482 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7115139751709419020, guid: 4a9acf2667b67c84d8c18f7568f2730e, type: 3}
+  m_PrefabInstance: {fileID: 5675190072073400926}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5980305408658733587
 PrefabInstance:
   m_ObjectHideFlags: 0
