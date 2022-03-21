@@ -10,6 +10,13 @@ namespace Units.Player.Customisation
 {
     public class PlayerCustomization : NetworkBehaviour
     {
+        public event Action<int> OnHeadChangedEvent;
+        public event Action<int> OnHairColorChangedEvent;
+        public event Action<int> OnEyesChangedEvent;
+        public event Action<int> OnSkinChangedEvent;
+        public event Action<Archetype> OnClothesChangedEvent;
+        public event Action<int> OnClothesColorChangedEvent;
+
         [SerializeField, Required] private CustomizationPoint headCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint faceCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint noseCustomizationPoint;
@@ -20,12 +27,12 @@ namespace Units.Player.Customisation
         
         private CustomizationSettings settings;
         
-        [Networked(OnChanged = nameof(OnHeadChanged))] private int Head { get; set; }
-        [Networked(OnChanged = nameof(OnHairColorChanged))] private int HairColor { get; set; }
-        [Networked(OnChanged = nameof(OnEyesChanged))] private int Eyes { get; set; }
-        [Networked(OnChanged = nameof(OnSkinChanged))] private int Skin { get; set; }
-        [Networked(OnChanged = nameof(OnClothesChanged))] private Archetype Clothes { get; set; }
-        [Networked(OnChanged = nameof(OnClothesColorChanged))] private int ClothesColor { get; set; }
+        [Networked(OnChanged = nameof(OnHeadChanged))] public int Head { get; private set; }
+        [Networked(OnChanged = nameof(OnHairColorChanged))] public int HairColor { get; private set; }
+        [Networked(OnChanged = nameof(OnEyesChanged))] public int Eyes { get; private set; }
+        [Networked(OnChanged = nameof(OnSkinChanged))] public int Skin { get; private set; }
+        [Networked(OnChanged = nameof(OnClothesChanged))] public Archetype Clothes { get; private set; }
+        [Networked(OnChanged = nameof(OnClothesColorChanged))] public int ClothesColor { get; private set; }
 
         public override void Spawned()
         {
@@ -123,6 +130,7 @@ namespace Units.Player.Customisation
             Debug.Log($"Applying head element {Head}");
             headCustomizationPoint.LoadElement(settings.GetHeadElementPrefab(Head));
             UpdateHairColor();
+            OnHeadChangedEvent?.Invoke(Head);
         }
         
         private void UpdateHairColor()
@@ -131,6 +139,7 @@ namespace Units.Player.Customisation
             var material = settings.GetHairMaterial(Head, HairColor);
             var index = settings.GetHairMaterialIndex(Head);
             headCustomizationPoint.LoadMaterialOnElement(material, index);
+            OnHairColorChangedEvent?.Invoke(HairColor);
         }
 
         private void UpdateEyes()
@@ -142,6 +151,7 @@ namespace Units.Player.Customisation
             rightEyeCustomizationPoint.LoadElement(settings.GetRightEyePrefabForEyes(Eyes));
             leftAltEyeCustomizationPoint.LoadElement(settings.GetAltLeftEyePrefabForEyes(Eyes));
             rightAltEyeCustomizationPoint.LoadElement(settings.GetAltRightEyePrefabForEyes(Eyes));
+            OnEyesChangedEvent?.Invoke(Eyes);
         }
 
         private void UpdateSkin()
@@ -151,6 +161,7 @@ namespace Units.Player.Customisation
             {
                 customizer.LoadMaterial(settings.GetSkin(Skin));
             }
+            OnSkinChangedEvent?.Invoke(Skin);
         }
         
         private void UpdateClothes()
@@ -163,6 +174,7 @@ namespace Units.Player.Customisation
             
             UpdateSkin();
             UpdateClothesColor();
+            OnClothesChangedEvent?.Invoke(Clothes);
         }
         
         private void UpdateClothesColor()
@@ -172,6 +184,7 @@ namespace Units.Player.Customisation
             {
                 customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor));
             }
+            OnClothesColorChangedEvent?.Invoke(ClothesColor);
         }
 
         private static void OnHeadChanged(Changed<PlayerCustomization> customisation)
