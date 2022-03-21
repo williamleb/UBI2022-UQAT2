@@ -1,6 +1,7 @@
 ﻿using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Units.Player
 {
@@ -11,12 +12,23 @@ namespace Units.Player
         private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
         private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private Collider playerCollider;
+        private bool isRagdoll;
+
         [SerializeField] private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
         [SerializeField] private Transform ragdollPelvis;
 
         private void RagdollAwake()
         {
             InitializeRagdoll();
+        }
+
+        private void RagdollUpdate()
+        {
+            if (isRagdoll) 
+            {
+               transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+               ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+            }
         }
 
         private void InitializeRagdoll()
@@ -44,13 +56,14 @@ namespace Units.Player
         [Rpc(RpcSources.StateAuthority,RpcTargets.All)]
         private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = default)
         {
+            isRagdoll = isActivate;
+
             networkAnimator.Animator.enabled = !isActivate;
             AnimationUpdate();
 
             foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
             {
                 col.isTrigger = !isActivate;
-
                 //Reset bones to local position
                 if (!isActivate)
                 {
@@ -65,7 +78,7 @@ namespace Units.Player
                 rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
-                    rb.AddForce(forceDirection * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
+                    rb.AddForce(forceDirection.normalized * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
             }
         }
     }

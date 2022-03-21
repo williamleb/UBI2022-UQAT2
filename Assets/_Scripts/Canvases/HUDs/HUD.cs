@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Managers.Game;
 using Managers.Score;
 using Sirenix.OdinInspector;
@@ -39,7 +39,7 @@ namespace Canvases.HUDs
 
             Team.OnTeamSpawned -= OnTeamSpawn;
             Team.OnTeamDespawned -= OnTeamDespawned;
-            
+
             if (GameManager.HasInstance)
             {
                 GameManager.Instance.OnBeginSpawn -= SpawnAllUnspawnedScoreHud;
@@ -71,13 +71,13 @@ namespace Canvases.HUDs
         {
             var hudScoreGameObject = Instantiate(hudScorePrefab, hudScoreContainer);
             hudScoreGameObject.name = $"HUDScore-TeamId{team.TeamId}";
-            
+
             var hudScore = hudScoreGameObject.GetComponent<HUDScore>();
             Debug.Assert(hudScore);
-            
+
             hudScore.Init(team);
             hudScores.Add(team.TeamId, hudScore);
-            
+
             RedrawScoresLayout();
         }
 
@@ -85,12 +85,12 @@ namespace Canvases.HUDs
         {
             Debug.Assert(hudScores.ContainsKey(team.TeamId));
             var hudScore = hudScores[team.TeamId];
-            
+
             hudScores.Remove(team.TeamId);
-            
+
             if (hudScore)
                 Destroy(hudScore.gameObject);
-            
+
             RedrawScoresLayout();
         }
 

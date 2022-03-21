@@ -136,6 +136,7 @@ namespace Units.Player
                 }
 
                 AnimationUpdate();
+                RagdollUpdate();
             }
         }
 
