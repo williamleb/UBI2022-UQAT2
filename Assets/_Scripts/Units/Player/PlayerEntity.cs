@@ -72,6 +72,12 @@ namespace Units.Player
                 Archetype = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
         }
 
+        public void AssignArchetype(Archetype archetype)
+        {
+            if (Object.HasStateAuthority)
+                Archetype = archetype;
+        }
+
         private void ImmunityTimerOnTimerEnd() => isImmune = false;
 
         public override async void Spawned()
