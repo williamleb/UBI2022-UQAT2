@@ -8,6 +8,7 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        [Header("Movement")]
         [SerializeField] private DustTrailController dustTrailController;
         [SerializeField] private Transform cameraPoint;
         private NetworkRigidbody nRb;
@@ -55,7 +56,7 @@ namespace Units.Player
         {
             MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
             
-            if (!IsDashing && !inMenu)
+            if (!IsDashing && !inMenu && !InCustomization)
             {
                 if (HasMoveInput) lastMoveDirection = MoveDirection;
                 float directionDot = Vector3.Dot(transform.forward, lastMoveDirection);
@@ -66,7 +67,7 @@ namespace Units.Player
                 ChangeMoveSpeed(inputData.IsSprint);
             }
 
-            if (inMenu)
+            if (inMenu || InCustomization)
             {
                 MoveDirection = Vector3.zero;
                 ChangeMoveSpeed(false);

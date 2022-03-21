@@ -11,6 +11,8 @@ namespace Units.Player
         private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
         private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private Collider playerCollider;
+        
+        [Header("Ragdoll")]
         [SerializeField] private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
         [SerializeField] private Transform ragdollPelvis;
 

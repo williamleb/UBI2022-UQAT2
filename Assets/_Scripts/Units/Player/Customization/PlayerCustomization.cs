@@ -10,6 +10,13 @@ namespace Units.Player.Customisation
 {
     public class PlayerCustomization : NetworkBehaviour
     {
+        public event Action<int> OnHeadChangedEvent;
+        public event Action<int> OnHairColorChangedEvent;
+        public event Action<int> OnEyesChangedEvent;
+        public event Action<int> OnSkinChangedEvent;
+        public event Action<Archetype> OnClothesChangedEvent;
+        public event Action<int> OnClothesColorChangedEvent;
+
         [SerializeField, Required] private CustomizationPoint headCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint faceCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint noseCustomizationPoint;
@@ -20,19 +27,19 @@ namespace Units.Player.Customisation
         
         private CustomizationSettings settings;
         
-        [Networked(OnChanged = nameof(OnHeadChanged))] private int Head { get; set; }
-        [Networked(OnChanged = nameof(OnHairColorChanged))] private int HairColor { get; set; }
-        [Networked(OnChanged = nameof(OnEyesChanged))] private int Eyes { get; set; }
-        [Networked(OnChanged = nameof(OnSkinChanged))] private int Skin { get; set; }
-        [Networked(OnChanged = nameof(OnClothesChanged))] private Archetype Clothes { get; set; }
-        [Networked(OnChanged = nameof(OnClothesColorChanged))] private int ClothesColor { get; set; }
+        [Networked(OnChanged = nameof(OnHeadChanged))] public int Head { get; private set; }
+        [Networked(OnChanged = nameof(OnHairColorChanged))] public int HairColor { get; private set; }
+        [Networked(OnChanged = nameof(OnEyesChanged))] public int Eyes { get; private set; }
+        [Networked(OnChanged = nameof(OnSkinChanged))] public int Skin { get; private set; }
+        [Networked(OnChanged = nameof(OnClothesChanged))] public Archetype Clothes { get; private set; }
+        [Networked(OnChanged = nameof(OnClothesColorChanged))] public int ClothesColor { get; private set; }
 
         public override void Spawned()
         {
             base.Spawned();
             
             settings = SettingsSystem.CustomizationSettings;
-            if (Object.HasInputAuthority) Randomize();
+            if (Object.HasInputAuthority) Randomize(true);
 
             if (Object.HasStateAuthority)
             {
@@ -54,7 +61,7 @@ namespace Units.Player.Customisation
         public void SetClothesColor(int clothesColor) => RPC_SetClothesColor(clothesColor);
         public void IncrementClothesColor() => RPC_IncrementClothesColor();
         public void DecrementClothesColor() => RPC_DecrementClothesColor();
-        public void Randomize() => RPC_Randomize();
+        public void Randomize(bool randomizeGameplayElements = false) => RPC_Randomize(randomizeGameplayElements);
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void RPC_IncrementHead() => Head = (Head + 1) % settings.NumberOfHeadElements;
@@ -93,14 +100,18 @@ namespace Units.Player.Customisation
         private void RPC_DecrementClothesColor() => ClothesColor = (ClothesColor + settings.NumberOfTeamColors - 1) % settings.NumberOfTeamColors;
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_Randomize()
+        private void RPC_Randomize(NetworkBool randomizeGameplayElements)
         {
             Head = Random.Range(0, settings.NumberOfHeadElements);
             HairColor = Random.Range(0, settings.NumberOfHairColors);
             Eyes = Random.Range(0, settings.NumberOfEyeElements);
             Skin = Random.Range(0, settings.NumberOfSkinElements);
-            Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
-            ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
+
+            if (randomizeGameplayElements)
+            {
+                Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
+                ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
+            }
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -119,6 +130,7 @@ namespace Units.Player.Customisation
             Debug.Log($"Applying head element {Head}");
             headCustomizationPoint.LoadElement(settings.GetHeadElementPrefab(Head));
             UpdateHairColor();
+            OnHeadChangedEvent?.Invoke(Head);
         }
         
         private void UpdateHairColor()
@@ -127,6 +139,7 @@ namespace Units.Player.Customisation
             var material = settings.GetHairMaterial(Head, HairColor);
             var index = settings.GetHairMaterialIndex(Head);
             headCustomizationPoint.LoadMaterialOnElement(material, index);
+            OnHairColorChangedEvent?.Invoke(HairColor);
         }
 
         private void UpdateEyes()
@@ -138,6 +151,7 @@ namespace Units.Player.Customisation
             rightEyeCustomizationPoint.LoadElement(settings.GetRightEyePrefabForEyes(Eyes));
             leftAltEyeCustomizationPoint.LoadElement(settings.GetAltLeftEyePrefabForEyes(Eyes));
             rightAltEyeCustomizationPoint.LoadElement(settings.GetAltRightEyePrefabForEyes(Eyes));
+            OnEyesChangedEvent?.Invoke(Eyes);
         }
 
         private void UpdateSkin()
@@ -147,6 +161,7 @@ namespace Units.Player.Customisation
             {
                 customizer.LoadMaterial(settings.GetSkin(Skin));
             }
+            OnSkinChangedEvent?.Invoke(Skin);
         }
         
         private void UpdateClothes()
@@ -159,6 +174,7 @@ namespace Units.Player.Customisation
             
             UpdateSkin();
             UpdateClothesColor();
+            OnClothesChangedEvent?.Invoke(Clothes);
         }
         
         private void UpdateClothesColor()
@@ -168,6 +184,7 @@ namespace Units.Player.Customisation
             {
                 customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor));
             }
+            OnClothesColorChangedEvent?.Invoke(ClothesColor);
         }
 
         private static void OnHeadChanged(Changed<PlayerCustomization> customisation)

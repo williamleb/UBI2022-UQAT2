@@ -5,6 +5,7 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        [Header("Animation")]
         [SerializeField] private NetworkMecanimAnimator networkAnimator;
         private static readonly int IsPlayerMove = Animator.StringToHash("isPlayerMove");
         private static readonly int PlayerSpeed = Animator.StringToHash("playerSpeed");
