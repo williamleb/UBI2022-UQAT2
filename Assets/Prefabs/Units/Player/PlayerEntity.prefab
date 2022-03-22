@@ -322,7 +322,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 10
+  m_Priority: 100
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 267980881122502678}
   m_Follow: {fileID: 267980881122502678}
@@ -444,7 +444,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7276514254351836702}
-  - component: {fileID: 4770706252682889028}
   - component: {fileID: 7276514254351836703}
   - component: {fileID: 7276514254351836688}
   - component: {fileID: 1164837674049942226}
@@ -484,39 +483,6 @@ Transform:
   m_Father: {fileID: 985372298615590180}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4770706252682889028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7276514254351836690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
-  Flags: 3073
-  NetworkGuid:
-    RawGuidValue: 00000000000000000000000000000000
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 7276514254351836703}
-  - {fileID: 7276514254351836688}
-  - {fileID: 1164837674049942226}
-  - {fileID: 9080523436088274477}
-  - {fileID: 2047488260178166845}
-  - {fileID: 9155125759024428826}
-  - {fileID: 5796790835011035457}
-  - {fileID: 3379561191062257746}
-  - {fileID: 4677931505725246664}
-  - {fileID: 845309829628765779}
-  SimulationBehaviours: []
 --- !u!114 &7276514254351836703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,10 +864,19 @@ MonoBehaviour:
   Flags: 2305
   NetworkGuid:
     RawGuidValue: 6056d61fb63436244a209b34900f5df6
-  NestedObjects:
-  - {fileID: 4770706252682889028}
+  NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5716062156299285219}
+  - {fileID: 7276514254351836703}
+  - {fileID: 7276514254351836688}
+  - {fileID: 1164837674049942226}
+  - {fileID: 9080523436088274477}
+  - {fileID: 2047488260178166845}
+  - {fileID: 9155125759024428826}
+  - {fileID: 5796790835011035457}
+  - {fileID: 3379561191062257746}
+  - {fileID: 4677931505725246664}
+  - {fileID: 845309829628765779}
   SimulationBehaviours: []
 --- !u!1 &9216095794061619892
 GameObject:
