@@ -183,10 +183,10 @@ namespace Units.Player
                 Gizmos.color = Color.red;
                 Vector3 pos = transform.position;
                 Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
-                Vector3 viewAngleA = new Vector3(Mathf.Sin(data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
-                    Mathf.Cos(data.DashAimAssistAngle * Mathf.Deg2Rad));
-                Vector3 viewAngleB = new Vector3(Mathf.Sin(-data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
-                    Mathf.Cos(-data.DashAimAssistAngle * Mathf.Deg2Rad));
+                float angleA = data.DashAimAssistAngle + transform.eulerAngles.y;
+                float angleB = data.DashAimAssistAngle - transform.eulerAngles.y;
+                Vector3 viewAngleA = new Vector3(Mathf.Sin(angleA * Mathf.Deg2Rad), 0, Mathf.Cos(angleA * Mathf.Deg2Rad));
+                Vector3 viewAngleB = new Vector3(Mathf.Sin(-angleB * Mathf.Deg2Rad), 0, Mathf.Cos(-angleB * Mathf.Deg2Rad));
 
                 Gizmos.DrawLine(pos, pos + viewAngleA * data.DashMaxAimAssistRange);
                 Gizmos.DrawLine(pos, pos + viewAngleB * data.DashMaxAimAssistRange);
