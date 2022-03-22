@@ -183,7 +183,7 @@ namespace Units.Player
             Inventory inv;
             if (isPlayer)
             {
-                var player = networkObject.GetComponent<PlayerEntity>();
+                var player = networkObject.GetComponentInChildren<PlayerEntity>();
                 if (player.isImmune) return;
                 inv = player.inventory;
                 player.ResetVelocity();
