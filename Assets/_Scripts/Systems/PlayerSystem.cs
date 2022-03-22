@@ -46,8 +46,7 @@ namespace Systems
 		private void Start()
         {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			//LevelSystem.Instance.OnGameLoad += SetPlayersPositionToSpawn;
-		}
+        }
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
 		// called by the runner to re-register actions
