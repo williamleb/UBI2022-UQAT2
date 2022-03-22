@@ -12,7 +12,7 @@ namespace Units.Player
             
             var position = transform.position;
             Gizmos.DrawSphere(position, 0.5f);
-            Gizmos.DrawIcon(position + Vector3.up * 2f, "BuildSettings.Android", true, gizmoColor);
+            Gizmos.DrawIcon(position + Vector3.up * 2f, "AvatarSelector@2x", true, gizmoColor);
         }
     }
 }

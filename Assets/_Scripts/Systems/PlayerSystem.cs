@@ -20,7 +20,7 @@ namespace Systems
 		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
 		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
-		private PlayerSpawnLocation[] playerSpawnPoints = null;
+		private PlayerSpawnLocation[] playerSpawnPoints;
 		
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
@@ -96,12 +96,14 @@ namespace Systems
 		}
 
 		private void SetPlayersPositionToSpawn()
-        {
-            foreach (PlayerEntity playerEntity in playersEntity)
-            {
-				playerEntity.gameObject.transform.position = new Vector3(0,0,0);
-            }
-        }
+		{
+			playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
+			for (int i = 0; i < playersEntity.Count; i++)
+			{
+				PlayerEntity playerEntity = playersEntity[i];
+				playerEntity.gameObject.transform.position = playerSpawnPoints[i].transform.position;
+			}
+		}
 
 		public PlayerEntity GetPlayerEntity(PlayerRef playerRef)
 		{
