@@ -20,6 +20,8 @@ namespace Systems
 		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
 		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
+		private PlayerSpawnLocation[] playerSpawnPoints = null;
+		
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
@@ -76,10 +78,12 @@ namespace Systems
 		}
 
 		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
-        {
+		{
+			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
+	        
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
-						new Vector3(0, 0, 0),
+						playerSpawnPoints[playersEntity.Count].transform.position,
 						Quaternion.identity,
 						playerRef);
 		}
