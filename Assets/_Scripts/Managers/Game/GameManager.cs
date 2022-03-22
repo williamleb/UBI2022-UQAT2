@@ -118,6 +118,7 @@ namespace Managers.Game
             OnEndSpawn?.Invoke();
             
             StartGame();
+            PlayerSystem.Instance.SetPlayersPositionToSpawn();
         }
         
         public void StartGame()

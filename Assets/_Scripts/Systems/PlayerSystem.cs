@@ -46,7 +46,7 @@ namespace Systems
 		private void Start()
         {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			LevelSystem.Instance.OnGameLoad += SetPlayersPositionToSpawn;
+			//LevelSystem.Instance.OnGameLoad += SetPlayersPositionToSpawn;
 		}
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
@@ -95,7 +95,7 @@ namespace Systems
 				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
 		}
 
-		private void SetPlayersPositionToSpawn()
+		public void SetPlayersPositionToSpawn()
 		{
 			playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 			for (int i = 0; i < playersEntity.Count; i++)
