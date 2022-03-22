@@ -2,6 +2,7 @@ using Cinemachine;
 using Sirenix.OdinInspector;
 using Systems.Settings;
 using UnityEngine;
+using Utilities.Unity;
 
 namespace Units.Camera
 {
@@ -31,6 +32,7 @@ namespace Units.Camera
 
         public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
         {
+            cameraBounds = GameObject.FindWithTag(Tags.CAMERABOUNDS).GetComponent<CameraBounds>();
             data = cameraSettings;
             initialized = true;
             UpdateCamera();
@@ -46,7 +48,7 @@ namespace Units.Camera
             virtualCamera.transform.rotation = Quaternion.Euler(data.RotX, 0, 0);
             virtualCamera.m_Lens.FieldOfView = data.FieldOfView;
 
-            averageTarget = cameraBounds.StayWithinBounds(averageTarget, data.RotX, longestDistance);
+            averageTarget = cameraBounds.StayWithinBounds(virtualCamera, averageTarget, data.RotX, longestDistance);
 
             UpdatePositionAndRotation();
         }
