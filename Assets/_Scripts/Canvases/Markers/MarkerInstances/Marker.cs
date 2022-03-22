@@ -1,10 +1,7 @@
 using System;
 using DigitalRuby.Tween;
-using Fusion;
-using Systems;
-using Units.Player;
+using Systems.Camera;
 using UnityEngine;
-using Utilities.Extensions;
 
 namespace Canvases.Markers
 {
@@ -74,32 +71,14 @@ namespace Canvases.Markers
         protected virtual void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
-            PlayerEntity.OnPlayerSpawned += Init;
         }
 
         private void Start()
         {
-            InitIfLocalPlayerIsAlreadySpawned();
-            gameObject.SetActive(false);
-        }
-
-        private void InitIfLocalPlayerIsAlreadySpawned()
-        {
-            var localPlayer = PlayerSystem.Instance.LocalPlayer;
-            if (localPlayer)
-            {
-                Init(localPlayer.Object);
-            }
-        }
-
-        protected virtual void Init(NetworkObject networkObject)
-        {
-            if (networkObject.HasInputAuthority)
-            {
-                // This might have to be replaced if we ever decide to switch camera in the middle of the game
-                currentCamera = networkObject.GetComponentInEntity<Camera>();
-                Debug.Assert(currentCamera != null, $"The script {nameof(Marker)} needs a {nameof(Camera)} in the scene");
-            }
+            currentCamera = CameraSystem.Instance.MainCamera;
+            
+            if (!IsActivated)
+                gameObject.SetActive(false);
         }
 
         protected virtual void Update()

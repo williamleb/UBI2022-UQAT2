@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Cinemachine;
+using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
@@ -12,6 +13,8 @@ namespace Units.Camera
 
         [SerializeField] private Vector3 boundsOffset = Vector3.zero;
 
+        private UnityEngine.Camera cam;
+
         private bool initialized = false;
 
         private void Awake() => Initialize();
@@ -19,6 +22,7 @@ namespace Units.Camera
         private void Initialize()
         {
             bounds.y = 0;
+            cam = UnityEngine.Camera.main;
         }
 
         private void OnDrawGizmos()
@@ -27,15 +31,15 @@ namespace Units.Camera
             Gizmos.DrawWireCube(boundsOffset, bounds * 2);
         }
 
-        public Vector3 StayWithinBounds(UnityEngine.Camera playerCamera, Vector3 position, float cameraTiltAngle, float distance)
+        public Vector3 StayWithinBounds(CinemachineVirtualCamera playerCamera, Vector3 position, float cameraTiltAngle, float distance)
         {
             if (!initialized)
                 Initialize();
-
-            float horizontalFOV = playerCamera.fieldOfView;
+            
+            float horizontalFOV = playerCamera.m_Lens.FieldOfView;
             float verticalFOV =
-                2 * Mathf.Atan(Mathf.Tan(horizontalFOV * Mathf.Deg2Rad / 2) * playerCamera.pixelHeight /
-                               playerCamera.pixelWidth) * Mathf.Rad2Deg;
+                2 * Mathf.Atan(Mathf.Tan(horizontalFOV * Mathf.Deg2Rad / 2) * cam.pixelHeight /
+                               cam.pixelWidth) * Mathf.Rad2Deg;
 
             float allowedXAngle = 90 - horizontalFOV / 2;
             float allowedZAngleLower = cameraTiltAngle + verticalFOV / 2;

@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
-using Fusion;
 using Ingredients.Homework;
 using Managers.Game;
-using Sirenix.OdinInspector;
+using Systems;
+using Systems.Teams;
 using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
@@ -12,10 +11,6 @@ namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
-        [SerializeField, Required] private NetworkObject scorePrefab;
-        
-        [SerializeField] private int scoreForLastHomework = 2; // TODO Replace with current phase info
-
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
@@ -27,24 +22,17 @@ namespace Managers.Score
                 return;
             }
 
-            var player = playerEntity.Object.InputAuthority;
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to hand homework for team {playerEntity.TeamId} which doesn't exist");
             
-            if (GameManager.HasInstance && GameManager.Instance.IsNextHomeworkLastForPhase)
-            {
-                team.AddScore(player, scoreForLastHomework);
-            }
-            else
-            {
-                team.AddScore(player, handedHomeworkDefinition.Points);
-            }
+            team.IncrementScore(handedHomeworkDefinition.Points);
+            playerEntity.PlayerScore += handedHomeworkDefinition.Points;
             
             if (GameManager.HasInstance)
                 GameManager.Instance.IncrementHomeworksGivenForPhase();
         }
 
-        public void RemoveScore(PlayerEntity playerEntity, int numberOfPointsToLose)
+        public void DecrementScore(PlayerEntity playerEntity, int numberOfPointsToLose)
         {
             if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
                 return;
@@ -52,24 +40,21 @@ namespace Managers.Score
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
             if (!team) Debug.LogWarning($"Tried to remove for team {playerEntity.TeamId} which doesn't exist");
 
-            team.RemoveScore(numberOfPointsToLose);
+            team.DecrementScore(numberOfPointsToLose);
+            playerEntity.PlayerScore -= numberOfPointsToLose;
         }
 
-        public PlayerRef FindPlayerWithHighestScore()
+        public PlayerEntity FindPlayerWithHighestScore()
         {
-            var teams = TeamSystem.Instance.Teams;
-            PlayerRef playerRefWithHighestScore = PlayerRef.None;
+            PlayerEntity playerRefWithHighestScore = null;
             int highestScore = int.MinValue;
 
-            foreach (Team team in teams)
+            foreach (PlayerEntity playerEntity in PlayerSystem.Instance.AllPlayers)
             {
-                foreach (KeyValuePair<PlayerRef, int> player in team.playerScore)
+                if (playerEntity.PlayerScore > highestScore)
                 {
-                    if (player.Value > highestScore)
-                    {
-                        highestScore = player.Value;
-                        playerRefWithHighestScore = player.Key;
-                    }
+                    highestScore = playerEntity.PlayerScore;
+                    playerRefWithHighestScore = playerEntity;
                 }
             }
 
@@ -117,6 +102,11 @@ namespace Managers.Score
             foreach (Team team in TeamSystem.Instance.Teams)
             {
                 team.ResetScore();
+            }
+
+            foreach (PlayerEntity playerEntity in PlayerSystem.Instance.AllPlayers)
+            {
+                playerEntity.PlayerScore = 0;
             }
         }
     }

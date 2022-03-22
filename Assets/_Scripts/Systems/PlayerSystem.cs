@@ -141,7 +141,7 @@ namespace Systems
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
 			playersJoined.Remove(player.Object.InputAuthority);
-			Debug.Log("Player removed " + player.PlayerID);
+			Debug.Log("Player removed " + player.PlayerId);
 		}
 
 		public void DespawnAllPlayers()
@@ -152,7 +152,7 @@ namespace Systems
             {
 				playerEntity.TriggerDespawn();
 				playersEntity.Remove(playerEntity);
-				Debug.Log("Player despawn " + playerEntity.PlayerID);
+				Debug.Log("Player despawn " + playerEntity.PlayerId);
 			}
         }
 

@@ -11,6 +11,7 @@ namespace Units.Player
     {
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
+        [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;
@@ -38,7 +39,7 @@ namespace Units.Player
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash && canDash && !inMenu) Dash();
+            if (inputData.IsDash && canDash && !inMenu && !InCustomization) Dash();
         }
 
         private void Dash()
