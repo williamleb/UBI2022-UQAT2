@@ -63,7 +63,7 @@ namespace Units.AI
 
         private void OnGiveHomeworkInstantFeedback(Interacter interacter)
         {
-            // TODO Play instant feedback on give homework
+            PlayInstantFeedbackSound(interacter);
         }
 
         private void OnGiveHomework(Interacter interacter)
@@ -75,8 +75,33 @@ namespace Units.AI
             if (interacter.gameObject.IsAPlayer())
                 HandHomework(interacter, inventory.HeldHomeworkDefinition);
             
+            PlayInteractSound(interacter);
+            
             inventory.RemoveHomework();
             entityThatHasGivenHomeworkThisFrame = interacter;
+        }
+        
+        private void PlayInstantFeedbackSound(Interacter interacter)
+        {
+            if (interacter.gameObject.IsAPlayer())
+            {
+                var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+                player.PlayHandInHomeworkSoundLocally();
+            }
+        }
+
+        private void PlayInteractSound(Interacter interacter)
+        {
+            if (interacter.gameObject.IsAnAI())
+            {
+                var ai = interacter.gameObject.GetComponentInEntity<AIEntity>();
+                ai.PlayHandInHomeworkSoundOnAllClients();
+            }
+            else if (interacter.gameObject.IsAPlayer())
+            {
+                var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+                player.PlayHandInHomeworkSoundOnOtherClients();
+            }
         }
 
         private void HandHomework(Interacter interacter, HomeworkDefinition homeworkDefinition)

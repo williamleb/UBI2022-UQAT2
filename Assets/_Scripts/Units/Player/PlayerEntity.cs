@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Systems.Settings;
+using Systems.Sound;
 using Systems.Teams;
 using Units.AI;
 using Units.Player.Customisation;
@@ -64,6 +65,7 @@ namespace Units.Player
             
             MovementAwake();
             RagdollAwake();
+            SoundAwake();
         }
 
         private void AssignRandomArchetype()
@@ -86,6 +88,7 @@ namespace Units.Player
             OnAwake();
             InitThrow();
             InitCamera();
+            InitSound();
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
@@ -104,6 +107,7 @@ namespace Units.Player
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             OnPlayerDespawned?.Invoke(Object);
+            TerminateSound();
         }
 
         public override void FixedUpdateNetwork()
