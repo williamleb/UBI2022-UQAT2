@@ -13,9 +13,8 @@ namespace Units.Player
         // forceMagnitude : magnitude of the force that acts on the player. Default = network rigidbody velocity
 
         private Coroutine hitCoroutine;
-
-        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default,
-            float overrideHitDuration = -1f)
+        
+        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
             if (hitCoroutine != null)
             {
@@ -29,18 +28,17 @@ namespace Units.Player
         private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration)
         {
             CanMove = false;
-
-            var delay =
-                overrideHitDuration > 0f
-                    ? overrideHitDuration
-                    : (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+            
+            var delay = 
+                overrideHitDuration > 0f ? overrideHitDuration : 
+                (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
             delay = Mathf.Max(2, delay);
 
             if (Object.HasStateAuthority)
             {
                 IsGettingUpB = false;
                 IsGettingUpF = false;
-
+                
                 if (forceDirection != default)
                 {
                     RPC_ToggleRagdoll(true, forceDirection, forceMagnitude);
@@ -63,7 +61,7 @@ namespace Units.Player
             }
 
             yield return Helpers.GetWait(0.3f);
-
+            
             CanMove = true;
         }
 
@@ -74,6 +72,7 @@ namespace Units.Player
                 Transform t = transform;
                 Vector3 f = t.forward;
                 Vector3 collisionDirection = (collision.contacts[0].point.Flat() - t.position).normalized;
+                // ReSharper disable once Unity.InefficientPropertyAccess
                 float collisionDot = Vector3.Dot(f, collisionDirection);
 
                 //We didn't hit it, it hit us and it will affect us
@@ -83,9 +82,9 @@ namespace Units.Player
                 if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
                 {
                     Debug.Log("Hit a wall");
-
+                    
                     //TODO if it has a rigidbody slap that object based on the current player's velocity and contact point.
-
+                    
                     ResetVelocity();
                     Hit(-f);
                 }
@@ -93,7 +92,7 @@ namespace Units.Player
                 else if (collision.gameObject.IsAPlayerOrAI())
                 {
                     NetworkObject no = collision.gameObject.GetComponentInParent<NetworkObject>();
-                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(), f);
+                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f);
                     RPC_GetHitAndDropItems(Object.Id, true, -f);
                 }
             }
