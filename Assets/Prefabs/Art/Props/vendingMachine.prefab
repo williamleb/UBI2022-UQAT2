@@ -28,9 +28,54 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 209335171517713305}
+  - {fileID: 3779308485471860779}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8105509971475743326
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3779308485471860779}
+  - component: {fileID: 3004190844347089149}
+  m_Layer: 0
+  m_Name: TopCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3779308485471860779
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105509971475743326}
+  m_LocalRotation: {x: -0.22580124, y: -0, z: -0, w: 0.9741734}
+  m_LocalPosition: {x: 0.756, y: 3.146, z: 0.469}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4772471644012214052}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -26.1, y: 0, z: 0}
+--- !u!65 &3004190844347089149
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105509971475743326}
+  m_Material: {fileID: 13400000, guid: afe622e91fec4c14ebf6cc6cd87b49ab, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 0.05, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &390982245087865970
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -101,6 +146,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0a2ef84ed39b30d4ab4d7607f39abd26, type: 3}
       propertyPath: m_Name
       value: SM_VendingMachine 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0a2ef84ed39b30d4ab4d7607f39abd26, type: 3}
+      propertyPath: m_TagString
+      value: Collidable
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0a2ef84ed39b30d4ab4d7607f39abd26, type: 3}
       propertyPath: m_StaticEditorFlags
