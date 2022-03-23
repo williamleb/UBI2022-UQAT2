@@ -7,7 +7,6 @@ using Sirenix.OdinInspector;
 using Systems;
 using Systems.Network;
 using Systems.Settings;
-using Systems.Sound;
 using Systems.Teams;
 using Units.AI;
 using Units.Player.Customisation;
@@ -61,17 +60,17 @@ namespace Units.Player
 
             inventory.AssignVelocityObject(this);
 
-            AssignRandomArchetype(); // TODO Assign from hub
+            AssignBaseArchetype();
             
             MovementAwake();
             RagdollAwake();
             SoundAwake();
         }
 
-        private void AssignRandomArchetype()
+        private void AssignBaseArchetype()
         {
             if (Object.HasStateAuthority)
-                Archetype = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
+                Archetype = Archetype.Base;
         }
 
         public void AssignArchetype(Archetype archetype)
@@ -194,8 +193,8 @@ namespace Units.Player
 
                 player.Hit(forceDirection, forceMagnitude, overrideHitDuration);
 
-                immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
-                isImmune = true;
+                player.immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
+                player.isImmune = true;
             }
             else
             {
@@ -319,12 +318,12 @@ namespace Units.Player
                     TeamSystem.Instance.AssignTeam(this);
                 }
                 
-                if (GUI.Button(new Rect(0, 200, 200, 40), "Custon on"))
+                if (GUI.Button(new Rect(0, 200, 200, 40), "Custom on"))
                 {
                     customizationCamera.Activate(); 
                 }
                 
-                if (GUI.Button(new Rect(0, 240, 200, 40), "Custon off"))
+                if (GUI.Button(new Rect(0, 240, 200, 40), "Custom off"))
                 {
                     mainCamera.Activate();
                 }
