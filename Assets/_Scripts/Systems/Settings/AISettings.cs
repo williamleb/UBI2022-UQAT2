@@ -13,10 +13,9 @@ namespace Systems.Settings
         [SerializeField] private float baseTeacherSpeed = 3.5f;
 
         [Header("Janitor settings")]
-        [SerializeField, MinValue(0.1f)] private float visionNear = 1f;
-        [SerializeField, MinValue(0.2f)] private float visionFar = 10f;
-        [SerializeField, MinValue(0.1f)] private float visionNearLength = 2f;
-        [SerializeField, MinValue(0.2f)] private float visionFarLength = 20f;
+        [SerializeField, MinValue(0.1f)] private float visionMaxDistance = 10f;
+        [SerializeField, MinValue(0.2f)] private float instantDetectRange = 5;
+        [SerializeField, MinValue(0.1f)] private float visionViewAngle = 2f;
         [SerializeField, MinValue(0f)] private float secondsOfImmobilisationBadBehavior = 4f;
         [SerializeField, MinValue(0f)] private float secondsToChaseBadBehavior = 5f;
         [SerializeField, MinValue(0f)] private float baseJanitorSpeed = 3.5f;
@@ -41,10 +40,9 @@ namespace Systems.Settings
         public float SecondsToShowRoomIndicator => secondsToShowRoomIndicator;
         public float BaseTeacherSpeed => baseTeacherSpeed;
         
-        public float VisionNear => visionNear;
-        public float VisionFar => visionFar;
-        public float VisionNearLength => visionNearLength;
-        public float VisionFarLength => visionFarLength;
+        public float VisionMaxDistance => visionMaxDistance;
+        public float InstantDetectRange => instantDetectRange;
+        public float VisionViewAngle => visionViewAngle;
         public float SecondsOfImmobilisationBadBehavior => secondsOfImmobilisationBadBehavior;
         public float SecondsToChaseBadBehavior => secondsToChaseBadBehavior;
         public float BaseJanitorSpeed => baseJanitorSpeed;
