@@ -28,9 +28,9 @@ namespace VFX
                 transform.position = targetToFollow.position - targetToFollow.forward + offset;
         }
 
-        public void UpdateDustTrail(float interpolationValue)
+        public void UpdateDustTrail(float interpolationValue, bool isRagdoll)
         {
-            if (interpolationValue > 0)
+            if (interpolationValue > 0 && !isRagdoll)
             {
                 if (dustEdgy.isStopped)
                 {
