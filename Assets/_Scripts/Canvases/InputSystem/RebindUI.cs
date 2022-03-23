@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using Canvases.Components;
 using Fusion;
+using Managers.Game;
 using Units.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using Utilities;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Canvases.InputSystem
 {
@@ -26,18 +28,37 @@ namespace Canvases.InputSystem
         private RebindActionUI firstButton;
 
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
+        private bool isInitialized;
 
-        private void Awake() => PlayerEntity.OnPlayerSpawned += Init;
+        private void Awake()
+        {
+            PlayerEntity.OnPlayerSpawned += Init;
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += InitOnGameStart;
+        }
 
         private void Init(NetworkObject player)
         {
-            if (player.HasInputAuthority)
+            if (player.HasInputAuthority && !isInitialized)
             {
-                playerInputHandler = player.GetComponent<PlayerInputHandler>();
-                player.GetComponent<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
+                isInitialized = true;
+                playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
+                player.GetComponentInChildren<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
                 resetAllButton.OnClick += OnResetAll;
                 Enable();
+            }
+        }
+
+        private void InitOnGameStart(GameState newState)
+        {
+            if (newState == GameState.Running)
+            {
+                GameObject[] players = GameObject.FindGameObjectsWithTag(Tags.PLAYER);
+                foreach (GameObject player in players)
+                {
+                    Init(player.GetComponentInParent<NetworkObject>());
+                }
             }
         }
 
