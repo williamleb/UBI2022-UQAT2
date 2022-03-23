@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using Sirenix.OdinInspector;
+using Units.AI;
+using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
 
@@ -34,7 +37,50 @@ using Utilities.Singleton;
             Instantiate(wwiseObjects.SoundBankPrefab, transform);
         }
 
-        public void PlayBababooeySound() => wwiseObjects.BababooeyEvent.Post(gameObject);
+        public void PlayFootstepSound(PlayerEntity player) => wwiseObjects.FootstepEvent.Post(player.gameObject);
+        public void PlayFootstepSound(AIEntity ai) => wwiseObjects.FootstepEvent.Post(ai.gameObject);
+        public void PlayFumbleSound(PlayerEntity player) => wwiseObjects.FumbleEvent.Post(player.gameObject);
+        public void PlayFumbleSound(AIEntity ai) => wwiseObjects.FumbleEvent.Post(ai.gameObject);
+        public void PlayHandInHomeworkSound(PlayerEntity player) => wwiseObjects.HandInHomeworkEvent.Post(player.gameObject);
+        public void PlayHandInHomeworkSound(AIEntity ai) => wwiseObjects.HandInHomeworkEvent.Post(ai.gameObject);
+        public void PlayPickUpHomeworkSound(PlayerEntity player) => wwiseObjects.PickUpHomeworkEvent.Post(player.gameObject);
+        public void PlayPickUpHomeworkSound(AIEntity ai) => wwiseObjects.PickUpHomeworkEvent.Post(ai.gameObject);
 
+        
+#if UNITY_EDITOR
+        private bool showDebugMenu;
+
+        [Button("ToggleDebugMenu")]
+        private void ToggleDebugMenu()
+        {
+            showDebugMenu = !showDebugMenu;
+        }
+        
+        private void OnGUI()
+        {
+            if (showDebugMenu)
+            {
+                if (GUI.Button(new Rect(0, 0, 200, 40), "Footsteps"))
+                {
+                    wwiseObjects.FootstepEvent.Post(gameObject);
+                }
+
+                if (GUI.Button(new Rect(0, 40, 200, 40), "Fumble"))
+                {
+                    wwiseObjects.FumbleEvent.Post(gameObject);
+                }
+
+                if (GUI.Button(new Rect(0, 80, 200, 40), "HandInHomework"))
+                {
+                    wwiseObjects.FumbleEvent.Post(gameObject);
+                }
+
+                if (GUI.Button(new Rect(0, 120, 200, 40), "PickUpHomework"))
+                {
+                    wwiseObjects.PickUpHomeworkEvent.Post(gameObject);
+                }
+            }
+        }
+#endif
     }
 }

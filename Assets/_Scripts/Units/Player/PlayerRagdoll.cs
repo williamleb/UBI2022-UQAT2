@@ -81,6 +81,9 @@ namespace Units.Player
                 if (isActivate && forceDirection != default)
                     rb.AddForce(forceDirection.normalized * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
             }
+            
+            if (isActivate)
+                PlayFumbleSoundLocally();
         }
     }
 }

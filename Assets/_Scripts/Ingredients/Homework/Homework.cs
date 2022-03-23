@@ -4,9 +4,11 @@ using Fusion;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
-using Systems.Sound;
 using Units;
+using Units.AI;
+using Units.Player;
 using UnityEngine;
+using Utilities.Extensions;
 
 namespace Ingredients.Homework
 {
@@ -90,8 +92,7 @@ namespace Ingredients.Homework
 
         private void OnInstantFeedback(Interacter interacter)
         {
-            // TODO Instant feedback for picking the item
-            SoundSystem.Instance.PlayBababooeySound();
+            PlayInstantFeedbackSound(interacter);
             interaction.InteractionEnabled = false;
         }
 
@@ -99,6 +100,8 @@ namespace Ingredients.Homework
         {
             if (HomeworkState == State.Taken)
                 return;
+            
+            PlayInteractSound(interacter);
 
             var inventory = interacter.GetComponent<Inventory>();
             if (!inventory)
@@ -110,6 +113,29 @@ namespace Ingredients.Homework
             HomeworkState = State.Taken;
             inventory.HoldHomework(this);
             holdingTransform = inventory.HomeworkHoldingTransform;
+        }
+
+        private void PlayInstantFeedbackSound(Interacter interacter)
+        {
+            if (interacter.gameObject.IsAPlayer())
+            {
+                var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+                player.PlayPickUpHomeworkSoundLocally();
+            }
+        }
+
+        private void PlayInteractSound(Interacter interacter)
+        {
+            if (interacter.gameObject.IsAnAI())
+            {
+                var ai = interacter.gameObject.GetComponentInEntity<AIEntity>();
+                ai.PlayPickUpHomeworkSoundOnAllClients();
+            }
+            else if (interacter.gameObject.IsAPlayer())
+            {
+                var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+                player.PlayPickUpHomeworkSoundOnOtherClients();
+            }
         }
 
         public void AssignType(string type)

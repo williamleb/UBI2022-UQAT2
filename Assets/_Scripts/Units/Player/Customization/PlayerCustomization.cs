@@ -127,7 +127,6 @@ namespace Units.Player.Customisation
 
         private void UpdateHead()
         {
-            Debug.Log($"Applying head element {Head}");
             headCustomizationPoint.LoadElement(settings.GetHeadElementPrefab(Head));
             UpdateHairColor();
             OnHeadChangedEvent?.Invoke(Head);
@@ -135,7 +134,6 @@ namespace Units.Player.Customisation
         
         private void UpdateHairColor()
         {
-            Debug.Log($"Applying hair color {HairColor}");
             var material = settings.GetHairMaterial(Head, HairColor);
             var index = settings.GetHairMaterialIndex(Head);
             headCustomizationPoint.LoadMaterialOnElement(material, index);
@@ -144,7 +142,6 @@ namespace Units.Player.Customisation
 
         private void UpdateEyes()
         {
-            Debug.Log($"Applying eyes {Eyes}");
             faceCustomizationPoint.LoadElement(settings.GetFacePrefabForEyes(Eyes));
             noseCustomizationPoint.LoadElement(settings.GetNosePrefabForEyes(Eyes));
             leftEyeCustomizationPoint.LoadElement(settings.GetLeftEyePrefabForEyes(Eyes));
@@ -156,7 +153,6 @@ namespace Units.Player.Customisation
 
         private void UpdateSkin()
         {
-            Debug.Log($"Applying skin {Skin}");
             foreach (var customizer in GetComponentsInChildren<SkinCustomizer>())
             {
                 customizer.LoadMaterial(settings.GetSkin(Skin));
@@ -166,7 +162,6 @@ namespace Units.Player.Customisation
         
         private void UpdateClothes()
         {
-            Debug.Log($"Applying clothes {Clothes}");
             foreach (var customizer in GetComponentsInChildren<ClothesCustomizer>())
             {
                 customizer.Activate(Clothes);
@@ -179,7 +174,6 @@ namespace Units.Player.Customisation
         
         private void UpdateClothesColor()
         {
-            Debug.Log($"Applying clothes color {ClothesColor}");
             foreach (var customizer in GetComponentsInChildren<ClothesColorCustomizer>())
             {
                 customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor));

@@ -5,6 +5,7 @@ using Fusion;
 using Interfaces;
 using Managers.Hallway;
 using Systems.Settings;
+using Systems.Sound;
 using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;
@@ -16,10 +17,13 @@ namespace Units.AI
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(AIInteracter))]
-    public class AIEntity : NetworkBehaviour, IVelocityObject
+    [RequireComponent(typeof(AkGameObj))]
+    public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
     {
         private static readonly int Walking = Animator.StringToHash("IsWalking");
 
+        public static event Action<AIEntity> OnAISpawned;
+        public static event Action<AIEntity> OnAIDespawned;
         public event Action<GameObject> OnHit; 
 
         private enum AIType : byte
@@ -32,6 +36,7 @@ namespace Units.AI
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
+        private AkGameObj audioObject;
         private NavMeshAgent agent;
         private Inventory inventory;
         private AIInteracter interacter;
@@ -57,6 +62,7 @@ namespace Units.AI
         
         [Networked, Capacity(8)] public HallwayColor AssignedHallway{ get; private set; }
 
+        public AkGameObj AudioObject => audioObject;
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
@@ -73,6 +79,7 @@ namespace Units.AI
 
         private void Awake()
         {
+            audioObject = GetComponent<AkGameObj>();
             agent = GetComponent<NavMeshAgent>();
             inventory = GetComponent<Inventory>();
             interacter = GetComponent<AIInteracter>();
@@ -104,11 +111,13 @@ namespace Units.AI
 
             RegisterToManager();
             InitializeRagdoll();
+            OnAISpawned?.Invoke(this);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             UnregisterToManager();
+            OnAIDespawned?.Invoke(this);
         }
 
         public override void FixedUpdateNetwork()
@@ -272,7 +281,18 @@ namespace Units.AI
         {
             StopHitRoutine();
         }
-
+        
+        public void PlayFootstepSoundLocally() => SoundSystem.Instance.PlayFootstepSound(this);
+        public void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
+        public void PlayHandInHomeworkSoundOnAllClients() => RPC_PlayHandInHomeworkSoundOnAllClients();
+        public void PlayPickUpHomeworkSoundOnAllClients() => RPC_PlayPickUpHomeworkSoundOnAllClients();
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayHandInHomeworkSoundOnAllClients() => SoundSystem.Instance.PlayHandInHomeworkSound(this);
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayPickUpHomeworkSoundOnAllClients() => SoundSystem.Instance.PlayPickUpHomeworkSound(this);
+        
 #if UNITY_EDITOR
         private void OnValidate()
         {

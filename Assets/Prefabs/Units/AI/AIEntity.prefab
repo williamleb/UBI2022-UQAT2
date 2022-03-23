@@ -51,6 +51,7 @@ GameObject:
   - component: {fileID: 8419462221372631601}
   - component: {fileID: 1258915672279333070}
   - component: {fileID: 1001097674528342328}
+  - component: {fileID: 7701471376786898261}
   m_Layer: 3
   m_Name: AIEntity
   m_TagString: AI
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   brainToAddOnSpawned: {fileID: 0}
-  aiCollider: {fileID: 2518116019411190027, guid: defc388390af95f4d8c16c35aa445371, type: 3}
+  _AssignedHallway: 0
 --- !u!114 &7344221456409342414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +312,28 @@ MonoBehaviour:
   BoxExtents: {x: 0, y: 0, z: 0}
   Offset: {x: 0, y: 1, z: 0}
   Root: {fileID: 0}
+--- !u!114 &7701471376786898261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398730048398459857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec629dc650511f841ac2d5327e842c2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 0
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!1 &5923932305402178342
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,5 +441,6 @@ MonoBehaviour:
   markerScale: 3
   lockInPlace: 1
   showOutsideCameraBorders: 0
+  activateOnStart: 0
   padding: {x: 10, y: 10}
   sprite: {fileID: 21300000, guid: 4a3f79e785ba3b74d982cdc40e77faab, type: 3}

@@ -7,7 +7,10 @@ namespace Systems.Camera
         protected override void Start()
         {
             base.Start();
-            CameraSystem.Instance.RegisterVirtualCamera(this);
+            if (CameraSystem.HasInstance)
+            {
+                CameraSystem.Instance.RegisterVirtualCamera(this);
+            }
         }
 
         protected override void OnDestroy()
