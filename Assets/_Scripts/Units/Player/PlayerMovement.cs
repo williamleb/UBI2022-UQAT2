@@ -39,7 +39,7 @@ namespace Units.Player
             CalculateVelocity();
             MovePlayer();
             RotatePlayer();
-            dustTrailController.UpdateDustTrail(velocity/data.SprintMaximumSpeed);
+            dustTrailController.UpdateDustTrail(velocity/data.SprintMaximumSpeed, isRagdoll);
             UpdateCameraPointPosition();
         }
 
