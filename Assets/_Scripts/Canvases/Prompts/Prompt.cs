@@ -70,7 +70,7 @@ namespace Canvases.Prompts
             if (!player || !player.HasInputAuthority)
                 return;
 
-            playerInputHandler = player.GetComponent<PlayerInputHandler>();
+            playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
             Debug.Assert(playerInputHandler);
 
             playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;

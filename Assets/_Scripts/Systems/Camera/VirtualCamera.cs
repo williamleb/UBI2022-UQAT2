@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using UnityEngine;
 
 namespace Systems.Camera
 {
@@ -7,10 +8,8 @@ namespace Systems.Camera
         protected override void Start()
         {
             base.Start();
-            if (CameraSystem.HasInstance)
-            {
+            if (Application.isPlaying)
                 CameraSystem.Instance.RegisterVirtualCamera(this);
-            }
         }
 
         protected override void OnDestroy()

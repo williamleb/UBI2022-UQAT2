@@ -15,11 +15,14 @@ namespace Units.Player
         private void InitCamera()
         {
             if (!Object.HasInputAuthority)
+            {
+                mainCamera.enabled = false;
+                customizationCamera.enabled = false;
                 return;
-            
+            }
+
             cameraStrategy.Init(data.PlayerCameraSetting);
             mainCamera.Activate();
         }
-        
     }
 }
