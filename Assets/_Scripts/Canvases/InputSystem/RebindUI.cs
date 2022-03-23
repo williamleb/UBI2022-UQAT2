@@ -33,8 +33,8 @@ namespace Canvases.InputSystem
         {
             if (player.HasInputAuthority)
             {
-                playerInputHandler = player.GetComponent<PlayerInputHandler>();
-                player.GetComponent<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
+                playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
+                player.GetComponentInChildren<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
                 resetAllButton.OnClick += OnResetAll;
                 Enable();
