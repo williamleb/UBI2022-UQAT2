@@ -91,7 +91,7 @@ namespace Units.Player
                 //Hit another player or AI
                 else if (collision.gameObject.IsAPlayerOrAI())
                 {
-                    NetworkObject no = collision.gameObject.GetComponent<NetworkObject>();
+                    NetworkObject no = collision.gameObject.GetComponentInParent<NetworkObject>();
                     RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f);
                     RPC_GetHitAndDropItems(Object.Id, true, -f);
                 }
