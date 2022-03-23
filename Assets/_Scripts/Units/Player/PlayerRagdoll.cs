@@ -10,6 +10,7 @@ namespace Units.Player
         //Vector3 = transform initial local position of bones
         //Quaternion = transform's initial local rotation of bones
         private readonly List<BodyPart> ragdollColliders = new List<BodyPart>();
+        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private bool isRagdoll;
 
         [Header("Ragdoll")] [SerializeField]
@@ -47,6 +48,7 @@ namespace Units.Player
 
                 Rigidbody rb = col.attachedRigidbody;
                 rb.isKinematic = true;
+                ragdollRigidbody.Add(rb);
             }
         }
 
@@ -69,10 +71,14 @@ namespace Units.Player
                     elementTransform.localPosition = bp.Position;
                     elementTransform.localRotation = bp.Rotation;
                 }
-                bp.Rb.isKinematic = !isActivate;
+            }
+            
+            foreach (Rigidbody rb in ragdollRigidbody)
+            {
+                rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
-                    bp.Rb.AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
+                    rb.AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
             }
 
             if (isActivate)
