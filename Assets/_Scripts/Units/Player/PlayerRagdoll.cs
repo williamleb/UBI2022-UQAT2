@@ -27,10 +27,9 @@ namespace Units.Player
         {
             if (isRagdoll)
             {
-                Vector3 ragdollPos = ragdollTransform.position;
-                Vector3 pos = transform.position;
-                transform.position = Vector3.MoveTowards(pos, ragdollPos.Flat(), 0.1f);
-                ragdollTransform.position = Vector3.MoveTowards(ragdollPos, pos, 0.1f);
+                // ReSharper disable Unity.InefficientPropertyAccess
+                transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+                ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
             }
         }
 
@@ -54,7 +53,7 @@ namespace Units.Player
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default,
-            float forceMagnitude = default)
+            float forceMagnitude = 0)
         {
             isRagdoll = isActivate;
 
@@ -71,14 +70,11 @@ namespace Units.Player
                     elementTransform.localPosition = bp.Position;
                     elementTransform.localRotation = bp.Rotation;
                 }
-            }
-            
-            foreach (Rigidbody rb in ragdollRigidbody)
-            {
-                rb.isKinematic = !isActivate;
+                
+                bp.Rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
-                    rb.AddForce(forceDirection.normalized * forceMagnitude, ForceMode.Impulse);
+                    bp.Rb.AddForce(forceDirection.normalized * (forceMagnitude == 0 ? Velocity.magnitude : forceMagnitude), ForceMode.Impulse);
             }
 
             if (isActivate)
