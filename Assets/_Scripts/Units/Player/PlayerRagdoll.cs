@@ -60,6 +60,13 @@ namespace Units.Player
             networkAnimator.Animator.enabled = !isActivate;
             AnimationUpdate();
 
+            if (!isActivate)
+            {
+                Vector3 euler = transform.eulerAngles;
+                euler.y = ragdollPelvis.localEulerAngles.y;
+                transform.eulerAngles = euler;
+            }
+            
             foreach (BodyPart bp in ragdollColliders)
             {
                 bp.Collider.isTrigger = !isActivate;
