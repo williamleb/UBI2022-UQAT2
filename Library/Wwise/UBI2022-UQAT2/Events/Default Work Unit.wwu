@@ -3,50 +3,105 @@
 	<Events>
 		<WorkUnit Name="Default Work Unit" ID="{C2FF5CAF-77F4-4F60-B6ED-C9E97A321A4D}" PersistMode="Standalone">
 			<ChildrenList>
-				<Event Name="Footsteps" ID="{1E2E4CE6-9B40-4F26-BA64-09AB157FBA02}">
+				<Folder Name="Movement" ID="{B5F2E4E5-8585-4090-B2F4-0B3B24D16119}" ShortID="186806362">
 					<ChildrenList>
-						<Action Name="" ID="{4578302D-F660-4C32-A12F-9AEE47E80259}" ShortID="604254830">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Footsteps" ID="{84F7A7E7-B2E1-4AB4-9C28-D0B4FC877F64}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
+						<Event Name="Footsteps" ID="{1E2E4CE6-9B40-4F26-BA64-09AB157FBA02}">
+							<ChildrenList>
+								<Action Name="" ID="{4578302D-F660-4C32-A12F-9AEE47E80259}" ShortID="604254830">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="New Footsteps" ID="{B92C4E6E-B7A4-433D-A374-70CB71AFCB8A}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Fumble" ID="{2FC56692-FB4D-4D85-963E-6FB599B4DCD2}">
+							<ChildrenList>
+								<Action Name="" ID="{08C6A6A8-6B59-44B3-917B-4788D3B1EF5E}" ShortID="398184675">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Fumble Sounds" ID="{E87FC42C-FE7E-45D7-80D9-8D699228AAA5}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Dash" ID="{2C76BEDD-B3CA-48DA-8C7D-771B8E500B63}">
+							<ChildrenList>
+								<Action Name="" ID="{5FCF5ED9-EA2E-48AD-9C45-F7B49243F04C}" ShortID="442912192">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Dash" ID="{3EA5C414-6E61-4527-8B7E-D502FD5E55FA}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
-				</Event>
-				<Event Name="HandinHomework" ID="{CA54D469-5B93-456E-9861-53B4286DA54A}">
+				</Folder>
+				<Folder Name="PlayerInteraction" ID="{81B5F480-3621-44B3-BED9-965FC614D07A}" ShortID="234820959">
 					<ChildrenList>
-						<Action Name="" ID="{27173959-4572-4EC5-83D9-E0F018B430F6}" ShortID="653563867">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="HandinHomework" ID="{9C7E9036-4AE5-45D2-BA54-217E59965803}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
+						<Event Name="HandinHomework" ID="{CA54D469-5B93-456E-9861-53B4286DA54A}">
+							<ChildrenList>
+								<Action Name="" ID="{27173959-4572-4EC5-83D9-E0F018B430F6}" ShortID="653563867">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="HandinHomework" ID="{83A20A11-0BD5-4404-9688-DF911E2CDB84}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PickupHomework" ID="{C73388D9-1148-4F53-8106-C1B09DC70FAA}">
+							<ChildrenList>
+								<Action Name="" ID="{58805FB4-0078-4EC5-B820-283142308CAB}" ShortID="789673635">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PickupHomework" ID="{451AA491-5D95-403E-A48E-F4E1E359911B}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="AimSounds" ID="{93C8B4EE-2150-498C-ABCB-8816A4CD523D}" ShortID="655485467">
+							<ChildrenList>
+								<Event Name="AimHold" ID="{AEEF2C9C-8C18-482C-891D-C1B792859F0B}">
+									<ChildrenList>
+										<Action Name="" ID="{88CA380E-61C1-4129-A29A-62E9ED4771D0}" ShortID="88316807">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="AimHold_Redo" ID="{5D41CA9B-5F29-414A-AEF0-4DB5BB035D88}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="AimRelease" ID="{990A8AAD-3EBE-4FE0-ADD1-D3764020546D}">
+									<ChildrenList>
+										<Action Name="" ID="{CE151739-2001-4A4C-995E-7BF590333ADA}" ShortID="8596378">
+											<PropertyList>
+												<Property Name="ActionType" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="AimHold_Redo" ID="{5D41CA9B-5F29-414A-AEF0-4DB5BB035D88}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+										<Action Name="" ID="{04F14F57-6F61-4DF6-BAA2-071EC846C17D}" ShortID="8972426">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="AimRelease" ID="{D3169790-2DB5-4195-BFF6-0D810F62EC64}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
-				</Event>
-				<Event Name="PickupHomework" ID="{C73388D9-1148-4F53-8106-C1B09DC70FAA}">
-					<ChildrenList>
-						<Action Name="" ID="{58805FB4-0078-4EC5-B820-283142308CAB}" ShortID="789673635">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="PickupHomework" ID="{94B46B41-2C22-4D64-A5C7-71DF3498FECB}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
-				<Event Name="Fumble" ID="{2FC56692-FB4D-4D85-963E-6FB599B4DCD2}">
-					<ChildrenList>
-						<Action Name="" ID="{08C6A6A8-6B59-44B3-917B-4788D3B1EF5E}" ShortID="398184675">
-							<ReferenceList>
-								<Reference Name="Target">
-									<ObjectRef Name="Fumble" ID="{85B5A312-F272-4177-A2D8-C9E85A29F3DF}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-								</Reference>
-							</ReferenceList>
-						</Action>
-					</ChildrenList>
-				</Event>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

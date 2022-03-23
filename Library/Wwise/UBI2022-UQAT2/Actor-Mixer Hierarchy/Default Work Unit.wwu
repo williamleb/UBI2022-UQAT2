@@ -3,51 +3,9 @@
 	<AudioObjects>
 		<WorkUnit Name="Default Work Unit" ID="{328FC0F8-1705-4F8B-9911-116983961226}" PersistMode="Standalone">
 			<ChildrenList>
-				<RandomSequenceContainer Name="Footsteps" ID="{84F7A7E7-B2E1-4AB4-9C28-D0B4FC877F64}" ShortID="86776766">
-					<PropertyList>
-						<Property Name="Pitch" Type="int32">
-							<ModifierList>
-								<ModifierInfo>
-									<Modifier Name="" ID="{EE4326FE-0C43-4D4B-9B3D-64DA4C833248}">
-										<PropertyList>
-											<Property Name="Enabled" Type="bool" Value="True"/>
-											<Property Name="Max" Type="Real64" Value="227"/>
-											<Property Name="Min" Type="Real64" Value="-278"/>
-										</PropertyList>
-									</Modifier>
-								</ModifierInfo>
-							</ModifierList>
-						</Property>
-						<Property Name="Volume" Type="Real64">
-							<ValueList>
-								<Value>-10</Value>
-							</ValueList>
-							<ModifierList>
-								<ModifierInfo>
-									<Modifier Name="" ID="{18441B7A-6154-444D-A14C-B691FB6C3DB2}">
-										<PropertyList>
-											<Property Name="Enabled" Type="bool" Value="True"/>
-											<Property Name="Max" Type="Real64" Value="5"/>
-											<Property Name="Min" Type="Real64" Value="-5"/>
-										</PropertyList>
-									</Modifier>
-								</ModifierInfo>
-							</ModifierList>
-						</Property>
-					</PropertyList>
-					<ReferenceList>
-						<Reference Name="Conversion">
-							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-						</Reference>
-						<Reference Name="Effect0" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
-							<ObjectRef Name="Room_Small" ID="{577F1466-A63B-47F7-98BD-C56E433F8B5D}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
-						</Reference>
-						<Reference Name="OutputBus">
-							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-						</Reference>
-					</ReferenceList>
+				<Folder Name="Movement" ID="{492AEB92-2437-40A9-8165-860BCDF3ABDB}" ShortID="29689488">
 					<ChildrenList>
-						<Sound Name="Footstep1" ID="{F521BACA-D5F6-4EB3-9476-153F48C63568}" ShortID="502064502">
+						<RandomSequenceContainer Name="Fumble Sounds" ID="{E87FC42C-FE7E-45D7-80D9-8D699228AAA5}" ShortID="532521906">
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
@@ -57,20 +15,1448 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<AudioFileSource Name="Footstep1" ID="{7E4D01C4-DD75-4A07-B4D5-1FC939A980C6}">
-									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep1.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="484457456"/>
-									</MediaIDList>
-								</AudioFileSource>
+								<Sound Name="FumbleSound-001" ID="{F7FAEF5D-5E3B-4406-9FF3-2F56CEC660DA}" ShortID="94089261">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-001" ID="{7D67D570-34C4-4818-A0A2-09010D62CC4C}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="339814850"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-001" ID="{7D67D570-34C4-4818-A0A2-09010D62CC4C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-002" ID="{E686A487-6467-4A0F-AC3D-B4D38C547B7B}" ShortID="619025184">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-002" ID="{9708E584-14D8-44F5-BD4B-AC1B16B58C89}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="372950712"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-002" ID="{9708E584-14D8-44F5-BD4B-AC1B16B58C89}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-003" ID="{597A314B-374F-4853-A702-4030CD09E89A}" ShortID="742560837">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-003" ID="{043360B5-4EC5-4FB7-ACF3-90298CC8EC89}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="680285764"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-003" ID="{043360B5-4EC5-4FB7-ACF3-90298CC8EC89}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-004" ID="{D12C5E4A-C63E-4DA6-AC90-DAB52FC343FF}" ShortID="234872970">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-004" ID="{0377AF39-4BDC-46AF-8BAB-45B6E329EB95}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="11255049"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-004" ID="{0377AF39-4BDC-46AF-8BAB-45B6E329EB95}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-005" ID="{0494B1D3-57D4-4595-8FBD-11884B396A46}" ShortID="498571145">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-005" ID="{CB2992E5-DB38-41C5-BEF5-4225F252C0E5}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="71501934"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-005" ID="{CB2992E5-DB38-41C5-BEF5-4225F252C0E5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-006" ID="{F178A4A0-97B0-437F-A18B-FF273C972F46}" ShortID="138675664">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-006" ID="{09740BB9-C96E-42F5-8D24-30D8537C732A}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="237240672"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-006" ID="{09740BB9-C96E-42F5-8D24-30D8537C732A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-007" ID="{7AB2DD80-42FB-4D1B-A3D7-1DFB730A185F}" ShortID="599682602">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-007" ID="{C9B0C9CC-3324-4D6F-A6B9-096991EECBD8}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="466502181"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-007" ID="{C9B0C9CC-3324-4D6F-A6B9-096991EECBD8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-008" ID="{E8894CD3-96C4-47E6-A5B3-84FE0F797DCC}" ShortID="1058272770">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-008" ID="{725EC608-0791-4F9B-B2F0-BC542F3F3694}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="18261501"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-008" ID="{725EC608-0791-4F9B-B2F0-BC542F3F3694}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-009" ID="{CE983EE9-5083-4A96-8D93-9F1112698A24}" ShortID="116413886">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-009" ID="{132CF374-6A9F-4A6F-A958-F40CD6895D35}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="231726091"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-009" ID="{132CF374-6A9F-4A6F-A958-F40CD6895D35}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-010" ID="{D1E8254A-9DBF-43CD-B7CF-C3F44DD86B35}" ShortID="337907670">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-010" ID="{F6FCB1A7-C179-4A98-A66F-39E364555BC4}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="66055709"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-010" ID="{F6FCB1A7-C179-4A98-A66F-39E364555BC4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-011" ID="{D88DDFC7-CF21-4FE1-BE55-94228DBD4AF4}" ShortID="935336498">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-011" ID="{9D126500-AE81-4470-B9E9-FC60F0277521}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1050178419"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-011" ID="{9D126500-AE81-4470-B9E9-FC60F0277521}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-012" ID="{5C93B115-43BE-4CC0-BE72-15884D0ED2DA}" ShortID="647028586">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-012" ID="{5131B308-19AB-4405-8F6D-6AC0D9BC329F}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="281896687"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-012" ID="{5131B308-19AB-4405-8F6D-6AC0D9BC329F}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-013" ID="{8CD4FEAD-3088-4F5A-B217-2FEE60B8FBCE}" ShortID="680216740">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-013" ID="{5568473A-4237-410E-82DF-4D76F0D98D0A}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-013.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="603204707"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-013" ID="{5568473A-4237-410E-82DF-4D76F0D98D0A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-014" ID="{AE8487BA-A5CA-4039-9EEA-8AAB3C020B2E}" ShortID="217715424">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-014" ID="{ACACBCFC-EDCE-4439-A83A-F4BCE58F17A5}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-014.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="199016176"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-014" ID="{ACACBCFC-EDCE-4439-A83A-F4BCE58F17A5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-015" ID="{01F0EE68-46E6-4099-8669-DCCDA155A7C8}" ShortID="1043073039">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-015" ID="{DF44BEF8-D3DB-49FD-B896-2B014B381394}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-015.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="753063255"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-015" ID="{DF44BEF8-D3DB-49FD-B896-2B014B381394}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-016" ID="{F7EA745E-EE8E-4F99-BE86-AEF57CCF3758}" ShortID="1992094">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-016" ID="{530587B3-811A-423C-BC86-3B706C0E1E43}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-016.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="874755701"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-016" ID="{530587B3-811A-423C-BC86-3B706C0E1E43}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FumbleSound-017" ID="{51EDEB90-2964-4602-ACBB-2E1B6DF69B18}" ShortID="76420588">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FumbleSound-017" ID="{BB018AA8-0504-48F8-986C-9DC9C3B80805}">
+											<Language>SFX</Language>
+											<AudioFile>Fumble Sounds\FumbleSound-017.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="613579607"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FumbleSound-017" ID="{BB018AA8-0504-48F8-986C-9DC9C3B80805}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
 							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="Footstep1" ID="{7E4D01C4-DD75-4A07-B4D5-1FC939A980C6}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="Footstep2" ID="{DB49EE72-7625-4180-9D35-FE09743DD566}" ShortID="282679316">
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="New Footsteps" ID="{B92C4E6E-B7A4-433D-A374-70CB71AFCB8A}" ShortID="171644935">
+							<PropertyList>
+								<Property Name="Lowpass" Type="int16">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{97D91779-E6A4-4946-902D-D0286D28D20A}"/>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{A0D9099F-6082-4F62-940D-0959956E995A}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Min" Type="Real64" Value="-25"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{A22FAE8B-887F-4E29-8853-2491BC28E34F}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Min" Type="Real64" Value="-5"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="DistanceFootsteps" ID="{3964A58C-5A37-4E50-AD45-BC8E2CFD8E61}" WorkUnitID="{B54F2779-4EA1-473B-B314-68979E10AE28}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="FootstepsRedo-001" ID="{555DBA33-CDD5-4505-89A7-A7738F0080C6}" ShortID="202981369">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-001" ID="{7C5AB7B3-A130-4FCF-81DF-CD5123254CD5}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="25889882"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-001" ID="{7C5AB7B3-A130-4FCF-81DF-CD5123254CD5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-002" ID="{115C3C60-4F72-4DDA-9714-F3037E56A4A5}" ShortID="916706010">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-002" ID="{AF8786A3-5FC1-4175-8EB9-F4DF224CC5AB}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="651079106"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-002" ID="{AF8786A3-5FC1-4175-8EB9-F4DF224CC5AB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-003" ID="{9970566D-767B-4937-B5B6-8CE861405283}" ShortID="56807745">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-003" ID="{2ABDF226-C0A7-4BDF-88ED-C98F0CCBF172}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="506339398"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-003" ID="{2ABDF226-C0A7-4BDF-88ED-C98F0CCBF172}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-004" ID="{557D4E1E-42BB-4314-B97C-AFDC37C9D9EE}" ShortID="440792569">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-004" ID="{14770C59-9D3E-4374-8AFF-EA5C5A6EB6F6}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1068781726"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-004" ID="{14770C59-9D3E-4374-8AFF-EA5C5A6EB6F6}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-005" ID="{EDA15F79-BB37-4336-A7F6-5FF62821CF84}" ShortID="320112726">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-005" ID="{CDD2B7EE-D0A3-4464-94EF-66A2E0D0AA0C}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-005.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="366547448"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-005" ID="{CDD2B7EE-D0A3-4464-94EF-66A2E0D0AA0C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-006" ID="{34E1974D-B9FE-4B40-AED5-B3E011200997}" ShortID="855852056">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-006" ID="{8C304FAE-02CC-4131-BAF9-DE2ACE5D55AF}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-006.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1010538104"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-006" ID="{8C304FAE-02CC-4131-BAF9-DE2ACE5D55AF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-007" ID="{925AE343-2093-499A-B012-C20A708C26A1}" ShortID="980450349">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-007" ID="{AE0B12D9-3A3D-4DB9-8E26-EBBB0A57C4AF}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-007.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="799056927"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-007" ID="{AE0B12D9-3A3D-4DB9-8E26-EBBB0A57C4AF}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-008" ID="{9E1158AE-4128-4129-8752-99CEF287CC6D}" ShortID="268674653">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-008" ID="{014077FE-7C52-4E97-846F-12E776DE16AB}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-008.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="702289318"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-008" ID="{014077FE-7C52-4E97-846F-12E776DE16AB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-009" ID="{CA3084B5-85B2-462E-B7E4-D2B3CF55B44E}" ShortID="115106501">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-009" ID="{DB9C9A22-AA16-444D-A71E-DB086B2545E3}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-009.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="557707237"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-009" ID="{DB9C9A22-AA16-444D-A71E-DB086B2545E3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-010" ID="{9304ADEE-E318-4768-B17D-F2AB0113F7AB}" ShortID="175461337">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-010" ID="{A9908209-3F6D-44B6-A739-9902D11D53D1}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-010.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="326687846"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-010" ID="{A9908209-3F6D-44B6-A739-9902D11D53D1}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-011" ID="{EF6C2BC7-7A85-4628-8931-7561D30C1AFB}" ShortID="691593181">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-011" ID="{F8656CB2-4DC2-408D-8073-BE8561463DD0}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-011.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="180158941"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-011" ID="{F8656CB2-4DC2-408D-8073-BE8561463DD0}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-012" ID="{96CA9EB3-B7A3-47C4-86CE-CB8D96DBC576}" ShortID="497397523">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-012" ID="{34A43A77-A114-4669-BE22-130E4E8F9330}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-012.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="294517178"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-012" ID="{34A43A77-A114-4669-BE22-130E4E8F9330}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-013" ID="{A9D0FCA8-69C9-4182-8167-27183081B5B4}" ShortID="173132828">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-013" ID="{9DE7C39A-D288-4901-BEC2-F5FDDF0DC129}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-013.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="72414144"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-013" ID="{9DE7C39A-D288-4901-BEC2-F5FDDF0DC129}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-014" ID="{65199625-9544-4FEC-AA0B-724ACE1FEECF}" ShortID="10463917">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-014" ID="{5B5B7D8C-E4AA-4E1C-9E79-49685375AA33}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-014.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="713297588"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-014" ID="{5B5B7D8C-E4AA-4E1C-9E79-49685375AA33}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-015" ID="{4991ABB2-E4EC-43A4-AAEC-15B2CAB68BB2}" ShortID="512827502">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-015" ID="{48D68767-A233-45B8-8E5A-3135C90208C0}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-015.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="452864009"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-015" ID="{48D68767-A233-45B8-8E5A-3135C90208C0}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-016" ID="{BCDB820B-2797-46EF-9EA7-A87B24F705F3}" ShortID="605956625">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-016" ID="{C193ADAD-1ADD-4F13-ACC6-5C8AD4168C51}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-016.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="195438801"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-016" ID="{C193ADAD-1ADD-4F13-ACC6-5C8AD4168C51}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-018" ID="{788C32AF-2404-4183-9AF0-0BFC99F9E44B}" ShortID="738582306">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-018" ID="{D23E8BCC-0F3C-446A-898F-3F863D33DDC6}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-018.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="366188920"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-018" ID="{D23E8BCC-0F3C-446A-898F-3F863D33DDC6}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-019" ID="{2391AC9A-82F8-4F3C-B856-2246DB8D1E49}" ShortID="469167136">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-019" ID="{9AA8D15A-65BA-4207-BB4D-8A306F84AC20}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-019.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="449397302"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-019" ID="{9AA8D15A-65BA-4207-BB4D-8A306F84AC20}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-020" ID="{3801A51C-0275-4775-9475-7B47865D35B0}" ShortID="979533350">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-020" ID="{D79FD7E8-4CDA-4F71-9783-839445EDCBCB}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-020.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="209325162"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-020" ID="{D79FD7E8-4CDA-4F71-9783-839445EDCBCB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-021" ID="{947460FE-6355-45E5-9722-6F83D0FAD5F7}" ShortID="456411559">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-021" ID="{070D1FC9-52C1-4059-9F23-36B97D672C30}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-021.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1056235520"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-021" ID="{070D1FC9-52C1-4059-9F23-36B97D672C30}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-022" ID="{9F48F6A9-C884-440A-8634-410C4CE0B0D1}" ShortID="3210699">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-022" ID="{9B4FEA0B-5E56-4207-A2CB-19ED045ED1AB}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-022.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="144943243"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-022" ID="{9B4FEA0B-5E56-4207-A2CB-19ED045ED1AB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-023" ID="{ABDC467F-7285-4AD5-953E-17FCED0A3397}" ShortID="306931687">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-023" ID="{F703039A-2CF3-46FA-BD0C-5BCFEC19C935}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-023.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="719871041"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-023" ID="{F703039A-2CF3-46FA-BD0C-5BCFEC19C935}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-024" ID="{A015A010-E3B3-4C26-847B-7C5D087DF4D6}" ShortID="559892359">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-024" ID="{EEFA4894-CA27-4FB4-91BE-FDBD780EF1A8}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-024.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="331615741"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-024" ID="{EEFA4894-CA27-4FB4-91BE-FDBD780EF1A8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-025" ID="{F2014CC7-F7FE-470B-9AF6-263ACB426583}" ShortID="677126630">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-025" ID="{5EF07060-9B6A-4D9A-BBDB-9FEBFD2D8653}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-025.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="711844498"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-025" ID="{5EF07060-9B6A-4D9A-BBDB-9FEBFD2D8653}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-026" ID="{B4647CC9-B1F0-4D11-A35E-29A424956832}" ShortID="833519900">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-026" ID="{E96EEEB9-4EB1-42F4-9B3E-2DC3F38AD571}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-026.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="964817175"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-026" ID="{E96EEEB9-4EB1-42F4-9B3E-2DC3F38AD571}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-027" ID="{5550662F-1C65-4E4C-80CD-47BC004BFAE1}" ShortID="908056130">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-027" ID="{707564F3-7241-441F-A760-C63A1A046F3D}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-027.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="950555377"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-027" ID="{707564F3-7241-441F-A760-C63A1A046F3D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-028" ID="{5941DB1B-4A0A-4BF9-9D5B-1CB14C34389F}" ShortID="472421107">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-028" ID="{201EA3A9-D065-4F6F-9FB9-7D4A37D559D9}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-028.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="778416031"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-028" ID="{201EA3A9-D065-4F6F-9FB9-7D4A37D559D9}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-029" ID="{ED2E4E79-14A1-4FAF-BD0D-FED1AB4BF332}" ShortID="597053215">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-029" ID="{0518ACB7-82C4-4A62-BC78-EA31E6478111}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-029.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="117121440"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-029" ID="{0518ACB7-82C4-4A62-BC78-EA31E6478111}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-030" ID="{9C9F80B2-9810-490C-BFE3-04F48D0D3C09}" ShortID="518308479">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-030" ID="{E0EC5951-8239-452C-836C-6A67DBC342AD}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-030.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="119407109"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-030" ID="{E0EC5951-8239-452C-836C-6A67DBC342AD}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-031" ID="{6DF8351F-841E-4CB0-B718-47511ED88C87}" ShortID="121336316">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-031" ID="{8C9CBB8A-1218-4BC7-966F-77D41C4BC912}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-031.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1025064550"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-031" ID="{8C9CBB8A-1218-4BC7-966F-77D41C4BC912}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-032" ID="{058BD00A-D030-4261-BD9A-09C0DE86782F}" ShortID="816703591">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-032" ID="{C3C08E9B-4E72-4ED5-BD4E-4EEF881AAE9D}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-032.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="190698974"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-032" ID="{C3C08E9B-4E72-4ED5-BD4E-4EEF881AAE9D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-033" ID="{E6AFE738-AECE-43A6-92E9-2083836AE947}" ShortID="773947611">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-033" ID="{B5D8985F-04C6-4710-8C0F-C2BEECF99496}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-033.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="204978112"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-033" ID="{B5D8985F-04C6-4710-8C0F-C2BEECF99496}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-034" ID="{E7146E2C-522E-42DE-B576-D225F9A484E7}" ShortID="672982498">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-034" ID="{AB464517-0130-43F0-A5A2-F624A2B1D348}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-034.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="520762534"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-034" ID="{AB464517-0130-43F0-A5A2-F624A2B1D348}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-035" ID="{93EC84CE-70AB-428D-8D87-24C038DCD072}" ShortID="668519465">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-035" ID="{9C6216D3-6CD7-4353-ACD8-A6CBFEF90228}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-035.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="558938706"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-035" ID="{9C6216D3-6CD7-4353-ACD8-A6CBFEF90228}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-036" ID="{217EF776-600F-4C4F-9A17-95C0C3256109}" ShortID="469939470">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-036" ID="{0C4D5E8A-C7A4-4B96-B9C6-58A91231AB98}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-036.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="705287605"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-036" ID="{0C4D5E8A-C7A4-4B96-B9C6-58A91231AB98}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-037" ID="{17E96EDC-33AE-483F-A54E-AE267DBAA0D4}" ShortID="884088645">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-037" ID="{3B44544C-DF3F-43B6-B528-19BAA866F1F5}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-037.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="168588046"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-037" ID="{3B44544C-DF3F-43B6-B528-19BAA866F1F5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-038" ID="{D9CC1C2A-DDA2-4BE7-A5E2-60F89F54BF08}" ShortID="229265370">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-038" ID="{5C4005D1-C8FB-4969-B570-0BA45A3ED71A}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-038.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="268716061"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-038" ID="{5C4005D1-C8FB-4969-B570-0BA45A3ED71A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-039" ID="{215FE6ED-9A94-4263-80EC-6308EED8DDE2}" ShortID="392902856">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-039" ID="{FDD95646-FBA7-4B03-A1F4-5E77E9B848BB}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-039.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="664380585"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-039" ID="{FDD95646-FBA7-4B03-A1F4-5E77E9B848BB}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-040" ID="{45BFB4AC-7E5B-48E8-B6B6-B9C2826FEEEB}" ShortID="894979439">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-040" ID="{F14F8782-8712-47EC-AB1A-8C7BFD3C0B1E}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-040.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="563773228"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-040" ID="{F14F8782-8712-47EC-AB1A-8C7BFD3C0B1E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-041" ID="{2DDA10C9-DC43-4FBE-BF1D-7F91B405566B}" ShortID="742895349">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-041" ID="{F05E2F21-5B80-49D5-A021-B1DDB492D322}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-041.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="268719986"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-041" ID="{F05E2F21-5B80-49D5-A021-B1DDB492D322}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-042" ID="{6366A1D2-01D4-4139-9297-60CC1DAC6291}" ShortID="186755097">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-042" ID="{1768BD86-1C8D-4296-B475-6A938666BE4C}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-042.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="365379716"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-042" ID="{1768BD86-1C8D-4296-B475-6A938666BE4C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-043" ID="{DB923D1B-35A7-4D68-BBF0-C9C3CF8CC110}" ShortID="1038684432">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-043" ID="{EADE427A-F5FE-4ECC-B9B9-5F4776451201}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-043.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="247004850"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-043" ID="{EADE427A-F5FE-4ECC-B9B9-5F4776451201}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="FootstepsRedo-044" ID="{03766602-DB51-41FB-B1CE-FDAC4C02FA53}" ShortID="692828350">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{51F355BD-E2EF-438B-A9CC-BA7B9F68CC33}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="FootstepsRedo-044" ID="{44AC054C-0CC0-4369-B894-1BCE6A22D78C}">
+											<Language>SFX</Language>
+											<AudioFile>New Footsteps\FootstepsRedo-044.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="384602870"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="FootstepsRedo-044" ID="{44AC054C-0CC0-4369-B894-1BCE6A22D78C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists/>
+						</RandomSequenceContainer>
+						<Sound Name="Dash" ID="{3EA5C414-6E61-4527-8B7E-D502FD5E55FA}" ShortID="577104889">
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
@@ -80,202 +1466,342 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<AudioFileSource Name="Footstep2" ID="{930D651D-88A9-4112-94B2-8B95244FE39E}">
+								<AudioFileSource Name="Dash" ID="{E3F04759-E14D-4872-B099-913D9D214899}">
 									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep2.wav</AudioFile>
+									<AudioFile>Dash.wav</AudioFile>
 									<MediaIDList>
-										<MediaID ID="41358154"/>
+										<MediaID ID="276913622"/>
 									</MediaIDList>
 								</AudioFileSource>
 							</ChildrenList>
 							<ObjectLists/>
 							<ActiveSourceList>
-								<ActiveSource Name="Footstep2" ID="{930D651D-88A9-4112-94B2-8B95244FE39E}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="Footstep3" ID="{6C7D4642-6BDD-423E-8FA4-C1FD25848B91}" ShortID="632494271">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="Footstep3" ID="{6C812FB3-D782-4014-9614-62CFBA988677}">
-									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep3.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="752243399"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="Footstep3" ID="{6C812FB3-D782-4014-9614-62CFBA988677}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="Footstep4" ID="{1BF2797B-1633-45FB-AC37-62A6DDA7FA3D}" ShortID="308595467">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="Footstep4" ID="{162B37CB-3DA8-4755-9A08-C3E45F54E8B5}">
-									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep4.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="997855216"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="Footstep4" ID="{162B37CB-3DA8-4755-9A08-C3E45F54E8B5}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="Footstep5" ID="{1A12947E-F0C0-4942-9CDF-B5DE9194C913}" ShortID="513790562">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="Footstep5" ID="{DBC291CF-15CD-43B2-811A-640A41F877D3}">
-									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep5.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="975581131"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="Footstep5" ID="{DBC291CF-15CD-43B2-811A-640A41F877D3}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
-						<Sound Name="Footstep6" ID="{2E79D229-061D-4A82-8D75-4B02C72EC34F}" ShortID="860546177">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="Footstep6" ID="{1C3B4CBA-9799-4C0E-A37E-B09BC816F34B}">
-									<Language>SFX</Language>
-									<AudioFile>Footsteps\Footstep6.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="965980067"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="Footstep6" ID="{1C3B4CBA-9799-4C0E-A37E-B09BC816F34B}" Platform="Linked"/>
+								<ActiveSource Name="Dash" ID="{E3F04759-E14D-4872-B099-913D9D214899}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>
-					<ObjectLists/>
-				</RandomSequenceContainer>
-				<Sound Name="Fumble" ID="{85B5A312-F272-4177-A2D8-C9E85A29F3DF}" ShortID="285201930">
-					<PropertyList>
-						<Property Name="Pitch" Type="int32">
-							<ModifierList>
-								<ModifierInfo>
-									<Modifier Name="" ID="{A04B36AC-2521-496F-A42A-4242587106E8}">
-										<PropertyList>
-											<Property Name="Max" Type="Real64" Value="253"/>
-											<Property Name="Min" Type="Real64" Value="-152"/>
-										</PropertyList>
-									</Modifier>
-								</ModifierInfo>
-							</ModifierList>
-						</Property>
-						<Property Name="Volume" Type="Real64">
-							<ValueList>
-								<Value>-5</Value>
-							</ValueList>
-						</Property>
-					</PropertyList>
-					<ReferenceList>
-						<Reference Name="Conversion">
-							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-						</Reference>
-						<Reference Name="OutputBus">
-							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-						</Reference>
-					</ReferenceList>
+				</Folder>
+				<Folder Name="Player Interaction SFX" ID="{CFBBE104-7EA4-451E-81A4-680277C453B8}" ShortID="328303308">
 					<ChildrenList>
-						<AudioFileSource Name="Fumble" ID="{416E6325-90B7-4BD2-829C-B572E1EBBA32}">
-							<Language>SFX</Language>
-							<AudioFile>Fumble.wav</AudioFile>
-							<MediaIDList>
-								<MediaID ID="345293154"/>
-							</MediaIDList>
-						</AudioFileSource>
+						<RandomSequenceContainer Name="PickupHomework" ID="{451AA491-5D95-403E-A48E-F4E1E359911B}" ShortID="400519385">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="PickupHomework-001" ID="{BE88C717-D05C-4AA9-B0E5-EB13D4EB4B66}" ShortID="711697812">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="PickupHomework-001" ID="{77BE6966-9BEA-4B9B-9F8A-1166C19BB897}">
+											<Language>SFX</Language>
+											<AudioFile>PickupHomework\PickupHomework-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="444800018"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="PickupHomework-001" ID="{77BE6966-9BEA-4B9B-9F8A-1166C19BB897}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="PickupHomework-002" ID="{1EC6C2DF-2D2C-4665-BDC2-068D998AFBF7}" ShortID="386912539">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="PickupHomework-002" ID="{356D84D4-E613-457F-9114-46A477919211}">
+											<Language>SFX</Language>
+											<AudioFile>PickupHomework\PickupHomework-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="710336912"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="PickupHomework-002" ID="{356D84D4-E613-457F-9114-46A477919211}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="PickupHomework-003" ID="{85809ADC-F645-46FF-84AF-83F6A9877935}" ShortID="935950509">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="PickupHomework-003" ID="{8B881534-A216-4289-B4F9-7CCC4B8C5AEA}">
+											<Language>SFX</Language>
+											<AudioFile>PickupHomework\PickupHomework-003.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="162520259"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="PickupHomework-003" ID="{8B881534-A216-4289-B4F9-7CCC4B8C5AEA}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="PickupHomework-004" ID="{06015323-711A-4CB4-AA45-2E4F27B3FE47}" ShortID="759689166">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="PickupHomework-004" ID="{11BFCB9A-F273-41C7-AB57-3216F05D10D1}">
+											<Language>SFX</Language>
+											<AudioFile>PickupHomework\PickupHomework-004.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="268008506"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="PickupHomework-004" ID="{11BFCB9A-F273-41C7-AB57-3216F05D10D1}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists/>
+						</RandomSequenceContainer>
+						<RandomSequenceContainer Name="HandinHomework" ID="{83A20A11-0BD5-4404-9688-DF911E2CDB84}" ShortID="597887236">
+							<PropertyList>
+								<Property Name="RandomAvoidRepeating" Type="bool" Value="False"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="HandinHomework-001" ID="{8851CCCF-465E-4FEB-BC04-1C5C818FD3B3}" ShortID="459532254">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="HandinHomework-001" ID="{6BD5603E-BC9A-4884-81E0-155674D63E03}">
+											<Language>SFX</Language>
+											<AudioFile>HandinHomework\HandinHomework-001.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="996869217"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="HandinHomework-001" ID="{6BD5603E-BC9A-4884-81E0-155674D63E03}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="HandinHomework-002" ID="{91829E3A-7699-4558-AA44-C0EA357479E1}" ShortID="595160356">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="HandinHomework-002" ID="{D558C571-4761-42ED-B75A-F3BCD1EC79FE}">
+											<Language>SFX</Language>
+											<AudioFile>HandinHomework\HandinHomework-002.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="412594150"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="HandinHomework-002" ID="{D558C571-4761-42ED-B75A-F3BCD1EC79FE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<ObjectLists/>
+						</RandomSequenceContainer>
+						<Folder Name="AimSounds" ID="{4FE4EA4C-6F36-4373-B27A-4A4E3EF3F544}" ShortID="127221307">
+							<ChildrenList>
+								<Sound Name="AimHold_Redo" ID="{5D41CA9B-5F29-414A-AEF0-4DB5BB035D88}" ShortID="734594091">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{A7A23454-A90D-4ABE-AB59-4AF29CEDC8FD}"/>
+												</ModifierInfo>
+											</ModifierList>
+											<RTPCList>
+												<RTPC Name="" ID="{FC258A32-F05D-4D89-A184-E553491ABCF3}" ShortID="78755205">
+													<ReferenceList>
+														<Reference Name="ControlInput">
+															<ObjectRef Name="AimCharge" ID="{3CE93858-A3A0-4571-9AAA-7B7C0E01707D}" WorkUnitID="{7B26B0C5-3EB8-4CD7-BAFB-1C524716A044}"/>
+														</Reference>
+													</ReferenceList>
+													<Curve Name="" ID="{3259F9AF-27CD-4E97-9077-B46E93475B4F}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="65537"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>0</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>2485</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</RTPC>
+											</RTPCList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="AimHold_Redo" ID="{572FDD3D-A1CD-43EB-A9A1-D50B98B50F30}">
+											<Language>SFX</Language>
+											<AudioFile>AimHold_Redo.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="415484373"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="AimHold_Redo" ID="{572FDD3D-A1CD-43EB-A9A1-D50B98B50F30}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<SwitchContainer Name="AimCharge" ID="{7CC0E257-24DC-425A-A22B-FB8195EC2901}" ShortID="1024043096">
+									<PropertyList>
+										<Property Name="SwitchBehavior" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+										<Reference Name="SwitchGroupOrStateGroup">
+											<ObjectRef Name="AimCharge" ID="{0F21D27F-FBB6-47CA-AF05-4A80B6CB7A72}" WorkUnitID="{3B589315-0AE0-4185-B640-D84917EB66D7}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="AimMax" ID="{BA817745-5526-4924-8281-5AD9150DAC12}" ShortID="354835649">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="AimMax" ID="{355EDAA1-3E40-4149-BE97-F3CC59324F37}">
+													<Language>SFX</Language>
+													<AudioFile>AimMax.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="423616169"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists/>
+											<ActiveSourceList>
+												<ActiveSource Name="AimMax" ID="{355EDAA1-3E40-4149-BE97-F3CC59324F37}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<ObjectLists/>
+									<GroupingInfo>
+										<GroupingBehaviorList>
+											<GroupingBehavior>
+												<ItemRef Name="AimMax" ID="{BA817745-5526-4924-8281-5AD9150DAC12}"/>
+											</GroupingBehavior>
+										</GroupingBehaviorList>
+										<GroupingList>
+											<Grouping>
+												<SwitchRef Name="Maximum" ID="{B499EF81-9213-4855-A417-C3019ED83265}"/>
+												<ItemList>
+													<ItemRef Name="AimMax" ID="{BA817745-5526-4924-8281-5AD9150DAC12}"/>
+												</ItemList>
+											</Grouping>
+										</GroupingList>
+									</GroupingInfo>
+								</SwitchContainer>
+								<Sound Name="AimRelease" ID="{D3169790-2DB5-4195-BFF6-0D810F62EC64}" ShortID="956422818">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>12</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="AimRelease" ID="{A576EB07-7E00-4225-AA05-886732A2726A}">
+											<Language>SFX</Language>
+											<AudioFile>AimRelease.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="107268317"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists/>
+									<ActiveSourceList>
+										<ActiveSource Name="AimRelease" ID="{A576EB07-7E00-4225-AA05-886732A2726A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</Folder>
 					</ChildrenList>
-					<ObjectLists/>
-					<ActiveSourceList>
-						<ActiveSource Name="Fumble" ID="{416E6325-90B7-4BD2-829C-B572E1EBBA32}" Platform="Linked"/>
-					</ActiveSourceList>
-				</Sound>
-				<Sound Name="HandinHomework" ID="{9C7E9036-4AE5-45D2-BA54-217E59965803}" ShortID="416494395">
-					<ReferenceList>
-						<Reference Name="Conversion">
-							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-						</Reference>
-						<Reference Name="OutputBus">
-							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-						</Reference>
-					</ReferenceList>
-					<ChildrenList>
-						<AudioFileSource Name="HandinHomework" ID="{FBE6E0FF-9EA2-41B4-B182-AA02E3598D25}">
-							<Language>SFX</Language>
-							<AudioFile>HandinHomework.wav</AudioFile>
-							<MediaIDList>
-								<MediaID ID="334893486"/>
-							</MediaIDList>
-						</AudioFileSource>
-					</ChildrenList>
-					<ObjectLists/>
-					<ActiveSourceList>
-						<ActiveSource Name="HandinHomework" ID="{FBE6E0FF-9EA2-41B4-B182-AA02E3598D25}" Platform="Linked"/>
-					</ActiveSourceList>
-				</Sound>
-				<Sound Name="PickupHomework" ID="{94B46B41-2C22-4D64-A5C7-71DF3498FECB}" ShortID="330146765">
-					<ReferenceList>
-						<Reference Name="Conversion">
-							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-						</Reference>
-						<Reference Name="OutputBus">
-							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-						</Reference>
-					</ReferenceList>
-					<ChildrenList>
-						<AudioFileSource Name="PickupHomework" ID="{BC494F3D-FCBD-46F1-9AFD-B4C615BD1BC7}">
-							<Language>SFX</Language>
-							<AudioFile>PickupHomework.wav</AudioFile>
-							<MediaIDList>
-								<MediaID ID="334791026"/>
-							</MediaIDList>
-						</AudioFileSource>
-					</ChildrenList>
-					<ObjectLists/>
-					<ActiveSourceList>
-						<ActiveSource Name="PickupHomework" ID="{BC494F3D-FCBD-46F1-9AFD-B4C615BD1BC7}" Platform="Linked"/>
-					</ActiveSourceList>
-				</Sound>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>
