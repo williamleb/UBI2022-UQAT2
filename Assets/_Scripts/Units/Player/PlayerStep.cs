@@ -19,8 +19,6 @@ namespace Units.Player
 
         private void AnimationEvent_Step(AnimationEvent animationEvent)
         {
-            Debug.Log(animator.GetLayer(animationEvent.animatorStateInfo));
-            
             if (animator.GetLayer(animationEvent.animatorStateInfo) != stepAnimatorLayer)
                 return;
             
