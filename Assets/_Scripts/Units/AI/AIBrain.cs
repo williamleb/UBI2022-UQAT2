@@ -40,12 +40,14 @@ namespace Units.AI
 
         public void SetDestination(Vector3 target)
         {
-            entity.Agent.SetDestination(target);
+            if(entity.Agent.enabled)
+                entity.Agent.SetDestination(target);
         }
 
         public void StopMoving()
         {
-            entity.Agent.SetDestination(entity.transform.position);
+            if (entity.Agent.enabled)
+                entity.Agent.SetDestination(entity.transform.position);
         }
 
         public void PlayAnimation(string animationName)
@@ -95,12 +97,14 @@ namespace Units.AI
 
         public void SetSpeed(float speed)
         {
-            entity.Agent.speed = speed;
+            if (entity.Agent.enabled)
+                entity.Agent.speed = speed;
         }
 
         public void ResetSpeed()
         {
-            entity.Agent.speed = BaseSpeed;
+            if (entity.Agent.enabled)
+                entity.Agent.speed = BaseSpeed;
         }
     }
 }

@@ -5775,15 +5775,15 @@ namespace Fusion.Editor {
       base.PrepareInspectorGUI();
 
       // can networked properties be altered for all selected targets?
-      bool? hasStateAuthorityForAllTargets = null;
-      foreach (var target in ValidTargets) {
-        if (target.Object.HasStateAuthority) {
-          hasStateAuthorityForAllTargets = true;
-        } else {
-          hasStateAuthorityForAllTargets = false;
-          break;
-        }
-      }
+      // bool? hasStateAuthorityForAllTargets = null;
+      // foreach (var target in ValidTargets) {
+      //   if (target.Object.HasStateAuthority) {
+      //     hasStateAuthorityForAllTargets = true;
+      //   } else {
+      //     hasStateAuthorityForAllTargets = false;
+      //     break;
+      //   }
+      // }
 
 
       // copy changes from the state

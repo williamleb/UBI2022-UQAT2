@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Canvases.Menu;
 using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
@@ -8,7 +9,7 @@ using Systems.Network;
 using Systems.Settings;
 using Systems.Teams;
 using Units.AI;
-using Units.Camera;
+using Units.Player.Customisation;
 using UnityEditor;
 using UnityEngine;
 using Utilities.Extensions;
@@ -20,6 +21,7 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInteracter))]
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
+    [RequireComponent(typeof(PlayerCustomization))]
     public partial class PlayerEntity : NetworkBehaviour, IVelocityObject
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
@@ -27,23 +29,24 @@ namespace Units.Player
         public event Action OnMenuPressed;
         public event Action OnArchetypeChanged;
         public event Action OnTeamChanged;
-
-        [SerializeField] private CameraStrategy mainCamera;
-
+        
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
+        private PlayerCustomization customization;
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
         private bool inMenu;
 
         public int PlayerId { get; private set; }
+        public PlayerCustomization Customization => customization;
 
         [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
-        
+        [Networked] private bool InCustomization { get; set; }
+
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
 
@@ -53,6 +56,7 @@ namespace Units.Player
             print(data.PlayerArchetype);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
+            customization = GetComponent<PlayerCustomization>();
 
             inventory.AssignVelocityObject(this);
 
@@ -68,6 +72,12 @@ namespace Units.Player
                 Archetype = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
         }
 
+        public void AssignArchetype(Archetype archetype)
+        {
+            if (Object.HasStateAuthority)
+                Archetype = archetype;
+        }
+
         private void ImmunityTimerOnTimerEnd() => isImmune = false;
 
         public override async void Spawned()
@@ -75,18 +85,10 @@ namespace Units.Player
             base.Spawned();
             OnAwake();
             InitThrow();
+            InitCamera();
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
-
-            if (Object.HasInputAuthority)
-            {
-                mainCamera.Init(data.PlayerCameraSetting);
-            }
-            else
-            {
-                mainCamera.gameObject.Hide();
-            }
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
@@ -114,18 +116,18 @@ namespace Units.Player
 
                 if (Runner.IsForward)
                 {
-                    if (inputData.IsInteractOnce && !inMenu)
+                    if (inputData.IsInteractOnce && !inMenu && !InCustomization)
                     {
                         interacter.InteractWithClosestInteraction();
                     }
 
-                    if (inputData.IsReadyOnce && !inMenu)
+                    if (inputData.IsReadyOnce && !inMenu && !InCustomization)
                     {
                         IsReady = !IsReady;
                         Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
                     }
 
-                    if (inputData.IsMenu)
+                    if (inputData.IsMenu && !InCustomization)
                     {
                         inMenu = !inMenu;
                         if (inMenu) IsReady = false;
@@ -136,6 +138,7 @@ namespace Units.Player
                 }
 
                 AnimationUpdate();
+                RagdollUpdate();
             }
         }
 
@@ -213,6 +216,35 @@ namespace Units.Player
             OnTeamChanged?.Invoke();
         }
 
+        public void StartCustomization()
+        {
+            if (InCustomization)
+                return;
+
+            IsReady = false;
+            RPC_ChangeInCustomization(true);
+            customizationCamera.Activate();
+            if (MenuManager.HasInstance)
+            {
+                MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this);
+            }
+        }
+
+        public void StopCustomization()
+        {
+            if (!InCustomization)
+                return;
+
+            RPC_ChangeInCustomization(false);
+            mainCamera.Activate();
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_ChangeInCustomization(NetworkBool inCustomization)
+        {
+            InCustomization = inCustomization;
+        }
+
         private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
         {
             changed.Behaviour.UpdateArchetype();
@@ -281,6 +313,16 @@ namespace Units.Player
                 if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
                 {
                     TeamSystem.Instance.AssignTeam(this);
+                }
+                
+                if (GUI.Button(new Rect(0, 200, 200, 40), "Custon on"))
+                {
+                    customizationCamera.Activate(); 
+                }
+                
+                if (GUI.Button(new Rect(0, 240, 200, 40), "Custon off"))
+                {
+                    mainCamera.Activate();
                 }
             }
         }

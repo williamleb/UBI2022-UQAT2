@@ -11,6 +11,7 @@ namespace Units.Player
     {
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
 
+        [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;
@@ -38,7 +39,7 @@ namespace Units.Player
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash && canDash && !inMenu) Dash();
+            if (inputData.IsDash && canDash && !inMenu && !InCustomization) Dash();
         }
 
         private void Dash()
@@ -182,10 +183,10 @@ namespace Units.Player
                 Gizmos.color = Color.red;
                 Vector3 pos = transform.position;
                 Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
-                Vector3 viewAngleA = new Vector3(Mathf.Sin(data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
-                    Mathf.Cos(data.DashAimAssistAngle * Mathf.Deg2Rad));
-                Vector3 viewAngleB = new Vector3(Mathf.Sin(-data.DashAimAssistAngle * Mathf.Deg2Rad), 0,
-                    Mathf.Cos(-data.DashAimAssistAngle * Mathf.Deg2Rad));
+                float angleA = data.DashAimAssistAngle + transform.eulerAngles.y;
+                float angleB = data.DashAimAssistAngle - transform.eulerAngles.y;
+                Vector3 viewAngleA = new Vector3(Mathf.Sin(angleA * Mathf.Deg2Rad), 0, Mathf.Cos(angleA * Mathf.Deg2Rad));
+                Vector3 viewAngleB = new Vector3(Mathf.Sin(-angleB * Mathf.Deg2Rad), 0, Mathf.Cos(-angleB * Mathf.Deg2Rad));
 
                 Gizmos.DrawLine(pos, pos + viewAngleA * data.DashMaxAimAssistRange);
                 Gizmos.DrawLine(pos, pos + viewAngleB * data.DashMaxAimAssistRange);

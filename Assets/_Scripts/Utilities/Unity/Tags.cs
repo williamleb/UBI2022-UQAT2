@@ -8,5 +8,6 @@
         public const string AI = "AI";
         public const string INTERACTION = "Interaction";
         public const string COLLIDABLE = "Collidable";
+        public const string CAMERABOUNDS = "CameraBounds";
     }
 }

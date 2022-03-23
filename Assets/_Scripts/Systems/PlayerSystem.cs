@@ -20,6 +20,8 @@ namespace Systems
 		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
 		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
+		private PlayerSpawnLocation[] playerSpawnPoints;
+		
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
@@ -44,8 +46,7 @@ namespace Systems
 		private void Start()
         {
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-			LevelSystem.Instance.OnGameLoad += SetPlayersPositionToSpawn;
-		}
+        }
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
 		// called by the runner to re-register actions
@@ -76,10 +77,12 @@ namespace Systems
 		}
 
 		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
-        {
+		{
+			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
+	        
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
-						new Vector3(0, 0, 0),
+						playerSpawnPoints[playersEntity.Count].transform.position,
 						Quaternion.identity,
 						playerRef);
 		}
@@ -91,13 +94,15 @@ namespace Systems
 				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
 		}
 
-		private void SetPlayersPositionToSpawn()
-        {
-            foreach (PlayerEntity playerEntity in playersEntity)
-            {
-				playerEntity.gameObject.transform.position = new Vector3(0,0,0);
-            }
-        }
+		public void SetPlayersPositionToSpawn()
+		{
+			playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
+			for (int i = 0; i < playersEntity.Count; i++)
+			{
+				PlayerEntity playerEntity = playersEntity[i];
+				playerEntity.gameObject.transform.position = playerSpawnPoints[i].transform.position;
+			}
+		}
 
 		public PlayerEntity GetPlayerEntity(PlayerRef playerRef)
 		{
