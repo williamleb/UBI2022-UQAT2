@@ -28,6 +28,7 @@ namespace Canvases.InputSystem
         private RebindActionUI firstButton;
 
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
+        private bool isInitialized;
 
         private void Awake()
         {
@@ -38,8 +39,9 @@ namespace Canvases.InputSystem
 
         private void Init(NetworkObject player)
         {
-            if (player.HasInputAuthority)
+            if (player.HasInputAuthority && !isInitialized)
             {
+                isInitialized = true;
                 playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
                 player.GetComponentInChildren<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
