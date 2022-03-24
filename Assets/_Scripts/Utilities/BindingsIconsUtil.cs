@@ -87,6 +87,10 @@ namespace Utilities
                     RelevantMainBindings.Add(deviceName == "Gamepad" ? 2 : 0);
                 }
             }
+            else if (inputAction.bindings.Count >= 2)
+            {
+                RelevantMainBindings.Add(deviceName == "Gamepad" ? 1 : 0);
+            }
 
             return RelevantMainBindings;
         }
