@@ -25,7 +25,7 @@ namespace Units.Player
         public void PlayAimHoldSoundLocally() => SoundSystem.Instance.PlayAimHoldSound(this);
         public void StopAimHoldSoundLocally() => SoundSystem.Instance.StopAimHoldSound(this);
         public void PlayAimReleaseSoundLocally() => SoundSystem.Instance.PlayAimReleaseSound(this);
-        public void SetAimChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
+        public void SetAimSoundChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
         public void PlayDashSoundLocally() => SoundSystem.Instance.PlayDashSound(this);
         
         public void PlayHandInHomeworkSoundOnOtherClients() => RPC_PlayHandInHomeworkSoundOnOtherClients();
@@ -146,34 +146,7 @@ namespace Units.Player
             audioListener.StopListeningToEmitter(objectToStopListeningTo.AudioObject);
             listenedObjects.Remove(objectToStopListeningTo);
         }
-        
-        private void PlayAimHoldSound()
-        {
-            // We separate the 2 calls so it can be played instantly on the client
-            if (Object.HasInputAuthority)
-                PlayAimHoldSoundLocally();
-            if (Object.HasStateAuthority)
-                PlayAimHoldSoundOnOtherClients();
-        }
 
-        private void StopAimHoldSound()
-        {
-            // We separate the 2 calls so it can be played instantly on the client
-            if (Object.HasInputAuthority)
-                StopAimHoldSoundLocally();
-            if (Object.HasStateAuthority)
-                StopAimHoldSoundOnOtherClients();
-        }
-
-        private void PlayAimReleaseSound()
-        {
-            // We separate the 2 calls so it can be played instantly on the client
-            if (Object.HasInputAuthority)
-                PlayAimReleaseSoundLocally();
-            if (Object.HasStateAuthority)
-                PlayAimReleaseSoundOnOtherClients();
-        }
-        
         private void PlayDashSound()
         {
             // We separate the 2 calls so it can be played instantly on the client

@@ -41,11 +41,8 @@ namespace Systems.Sound
         public Event AimReleaseEvent => aimRelease;
 
         public RTPC MasterVolumeParameter => masterVolume;
-        public RTPC MusicVolumeParameter => masterVolume;
-        public RTPC SoundEffectsVolumeParameter => masterVolume;
-        public RTPC AimChargeParameter => masterVolume;
-        
-        public Switch AimChargeSwitch => aimChargeDefault;
-
+        public RTPC MusicVolumeParameter => musicVolume;
+        public RTPC SoundEffectsVolumeParameter => sfxVolume;
+        public RTPC AimChargeParameter => aimCharge;
     }
 }

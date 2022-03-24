@@ -55,8 +55,6 @@ using Utilities.Singleton;
         public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetAimCharge(PlayerEntity player, float charge) => wwiseObjects.AimChargeParameter.SetValue(player.gameObject, charge * 100f);
 
-        public void InitAimCharge(PlayerEntity player) => wwiseObjects.AimChargeSwitch.SetValue(player.gameObject);
-        
 #if UNITY_EDITOR
         private bool showDebugMenu;
 
