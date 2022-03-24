@@ -1,5 +1,4 @@
-﻿using System;
-using Canvases.Components;
+﻿using Canvases.Components;
 using Canvases.EntryAnimations;
 using Sirenix.OdinInspector;
 using Units.Player;
@@ -7,38 +6,33 @@ using UnityEngine;
 
 namespace Canvases.Menu.Customization
 {
-    [RequireComponent(typeof(CanvasGroup))]
-    public class CustomizationUI : MonoBehaviour, IMenu
+    public class CustomizationUI : AbstractMenu
     {
-        public event Action OnShow; 
-        public event Action OnHide; 
 
-        [SerializeField, Required] private EntryAnimation entry;
         [SerializeField, Required] private ButtonUIComponent backButton;
-        [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
 
-        private CanvasGroup canvasGroup;
         private CustomizationUIElement[] customizationUIElements;
 
         private PlayerEntity player;
 
-        private void Awake()
+        protected override EntryDirection EnterDirection => EntryDirection.Down;
+        protected override EntryDirection LeaveDirection => EntryDirection.Down;
+
+        protected override void Awake()
         {
-            canvasGroup = GetComponent<CanvasGroup>();
+            base.Awake();
             customizationUIElements = GetComponentsInChildren<CustomizationUIElement>();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
-            entry.OnEntered += OnEntered;
-            entry.OnLeft += OnLeft;
+            base.OnEnable();
             backButton.OnClick += OnBack;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
-            entry.OnEntered -= OnEntered;
-            entry.OnLeft -= OnLeft;
+            base.OnDisable();
             backButton.OnClick += OnBack;
         }
 
@@ -47,45 +41,28 @@ namespace Canvases.Menu.Customization
             player.StopCustomization();
             Hide();
         }
-
-        public void ShowFor(PlayerEntity playerEntity)
+        
+        public override void Show()
         {
-            if (entry.IsEnteredOrEntering)
-                return;
+            // Cannot show the customization UI if it's not associated to a player
+            return;
+        }
 
+        public override void ShowForImplementation(PlayerEntity playerEntity)
+        {
             player = playerEntity;
             foreach (var element in customizationUIElements)
             {
                 element.Activate(playerEntity);
             }
-            
-            entry.EnterDown();
-            OnShow?.Invoke();
-        }
-        
-        private void OnEntered()
-        {
-            canvasGroup.interactable = true;
-            firstButtonToFocus.Select();
         }
 
-        public void Hide()
+        public override void HideImplementation()
         {
-            if (entry.IsLeftOrLeaving)
-                return;
-            
             foreach (var element in customizationUIElements)
             {
                 element.Deactivate();
             }
-
-            entry.LeaveDown();
-            canvasGroup.interactable = false;
-        }
-
-        private void OnLeft()
-        {
-            OnHide?.Invoke();
         }
     }
 }

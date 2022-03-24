@@ -70,6 +70,18 @@ namespace Canvases.Menu
             
             menu.ShowFor(playerEntity);
         }
+        
+        public void ShowMenu(Menu menuToShow, PlayerEntity playerEntity)
+        {
+            var menu = GetMenu(menuToShow);
+            if (menu == null)
+            {
+                Debug.LogWarning($"Could not find menu {menuToShow} in scene");
+                return;
+            }
+            
+            menu.Show();
+        }
 
         public void HideMenu(Menu menuToHide)
         {
