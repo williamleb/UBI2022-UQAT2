@@ -2,6 +2,7 @@
 using Fusion;
 using Systems;
 using Systems.Network;
+using Systems.Sound;
 using UnityEngine;
 
 namespace Units.Player
@@ -17,12 +18,21 @@ namespace Units.Player
         
         [Networked] private NetworkBool IsAiming { get; set; } = false;
         [Networked] private NetworkBool IsThrowing { get; set; } = false;
-        
-        private float ThrowForcePercent => data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
+
+        [Networked] private float ThrowForcePercent { get; set; }
 
         private void InitThrow()
         {
             throwRumbleKey = RumbleSystem.Instance.GenerateNewRumbleKeyFromBehaviour(this);
+            SoundSystem.Instance.InitAimCharge(this);
+        }
+
+        private void ThrowUpdateOnAllClients()
+        {
+            if (!IsThrowing)
+                return;
+            
+            SetAimChargePercentValueLocally(ThrowForcePercent);
         }
         
         private void ThrowUpdate(NetworkInputData inputData)
@@ -54,8 +64,8 @@ namespace Units.Player
 
             throwForceTimer = Math.Min(throwForceTimer + Runner.DeltaTime, data.SecondsBeforeMaxThrowForce);
             
-            var forcePercent = ThrowForcePercent;
-            RumbleSystem.Instance.SetRumble(throwRumbleKey, lowFrequencyThrowRumbleCurve.Evaluate(forcePercent), highFrequencyThrowRumbleCurve.Evaluate(forcePercent));
+            ThrowForcePercent = data.SecondsBeforeMaxThrowForce != 0 ? throwForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
+            RumbleSystem.Instance.SetRumble(throwRumbleKey, lowFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent), highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent));
         }
 
         private bool CanThrow()
@@ -71,20 +81,28 @@ namespace Units.Player
 
         private void StartAiming()
         {
+            SoundSystem.Instance.InitAimCharge(this);
+            PlayAimHoldSound();
+
             throwForceTimer = 0f;
             IsAiming = true;
             IsThrowing = false;
+            ThrowForcePercent = 0f;
         }
 
         private void CancelAiming()
         {
+            StopAimHoldSound();
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
+            
             IsThrowing = false;
             IsAiming = false;
+            ThrowForcePercent = 0f;
         }
 
         private void Throw()
         {
+            PlayAimReleaseSound();
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
             IsAiming = false;
@@ -92,6 +110,7 @@ namespace Units.Player
 
             var throwForce = Math.Max(data.MinThrowForce, ThrowForcePercent * data.MaxThrowForce);
             inventory.DropEverything(transform.forward + Vector3.up * data.ThrowVerticality, throwForce);
+            ThrowForcePercent = 0f;
         }
     }
 }

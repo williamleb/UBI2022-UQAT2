@@ -18,14 +18,22 @@ namespace Units.Player
         
         public AkGameObj AudioObject => audioObject;
 
-
         public void PlayFootstepSoundLocally() => SoundSystem.Instance.PlayFootstepSound(this);
         public void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
         public void PlayHandInHomeworkSoundLocally() => SoundSystem.Instance.PlayHandInHomeworkSound(this);
         public void PlayPickUpHomeworkSoundLocally() => SoundSystem.Instance.PlayPickUpHomeworkSound(this);
+        public void PlayAimHoldSoundLocally() => SoundSystem.Instance.PlayAimHoldSound(this);
+        public void StopAimHoldSoundLocally() => SoundSystem.Instance.StopAimHoldSound(this);
+        public void PlayAimReleaseSoundLocally() => SoundSystem.Instance.PlayAimReleaseSound(this);
+        public void SetAimChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
+        public void PlayDashSoundLocally() => SoundSystem.Instance.PlayDashSound(this);
         
         public void PlayHandInHomeworkSoundOnOtherClients() => RPC_PlayHandInHomeworkSoundOnOtherClients();
         public void PlayPickUpHomeworkSoundOnOtherClients() => RPC_PlayPickUpHomeworkSoundOnOtherClients();
+        public void PlayAimHoldSoundOnOtherClients() => RPC_PlayAimHoldSoundOnOtherClients();
+        public void StopAimHoldSoundOnOtherClients() => RPC_StopAimHoldSoundOnOtherClients();
+        public void PlayAimReleaseSoundOnOtherClients() => RPC_PlayAimReleaseSoundOnOtherClients();
+        public void PlayDashSoundOnOtherClients() => RPC_PlayDashSoundOnOtherClients();
 
         private void SoundAwake()
         {
@@ -139,6 +147,42 @@ namespace Units.Player
             listenedObjects.Remove(objectToStopListeningTo);
         }
         
+        private void PlayAimHoldSound()
+        {
+            // We separate the 2 calls so it can be played instantly on the client
+            if (Object.HasInputAuthority)
+                PlayAimHoldSoundLocally();
+            if (Object.HasStateAuthority)
+                PlayAimHoldSoundOnOtherClients();
+        }
+
+        private void StopAimHoldSound()
+        {
+            // We separate the 2 calls so it can be played instantly on the client
+            if (Object.HasInputAuthority)
+                StopAimHoldSoundLocally();
+            if (Object.HasStateAuthority)
+                StopAimHoldSoundOnOtherClients();
+        }
+
+        private void PlayAimReleaseSound()
+        {
+            // We separate the 2 calls so it can be played instantly on the client
+            if (Object.HasInputAuthority)
+                PlayAimReleaseSoundLocally();
+            if (Object.HasStateAuthority)
+                PlayAimReleaseSoundOnOtherClients();
+        }
+        
+        private void PlayDashSound()
+        {
+            // We separate the 2 calls so it can be played instantly on the client
+            if (Object.HasInputAuthority)
+                PlayDashSoundLocally();
+            if (Object.HasStateAuthority)
+                PlayDashSoundOnOtherClients();
+        }
+        
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayHandInHomeworkSoundOnOtherClients()
         {
@@ -147,14 +191,50 @@ namespace Units.Player
             
             SoundSystem.Instance.PlayHandInHomeworkSound(this);
         }
-        
+
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayPickUpHomeworkSoundOnOtherClients()
         {
             if (Object.HasInputAuthority)
                 return;
             
-            SoundSystem.Instance.PlayHandInHomeworkSound(this);
+            SoundSystem.Instance.PlayPickUpHomeworkSound(this);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayAimHoldSoundOnOtherClients()
+        {
+            if (Object.HasInputAuthority)
+                return;
+            
+            SoundSystem.Instance.PlayAimHoldSound(this);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_StopAimHoldSoundOnOtherClients()
+        {
+            if (Object.HasInputAuthority)
+                return;
+            
+            SoundSystem.Instance.StopAimHoldSound(this);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayAimReleaseSoundOnOtherClients()
+        {
+            if (Object.HasInputAuthority)
+                return;
+            
+            SoundSystem.Instance.PlayAimReleaseSound(this);
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayDashSoundOnOtherClients()
+        {
+            if (Object.HasInputAuthority)
+                return;
+            
+            SoundSystem.Instance.PlayDashSound(this);
         }
     }
 }

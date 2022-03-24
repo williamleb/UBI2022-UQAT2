@@ -20,12 +20,15 @@ namespace Systems.Sound
         [SerializeField] private Event aimHold;
         [SerializeField] private Event aimRelease;
 
-
         [Header("RTCP")] 
         [SerializeField] private RTPC masterVolume;
         [SerializeField] private RTPC musicVolume;
         [SerializeField] private RTPC sfxVolume;
         [SerializeField] private RTPC aimCharge;
+        
+        [Header("Switch")] 
+        [SerializeField] private Switch aimChargeDefault;
+
 
         public GameObject SoundBankPrefab => soundBankPrefab;
         
@@ -41,5 +44,8 @@ namespace Systems.Sound
         public RTPC MusicVolumeParameter => masterVolume;
         public RTPC SoundEffectsVolumeParameter => masterVolume;
         public RTPC AimChargeParameter => masterVolume;
+        
+        public Switch AimChargeSwitch => aimChargeDefault;
+
     }
 }

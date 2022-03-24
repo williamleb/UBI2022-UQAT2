@@ -52,6 +52,8 @@ namespace Units.Player
             Vector3 dirToTarget = GetDirToTarget();
             transform.forward = GetDashDirection(dirToTarget);
             velocity = data.DashForce;
+
+            PlayDashSound();
         }
 
         private Vector3 GetDirToTarget()

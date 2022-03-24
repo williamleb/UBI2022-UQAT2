@@ -50,12 +50,12 @@ using Utilities.Singleton;
         public void StopAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Stop(player.gameObject);
         public void PlayAimReleaseSound(PlayerEntity player) => wwiseObjects.AimReleaseEvent.Post(player.gameObject);
 
-
         public void SetMasterVolume(float volume) => wwiseObjects.MasterVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetMusicVolume(float volume) => wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetAimCharge(PlayerEntity player, float charge) => wwiseObjects.AimChargeParameter.SetValue(player.gameObject, charge * 100f);
 
+        public void InitAimCharge(PlayerEntity player) => wwiseObjects.AimChargeSwitch.SetValue(player.gameObject);
         
 #if UNITY_EDITOR
         private bool showDebugMenu;
@@ -70,24 +70,14 @@ using Utilities.Singleton;
         {
             if (showDebugMenu)
             {
-                if (GUI.Button(new Rect(0, 0, 200, 40), "Footsteps"))
+                if (GUI.Button(new Rect(0, 0, 200, 40), "Mute"))
                 {
-                    wwiseObjects.FootstepEvent.Post(gameObject);
+                    SetMasterVolume(0f);
                 }
 
-                if (GUI.Button(new Rect(0, 40, 200, 40), "Fumble"))
+                if (GUI.Button(new Rect(0, 40, 200, 40), "Unmute"))
                 {
-                    wwiseObjects.FumbleEvent.Post(gameObject);
-                }
-
-                if (GUI.Button(new Rect(0, 80, 200, 40), "HandInHomework"))
-                {
-                    wwiseObjects.FumbleEvent.Post(gameObject);
-                }
-
-                if (GUI.Button(new Rect(0, 120, 200, 40), "PickUpHomework"))
-                {
-                    wwiseObjects.PickUpHomeworkEvent.Post(gameObject);
+                    SetMasterVolume(0.75f);
                 }
             }
         }
