@@ -1,5 +1,6 @@
 ﻿using Canvases.Markers;
 using Fusion;
+using Systems;
 using Systems.Network;
 using Systems.Settings;
 using Systems.Teams;
@@ -23,6 +24,12 @@ namespace Units.Player
 
         private void ReadyUpdate(NetworkInputData inputData)
         {
+            if (!LevelSystem.Instance.IsLobby)
+            {
+                IsReady = false;
+                return;
+            }
+            
             if (Runner.IsForward)
             {
                 if (inputData.IsReadyOnce && !inMenu && !InCustomization)

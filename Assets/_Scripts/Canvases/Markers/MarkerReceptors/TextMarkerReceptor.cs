@@ -5,7 +5,7 @@ namespace Canvases.Markers
     public class TextMarkerReceptor : MarkerReceptor<TextMarker>
     {
         [SerializeField] private string text;
-        [SerializeField] private Color color;
+        [SerializeField] private Color color = Color.white;
 
         public string Text
         {
