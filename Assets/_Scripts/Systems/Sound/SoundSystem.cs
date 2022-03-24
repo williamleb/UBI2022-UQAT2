@@ -41,10 +41,20 @@ using Utilities.Singleton;
         public void PlayFootstepSound(AIEntity ai) => wwiseObjects.FootstepEvent.Post(ai.gameObject);
         public void PlayFumbleSound(PlayerEntity player) => wwiseObjects.FumbleEvent.Post(player.gameObject);
         public void PlayFumbleSound(AIEntity ai) => wwiseObjects.FumbleEvent.Post(ai.gameObject);
+        public void PlayDashSound(PlayerEntity player) => wwiseObjects.DashEvent.Post(player.gameObject);
         public void PlayHandInHomeworkSound(PlayerEntity player) => wwiseObjects.HandInHomeworkEvent.Post(player.gameObject);
         public void PlayHandInHomeworkSound(AIEntity ai) => wwiseObjects.HandInHomeworkEvent.Post(ai.gameObject);
         public void PlayPickUpHomeworkSound(PlayerEntity player) => wwiseObjects.PickUpHomeworkEvent.Post(player.gameObject);
         public void PlayPickUpHomeworkSound(AIEntity ai) => wwiseObjects.PickUpHomeworkEvent.Post(ai.gameObject);
+        public void PlayAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Post(player.gameObject);
+        public void StopAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Stop(player.gameObject);
+        public void PlayAimReleaseSound(PlayerEntity player) => wwiseObjects.AimReleaseEvent.Post(player.gameObject);
+
+
+        public void SetMasterVolume(float volume) => wwiseObjects.MasterVolumeParameter.SetGlobalValue(volume * 100f);
+        public void SetMusicVolume(float volume) => wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
+        public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
+        public void SetAimCharge(PlayerEntity player, float charge) => wwiseObjects.AimChargeParameter.SetValue(player.gameObject, charge * 100f);
 
         
 #if UNITY_EDITOR
