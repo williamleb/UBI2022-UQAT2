@@ -11,69 +11,347 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="702482391" Language="SFX" Hash="2559126232">
+		<SoundBank Id="702482391" Language="SFX" Hash="172479984">
 			<ObjectPath>\SoundBanks\Default Work Unit\Game</ObjectPath>
 			<ShortName>Game</ShortName>
 			<Path>Game.bnk</Path>
 			<IncludedEvents>
-				<Event Id="2385628198" Name="Footsteps" ObjectPath="\Events\Default Work Unit\Footsteps" DurationType="OneShot" DurationMin="0.052249" DurationMax="0.086027">
+				<Event Id="1017685259" Name="AimHold" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimHold" DurationType="Infinite">
 					<IncludedMemoryFiles>
-						<File Id="41358154" Language="SFX">
-							<ShortName>Footsteps\Footstep2.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep2_10C4C929.wem</Path>
+						<File Id="415484373" Language="SFX">
+							<ShortName>AimHold_Redo.wav</ShortName>
+							<Path>SFX\AimHold_Redo_D79FB2B7.wem</Path>
 						</File>
-						<File Id="484457456" Language="SFX">
-							<ShortName>Footsteps\Footstep1.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep1_10C4C929.wem</Path>
+						<File Id="423616169" Language="SFX">
+							<ShortName>AimMax.wav</ShortName>
+							<Path>SFX\AimMax_10C4C929.wem</Path>
 						</File>
-						<File Id="752243399" Language="SFX">
-							<ShortName>Footsteps\Footstep3.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep3_10C4C929.wem</Path>
-						</File>
-						<File Id="965980067" Language="SFX">
-							<ShortName>Footsteps\Footstep6.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep6_10C4C929.wem</Path>
-						</File>
-						<File Id="975581131" Language="SFX">
-							<ShortName>Footsteps\Footstep5.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep5_10C4C929.wem</Path>
-						</File>
-						<File Id="997855216" Language="SFX">
-							<ShortName>Footsteps\Footstep4.wav</ShortName>
-							<Path>SFX\Footsteps\Footstep4_10C4C929.wem</Path>
+					</IncludedMemoryFiles>
+					<SwitchContainers>
+						<SwitchContainer SwitchValue="{B499EF81-9213-4855-A417-C3019ED83265}">
+							<Media>
+								<File Id="423616169"/>
+							</Media>
+						</SwitchContainer>
+					</SwitchContainers>
+				</Event>
+				<Event Id="3512360027" Name="AimRelease" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimRelease" DurationType="OneShot" DurationMin="1.122018" DurationMax="1.122018">
+					<IncludedMemoryFiles>
+						<File Id="107268317" Language="SFX">
+							<ShortName>AimRelease.wav</ShortName>
+							<Path>SFX\AimRelease_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="4254277742" Name="Fumble" ObjectPath="\Events\Default Work Unit\Fumble" DurationType="OneShot" DurationMin="1.005354" DurationMax="1.005354">
+				<Event Id="1942692385" Name="Dash" ObjectPath="\Events\Default Work Unit\Movement\Dash" DurationType="OneShot" DurationMin="1.110726" DurationMax="1.110726">
 					<IncludedMemoryFiles>
-						<File Id="345293154" Language="SFX">
-							<ShortName>Fumble.wav</ShortName>
-							<Path>SFX\Fumble_10C4C929.wem</Path>
+						<File Id="276913622" Language="SFX">
+							<ShortName>Dash.wav</ShortName>
+							<Path>SFX\Dash_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="2964874869" Name="HandinHomework" ObjectPath="\Events\Default Work Unit\HandinHomework" DurationType="OneShot" DurationMin="0.676021" DurationMax="0.676021">
+				<Event Id="2385628198" Name="Footsteps" ObjectPath="\Events\Default Work Unit\Movement\Footsteps" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.093197" DurationMax="0.254902">
 					<IncludedMemoryFiles>
-						<File Id="334893486" Language="SFX">
-							<ShortName>HandinHomework.wav</ShortName>
-							<Path>SFX\HandinHomework_10C4C929.wem</Path>
+						<File Id="25889882" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-001.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-001_10C4C929.wem</Path>
+						</File>
+						<File Id="72414144" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-013.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-013_10C4C929.wem</Path>
+						</File>
+						<File Id="117121440" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-029.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-029_10C4C929.wem</Path>
+						</File>
+						<File Id="119407109" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-030.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-030_10C4C929.wem</Path>
+						</File>
+						<File Id="144943243" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-022.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-022_10C4C929.wem</Path>
+						</File>
+						<File Id="168588046" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-037.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-037_10C4C929.wem</Path>
+						</File>
+						<File Id="180158941" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-011.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-011_10C4C929.wem</Path>
+						</File>
+						<File Id="190698974" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-032.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-032_10C4C929.wem</Path>
+						</File>
+						<File Id="195438801" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-016.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-016_10C4C929.wem</Path>
+						</File>
+						<File Id="204978112" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-033.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-033_10C4C929.wem</Path>
+						</File>
+						<File Id="209325162" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-020.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-020_10C4C929.wem</Path>
+						</File>
+						<File Id="247004850" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-043.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-043_10C4C929.wem</Path>
+						</File>
+						<File Id="268716061" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-038.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-038_10C4C929.wem</Path>
+						</File>
+						<File Id="268719986" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-041.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-041_10C4C929.wem</Path>
+						</File>
+						<File Id="294517178" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-012.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-012_10C4C929.wem</Path>
+						</File>
+						<File Id="326687846" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-010.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-010_10C4C929.wem</Path>
+						</File>
+						<File Id="331615741" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-024.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-024_10C4C929.wem</Path>
+						</File>
+						<File Id="365379716" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-042.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-042_10C4C929.wem</Path>
+						</File>
+						<File Id="366188920" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-018.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-018_10C4C929.wem</Path>
+						</File>
+						<File Id="366547448" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-005.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-005_10C4C929.wem</Path>
+						</File>
+						<File Id="384602870" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-044.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-044_10C4C929.wem</Path>
+						</File>
+						<File Id="449397302" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-019.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-019_10C4C929.wem</Path>
+						</File>
+						<File Id="452864009" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-015.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-015_10C4C929.wem</Path>
+						</File>
+						<File Id="506339398" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-003.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-003_10C4C929.wem</Path>
+						</File>
+						<File Id="520762534" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-034.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-034_10C4C929.wem</Path>
+						</File>
+						<File Id="557707237" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-009.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-009_10C4C929.wem</Path>
+						</File>
+						<File Id="558938706" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-035.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-035_10C4C929.wem</Path>
+						</File>
+						<File Id="563773228" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-040.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-040_10C4C929.wem</Path>
+						</File>
+						<File Id="651079106" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-002.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-002_10C4C929.wem</Path>
+						</File>
+						<File Id="664380585" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-039.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-039_10C4C929.wem</Path>
+						</File>
+						<File Id="702289318" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-008.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-008_10C4C929.wem</Path>
+						</File>
+						<File Id="705287605" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-036.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-036_10C4C929.wem</Path>
+						</File>
+						<File Id="711844498" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-025.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-025_10C4C929.wem</Path>
+						</File>
+						<File Id="713297588" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-014.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-014_10C4C929.wem</Path>
+						</File>
+						<File Id="719871041" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-023.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-023_10C4C929.wem</Path>
+						</File>
+						<File Id="778416031" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-028.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-028_10C4C929.wem</Path>
+						</File>
+						<File Id="799056927" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-007.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-007_10C4C929.wem</Path>
+						</File>
+						<File Id="950555377" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-027.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-027_10C4C929.wem</Path>
+						</File>
+						<File Id="964817175" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-026.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-026_10C4C929.wem</Path>
+						</File>
+						<File Id="1010538104" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-006.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-006_10C4C929.wem</Path>
+						</File>
+						<File Id="1025064550" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-031.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-031_10C4C929.wem</Path>
+						</File>
+						<File Id="1056235520" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-021.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-021_10C4C929.wem</Path>
+						</File>
+						<File Id="1068781726" Language="SFX">
+							<ShortName>New Footsteps\FootstepsRedo-004.wav</ShortName>
+							<Path>SFX\New Footsteps\FootstepsRedo-004_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="412537003" Name="PickupHomework" ObjectPath="\Events\Default Work Unit\PickupHomework" DurationType="OneShot" DurationMin="0.175208" DurationMax="0.175208">
+				<Event Id="4254277742" Name="Fumble" ObjectPath="\Events\Default Work Unit\Movement\Fumble" DurationType="OneShot" DurationMin="0.13127" DurationMax="0.49068">
 					<IncludedMemoryFiles>
-						<File Id="334791026" Language="SFX">
-							<ShortName>PickupHomework.wav</ShortName>
-							<Path>SFX\PickupHomework_10C4C929.wem</Path>
+						<File Id="11255049" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-004.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-004_10C4C929.wem</Path>
+						</File>
+						<File Id="18261501" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-008.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-008_10C4C929.wem</Path>
+						</File>
+						<File Id="66055709" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-010.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-010_10C4C929.wem</Path>
+						</File>
+						<File Id="71501934" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-005.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-005_10C4C929.wem</Path>
+						</File>
+						<File Id="199016176" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-014.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-014_10C4C929.wem</Path>
+						</File>
+						<File Id="231726091" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-009.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-009_10C4C929.wem</Path>
+						</File>
+						<File Id="237240672" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-006.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-006_10C4C929.wem</Path>
+						</File>
+						<File Id="281896687" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-012.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-012_10C4C929.wem</Path>
+						</File>
+						<File Id="339814850" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-001.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-001_10C4C929.wem</Path>
+						</File>
+						<File Id="372950712" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-002.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-002_10C4C929.wem</Path>
+						</File>
+						<File Id="466502181" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-007.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-007_10C4C929.wem</Path>
+						</File>
+						<File Id="603204707" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-013.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-013_10C4C929.wem</Path>
+						</File>
+						<File Id="613579607" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-017.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-017_10C4C929.wem</Path>
+						</File>
+						<File Id="680285764" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-003.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-003_10C4C929.wem</Path>
+						</File>
+						<File Id="753063255" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-015.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-015_10C4C929.wem</Path>
+						</File>
+						<File Id="874755701" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-016.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-016_10C4C929.wem</Path>
+						</File>
+						<File Id="1050178419" Language="SFX">
+							<ShortName>Fumble Sounds\FumbleSound-011.wav</ShortName>
+							<Path>SFX\Fumble Sounds\FumbleSound-011_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2964874869" Name="HandinHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\HandinHomework" DurationType="OneShot" DurationMin="0.771224" DurationMax="0.945578">
+					<IncludedMemoryFiles>
+						<File Id="412594150" Language="SFX">
+							<ShortName>HandinHomework\HandinHomework-002.wav</ShortName>
+							<Path>SFX\HandinHomework\HandinHomework-002_10C4C929.wem</Path>
+						</File>
+						<File Id="996869217" Language="SFX">
+							<ShortName>HandinHomework\HandinHomework-001.wav</ShortName>
+							<Path>SFX\HandinHomework\HandinHomework-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="412537003" Name="PickupHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\PickupHomework" DurationType="OneShot" DurationMin="0.248594" DurationMax="0.385964">
+					<IncludedMemoryFiles>
+						<File Id="162520259" Language="SFX">
+							<ShortName>PickupHomework\PickupHomework-003.wav</ShortName>
+							<Path>SFX\PickupHomework\PickupHomework-003_10C4C929.wem</Path>
+						</File>
+						<File Id="268008506" Language="SFX">
+							<ShortName>PickupHomework\PickupHomework-004.wav</ShortName>
+							<Path>SFX\PickupHomework\PickupHomework-004_10C4C929.wem</Path>
+						</File>
+						<File Id="444800018" Language="SFX">
+							<ShortName>PickupHomework\PickupHomework-001.wav</ShortName>
+							<Path>SFX\PickupHomework\PickupHomework-001_10C4C929.wem</Path>
+						</File>
+						<File Id="710336912" Language="SFX">
+							<ShortName>PickupHomework\PickupHomework-002.wav</ShortName>
+							<Path>SFX\PickupHomework\PickupHomework-002_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
 			</IncludedEvents>
+			<GameParameters>
+				<GameParameter Id="1194647800" Name="AimCharge" ObjectPath="\Game Parameters\Default Work Unit\AimCharge"/>
+			</GameParameters>
+			<SwitchGroups>
+				<SwitchGroup Id="1194647800" Name="AimCharge" ObjectPath="\Switches\Default Work Unit\AimCharge" GUID="{0F21D27F-FBB6-47CA-AF05-4A80B6CB7A72}">
+					<Switches>
+						<Switch Id="1330394413" Name="Maximum" ObjectPath="\Switches\Default Work Unit\AimCharge\Maximum" GUID="{B499EF81-9213-4855-A417-C3019ED83265}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Language="SFX" Hash="1147299202">
+		<SoundBank Id="1355168291" Language="SFX" Hash="662194807">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
+			<GameParameters>
+				<GameParameter Id="988953028" Name="SFXVolume" ObjectPath="\Game Parameters\Default Work Unit\Volume\SFXVolume"/>
+				<GameParameter Id="2346531308" Name="MusicVolume" ObjectPath="\Game Parameters\Default Work Unit\Volume\MusicVolume"/>
+				<GameParameter Id="2918011349" Name="MasterVolume" ObjectPath="\Game Parameters\Default Work Unit\Volume\MasterVolume"/>
+			</GameParameters>
 		</SoundBank>
 	</SoundBanks>
 </SoundBanksInfo>
