@@ -42,6 +42,9 @@ namespace Units.AI.Senses
 
             foreach (var objectCollider in colliders)
             {
+                if (!objectCollider)
+                    return;
+                
                 if (!IsDetected(objectCollider)) continue;
                 if (!IsVisible(objectCollider)) continue;
                 ManageCollider(objectCollider);
