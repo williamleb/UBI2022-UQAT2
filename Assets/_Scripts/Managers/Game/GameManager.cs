@@ -103,7 +103,9 @@ namespace Managers.Game
 
         private IEnumerator SpawnAndStartGameRoutine()
         {
-            MapGenerationSystem.Instance.GenerateMap();
+            if (MapGenerationSystem.HasInstance)
+                MapGenerationSystem.Instance.GenerateMap();
+            
             yield return null;
             
             spawnLocks.Clear();
