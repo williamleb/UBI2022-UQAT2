@@ -42,7 +42,7 @@ namespace Units.AI.Senses
 
             foreach (var objectCollider in colliders)
             {
-                if (objectCollider)
+                if (!objectCollider)
                     return;
                 
                 if (!IsDetected(objectCollider)) continue;
