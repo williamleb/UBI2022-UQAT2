@@ -1,4 +1,3 @@
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -45,7 +44,7 @@ namespace Canvases.Markers
             var marker = MarkerManager.Instance.InitializeMarker<T>();
             if (marker == null)
             {
-                Debug.LogWarning($"Could not activate the marker receptor because there was no marker of type {typeof(T)} left.");
+                Debug.LogWarning($"Could not activate the marker receptor because there was no marker of type {typeof(T)} left. Please add more instances of this marker in this marker data.");
                 return;
             }
 
