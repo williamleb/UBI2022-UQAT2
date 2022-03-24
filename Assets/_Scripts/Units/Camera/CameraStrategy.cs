@@ -37,6 +37,7 @@ namespace Units.Camera
             {
                 Debug.LogWarning("No camera bounds found in this scene");
                 cameraBounds = gameObject.AddComponent<CameraBounds>();
+                cameraBounds.Bounds = new Vector3(50f, 0f, 50f);
             }
             else
             {

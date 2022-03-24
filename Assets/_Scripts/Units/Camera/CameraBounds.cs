@@ -17,6 +17,12 @@ namespace Units.Camera
 
         private bool initialized = false;
 
+        public Vector3 Bounds
+        {
+            get => bounds;
+            set => bounds = value;
+        }
+
         private void Awake() => Initialize();
 
         private void Initialize()
