@@ -79,10 +79,13 @@ namespace Systems
 		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
 		{
 			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
-	        
+			var spawnPosition = playersEntity.Count < playerSpawnPoints.Length
+				? playerSpawnPoints[playersEntity.Count].transform.position
+				: Vector3.zero;
+			
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
-						playerSpawnPoints[playersEntity.Count].transform.position,
+						spawnPosition,
 						Quaternion.identity,
 						playerRef);
 		}
@@ -100,7 +103,7 @@ namespace Systems
 			for (int i = 0; i < playersEntity.Count; i++)
 			{
 				PlayerEntity playerEntity = playersEntity[i];
-				playerEntity.gameObject.transform.position = playerSpawnPoints[i].transform.position;
+				playerEntity.gameObject.transform.position = i < playerSpawnPoints.Length ? playerSpawnPoints[i].transform.position : Vector3.zero;
 			}
 		}
 

@@ -3,6 +3,7 @@ using Fusion;
 using Sirenix.OdinInspector;
 using Systems.Settings;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using Utilities.Extensions;
 using Random = UnityEngine.Random;
 
@@ -40,8 +41,11 @@ namespace Units.Player.Customisation
             
             settings = SettingsSystem.CustomizationSettings;
             if (Object.HasInputAuthority) Randomize(true);
+            
+            // For the clients that joined after the client representing this player
+            UpdateAll();
 
-            if (Object.HasStateAuthority)
+            if (Object.HasInputAuthority)
             {
                 // Necessary, because if elements were randomized to 0, the OnChanged will not be called
                 RPC_ForceUpdateAll();
@@ -114,8 +118,13 @@ namespace Units.Player.Customisation
             }
         }
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         private void RPC_ForceUpdateAll()
+        {
+            UpdateAll();
+        }
+
+        private void UpdateAll()
         {
             UpdateHead();
             UpdateHairColor();

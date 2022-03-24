@@ -92,6 +92,9 @@ namespace Units.AI
 
             inventory.AssignVelocityObject(this);
             aiCollider = GetComponent<CapsuleCollider>();
+
+            // We disable the agent until the AI is spawned so it doesn't teleport at the origin when it is spawned
+            agent.enabled = false;
         }
 
         // Those three methods should only be called before the AI entity is spawned
@@ -108,6 +111,8 @@ namespace Units.AI
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
             }
+
+            Agent.enabled = true;
 
             RegisterToManager();
             InitializeRagdoll();

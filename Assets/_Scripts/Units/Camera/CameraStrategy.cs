@@ -32,7 +32,18 @@ namespace Units.Camera
 
         public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
         {
-            cameraBounds = GameObject.FindWithTag(Tags.CAMERABOUNDS).GetComponent<CameraBounds>();
+            var cameraBoundsObject = GameObject.FindWithTag(Tags.CAMERABOUNDS);
+            if (!cameraBoundsObject)
+            {
+                Debug.LogWarning("No camera bounds found in this scene");
+                cameraBounds = gameObject.AddComponent<CameraBounds>();
+                cameraBounds.Bounds = new Vector3(50f, 0f, 50f);
+            }
+            else
+            {
+                cameraBounds = cameraBoundsObject.GetComponent<CameraBounds>();
+            }
+            
             data = cameraSettings;
             initialized = true;
             UpdateCamera();

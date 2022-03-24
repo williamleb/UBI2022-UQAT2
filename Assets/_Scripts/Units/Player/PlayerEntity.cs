@@ -42,7 +42,6 @@ namespace Units.Player
         public int PlayerId { get; private set; }
         public PlayerCustomization Customization => customization;
 
-        [Networked(OnChangedTargets = OnChangedTargets.All)] public NetworkBool IsReady { get; set; }
         [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
         [Networked] private bool InCustomization { get; set; }
@@ -88,6 +87,7 @@ namespace Units.Player
             InitThrow();
             InitCamera();
             InitSound();
+            InitReady();
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
@@ -116,6 +116,7 @@ namespace Units.Player
                 MoveUpdate(inputData);
                 DashUpdate(inputData);
                 ThrowUpdate(inputData);
+                ReadyUpdate(inputData);
 
                 if (Runner.IsForward)
                 {
@@ -124,16 +125,10 @@ namespace Units.Player
                         interacter.InteractWithClosestInteraction();
                     }
 
-                    if (inputData.IsReadyOnce && !inMenu && !InCustomization)
-                    {
-                        IsReady = !IsReady;
-                        Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
-                    }
-
                     if (inputData.IsMenu && !InCustomization)
                     {
                         inMenu = !inMenu;
-                        if (inMenu) IsReady = false;
+                        if (inMenu) ResetReady();
                         OnMenuPressed?.Invoke();
                     }
 
@@ -224,7 +219,7 @@ namespace Units.Player
             if (InCustomization)
                 return;
 
-            IsReady = false;
+            ResetReady();
             RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
             if (MenuManager.HasInstance)

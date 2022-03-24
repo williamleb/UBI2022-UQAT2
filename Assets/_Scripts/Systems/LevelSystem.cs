@@ -32,9 +32,13 @@ namespace Systems
         public LevelState State { get; private set; }
         public int ActiveSceneIndex { get; private set; }
 
-        private SceneField MainMenuScene => mainMenuOverride ?? scenes.MainMenu;
-        private SceneField LobbyScene => lobbyOverride ?? scenes.Lobby;
-        private SceneField GameScene => gameOverride ?? scenes.Game;
+        private SceneField MainMenuScene => mainMenuOverride == null || mainMenuOverride.BuildIndex == -1 ? scenes.MainMenu : mainMenuOverride;
+        private SceneField LobbyScene => lobbyOverride == null || lobbyOverride.BuildIndex == -1 ? scenes.Lobby : lobbyOverride;
+        private SceneField GameScene => gameOverride == null || gameOverride.BuildIndex == -1 ? scenes.Game : gameOverride;
+
+        public bool IsMainMenu => ActiveSceneIndex == MainMenuScene.BuildIndex;
+        public bool IsLobby => ActiveSceneIndex == LobbyScene.BuildIndex;
+        public bool IsGame => ActiveSceneIndex == GameScene.BuildIndex;
 
         public enum LevelState
         {
@@ -46,7 +50,8 @@ namespace Systems
         protected override void Awake()
         {
             base.Awake();
-            
+
+            ActiveSceneIndex = SceneManager.GetActiveScene().buildIndex;
             LoadScenes();
         }
 
