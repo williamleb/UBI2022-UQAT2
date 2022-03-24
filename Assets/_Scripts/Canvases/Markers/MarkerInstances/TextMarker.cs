@@ -13,6 +13,11 @@ namespace Canvases.Markers
             set => text.Text = value;
         }
         
+        public Color Color
+        {
+            set => text.Color = value;
+        }
+        
         protected override void Awake()
         {
             base.Awake();

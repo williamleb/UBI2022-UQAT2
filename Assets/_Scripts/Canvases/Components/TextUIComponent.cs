@@ -16,6 +16,11 @@ namespace Canvases.Components
         {
             set => text.text = string.IsNullOrEmpty(value) ? string.Empty : value;
         }
+        
+        public Color Color
+        {
+            set => text.color = value;
+        }
 
         private void Awake() => initialText = text.text;
         

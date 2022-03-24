@@ -87,6 +87,7 @@ namespace Units.Player
             InitThrow();
             InitCamera();
             InitSound();
+            InitReady();
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
