@@ -127,6 +127,11 @@ namespace Units.Player
                         interacter.InteractWithClosestInteraction();
                     }
 
+                    if (inputData.IsDanceOnce && !inMenu && !InCustomization)
+                    {
+                        IsDancing = true;
+                    }
+
                     if (inputData.IsMenu && !InCustomization)
                     {
                         inMenu = !inMenu;
