@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BehaviorDesigner.Runtime.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Action = System.Action;
 
 namespace Canvases.Animations
 {
     [RequireComponent(typeof(Animator))]
+    [RequiredComponent(typeof(CanvasGroup))]
     public class FadeAnimation : MonoBehaviour
     {
         private static readonly int FadeInTrigger = Animator.StringToHash("FadeIn");
@@ -19,6 +22,7 @@ namespace Canvases.Animations
         public event Action OnFadedOut;
         
         private Animator animator;
+        private CanvasGroup canvasGroup;
 
         private bool isTransitioning;
         private bool isFadingIn;
@@ -30,6 +34,12 @@ namespace Canvases.Animations
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        private void Start()
+        {
+            isFadingIn = isFadedIn = canvasGroup.alpha > 0;
         }
 
         public void FadeIn()

@@ -30,7 +30,7 @@ namespace Canvases.Menu
 
             ShowForImplementation(playerEntity);
             
-            entry.EnterDown();
+            Enter();
             OnShow?.Invoke();
         }
 
@@ -41,7 +41,7 @@ namespace Canvases.Menu
 
             ShowImplementation();
             
-            entry.EnterDown();
+            Enter();
             OnShow?.Invoke();
         }
 
@@ -52,8 +52,24 @@ namespace Canvases.Menu
             
             HideImplementation();
 
-            entry.LeaveDown();
+            Leave();
             canvasGroup.interactable = false;
+        }
+
+        private void Enter()
+        {
+            if (EnterDirection == EntryDirection.Down)
+                entry.EnterDown();
+            else 
+                entry.EnterUp();
+        }
+
+        private void Leave()
+        {
+            if (LeaveDirection == EntryDirection.Down)
+                entry.LeaveDown();
+            else 
+                entry.LeaveUp();
         }
 
         public virtual void ShowForImplementation(PlayerEntity playerEntity) { ShowImplementation(); }

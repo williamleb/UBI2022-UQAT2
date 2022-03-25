@@ -13,21 +13,47 @@ namespace Canvases.Menu.Main
         [SerializeField, Required] private ButtonUIComponent exitButton;
 
         protected override EntryDirection EnterDirection => EntryDirection.Down;
-        protected override EntryDirection LeaveDirection => EntryDirection.Up;
-        
+        protected override EntryDirection LeaveDirection => EntryDirection.Down;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            hostButton.OnClick += OnHostButtonPressed;
+            joinButton.OnClick += OnJoinButtonPressed;
+            optionsButton.OnClick += OnOptionsButtonPressed;
+            exitButton.OnClick += OnExitButtonPressed;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            hostButton.OnClick -= OnHostButtonPressed;
+            joinButton.OnClick -= OnJoinButtonPressed;
+            optionsButton.OnClick -= OnOptionsButtonPressed;
+            exitButton.OnClick -= OnExitButtonPressed;
+        }
+
         private void OnHostButtonPressed()
         {
-            
+            if (MenuManager.HasInstance)
+            {
+                Hide();
+                MenuManager.Instance.ShowMenu(MenuManager.Menu.Host);
+            }
         }
         
         private void OnJoinButtonPressed()
         {
-            
+            if (MenuManager.HasInstance)
+            {
+                Hide();
+                MenuManager.Instance.ShowMenu(MenuManager.Menu.Join);
+            }
         }
         
         private void OnOptionsButtonPressed()
         {
-            
+            // TODO
         }
         
         private void OnExitButtonPressed()

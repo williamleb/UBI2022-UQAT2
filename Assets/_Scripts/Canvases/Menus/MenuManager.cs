@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Canvases.Matchmaking;
 using Canvases.Menu.Customization;
 using Canvases.Menu.Main;
 using Canvases.Menu.Modal;
@@ -14,12 +15,12 @@ namespace Canvases.Menu
     {
         public event Action<bool> InMenuStatusChanged; 
 
-        public enum Menu { Customization, Main }
+        public enum Menu { Customization, Main, Host, Join }
 
         private ModalUI modal;
         private int numberOfOpenedMenus;
 
-        private Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
+        private readonly Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
 
         public bool InMenu => numberOfOpenedMenus > 0;
 
@@ -34,9 +35,15 @@ namespace Canvases.Menu
             modal = FindObjectOfType<ModalUI>();
             var customizationUI = FindObjectOfType<CustomizationUI>();
             var mainUI = FindObjectOfType<MainUI>();
+            var hostJoinUIs = FindObjectsOfType<HostJoinUI>();
 
             menus.Add(Menu.Customization, customizationUI);
             menus.Add(Menu.Main, mainUI);
+
+            foreach (var hostJoinUI in hostJoinUIs)
+            {
+                menus.Add(hostJoinUI.Host ? Menu.Host : Menu.Join, hostJoinUI);
+            }
         }
 
         protected override void OnDestroy()
