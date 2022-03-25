@@ -60,7 +60,7 @@ namespace Units.Player
         public async void PlayPushHomeworkAnim()
         {
             IsPushing = true;
-            await Task.Delay(500);
+            await Task.Delay(250);
             IsPushing = false;
         }
     }
