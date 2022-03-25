@@ -17,7 +17,8 @@ namespace Managers.Interactions
         [SerializeField] private PromptMarkerReceptor markerToShowWhenInteractionPossible;
 
         private readonly List<Func<Interacter, bool>> validators = new List<Func<Interacter, bool>>();
-        
+
+        private Collider col;
         private bool interactionEnabled = true;
         private bool interactionPossible;
 
@@ -45,6 +46,11 @@ namespace Managers.Interactions
                 
                 OnInteractionPossibilityChanged?.Invoke(interactionPossible);
             }
+        }
+
+        private void Awake()
+        {
+            TryGetComponent(out col);
         }
 
         public void AddValidator(Func<Interacter, bool> validator)
@@ -87,10 +93,12 @@ namespace Managers.Interactions
                 if (!validator.Invoke(interacter))
                     return false;
             }
+
+            if (col && col.bounds.Contains(interacter.transform.position)) return true;
             
             if (!Physics.Raycast(transform.position, interacter.transform.position - transform.position, out hit))
                 return false;
-
+            
             if (!interacter.gameObject.CompareEntities(hit.collider.gameObject))
                 return false;
             
