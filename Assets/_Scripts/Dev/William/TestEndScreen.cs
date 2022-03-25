@@ -34,11 +34,18 @@ namespace Dev.William
             {
                 restartButton.Select();
 
-                var teamWithHighestScore = ScoreManager.HasInstance
-                    ? ScoreManager.Instance.FindTeamWithHighestScore()
-                    : null;
-                
-                winnerText.Text = $"Winner: Team {teamWithHighestScore.Name}";
+                if (ScoreManager.HasInstance)
+                {
+                    if (ScoreManager.Instance.AreScoresEqual())
+                    {
+                        winnerText.Text = $"It's a draw!";
+                    }
+                    else
+                    {
+                        var teamWithHighestScore = ScoreManager.Instance.FindTeamWithHighestScore();
+                        winnerText.Text = $"Winner: Team {(teamWithHighestScore ? teamWithHighestScore.Name : "null")}";
+                    }
+                }                
             }
         }
 

@@ -50,7 +50,7 @@ namespace Canvases.HUDs
             if (!teamColorImage)
                 return;
             
-            teamColorImage.Color = SettingsSystem.CustomizationSettings.GetColor(color);;
+            teamColorImage.Color = SettingsSystem.CustomizationSettings.GetColor(color);
         }
     }
 }
