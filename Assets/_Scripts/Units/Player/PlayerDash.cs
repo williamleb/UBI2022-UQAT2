@@ -19,6 +19,7 @@ namespace Units.Player
         private TickTimer dashTimer;
         private TickTimer dashCooldown;
         private bool hasHitSomeoneThisFrame;
+        private bool hasHitSomeone;
         private bool canDash = true;
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
@@ -47,6 +48,7 @@ namespace Units.Player
             if (!CanMove || inventory.HasHomework || IsDashing) return;
             canDash = false;
             IsDashing = true;
+            hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
             dashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
             Vector3 dirToTarget = GetDirToTarget();
@@ -102,8 +104,11 @@ namespace Units.Player
         private void OnHitNothing()
         {
             if (!IsDashing) return;
-            print("Hit nothing");
-            Hit(transform.forward);
+            if (!hasHitSomeone)
+            {
+                print("Hit nothing");
+                Hit(transform.forward);   
+            }
             IsDashing = false;
         }
 
@@ -111,7 +116,6 @@ namespace Units.Player
         {
             print("Hit Object");
             ResetVelocity();
-            //TODO add a force to the object if it has a rigidbody
             Hit(-transform.forward);
             IsDashing = false;
         }
@@ -127,6 +131,8 @@ namespace Units.Player
                 ResetVelocity();
                 IsDashing = false;
             }
+
+            hasHitSomeone = true;
             hasHitSomeoneThisFrame = true;
         }
 
@@ -164,8 +170,6 @@ namespace Units.Player
                     if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
                     {
                         t.forward = Vector3.Reflect(t.forward, info.normal);
-                        
-                        //TODO add a force to the object if it has a rigidbody
                     }
                     else
                     {
