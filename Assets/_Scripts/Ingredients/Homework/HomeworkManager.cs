@@ -37,6 +37,8 @@ namespace Ingredients.Homework
         private Coroutine activateHomeworkCoroutine;
         private Coroutine verifyHomeworkStateCoroutine;
 
+        public List<Homework> Homeworks => homeworks.Values.ToList();
+
         public void RegisterHomework(Homework homework)
         {
             homeworks.Add(homework.HomeworkId, homework);
@@ -48,19 +50,6 @@ namespace Ingredients.Homework
         {
             homeworks.Remove(homework.HomeworkId);
             OnHomeworkRegistered.RemoveFromMemory(homework);
-        }
-        
-        private void UpdateHomeworkSpawned(Homework homework)
-        {
-            homeworksToSpawn.Remove(homework);
-
-            if (!GameManager.HasInstance)
-                return;
-
-            if (GameManager.Instance.IsSpawning && homeworksToSpawn.Count == 0)
-            {
-                GameManager.Instance.UnlockSpawn(this);
-            }
         }
 
         public Homework GetHomework(int homeworkId)
@@ -77,6 +66,18 @@ namespace Ingredients.Homework
                 return;
             
             homework.Free();
+        }
+
+        public int GetScoreValueForHomeworkType(string type)
+        {
+            foreach (var definition in settings.HomeworkDefinitions)
+            {
+                if (definition.Type.Equals(type))
+                    return definition.Points;
+            }
+
+            Debug.Assert(false);
+            return -1;
         }
 
         private void Start()
@@ -100,6 +101,18 @@ namespace Ingredients.Homework
             
             base.OnDestroy();
         }
+        private void UpdateHomeworkSpawned(Homework homework)
+        {
+            homeworksToSpawn.Remove(homework);
+
+            if (!GameManager.HasInstance)
+                return;
+
+            if (GameManager.Instance.IsSpawning && homeworksToSpawn.Count == 0)
+            {
+                GameManager.Instance.UnlockSpawn(this);
+            }
+        }
 
         private void OnGameStateChanged(GameState newGameState)
         {
@@ -109,6 +122,9 @@ namespace Ingredients.Homework
                 InitializeCooldowns();
                 InitializeBursts();
                 StartHomeworkRoutines();
+            }else if (newGameState == GameState.Overtime)
+            {
+                //TODO do we need to do something?
             }
             else
             {

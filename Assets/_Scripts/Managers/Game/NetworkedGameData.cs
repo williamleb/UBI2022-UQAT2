@@ -11,6 +11,7 @@ namespace Managers.Game
 
         [Networked(OnChanged = nameof(HandlePhaseTotalHomeworkChanged))] public int PhaseTotalHomework { get; set; }
         [Networked(OnChanged = nameof(HandleGameStateChanged))] public bool GameIsStarted { get; set; }
+        [Networked(OnChanged = nameof(HandleGameStateChanged))] public bool GameIsOvertime { get; set; }
         [Networked(OnChanged = nameof(HandleGameStateChanged))] public bool GameIsEnded { get; set; }
 
         public override void Spawned()
@@ -23,6 +24,7 @@ namespace Managers.Game
             PhaseTotalHomework = 0;
             GameIsEnded = false;
             GameIsStarted = false;
+            GameIsOvertime = false;
         }
 
         private static void HandlePhaseTotalHomeworkChanged(Changed<NetworkedGameData> changed)
@@ -38,6 +40,9 @@ namespace Managers.Game
             {
                 Debug.Assert(networkedData.GameIsStarted, "Reached broken game state where game is ended but has not been started.");
                 networkedData.OnGameStateChanged?.Invoke(GameState.Finished);
+            }else if (networkedData.GameIsOvertime)
+            {
+                networkedData.OnGameStateChanged?.Invoke(GameState.Overtime);
             }
             else
             {

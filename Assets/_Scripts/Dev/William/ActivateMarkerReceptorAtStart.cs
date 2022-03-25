@@ -24,7 +24,7 @@ namespace Dev.William
 
         private void OnGameStateChanged(GameState state)
         {
-	        if (state == GameState.Running)
+	        if (state == GameState.Running || state == GameState.Overtime)
 	        {
 		        marker.Activate();
 	        }
