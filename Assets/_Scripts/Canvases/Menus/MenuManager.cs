@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Canvases.Menu.Customization;
+using Canvases.Menu.Main;
+using JetBrains.Annotations;
 using Units.Player;
 using UnityEngine;
 using Utilities.Singleton;
@@ -10,18 +13,27 @@ namespace Canvases.Menu
     {
         public event Action<bool> InMenuStatusChanged; 
 
-        public enum Menu { Customization } 
-
-        private CustomizationUI customizationUI;
+        public enum Menu { Customization, Main } 
 
         private int numberOfOpenedMenus;
+
+        private Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
 
         public bool InMenu => numberOfOpenedMenus > 0;
 
         private void Start()
         {
-            customizationUI = FindObjectOfType<CustomizationUI>();
+            InitializeMenus();
             SubscribeToMenus();
+        }
+
+        private void InitializeMenus()
+        {
+            var customizationUI = FindObjectOfType<CustomizationUI>();
+            var mainUI = FindObjectOfType<MainUI>();
+            
+            menus.Add(Menu.Customization, customizationUI);
+            menus.Add(Menu.Main, mainUI);
         }
 
         protected override void OnDestroy()
@@ -32,14 +44,26 @@ namespace Canvases.Menu
 
         private void SubscribeToMenus()
         {
-            customizationUI.OnShow += IncrementNumberOfOpenedMenus;
-            customizationUI.OnHide += DecrementNumberOfOpenedMenus;
+            foreach (var menu in menus.Values)
+            {
+                if (!menu)
+                    continue;
+                
+                menu.OnShow += IncrementNumberOfOpenedMenus;
+                menu.OnHide += DecrementNumberOfOpenedMenus;
+            }
         }
 
         private void UnSubscribeToMenus()
         {
-            customizationUI.OnShow -= IncrementNumberOfOpenedMenus;
-            customizationUI.OnHide -= DecrementNumberOfOpenedMenus;
+            foreach (var menu in menus.Values)
+            {
+                if (!menu)
+                    continue;
+                
+                menu.OnShow -= IncrementNumberOfOpenedMenus;
+                menu.OnHide -= DecrementNumberOfOpenedMenus;
+            }
         }
 
         private void IncrementNumberOfOpenedMenus()
@@ -71,7 +95,7 @@ namespace Canvases.Menu
             menu.ShowFor(playerEntity);
         }
         
-        public void ShowMenu(Menu menuToShow, PlayerEntity playerEntity)
+        public void ShowMenu(Menu menuToShow)
         {
             var menu = GetMenu(menuToShow);
             if (menu == null)
@@ -95,15 +119,13 @@ namespace Canvases.Menu
             menu.Hide();
         }
 
+        [CanBeNull]
         private IMenu GetMenu(Menu menu)
         {
-            switch (menu)
-            {
-                case Menu.Customization:
-                    return customizationUI;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
-            }
+            if (menus.ContainsKey(menu))
+                return menus[menu];
+            
+            return null;
         }
     }
 }
