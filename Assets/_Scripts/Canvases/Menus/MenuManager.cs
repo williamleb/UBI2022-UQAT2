@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Canvases.Menu.Customization;
 using Canvases.Menu.Main;
+using Canvases.Menu.Modal;
 using JetBrains.Annotations;
 using Units.Player;
 using UnityEngine;
@@ -13,8 +14,9 @@ namespace Canvases.Menu
     {
         public event Action<bool> InMenuStatusChanged; 
 
-        public enum Menu { Customization, Main } 
+        public enum Menu { Customization, Main }
 
+        private ModalUI modal;
         private int numberOfOpenedMenus;
 
         private Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
@@ -29,9 +31,10 @@ namespace Canvases.Menu
 
         private void InitializeMenus()
         {
+            modal = FindObjectOfType<ModalUI>();
             var customizationUI = FindObjectOfType<CustomizationUI>();
             var mainUI = FindObjectOfType<MainUI>();
-            
+
             menus.Add(Menu.Customization, customizationUI);
             menus.Add(Menu.Main, mainUI);
         }
@@ -81,6 +84,14 @@ namespace Canvases.Menu
         private void UpdateInMenuStatus()
         {
             InMenuStatusChanged?.Invoke(InMenu);
+        }
+
+        public void ShowModal(string text, string header, float seconds = 5f)
+        {
+            if (!modal)
+                return;
+            
+            modal.Show(text, header, seconds);
         }
 
         public void ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity)
