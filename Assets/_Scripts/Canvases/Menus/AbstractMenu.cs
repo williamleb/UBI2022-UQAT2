@@ -1,6 +1,6 @@
 ﻿using System;
 using Canvases.Components;
-using Canvases.EntryAnimations;
+using Canvases.Animations;
 using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;

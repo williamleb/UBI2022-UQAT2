@@ -5,15 +5,15 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Canvases.EntryAnimations
+namespace Canvases.Animations
 {
     [RequireComponent(typeof(Animator))]
     public class EntryAnimation : MonoBehaviour
     {
-        private static readonly int enterUp = Animator.StringToHash("EnterUp");
-        private static readonly int enterDown = Animator.StringToHash("EnterDown");
-        private static readonly int leaveUp = Animator.StringToHash("LeaveUp");
-        private static readonly int leaveDown = Animator.StringToHash("LeaveDown");
+        private static readonly int EnterUpTrigger = Animator.StringToHash("EnterUp");
+        private static readonly int EnterDownTrigger = Animator.StringToHash("EnterDown");
+        private static readonly int LeaveUpTrigger = Animator.StringToHash("LeaveUp");
+        private static readonly int LeaveDownTrigger = Animator.StringToHash("LeaveDown");
 
         private enum Animations {EnterUp, EnterDown, LeaveUp, LeaveDown}
         
@@ -137,13 +137,13 @@ namespace Canvases.EntryAnimations
             switch (animationToPlay)
             {
                 case Animations.EnterUp:
-                    return enterUp;
+                    return EnterUpTrigger;
                 case Animations.EnterDown:
-                    return enterDown;
+                    return EnterDownTrigger;
                 case Animations.LeaveUp:
-                    return leaveUp;
+                    return LeaveUpTrigger;
                 case Animations.LeaveDown:
-                    return leaveDown;
+                    return LeaveDownTrigger;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(animationToPlay), animationToPlay, null);
             }

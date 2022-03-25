@@ -1,10 +1,8 @@
-using System.Collections;
 using Canvases.Menu;
 using Systems.Network;
 using Systems.Settings;
 using TMPro;
 using UnityEngine;
-using Utilities;
 
 namespace Canvases.Matchmaking
 {
