@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5310630847632078341}
   m_Layer: 0
   m_Name: Plant
-  m_TagString: Untagged
+  m_TagString: Collidable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,6 +118,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &7132060124238250606
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4023155281158998092}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 37.697647, y: 37.253143, z: 73.83516}
+  m_Center: {x: 0.1628427, y: -0.103424616, z: 36.917587}
 --- !u!208 &3501027730263886826
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -134,6 +147,29 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 36.755}
   m_TimeToStationary: 0.5
+--- !u!114 &797834523837174870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4023155281158998092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AoiMode: 0
+  DefaultPropertyGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 0
+  AoiPosition: {fileID: 0}
+  Flags: 0
+  NetworkGuid:
+    RawGuidValue: 00000000000000000000000000000000
+  NestedObjects: []
+  NetworkedBehaviours: []
+  SimulationBehaviours: []
 --- !u!114 &1718252678270984774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,39 +200,3 @@ MonoBehaviour:
   SyncScale: 0
   Space: 1
   SyncDragAndMass: 0
---- !u!114 &797834523837174870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4023155281158998092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
-  Flags: 0
-  NetworkGuid:
-    RawGuidValue: 00000000000000000000000000000000
-  NestedObjects: []
-  NetworkedBehaviours: []
-  SimulationBehaviours: []
---- !u!65 &7132060124238250606
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4023155281158998092}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 37.697647, y: 37.253143, z: 73.83516}
-  m_Center: {x: 0.1628427, y: -0.103424616, z: 36.917587}
