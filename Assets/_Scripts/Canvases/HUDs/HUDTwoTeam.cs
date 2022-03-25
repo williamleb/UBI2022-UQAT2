@@ -77,6 +77,8 @@ namespace Canvases.HUDs
             }
             else
             {
+                rightTeamScore.text = rightTeam.ScoreValue.ToString();
+                leftTeamScore.text = leftTeam.ScoreValue.ToString();
                 progressBar.Value = 0.5f;
             }
         }
