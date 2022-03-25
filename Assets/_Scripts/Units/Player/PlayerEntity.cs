@@ -111,6 +111,8 @@ namespace Units.Player
 
         public override void FixedUpdateNetwork()
         {
+            ThrowUpdateOnAllClients();
+            
             if (GetInput(out NetworkInputData inputData))
             {
                 MoveUpdate(inputData);
