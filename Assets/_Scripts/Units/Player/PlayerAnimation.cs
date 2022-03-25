@@ -30,7 +30,7 @@ namespace Units.Player
         private void AnimationUpdate()
         {
             networkAnimator.Animator.SetBool(IsPlayerMove, CanMove);
-            networkAnimator.Animator.SetFloat(PlayerSpeed, 1 + velocity / data.MoveMaximumSpeed);
+            networkAnimator.Animator.SetFloat(PlayerSpeed, 1 + velocity / data.MoveMaximumSpeed * 2);
             networkAnimator.Animator.SetBool(Dashing, IsDashing);
             networkAnimator.Animator.SetBool(IsHolding, inventory.HasHomework);
             networkAnimator.Animator.SetBool(GetUpF, IsGettingUpF);
@@ -56,7 +56,7 @@ namespace Units.Player
             await Task.Delay(500);
             IsGiving = false;
         }
-        
+
         public async void PlayPushHomeworkAnim()
         {
             IsPushing = true;

@@ -2,7 +2,6 @@
 using Fusion;
 using Systems;
 using Systems.Network;
-using Systems.Sound;
 using UnityEngine;
 
 namespace Units.Player
@@ -41,9 +40,9 @@ namespace Units.Player
 
             if (!CanThrow())
             {
-                if (IsAiming)
-                    CancelAiming();
-                
+                if (IsAiming || IsThrowing)
+                    CancelAimingAndThrowing();
+
                 return;
             }
 
@@ -92,12 +91,11 @@ namespace Units.Player
             ThrowForcePercent = 0f;
         }
 
-        private void CancelAiming()
+        private void CancelAimingAndThrowing()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
-            
-            IsThrowing = false;
             IsAiming = false;
+            IsThrowing = false;
             ThrowForcePercent = 0f;
         }
 
