@@ -162,6 +162,7 @@ namespace Units.Player
                 if (go.IsAPlayerOrAI())
                 {
                     OnHitOtherEntity(go);
+                    PlayPushHomeworkAnim();
                 }
                 else if (go.CompareTag(Tags.COLLIDABLE))
                 {

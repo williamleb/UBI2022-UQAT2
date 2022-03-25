@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System.Threading.Tasks;
+using Fusion;
 using UnityEngine;
 
 namespace Units.Player
@@ -40,30 +41,27 @@ namespace Units.Player
             networkAnimator.Animator.SetBool(Pushing, IsPushing);
             networkAnimator.Animator.SetBool(Grabbing, IsGrabbing);
             networkAnimator.Animator.SetBool(Giving, IsGiving);
-
-            ResetAnimBool();
         }
 
-        public void PlayGrabHomeworkAnim()
+        public async void PlayGrabHomeworkAnim()
         {
             IsGrabbing = true;
-            networkAnimator.Animator.SetBool(Grabbing, IsGrabbing);
+            await Task.Delay(500);
+            IsGrabbing = false;
         }
 
-        public void PlayGiveHomeworkAnim()
+        public async void PlayGiveHomeworkAnim()
         {
             IsGiving = true;
-            networkAnimator.Animator.SetBool(Giving, IsGiving);
-        }
-
-        private void ResetAnimBool()
-        {
-            IsDancing = false;
-            IsGettingUpB = false;
-            IsGettingUpF = false;
-            IsPushing = false;
-            IsGrabbing = false;
+            await Task.Delay(500);
             IsGiving = false;
+        }
+        
+        public async void PlayPushHomeworkAnim()
+        {
+            IsPushing = true;
+            await Task.Delay(500);
+            IsPushing = false;
         }
     }
 }
