@@ -10,8 +10,10 @@ namespace Canvases.Components
     {
         public event Action<float> OnValueChanged;
         
-        [Header("Association")] [Required]
-        [SerializeField] private Slider slider;
+        [Header("Association")] 
+        [SerializeField] [Required] private Slider slider;
+        [SerializeField] [Required] public Image backgroundImage;
+        [SerializeField] [Required] public Image fillImage;
 
         public float Value
         {

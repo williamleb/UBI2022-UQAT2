@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Ingredients.Homework;
 using Managers.Game;
@@ -11,9 +12,11 @@ namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
+        public static event Action<Team> OnTeamScoreChanged;
+
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
-            if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
+            if (GameManager.HasInstance && (GameManager.Instance.CurrentState == GameState.NotStarted || GameManager.Instance.CurrentState == GameState.Finished))
                 return;
 
             if(!TeamSystem.HasInstance)
@@ -27,14 +30,13 @@ namespace Managers.Score
             
             team.IncrementScore(handedHomeworkDefinition.Points);
             playerEntity.PlayerScore += handedHomeworkDefinition.Points;
-            
-            if (GameManager.HasInstance)
-                GameManager.Instance.IncrementHomeworksGivenForPhase();
+
+            OnTeamScoreChanged?.Invoke(team);
         }
 
         public void DecrementScore(PlayerEntity playerEntity, int numberOfPointsToLose)
         {
-            if (GameManager.HasInstance && GameManager.Instance.CurrentState != GameState.Running)
+            if (GameManager.HasInstance && (GameManager.Instance.CurrentState == GameState.NotStarted || GameManager.Instance.CurrentState == GameState.Finished))
                 return;
 
             var team = TeamSystem.Instance.GetTeam(playerEntity.TeamId);
@@ -42,6 +44,8 @@ namespace Managers.Score
 
             team.DecrementScore(numberOfPointsToLose);
             playerEntity.PlayerScore -= numberOfPointsToLose;
+
+            OnTeamScoreChanged?.Invoke(team);
         }
 
         public PlayerEntity FindPlayerWithHighestScore()
@@ -61,6 +65,17 @@ namespace Managers.Score
             return playerRefWithHighestScore;
         }
 
+        public bool AreScoresEqual()
+        {
+            if (TeamSystem.Instance.Teams.Count != 2)
+            {
+                Debug.LogWarning("Cannot verify if scores are equal as there is not exactly two team.");
+                return false;
+            }
+
+            return TeamSystem.Instance.Teams[0].ScoreValue == TeamSystem.Instance.Teams[1].ScoreValue;
+        }
+
         public Team FindTeamWithHighestScore()
         {
             if (!TeamSystem.HasInstance)
@@ -70,13 +85,41 @@ namespace Managers.Score
             var highestScoreTeam = teams.First();
             foreach (Team team in teams)
             {
-                if (highestScoreTeam.ScoreValue > team.ScoreValue)
+                if (team.ScoreValue > highestScoreTeam.ScoreValue)
                 {
                     highestScoreTeam = team;
                 }
             }
 
             return highestScoreTeam;
+        }
+
+        public bool CanLosingTeamEqualize()
+        {
+            if (HomeworkManager.HasInstance)
+            {
+                if (TeamSystem.Instance.Teams.Count != 2)
+                {
+                    Debug.LogWarning("Cannot verify if losing team can equalize as there is not exactly two team.");
+                    return false;
+                }
+                
+                int scoreDiff = Math.Abs(TeamSystem.Instance.Teams[0].ScoreValue - TeamSystem.Instance.Teams[1].ScoreValue);
+                int possibleScore = 0;
+
+                foreach (Homework homework in HomeworkManager.Instance.Homeworks)
+                {
+                    if (!homework.IsFree)
+                    {
+                        possibleScore += HomeworkManager.Instance.GetScoreValueForHomeworkType(homework.Type);
+                    }
+                }
+
+                return possibleScore >= scoreDiff;
+            }
+
+            Debug.LogWarning("No HomeworkManager in scene. Cannot check if the losing team can equalize.");
+            return false;
         }
 
         private void Start()
