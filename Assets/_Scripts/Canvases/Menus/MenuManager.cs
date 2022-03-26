@@ -101,7 +101,7 @@ namespace Canvases.Menu
             modal.Show(text, header, seconds);
         }
 
-        public void ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity)
+        public void ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity) 
         {
             var menu = GetMenu(menuToShow);
             if (menu == null)
