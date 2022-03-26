@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Fusion;
 using Systems.Network;
 using UnityEngine;
@@ -19,6 +19,7 @@ namespace Units.Player
         private TickTimer dashTimer;
         private TickTimer dashCooldown;
         private bool hasHitSomeoneThisFrame;
+        private bool hasHitSomeone;
         private bool canDash = true;
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
@@ -47,11 +48,14 @@ namespace Units.Player
             if (!CanMove || inventory.HasHomework || IsDashing) return;
             canDash = false;
             IsDashing = true;
+            hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
             dashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
             Vector3 dirToTarget = GetDirToTarget();
             transform.forward = GetDashDirection(dirToTarget);
             velocity = data.DashForce;
+
+            PlayDashSound();
         }
 
         private Vector3 GetDirToTarget()
@@ -100,8 +104,11 @@ namespace Units.Player
         private void OnHitNothing()
         {
             if (!IsDashing) return;
-            print("Hit nothing");
-            Hit(transform.forward);
+            if (!hasHitSomeone)
+            {
+                print("Hit nothing");
+                Hit(transform.forward);   
+            }
             IsDashing = false;
         }
 
@@ -109,7 +116,6 @@ namespace Units.Player
         {
             print("Hit Object");
             ResetVelocity();
-            //TODO add a force to the object if it has a rigidbody
             Hit(-transform.forward);
             IsDashing = false;
         }
@@ -120,9 +126,14 @@ namespace Units.Player
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
-            ResetVelocity();
+            if (Archetype != Archetype.Dasher)
+            {
+                ResetVelocity();
+                IsDashing = false;
+            }
+
+            hasHitSomeone = true;
             hasHitSomeoneThisFrame = true;
-            IsDashing = false;
         }
 
         private void DetectCollision()
@@ -155,12 +166,10 @@ namespace Units.Player
                 else if (go.CompareTag(Tags.COLLIDABLE))
                 {
                     
-                    Runner.GetPhysicsScene().Raycast(t.position, t.forward, out RaycastHit info);
+                    Runner.GetPhysicsScene().Raycast(tacklePoint.position, t.forward, out RaycastHit info);
                     if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
                     {
                         t.forward = Vector3.Reflect(t.forward, info.normal);
-                        
-                        //TODO add a force to the object if it has a rigidbody
                     }
                     else
                     {
@@ -182,9 +191,11 @@ namespace Units.Player
                 //Tackle aim assist sphere + view angle
                 Gizmos.color = Color.red;
                 Vector3 pos = transform.position;
+                Vector3 tpos = tacklePoint.position;
                 Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
-                float angleA = data.DashAimAssistAngle + transform.eulerAngles.y;
-                float angleB = data.DashAimAssistAngle - transform.eulerAngles.y;
+                float y = transform.eulerAngles.y;
+                float angleA = data.DashAimAssistAngle + y;
+                float angleB = data.DashAimAssistAngle - y;
                 Vector3 viewAngleA = new Vector3(Mathf.Sin(angleA * Mathf.Deg2Rad), 0, Mathf.Cos(angleA * Mathf.Deg2Rad));
                 Vector3 viewAngleB = new Vector3(Mathf.Sin(-angleB * Mathf.Deg2Rad), 0, Mathf.Cos(-angleB * Mathf.Deg2Rad));
 
@@ -193,7 +204,13 @@ namespace Units.Player
 
                 //Tackled detection orb
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(tacklePoint.position,data.DashDetectionSphereRadius);
+                Gizmos.DrawWireSphere(tpos,data.DashDetectionSphereRadius);
+                
+                Gizmos.color = Color.black;
+                Runner.GetPhysicsScene().Raycast(tpos, transform.forward, out RaycastHit info);
+                Gizmos.DrawLine(tpos,info.point);
+                Vector3 infoPos = info.transform.position;
+                Gizmos.DrawLine(infoPos,infoPos + info.normal);
             }
         }
     }

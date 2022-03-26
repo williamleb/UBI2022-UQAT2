@@ -55,7 +55,7 @@ namespace Units.Player
 
             if (Object.HasStateAuthority)
             {
-                IsGettingUpF = Vector3.Dot(ragdollPelvis.forward, Vector3.up) > 0;
+                IsGettingUpF = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
                 IsGettingUpB = !IsGettingUpF;
                 RPC_ToggleRagdoll(false);
             }
@@ -82,9 +82,6 @@ namespace Units.Player
                 if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
                 {
                     Debug.Log("Hit a wall");
-                    
-                    //TODO if it has a rigidbody slap that object based on the current player's velocity and contact point.
-                    
                     ResetVelocity();
                     Hit(-f);
                 }

@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{854D8AF9-FAEB-4A74-B508-7FE2856BE5A4}" SchemaVersion="103">
 	<Effects>
-		<WorkUnit Name="Default Work Unit" ID="{854D8AF9-FAEB-4A74-B508-7FE2856BE5A4}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{854D8AF9-FAEB-4A74-B508-7FE2856BE5A4}" PersistMode="Standalone">
+			<ChildrenList>
+				<Effect Name="New_Wwise_Delay" ID="{C742860E-3CBE-4EFF-85CD-17FF45F56213}" PluginName="Wwise Delay" CompanyID="0" PluginID="106" PluginType="3"/>
+				<Effect Name="New_Wwise_Pitch_Shifter_01" ID="{8F791AEF-8FF6-4E18-A192-1FCEE2F4B025}" PluginName="Wwise Pitch Shifter" CompanyID="0" PluginID="136" PluginType="3">
+					<PropertyList>
+						<Property Name="DelayTime" Type="Real32" Value="10"/>
+						<Property Name="FilterType" Type="int32" Value="1"/>
+						<Property Name="Pitch" Type="Real32">
+							<RTPCList>
+								<RTPC Name="" ID="{DD6CB525-BC28-41D1-B475-6B1B3BBB6DD4}" ShortID="437676194">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="AimCharge" ID="{3CE93858-A3A0-4571-9AAA-7B7C0E01707D}" WorkUnitID="{7B26B0C5-3EB8-4CD7-BAFB-1C524716A044}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{76B5FD88-E303-47CE-A4B3-396DA70CD1AD}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="1"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-1037.46398</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>926.80115</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+				</Effect>
+			</ChildrenList>
+		</WorkUnit>
 	</Effects>
 </WwiseDocument>

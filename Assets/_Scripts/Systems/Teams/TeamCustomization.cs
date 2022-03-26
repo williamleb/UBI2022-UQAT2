@@ -14,7 +14,7 @@ namespace Systems.Teams
 
         private CustomizationSettings customizationSettings;
         
-        [Networked(OnChanged = nameof(OnNetworkNameChanged))] public string Name { get; private set; }
+        [Networked(OnChanged = nameof(OnNetworkNameChanged)), Capacity(128)] public string Name { get; private set; }
         [Networked(OnChanged = nameof(OnNetworkColorChanged))] public int Color { get; private set; }
 
         private void CustomizationSpawned()

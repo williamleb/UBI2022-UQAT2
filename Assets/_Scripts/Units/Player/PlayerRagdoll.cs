@@ -10,13 +10,10 @@ namespace Units.Player
         //Vector3 = transform initial local position of bones
         //Quaternion = transform's initial local rotation of bones
         private readonly List<BodyPart> ragdollColliders = new List<BodyPart>();
-        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private bool isRagdoll;
 
         [Header("Ragdoll")] [SerializeField]
         private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
-
-        [SerializeField] private Transform ragdollPelvis;
 
         private void RagdollAwake()
         {
@@ -44,10 +41,7 @@ namespace Units.Player
                 ragdollColliders.Add(new BodyPart
                     {Collider = col, Position = colTransform.localPosition, Rotation = colTransform.localRotation});
                 col.isTrigger = true;
-
-                Rigidbody rb = col.attachedRigidbody;
-                rb.isKinematic = true;
-                ragdollRigidbody.Add(rb);
+                col.attachedRigidbody.isKinematic = true;
             }
         }
 
@@ -63,8 +57,9 @@ namespace Units.Player
             if (!isActivate)
             {
                 Vector3 euler = transform.eulerAngles;
-                euler.y = ragdollPelvis.localEulerAngles.y;
+                euler.y = ragdollTransform.eulerAngles.y;
                 transform.eulerAngles = euler;
+                lastMoveDirection = transform.forward;
             }
             
             foreach (BodyPart bp in ragdollColliders)
