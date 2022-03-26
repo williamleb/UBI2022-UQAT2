@@ -55,8 +55,8 @@ namespace Units.Player
 
             if (Object.HasStateAuthority)
             {
-                IsGettingUpF = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
-                IsGettingUpB = !IsGettingUpF;
+                IsGettingUpB = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
+                IsGettingUpF = !IsGettingUpB;
                 RPC_ToggleRagdoll(false);
             }
 

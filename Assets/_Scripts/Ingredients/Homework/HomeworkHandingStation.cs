@@ -110,6 +110,7 @@ namespace Units.AI
                 return;
             
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
+            player.PlayGiveHomeworkAnim();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
             ScoreManager.Instance.HandHomework(player, homeworkDefinition);
         }
