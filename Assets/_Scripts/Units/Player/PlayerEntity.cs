@@ -122,7 +122,7 @@ namespace Units.Player
 
                 if (Runner.IsForward)
                 {
-                    if (inputData.IsInteractOnce && !inMenu && !InCustomization)
+                    if (inputData.IsInteractOnce && !inMenu && !InCustomization && !IsDashing)
                     {
                         interacter.InteractWithClosestInteraction();
                     }

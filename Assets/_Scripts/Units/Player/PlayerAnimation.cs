@@ -8,7 +8,9 @@ namespace Units.Player
     {
         [Header("Animation")] [SerializeField] private NetworkMecanimAnimator networkAnimator;
         private static readonly int IsPlayerMove = Animator.StringToHash("isPlayerMove");
-        private static readonly int PlayerSpeed = Animator.StringToHash("playerSpeed");
+        private static readonly int PlayerVelocity = Animator.StringToHash("playerVelocity");
+        private static readonly int PlayerWalkSpeed = Animator.StringToHash("playerWalkSpeed");
+        private static readonly int PlayerRunSpeed = Animator.StringToHash("playerRunSpeed");
         private static readonly int IsHolding = Animator.StringToHash("isHolding");
         private static readonly int Dashing = Animator.StringToHash("isDashing");
         private static readonly int GetUpF = Animator.StringToHash("isGettingUpF");
@@ -30,7 +32,9 @@ namespace Units.Player
         private void AnimationUpdate()
         {
             networkAnimator.Animator.SetBool(IsPlayerMove, CanMove);
-            networkAnimator.Animator.SetFloat(PlayerSpeed, 1 + velocity / data.MoveMaximumSpeed * 2);
+            networkAnimator.Animator.SetFloat(PlayerVelocity, velocity);
+            networkAnimator.Animator.SetFloat(PlayerWalkSpeed, 1 + velocity / data.MoveMaximumSpeed);
+            networkAnimator.Animator.SetFloat(PlayerRunSpeed, 1 + velocity / data.SprintMaximumSpeed);
             networkAnimator.Animator.SetBool(Dashing, IsDashing);
             networkAnimator.Animator.SetBool(IsHolding, inventory.HasHomework);
             networkAnimator.Animator.SetBool(GetUpF, IsGettingUpF);
