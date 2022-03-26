@@ -14,10 +14,8 @@ namespace Canvases.Matchmaking
         [SerializeField, Required] private FadeAnimation connectionCurtain;
         [SerializeField, Required] private ButtonUIComponent hostOrJoinButton;
         [SerializeField, Required] private ButtonUIComponent backButton;
+        [SerializeField, Required] private HostJoinSequence sequence;
         [SerializeField] private bool host = true;
-
-        [SerializeField] private TextMeshProUGUI createGameTextField; // TODO Change with a sequence of icons
-        [SerializeField] private TextMeshProUGUI joinGameTextField; // TODO Change with a sequence of icons
 
         [SerializeField] private CanvasGroup canvasToHideWhenConnected;
 
@@ -31,6 +29,7 @@ namespace Canvases.Matchmaking
         void Start()
         {
             data = SettingsSystem.MatchmakingSettings;
+            hostOrJoinButton.Enabled = false;
         }
 
         protected override void OnEnable()
@@ -38,6 +37,7 @@ namespace Canvases.Matchmaking
             base.OnEnable();
             hostOrJoinButton.OnClick += OnHostJoinButtonPressed;
             backButton.OnClick += OnBackButtonPressed;
+            sequence.OnChanged += OnSequenceChanged;
         }
 
         protected override void OnDisable()
@@ -45,6 +45,20 @@ namespace Canvases.Matchmaking
             base.OnDisable();
             hostOrJoinButton.OnClick -= OnHostJoinButtonPressed;
             backButton.OnClick -= OnBackButtonPressed;
+            sequence.OnChanged -= OnSequenceChanged;
+        }
+
+        private void OnSequenceChanged()
+        {
+            if (sequence.IsComplete)
+            {
+                hostOrJoinButton.Enabled = true;
+                hostOrJoinButton.Select();
+            }
+            else
+            {
+                hostOrJoinButton.Enabled = false;
+            }
         }
 
         private void OnHostJoinButtonPressed()
@@ -68,12 +82,11 @@ namespace Canvases.Matchmaking
         {
             connectionCurtain.FadeIn();
            
-            var isGameCreated = await NetworkSystem.Instance.CreateGame(createGameTextField.text);
+            var isGameCreated = await NetworkSystem.Instance.CreateGame(sequence.Value);
 
             if (isGameCreated)
             {
-                if (canvasToHideWhenConnected)
-                    canvasToHideWhenConnected.alpha = 0f;
+                HideCanvas();
                 connectionCurtain.FadeOut();
             }
             else
@@ -89,12 +102,11 @@ namespace Canvases.Matchmaking
         {
             connectionCurtain.FadeIn();
 
-            var isGameJoined = await NetworkSystem.Instance.TryJoinGame(joinGameTextField.text);
+            var isGameJoined = await NetworkSystem.Instance.TryJoinGame(sequence.Value);
 
             if (isGameJoined)
             {
-                if (canvasToHideWhenConnected)
-                    canvasToHideWhenConnected.alpha = 0f;
+                HideCanvas();
                 connectionCurtain.FadeOut();
             }
             else
@@ -104,6 +116,15 @@ namespace Canvases.Matchmaking
                 
                 connectionCurtain.FadeOut();
             }
+        }
+
+        private void HideCanvas()
+        {
+            if (!canvasToHideWhenConnected)
+                return;
+            
+            canvasToHideWhenConnected.alpha = 0f;
+            canvasToHideWhenConnected.interactable = false;
         }
     }
 }
