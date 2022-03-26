@@ -58,7 +58,7 @@ namespace Units.Player
 
             if (!IsDashing && !inMenu && !InCustomization)
             {
-                if (HasMoveInput) lastMoveDirection = MoveDirection;
+                if (HasMoveInput) lastMoveDirection = MoveDirection.normalized;
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
                 MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
                 ChangeMoveSpeed(inputData.IsSprint);
@@ -101,7 +101,7 @@ namespace Units.Player
             if (CanMove && HasMoveInput && !IsDashing)
             {
                 velocity += data.MoveAcceleration * Runner.DeltaTime;
-                velocity = Mathf.Min(velocity, currentMaxMoveSpeed);
+                velocity = Mathf.Min(velocity, currentMaxMoveSpeed * MoveDirection.magnitude);
             }
             else
             {

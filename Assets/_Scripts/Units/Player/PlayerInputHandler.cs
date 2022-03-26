@@ -26,11 +26,13 @@ namespace Units.Player
         private InputAction interact;
         private InputAction throwing;
         private InputAction ready;
+        private InputAction dance;
 
         private bool interactOnce;
         private bool readyOnce;
         private bool dashOnce;
         private bool menuOnce;
+        private bool danceOnce;
 
         public static bool FetchInput = true;
 
@@ -59,6 +61,7 @@ namespace Units.Player
                 if (menuOnce) data.Buttons |= NetworkInputData.BUTTON_MENU;
                 if (throwing.ReadBool()) data.Buttons |= NetworkInputData.BUTTON_THROW;
                 if (readyOnce) data.Buttons |= NetworkInputData.BUTTON_READY_ONCE;
+                if (danceOnce) data.Buttons |= NetworkInputData.BUTTON_DANCE_ONCE;
 
                 data.Move = move.ReadV2();
             }
@@ -69,6 +72,7 @@ namespace Units.Player
             readyOnce = false;
             dashOnce = false;
             menuOnce = false;
+            danceOnce = false;
         }
 
         private void EnableInput()
@@ -80,7 +84,8 @@ namespace Units.Player
             interact = PlayerInputAction.Player.Interact;
             throwing = PlayerInputAction.Player.Throw;
             ready = PlayerInputAction.Player.Ready;
-
+            
+            PlayerInputAction.Player.Dance.started += ActivateDanceOnce;
             PlayerInputAction.Player.Menu.started += ActivateMenuOnce;
             interact.started += ActivateInteractOnce;
             ready.started += ActivateReadyOnce;
@@ -91,6 +96,7 @@ namespace Units.Player
         private void ActivateReadyOnce(InputAction.CallbackContext ctx) => readyOnce = ctx.started;
         private void ActivateDashOnce(InputAction.CallbackContext ctx) => dashOnce = ctx.started;
         private void ActivateMenuOnce(InputAction.CallbackContext ctx) => menuOnce = ctx.started;
+        private void ActivateDanceOnce(InputAction.CallbackContext ctx) => danceOnce = ctx.started;
 
         public void SaveSettings()
         {
