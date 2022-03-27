@@ -15,7 +15,7 @@ namespace Units.Player
         private RumbleKey throwRumbleKey;
         
         [Networked(OnChanged = nameof(OnIsAimingChanged))] private NetworkBool IsAiming { get; set; } = false;
-        [Networked(OnChanged = nameof(OnIsThrowingChanged))] private NetworkBool IsThrowing { get; set; } = false;
+        [Networked] private NetworkBool IsThrowing { get; set; } = false;
 
         [Networked] private float ThrowForcePercent { get; set; }
         [Networked] private float ThrowForceTimer { get; set; }
@@ -54,7 +54,7 @@ namespace Units.Player
             {
                 if (IsAiming)
                 {
-                    Throw();
+                    UpdateThrowState();
                 }
             }
         }
@@ -99,16 +99,21 @@ namespace Units.Player
             ThrowForcePercent = 0f;
         }
 
-        private void Throw()
+        private void UpdateThrowState()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
-            IsAiming = false;
             IsThrowing = true;
+            IsAiming = false;
+        }
 
+        public void ThrowOnAnimEvent()
+        {
+            StopAimHoldSoundLocally();
             var throwForce = Math.Max(data.MinThrowForce, ThrowForcePercent * data.MaxThrowForce);
             inventory.DropEverything(transform.forward + Vector3.up * data.ThrowVerticality, throwForce);
             ThrowForcePercent = 0f;
+            PlayAimReleaseSoundLocally();
         }
 
         private void UpdateAimingSound()
@@ -119,26 +124,14 @@ namespace Units.Player
             }
             else
             {
-                StopAimHoldSoundLocally();
-            }
-        }
-
-        private void UpdateThrowingSound()
-        {
-            if (IsThrowing)
-            {
-                PlayAimReleaseSoundLocally();
+                if (!IsThrowing)
+                    StopAimHoldSoundLocally();
             }
         }
 
         private static void OnIsAimingChanged(Changed<PlayerEntity> changed)
         {
             changed.Behaviour.UpdateAimingSound();
-        }
-        
-        private static void OnIsThrowingChanged(Changed<PlayerEntity> changed)
-        {
-            changed.Behaviour.UpdateThrowingSound();
         }
     }
 }
