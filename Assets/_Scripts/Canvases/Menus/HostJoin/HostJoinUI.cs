@@ -3,6 +3,7 @@ using Canvases.Animations;
 using Canvases.Components;
 using Canvases.Menu;
 using Sirenix.OdinInspector;
+using Systems;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
@@ -80,6 +81,9 @@ namespace Canvases.Matchmaking
 
         private async void CreateGameClick()
         {
+            if (NetworkSystem.Instance.IsGameStartedOrStarting)
+                return;
+            
             connectionCurtain.FadeIn();
            
             var isGameCreated = await NetworkSystem.Instance.CreateGame(sequence.Value);
@@ -87,7 +91,6 @@ namespace Canvases.Matchmaking
             if (isGameCreated)
             {
                 HideCanvas();
-                connectionCurtain.FadeOut();
             }
             else
             {
@@ -100,6 +103,9 @@ namespace Canvases.Matchmaking
 
         private async void JoinGameClick()
         {
+            if (NetworkSystem.Instance.IsGameStartedOrStarting)
+                return;
+            
             connectionCurtain.FadeIn();
 
             var isGameJoined = await NetworkSystem.Instance.TryJoinGame(sequence.Value);
@@ -107,7 +113,6 @@ namespace Canvases.Matchmaking
             if (isGameJoined)
             {
                 HideCanvas();
-                connectionCurtain.FadeOut();
             }
             else
             {
@@ -142,6 +147,8 @@ namespace Canvases.Matchmaking
 
         private IEnumerator WaitUntilConnectionIsHiddenToHide()
         {
+            yield return new WaitUntil(() => LevelSystem.Instance.State == LevelSystem.LevelState.Lobby);
+            connectionCurtain.FadeOut();
             yield return new WaitUntil(() => connectionCurtain.IsFadedOut);
             base.OnMenuManagerClosed();
         }

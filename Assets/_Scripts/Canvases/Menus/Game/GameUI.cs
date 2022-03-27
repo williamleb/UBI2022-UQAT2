@@ -1,5 +1,6 @@
 ﻿using Canvases.Components;
 using Sirenix.OdinInspector;
+using Systems;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -58,8 +59,8 @@ namespace Canvases.Menu.Game
 
         private void OnMainMenuPressed()
         {
+            LevelSystem.Instance.LoadMainMenu();
             NetworkSystem.Instance.Disconnect();
-            // TODO Return to main menu
         }
 
         private void OnExitPressed()

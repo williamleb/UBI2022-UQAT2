@@ -21,6 +21,29 @@ namespace Systems.Camera
             base.Awake();
             InitializeMainCamera();
         }
+        
+        private void OnEnable()
+        {
+            LevelSystem.Instance.OnMainMenuLoad += OnReturnToMainMenu;
+        }
+
+        private void OnDisable()
+        {
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnMainMenuLoad -= OnReturnToMainMenu;
+            }
+        }
+
+        private void OnReturnToMainMenu()
+        {
+            if (mainCamera)
+            {
+                Destroy(mainCamera);
+                mainCamera = null;
+            }
+            InitializeMainCamera();
+        }
 
         public void RegisterVirtualCamera(VirtualCamera virtualCamera)
         {

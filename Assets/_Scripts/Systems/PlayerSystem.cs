@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,49 +15,71 @@ namespace Systems
 	public class PlayerSystem : PersistentSingleton<PlayerSystem>
 	{
 		private const string PREFABS_FOLDER_PATH = "Game";
-		
+
 		private GamePrefabs prefabs;
 
 		private PlayerEntity localPlayer;
 		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
-		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
+
+		private readonly Dictionary<PlayerRef, NetworkRunner>
+			playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
 		private PlayerSpawnLocation[] playerSpawnPoints;
-		
+
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
 		protected override void Awake()
 		{
 			base.Awake();
-			
+
 			LoadPrefabs();
 		}
-		
+
+		private void OnEnable()
+		{
+			LevelSystem.Instance.OnMainMenuStartLoad += OnReturnToMainMenu;
+		}
+
+		private void OnDisable()
+		{
+			if (LevelSystem.HasInstance)
+			{
+				LevelSystem.Instance.OnMainMenuStartLoad -= OnReturnToMainMenu;
+			}
+		}
+
+		private void OnReturnToMainMenu()
+		{
+			ResetPlayerSystem();
+		}
+
 		private void LoadPrefabs()
 		{
 			var prefabResources = Resources.LoadAll<GamePrefabs>(PREFABS_FOLDER_PATH);
 
-			Debug.Assert(prefabResources.Any(), $"An object of type {nameof(GamePrefabs)} should be in the folder {PREFABS_FOLDER_PATH}");
+			Debug.Assert(prefabResources.Any(),
+				$"An object of type {nameof(GamePrefabs)} should be in the folder {PREFABS_FOLDER_PATH}");
 			if (prefabResources.Length > 1)
-				Debug.LogWarning($"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
+				Debug.LogWarning(
+					$"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
 
 			prefabs = prefabResources.First();
 		}
 
 		private void Start()
-        {
+		{
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-        }
+		}
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
 		// called by the runner to re-register actions
 		public void SubscribeNetworkEvents()
-        {
+		{
 			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 		}
-		
+
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
 			Debug.Log($"{playerRef} joined.");
@@ -63,13 +87,16 @@ namespace Systems
 
 			// TODO
 			// - check number of player in game (rejoin?)
-            if (LevelSystem.Instance.State != LevelSystem.LevelState.TRANSITION)
-            {
-				SpawnPlayer(runner, playerRef);
-			}
+			StartCoroutine(WaitUntilNotInTransitionToSpawnPlayerRoutine(runner, playerRef));
 		}
 
-		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
+		private IEnumerator WaitUntilNotInTransitionToSpawnPlayerRoutine(NetworkRunner runner, PlayerRef playerRef)
+		{
+			yield return new WaitUntil(() => LevelSystem.Instance.State != LevelSystem.LevelState.Transition);
+			SpawnPlayer(runner, playerRef);
+		}
+
+	private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
 			Debug.Log($"{playerRef} left.");
 			PlayerEntity player = GetPlayerEntity(playerRef);
@@ -160,7 +187,10 @@ namespace Systems
 
 		public void ResetPlayerSystem()
 		{
+			localPlayer = null;
 			playersEntity.Clear();
+			playersJoined.Clear();
+			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 			Debug.Log("Players list from PlayerSystem cleared");
 		}
 	}

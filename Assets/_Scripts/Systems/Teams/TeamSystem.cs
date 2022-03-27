@@ -52,6 +52,19 @@ namespace Systems.Teams
             CreateTeams();
             PlayerEntity.OnPlayerDespawned += OnPlayerDespawned;
         }
+        
+        private void OnEnable()
+        {
+            LevelSystem.Instance.OnMainMenuStartLoad += OnReturnToMainMenu;
+        }
+
+        private void OnDisable()
+        {
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnMainMenuStartLoad -= OnReturnToMainMenu;
+            }
+        }
 
         private void CreateTeams()
         {
@@ -256,6 +269,11 @@ namespace Systems.Teams
                     }
                 }
             }
+        }
+
+        private void OnReturnToMainMenu()
+        {
+            teams.Clear();
         }
     }
 }
