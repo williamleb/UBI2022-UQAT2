@@ -18,7 +18,7 @@ namespace Canvases.Menu
     {
         public event Action<bool> InMenuStatusChanged; 
 
-        public enum Menu { Customization, Main, Host, Join, Options, Game, Controls }
+        public enum Menu { Customization, Main, Host, Join, Options, Game, Controls, End }
 
         private ModalUI modal;
         private int numberOfOpenedMenus;
