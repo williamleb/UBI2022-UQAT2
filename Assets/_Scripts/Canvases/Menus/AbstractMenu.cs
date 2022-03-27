@@ -23,37 +23,43 @@ namespace Canvases.Menu
         protected abstract EntryDirection EnterDirection { get; }
         protected abstract EntryDirection LeaveDirection { get; }
 
-        public virtual void ShowFor(PlayerEntity playerEntity)
+        public bool ShowFor(PlayerEntity playerEntity)
         {
             if (entry.IsEnteredOrEntering)
-                return;
+                return false;
 
-            ShowForImplementation(playerEntity);
+            if (!ShowForImplementation(playerEntity))
+                return false;
             
             Enter();
             OnShow?.Invoke();
+            return true;
         }
 
-        public virtual void Show()
+        public bool Show()
         {
             if (entry.IsEnteredOrEntering)
-                return;
+                return false;
 
-            ShowImplementation();
+            if (!ShowImplementation())
+                return false;
             
             Enter();
             OnShow?.Invoke();
+            return true;
         }
 
-        public virtual void Hide()
+        public virtual bool Hide()
         {
             if (entry.IsLeftOrLeaving)
-                return;
-            
-            HideImplementation();
+                return false;
+
+            if (!HideImplementation())
+                return false;
 
             Leave();
             canvasGroup.interactable = false;
+            return true;
         }
 
         private void Enter()
@@ -72,9 +78,9 @@ namespace Canvases.Menu
                 entry.LeaveUp();
         }
 
-        public virtual void ShowForImplementation(PlayerEntity playerEntity) { ShowImplementation(); }
-        public virtual void ShowImplementation() {  }
-        public virtual void HideImplementation() {  }
+        public virtual bool ShowForImplementation(PlayerEntity playerEntity) => ShowImplementation();
+        public virtual bool ShowImplementation() => true;
+        public virtual bool HideImplementation() => true;
 
         protected virtual void Awake()
         {

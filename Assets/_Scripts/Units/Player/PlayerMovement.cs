@@ -56,7 +56,7 @@ namespace Units.Player
         {
             MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
 
-            if (!IsDashing && !inMenu && !InCustomization)
+            if (!IsDashing && !InMenu && !InCustomization)
             {
                 if (HasMoveInput) lastMoveDirection = MoveDirection.normalized;
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
@@ -64,7 +64,7 @@ namespace Units.Player
                 ChangeMoveSpeed(inputData.IsSprint);
             }
 
-            if (inMenu || InCustomization)
+            if (InMenu || InCustomization)
             {
                 MoveDirection = Vector3.zero;
                 ChangeMoveSpeed(false);

@@ -4,8 +4,8 @@ namespace Canvases.Menu
 {
     public interface IMenu
     {
-        void ShowFor(PlayerEntity playerEntity);
-        void Show();
-        void Hide();
+        bool ShowFor(PlayerEntity playerEntity);
+        bool Show();
+        bool Hide();
     }
 }

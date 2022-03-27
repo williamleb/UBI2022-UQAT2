@@ -37,7 +37,6 @@ namespace Units.Player
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
-        private bool inMenu;
 
         public int PlayerId { get; private set; }
         public PlayerCustomization Customization => customization;
@@ -45,6 +44,7 @@ namespace Units.Player
         [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
         [Networked] public int PlayerScore { get; set; }
         [Networked] private bool InCustomization { get; set; }
+        [Networked] private bool InMenu { get; set; }
 
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
@@ -122,21 +122,22 @@ namespace Units.Player
 
                 if (Runner.IsForward)
                 {
-                    if (inputData.IsInteractOnce && !inMenu && !InCustomization && !IsDashing)
+                    if (inputData.IsInteractOnce && !InMenu && !InCustomization && !IsDashing)
                     {
                         interacter.InteractWithClosestInteraction();
                     }
 
-                    if (inputData.IsDanceOnce && !inMenu && !InCustomization)
+                    if (inputData.IsDanceOnce && !InMenu && !InCustomization)
                     {
                         IsDancing = true;
                     }
 
-                    if (inputData.IsMenu && !InCustomization)
+                    if (inputData.IsMenu && !InCustomization && Object.HasInputAuthority)
                     {
-                        inMenu = !inMenu;
-                        if (inMenu) ResetReady();
-                        OnMenuPressed?.Invoke();
+                        if (InMenu)
+                            CloseMenu();
+                        else 
+                            OpenMenu();
                     }
 
                     if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
@@ -221,18 +222,53 @@ namespace Units.Player
             OnTeamChanged?.Invoke();
         }
 
+        public void OpenMenu()
+        {
+            if (InMenu)
+                return;
+            
+            if (!MenuManager.HasInstance)
+                return;
+
+            if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Game, this))
+                return;
+            
+            RPC_ChangeInMenu(true);
+            OnMenuPressed?.Invoke();
+            ResetReady();
+        }
+
+        public void CloseMenu()
+        {
+            if (!InMenu)
+                return;
+            
+            if (!MenuManager.HasInstance)
+                return;
+
+            MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
+            MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
+            MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
+            RPC_ChangeInMenu(false);
+            OnMenuPressed?.Invoke();
+        }
+
         public void StartCustomization()
         {
             if (InCustomization)
                 return;
 
+            if (!MenuManager.HasInstance)
+                return;
+
+            if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this))
+                return;
+            
+            CloseMenu();
+
             ResetReady();
             RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
-            if (MenuManager.HasInstance)
-            {
-                MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this);
-            }
         }
 
         public void StopCustomization()
@@ -248,6 +284,12 @@ namespace Units.Player
         private void RPC_ChangeInCustomization(NetworkBool inCustomization)
         {
             InCustomization = inCustomization;
+        }
+        
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void RPC_ChangeInMenu(NetworkBool inMenu)
+        {
+            InMenu = inMenu;
         }
 
         private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)

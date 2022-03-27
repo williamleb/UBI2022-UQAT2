@@ -42,27 +42,31 @@ namespace Canvases.Menu.Customization
             Hide();
         }
         
-        public override void Show()
+        public override bool ShowImplementation()
         {
             // Cannot show the customization UI if it's not associated to a player
-            return;
+            return false;
         }
 
-        public override void ShowForImplementation(PlayerEntity playerEntity)
+        public override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             player = playerEntity;
             foreach (var element in customizationUIElements)
             {
                 element.Activate(playerEntity);
             }
+
+            return true;
         }
 
-        public override void HideImplementation()
+        public override bool HideImplementation()
         {
             foreach (var element in customizationUIElements)
             {
                 element.Deactivate();
             }
+
+            return true;
         }
     }
 }

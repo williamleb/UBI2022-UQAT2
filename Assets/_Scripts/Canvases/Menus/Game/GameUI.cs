@@ -1,7 +1,7 @@
 ﻿using Canvases.Components;
-using Fusion;
 using Sirenix.OdinInspector;
 using Systems.Network;
+using Units.Player;
 using UnityEngine;
 using Utilities;
 
@@ -13,9 +13,23 @@ namespace Canvases.Menu.Game
         [SerializeField, Required] private ButtonUIComponent optionsButton;
         [SerializeField, Required] private ButtonUIComponent mainMenuButton;
         [SerializeField, Required] private ButtonUIComponent exitGameButton;
+
+        private PlayerEntity player;
         
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
+
+        public override bool ShowForImplementation(PlayerEntity playerEntity)
+        {
+            player = playerEntity;
+            return true;
+        }
+
+        public override bool HideImplementation()
+        {
+            player = null;
+            return true;
+        }
 
         protected override void OnEnable()
         {
@@ -28,7 +42,10 @@ namespace Canvases.Menu.Game
 
         private void OnResumePressed()
         {
-            Hide();
+            if (player)
+                player.CloseMenu();
+            else
+                Hide();
         }
 
         private void OnOptionsPressed()

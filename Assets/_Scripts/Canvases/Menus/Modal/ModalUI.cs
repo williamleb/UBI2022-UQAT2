@@ -22,13 +22,13 @@ namespace Canvases.Menu.Modal
         protected override void OnEnable()
         {
             base.OnEnable();
-            closeButton.OnClick += Hide;
+            closeButton.OnClick += HideModal;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            closeButton.OnClick -= Hide;
+            closeButton.OnClick -= HideModal;
 
             if (showCoroutine != null)
             {
@@ -37,30 +37,31 @@ namespace Canvases.Menu.Modal
             }
         }
 
-        public override void Show()
+        public override bool ShowImplementation()
         {
             if (IsShown)
-                return;
+                return false;
             
-            base.Show();
+            return base.ShowImplementation();
         }
 
-        public override void ShowFor(PlayerEntity playerEntity)
+        public override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             if (IsShown)
-                return;
+                return false;
             
-            base.ShowFor(playerEntity);
+            return base.ShowForImplementation(playerEntity);
         }
 
-        public void Show(string textString, string headerString, float numberOfSeconds = 5f)
+        public bool Show(string textString, string headerString, float numberOfSeconds = 5f)
         {
             if (IsShown)
-                return;
+                return false;
             
             text.Text = textString;
             header.Text = headerString.ToUpper();
             showCoroutine = StartCoroutine(ShowRoutine(numberOfSeconds));
+            return true;
         }
 
         private IEnumerator ShowRoutine(float numberOfSeconds)
@@ -69,6 +70,11 @@ namespace Canvases.Menu.Modal
             yield return Helpers.GetWait(numberOfSeconds);
             Hide();
             showCoroutine = null;
+        }
+
+        private void HideModal()
+        {
+            Hide();
         }
     }
 }

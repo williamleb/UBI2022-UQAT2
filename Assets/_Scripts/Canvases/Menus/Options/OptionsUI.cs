@@ -16,10 +16,13 @@ namespace Canvases.Menu.Options
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
 
-        public override void ShowImplementation()
+        public override bool ShowImplementation()
         {
-            base.ShowImplementation();
+            if (!base.ShowImplementation())
+                return false;
+            
             Init();
+            return true;
         }
 
         private void Init()

@@ -32,7 +32,7 @@ namespace Units.Player
             
             if (Runner.IsForward)
             {
-                if (inputData.IsReadyOnce && !inMenu && !InCustomization)
+                if (inputData.IsReadyOnce && !InMenu && !InCustomization)
                 {
                     IsReady = !IsReady;
                     Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");

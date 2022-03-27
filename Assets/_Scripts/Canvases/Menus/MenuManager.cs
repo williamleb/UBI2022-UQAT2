@@ -4,6 +4,7 @@ using System.Linq;
 using Canvases.Components;
 using Canvases.Matchmaking;
 using Canvases.Menu.Customization;
+using Canvases.Menu.Game;
 using Canvases.Menu.Main;
 using Canvases.Menu.Modal;
 using Canvases.Menu.Options;
@@ -39,9 +40,10 @@ namespace Canvases.Menu
             modal = FindObjectOfType<ModalUI>();
             TryAddToMenus<CustomizationUI>(Menu.Customization);
             TryAddToMenus<MainUI>(Menu.Main);
-            TryAddToMenus<HostJoinUI>(Menu.Host, b => b.Host);
-            TryAddToMenus<HostJoinUI>(Menu.Join, b => !b.Host);
+            TryAddToMenus<HostJoinUI>(Menu.Host, menu => menu.Host);
+            TryAddToMenus<HostJoinUI>(Menu.Join, menu => !menu.Host);
             TryAddToMenus<OptionsUI>(Menu.Options);
+            TryAddToMenus<GameUI>(Menu.Game);
         }
 
         private void TryAddToMenus<T>(Menu menuType, Func<T, bool> validator = null) where T : AbstractMenu
@@ -130,48 +132,48 @@ namespace Canvases.Menu
             InMenuStatusChanged?.Invoke(InMenu);
         }
 
-        public void ShowModal(string text, string header, float seconds = 5f)
+        public bool ShowModal(string text, string header, float seconds = 5f)
         {
             if (!modal)
-                return;
+                return false;
             
-            modal.Show(text, header, seconds);
+            return modal.Show(text, header, seconds);
         }
 
-        public void ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity) 
+        public bool ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity) 
         {
             var menu = GetMenu(menuToShow);
             if (menu == null)
             {
                 Debug.LogWarning($"Could not find menu {menuToShow} in scene");
-                return;
+                return false;
             }
             
-            menu.ShowFor(playerEntity);
+            return menu.ShowFor(playerEntity);
         }
         
-        public void ShowMenu(Menu menuToShow)
+        public bool ShowMenu(Menu menuToShow)
         {
             var menu = GetMenu(menuToShow);
             if (menu == null)
             {
                 Debug.LogWarning($"Could not find menu {menuToShow} in scene");
-                return;
+                return false;
             }
             
-            menu.Show();
+            return menu.Show();
         }
 
-        public void HideMenu(Menu menuToHide)
+        public bool HideMenu(Menu menuToHide)
         {
             var menu = GetMenu(menuToHide);
             if (menu == null)
             {
                 Debug.LogWarning($"Could not find menu {menuToHide} in scene");
-                return;
+                return false;
             }
             
-            menu.Hide();
+            return menu.Hide();
         }
 
         [CanBeNull]
