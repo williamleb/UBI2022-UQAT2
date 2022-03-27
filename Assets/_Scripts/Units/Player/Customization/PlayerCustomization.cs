@@ -185,7 +185,7 @@ namespace Units.Player.Customisation
         {
             foreach (var customizer in GetComponentsInChildren<ClothesColorCustomizer>())
             {
-                customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor));
+                customizer.LoadMaterial(settings.GetClothesColor(customizer.TargetArchetype, ClothesColor, customizer.ClothesType));
             }
             OnClothesColorChangedEvent?.Invoke(ClothesColor);
         }

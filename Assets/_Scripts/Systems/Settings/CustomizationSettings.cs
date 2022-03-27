@@ -90,7 +90,7 @@ namespace Systems.Settings
             return skinElements[skinIndex].SkinMaterial;
         }
         
-        public Material GetClothesColor(Archetype archetype, int clothesColorIndex)
+        public Material GetClothesColor(Archetype archetype, int clothesColorIndex, ClothesType clothesType)
         {
             Debug.Assert(clothesColorElements.Any(element => element.Archetype == archetype));
             Debug.Assert(clothesColorIndex >= 0 && clothesColorIndex < NumberOfTeamColors);
@@ -99,7 +99,7 @@ namespace Systems.Settings
             {
                 if (element.Archetype == archetype)
                 {
-                    return element.GetClothesMaterial(clothesColorIndex);
+                    return element.GetClothesMaterial(clothesColorIndex, clothesType);
                 }
             }
 
@@ -209,12 +209,30 @@ namespace Systems.Settings
             // I don't use a fancy resizable list here because it would complexify the customisation logic too much
             // (I want to reduce dev time at this point of the project) and we already know we won't go over
             // 6 materials per clothe
-            [VerticalGroup("Materials"), PreviewField] 
+            [VerticalGroup("Materials - Top"), PreviewField] 
             [SerializeField] private Material clothesMaterial1, clothesMaterial2, clothesMaterial3, clothesMaterial4, clothesMaterial5, clothesMaterial6;
 
-            public Archetype Archetype => archetype;
+            [VerticalGroup("Materials - Shorts"), PreviewField] 
+            [SerializeField] private Material shortsMaterial1, shortsMaterial2, shortsMaterial3, shortsMaterial4, shortsMaterial5, shortsMaterial6;
             
-            public Material GetClothesMaterial(int index)
+            [VerticalGroup("Materials - Shoes"), PreviewField] 
+            [SerializeField] private Material shoesMaterial1, shoesMaterial2, shoesMaterial3, shoesMaterial4, shoesMaterial5, shoesMaterial6;
+            
+            public Archetype Archetype => archetype;
+
+            public Material GetClothesMaterial(int index, ClothesType clothesType)
+            {
+                return clothesType switch
+                {
+                    ClothesType.Top => GetClothesMaterial(index),
+                    ClothesType.Shorts => GetShortsMaterial(index),
+                    ClothesType.Shoes => GetShoesMaterial(index),
+                    _ => throw new ArgumentOutOfRangeException(nameof(clothesType), clothesType, null)
+                };
+            }
+
+            
+            private Material GetClothesMaterial(int index)
             {
                 return index switch
                 {
@@ -224,6 +242,34 @@ namespace Systems.Settings
                     3 => clothesMaterial4,
                     4 => clothesMaterial5,
                     5 => clothesMaterial6,
+                    _ => throw new IndexOutOfRangeException()
+                };
+            }
+            
+            private Material GetShortsMaterial(int index)
+            {
+                return index switch
+                {
+                    0 => shortsMaterial1,
+                    1 => shortsMaterial2,
+                    2 => shortsMaterial3,
+                    3 => shortsMaterial4,
+                    4 => shortsMaterial5,
+                    5 => shortsMaterial6,
+                    _ => throw new IndexOutOfRangeException()
+                };
+            }
+            
+            private Material GetShoesMaterial(int index)
+            {
+                return index switch
+                {
+                    0 => shoesMaterial1,
+                    1 => shoesMaterial2,
+                    2 => shoesMaterial3,
+                    3 => shoesMaterial4,
+                    4 => shoesMaterial5,
+                    5 => shoesMaterial6,
                     _ => throw new IndexOutOfRangeException()
                 };
             }
@@ -240,4 +286,6 @@ namespace Systems.Settings
             public Color Color => color;
         }
     }
+    
+    public enum ClothesType {Top, Shorts, Shoes}
 }

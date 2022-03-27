@@ -32,5 +32,10 @@ namespace Systems.Network
             NetworkRunner.TryFindObject(id, out var foundObject);
             return foundObject;
         }
+
+        public void Disconnect()
+        {
+            NetworkRunner.Disconnect(NetworkRunner.LocalPlayer);
+        }
     }
 }

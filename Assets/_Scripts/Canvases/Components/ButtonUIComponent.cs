@@ -21,6 +21,11 @@ namespace Canvases.Components
         {
             set => button.image.color = value;
         }
+        
+        public bool Enabled
+        {
+            set => button.interactable = value;
+        }
 
         public void Select() => button.Select();
 

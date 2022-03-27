@@ -11,6 +11,9 @@ namespace Systems.Settings
         [SerializeField]
         private bool allowSoloPlay = true;
 
+        [SerializeField]
+        private string errorMessageHeader = "Erreur";
+        
         [Tooltip("Error message when a player tries to connect to a game but it does not exist")]
         [SerializeField]
         private string errorMessageJoiningGame = "Erreur lors de la connection à la partie.";
@@ -29,6 +32,7 @@ namespace Systems.Settings
 
 
         public bool AllowSoloPlay => allowSoloPlay;
+        public string ErrorMessageHeader => errorMessageHeader;
         public string ErrorMessageJoiningGame => errorMessageJoiningGame;
         public string ErrorMessageCreatingGame => errorMessageCreatingGame;
         public int CountDownTime => countDownTime;

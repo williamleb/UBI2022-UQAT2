@@ -1,9 +1,8 @@
-using System.Collections;
+using Canvases.Menu;
 using Systems.Network;
 using Systems.Settings;
 using TMPro;
 using UnityEngine;
-using Utilities;
 
 namespace Canvases.Matchmaking
 {
@@ -42,7 +41,10 @@ namespace Canvases.Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage(data.ErrorMessageCreatingGame));
+                if (MenuManager.HasInstance)
+                {
+                    MenuManager.Instance.ShowModal(data.ErrorMessageCreatingGame, data.ErrorMessageHeader);
+                }
                 UICurtain.SetActive(false);
                 hostUI.SetActive(true);
             }
@@ -62,18 +64,13 @@ namespace Canvases.Matchmaking
             }
             else
             {
-                StartCoroutine(DisplayErrorMessage(data.ErrorMessageJoiningGame));
+                if (MenuManager.HasInstance)
+                {
+                    MenuManager.Instance.ShowModal(data.ErrorMessageJoiningGame, data.ErrorMessageHeader);
+                }
                 UICurtain.SetActive(false);
                 clientUI.SetActive(true);
             }
-        }
-
-        IEnumerator DisplayErrorMessage(string message)
-        {
-            errorMessage.gameObject.SetActive(true);
-            errorMessage.text = message;
-            yield return Helpers.GetWait(5);
-            errorMessage.gameObject.SetActive(false);
         }
     }
 }

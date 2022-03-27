@@ -62,6 +62,7 @@ namespace Utilities.Singleton
             {
                 Debug.LogWarning($"New instance of type {typeof(T).Name} detected. " +
                                  "This new instance is becoming the default instance.");
+                SharedInstance = (T) Convert.ChangeType(this, typeof(T));;
                 return;
             }
             

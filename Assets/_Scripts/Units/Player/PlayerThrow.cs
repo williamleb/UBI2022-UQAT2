@@ -46,7 +46,7 @@ namespace Units.Player
                 return;
             }
 
-            if (inputData.IsThrow && !inMenu)
+            if (inputData.IsThrow && !InMenu)
             {
                 UpdateAim();
             }
