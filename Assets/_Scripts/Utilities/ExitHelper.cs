@@ -1,4 +1,8 @@
-﻿namespace Utilities
+﻿#if !UNITY_EDITOR
+using UnityEngine;
+#endif
+
+namespace Utilities
 {
     public static class ExitHelper
     {

@@ -288,7 +288,7 @@ namespace Units.Player
             
             CloseMenu();
 
-            //ResetReady();
+            ResetReady();
             RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
         }
