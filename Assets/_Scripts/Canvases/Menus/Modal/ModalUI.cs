@@ -37,7 +37,7 @@ namespace Canvases.Menu.Modal
             }
         }
 
-        public override bool ShowImplementation()
+        protected override bool ShowImplementation()
         {
             if (IsShown)
                 return false;
@@ -45,7 +45,7 @@ namespace Canvases.Menu.Modal
             return base.ShowImplementation();
         }
 
-        public override bool ShowForImplementation(PlayerEntity playerEntity)
+        protected override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             if (IsShown)
                 return false;

@@ -29,10 +29,27 @@ namespace Canvases.Menu
 
         public bool InMenu => numberOfOpenedMenus > 0;
 
+        public void Open()
+        {
+            foreach (var menu in menus.Values)
+            {
+                menu.OnMenuManagerOpened();
+            }
+        }
+
+        public void Close()
+        {
+            foreach (var menu in menus.Values)
+            {
+                menu.OnMenuManagerClosed();
+            }
+        }
+
         private void Start()
         {
             InitializeMenus();
             SubscribeToMenus();
+            Open();
         }
 
         private void InitializeMenus()

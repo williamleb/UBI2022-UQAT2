@@ -23,6 +23,18 @@ namespace Canvases.Menu
         protected abstract EntryDirection EnterDirection { get; }
         protected abstract EntryDirection LeaveDirection { get; }
 
+        public virtual void OnMenuManagerOpened()
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+        }
+
+        public virtual void OnMenuManagerClosed()
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+        }
+        
         public bool ShowFor(PlayerEntity playerEntity)
         {
             if (entry.IsEnteredOrEntering)
@@ -78,9 +90,9 @@ namespace Canvases.Menu
                 entry.LeaveUp();
         }
 
-        public virtual bool ShowForImplementation(PlayerEntity playerEntity) => ShowImplementation();
-        public virtual bool ShowImplementation() => true;
-        public virtual bool HideImplementation() => true;
+        protected virtual bool ShowForImplementation(PlayerEntity playerEntity) => ShowImplementation();
+        protected virtual bool ShowImplementation() => true;
+        protected virtual bool HideImplementation() => true;
 
         protected virtual void Awake()
         {

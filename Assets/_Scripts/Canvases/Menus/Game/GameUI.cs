@@ -19,13 +19,13 @@ namespace Canvases.Menu.Game
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
 
-        public override bool ShowForImplementation(PlayerEntity playerEntity)
+        protected override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             player = playerEntity;
             return true;
         }
 
-        public override bool HideImplementation()
+        protected override bool HideImplementation()
         {
             player = null;
             return true;

@@ -1,23 +1,23 @@
+using System.Collections;
 using Canvases.Animations;
 using Canvases.Components;
 using Canvases.Menu;
 using Sirenix.OdinInspector;
 using Systems.Network;
 using Systems.Settings;
-using TMPro;
 using UnityEngine;
 
 namespace Canvases.Matchmaking
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class HostJoinUI : AbstractMenu
     {
         [SerializeField, Required] private FadeAnimation connectionCurtain;
         [SerializeField, Required] private ButtonUIComponent hostOrJoinButton;
         [SerializeField, Required] private ButtonUIComponent backButton;
         [SerializeField, Required] private HostJoinSequence sequence;
+        [SerializeField] private CanvasGroup menuCanvasGroup;
         [SerializeField] private bool host = true;
-
-        [SerializeField] private CanvasGroup canvasToHideWhenConnected;
 
         protected override EntryDirection EnterDirection => EntryDirection.Up;
         protected override EntryDirection LeaveDirection => EntryDirection.Up;
@@ -120,11 +120,30 @@ namespace Canvases.Matchmaking
 
         private void HideCanvas()
         {
-            if (!canvasToHideWhenConnected)
+            if (!MenuManager.HasInstance)
                 return;
             
-            canvasToHideWhenConnected.alpha = 0f;
-            canvasToHideWhenConnected.interactable = false;
+            MenuManager.Instance.Close();
+        }
+
+        public override void OnMenuManagerClosed()
+        {
+            menuCanvasGroup.alpha = 0f;
+            menuCanvasGroup.interactable = false;
+            StartCoroutine(WaitUntilConnectionIsHiddenToHide());
+        }
+
+        public override void OnMenuManagerOpened()
+        {
+            base.OnMenuManagerOpened();
+            menuCanvasGroup.alpha = 1f;
+            menuCanvasGroup.interactable = true;
+        }
+
+        private IEnumerator WaitUntilConnectionIsHiddenToHide()
+        {
+            yield return new WaitUntil(() => connectionCurtain.IsFadedOut);
+            base.OnMenuManagerClosed();
         }
     }
 }

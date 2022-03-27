@@ -41,14 +41,14 @@ namespace Canvases.Menu.Customization
             player.StopCustomization();
             Hide();
         }
-        
-        public override bool ShowImplementation()
+
+        protected override bool ShowImplementation()
         {
             // Cannot show the customization UI if it's not associated to a player
             return false;
         }
 
-        public override bool ShowForImplementation(PlayerEntity playerEntity)
+        protected override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             player = playerEntity;
             foreach (var element in customizationUIElements)
@@ -59,7 +59,7 @@ namespace Canvases.Menu.Customization
             return true;
         }
 
-        public override bool HideImplementation()
+        protected override bool HideImplementation()
         {
             foreach (var element in customizationUIElements)
             {
