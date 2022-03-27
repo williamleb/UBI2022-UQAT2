@@ -4,6 +4,7 @@ using Canvases.Components;
 using Canvases.Menu;
 using Sirenix.OdinInspector;
 using Systems;
+using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
@@ -147,7 +148,7 @@ namespace Canvases.Matchmaking
 
         private IEnumerator WaitUntilConnectionIsHiddenToHide()
         {
-            yield return new WaitUntil(() => LevelSystem.Instance.State == LevelSystem.LevelState.Lobby);
+            yield return new WaitUntil(() => LevelSystem.Instance.State == LevelSystem.LevelState.Lobby || LevelSystem.Instance.State == LevelSystem.LevelState.Game);
             connectionCurtain.FadeOut();
             yield return new WaitUntil(() => connectionCurtain.IsFadedOut);
             base.OnMenuManagerClosed();

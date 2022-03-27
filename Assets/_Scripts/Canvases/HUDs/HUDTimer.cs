@@ -20,7 +20,10 @@ public class HUDTimer : MonoBehaviour
     }
 
     void Update()
-    {       
+    {
+        if (!GameManager.HasInstance)
+            return;
+        
         if (GameManager.Instance.CurrentState == GameState.Running || GameManager.Instance.CurrentState == GameState.Overtime)
         {
             var span = TimeSpan.FromSeconds(Convert.ToDouble(gameTimer.RemainingTime));

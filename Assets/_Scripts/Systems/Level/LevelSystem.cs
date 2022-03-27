@@ -10,10 +10,11 @@ using Units.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Utilities;
 using Utilities.Event;
 using Utilities.Singleton;
 
-namespace Systems
+namespace Systems.Level
 {
     public class LevelSystem : PersistentSingleton<LevelSystem>
     {
@@ -34,7 +35,9 @@ namespace Systems
         private GameScenes scenes;
         private Scene loadedScene;
 
-        public INetworkSceneObjectProvider NetworkSceneObjectProvider { get; private set; }
+        private NetworkSceneManager networkManager;
+
+        public INetworkSceneObjectProvider NetworkSceneObjectProvider => networkManager;
         public LevelState State { get; private set; }
         public int ActiveSceneIndex { get; private set; }
 
@@ -58,17 +61,20 @@ namespace Systems
         {
             base.Awake();
             
-            Debug.Log("LevelSystem: Awake =================================");
-            
-            NetworkSceneObjectProvider = gameObject.AddComponent<NetworkSceneManager>();
+            CreateNetworkManager();
             ActiveSceneIndex = SceneManager.GetActiveScene().buildIndex;
             LoadScenes();
         }
 
-        private void OnDestroy()
+        private void CreateNetworkManager()
         {
-            Debug.Log("LevelSystem: Destroy =================================");
+            if (networkManager)
+            {
+                Destroy(networkManager);
+            }
+            networkManager = gameObject.AddComponent<NetworkSceneManager>();
         }
+            
 
         private void LoadScenes()
         {
@@ -119,38 +125,7 @@ namespace Systems
             ActiveSceneIndex = MainMenuScene.BuildIndex;
             OnMainMenuStartLoad?.Invoke();
             
-            yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-
             AsyncOperation unloadOperation;
-            
-            try
-            {
-                unloadOperation = SceneManager.UnloadSceneAsync(GameScene.BuildIndex);
-            }
-            catch (ArgumentException)
-            {
-                // The scene was not loaded. Do nothing.
-                unloadOperation = null;
-            }
-            if (unloadOperation != null)
-            {
-                yield return unloadOperation;
-            }
-            
-            try
-            {
-                unloadOperation = SceneManager.UnloadSceneAsync(LobbyScene.BuildIndex);
-            }
-            catch (ArgumentException)
-            {
-                // The scene was not loaded. Do nothing.
-                unloadOperation = null;
-            }
-            if (unloadOperation != null)
-            {
-                yield return unloadOperation;
-            }
-            
             try
             {
                 unloadOperation = SceneManager.UnloadSceneAsync(MainMenuScene.BuildIndex);
@@ -164,11 +139,11 @@ namespace Systems
             {
                 yield return unloadOperation;
             }
+
+            DontDestroyOnLoadUtils.DestroyAll((o => o != gameObject));
             
             yield return SceneManager.LoadSceneAsync(MainMenuScene.BuildIndex);
-            loadedScene = default;
-            ChangeLevelState();
-            Destroy(this);
+            DestroyImmediate(gameObject);
         }
 
         private void OnSceneLoadDone(NetworkRunner networkRunner)
@@ -239,6 +214,8 @@ namespace Systems
 
                 // Delay one frame
                 yield return null;
+                
+                Instance.ActiveSceneIndex = newScene;
 
                 Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
                 finished(sceneObjects);

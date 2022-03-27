@@ -117,7 +117,7 @@ namespace Utilities.Singleton
                 return;
             }
             
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoadUtils.Add(gameObject);
             base.Awake();
         }
     }

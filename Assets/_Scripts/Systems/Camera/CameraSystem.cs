@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using Utilities;
 using Utilities.Singleton;
 
 namespace Systems.Camera
@@ -22,29 +23,6 @@ namespace Systems.Camera
             InitializeMainCamera();
         }
         
-        private void OnEnable()
-        {
-            LevelSystem.Instance.OnMainMenuLoad += OnReturnToMainMenu;
-        }
-
-        private void OnDisable()
-        {
-            if (LevelSystem.HasInstance)
-            {
-                LevelSystem.Instance.OnMainMenuLoad -= OnReturnToMainMenu;
-            }
-        }
-
-        private void OnReturnToMainMenu()
-        {
-            if (mainCamera)
-            {
-                Destroy(mainCamera);
-                mainCamera = null;
-            }
-            InitializeMainCamera();
-        }
-
         public void RegisterVirtualCamera(VirtualCamera virtualCamera)
         {
             virtualCameras.Add(virtualCamera);
@@ -77,7 +55,7 @@ namespace Systems.Camera
                 return;
             
             Debug.Assert(mainCamera.GetComponent<CinemachineBrain>(), "Main camera must have a cinemachine brain");
-            DontDestroyOnLoad(mainCamera.gameObject);
+            DontDestroyOnLoadUtils.Add(mainCamera.gameObject);
         }
     }
 }

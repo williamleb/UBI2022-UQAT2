@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Scriptables;
+using Systems.Level;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -87,16 +88,13 @@ namespace Systems
 
 			// TODO
 			// - check number of player in game (rejoin?)
-			StartCoroutine(WaitUntilNotInTransitionToSpawnPlayerRoutine(runner, playerRef));
+			if (LevelSystem.Instance.State != LevelSystem.LevelState.Transition)
+			{
+				SpawnPlayer(runner, playerRef);
+			}
 		}
 
-		private IEnumerator WaitUntilNotInTransitionToSpawnPlayerRoutine(NetworkRunner runner, PlayerRef playerRef)
-		{
-			yield return new WaitUntil(() => LevelSystem.Instance.State != LevelSystem.LevelState.Transition);
-			SpawnPlayer(runner, playerRef);
-		}
-
-	private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
+		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
 			Debug.Log($"{playerRef} left.");
 			PlayerEntity player = GetPlayerEntity(playerRef);

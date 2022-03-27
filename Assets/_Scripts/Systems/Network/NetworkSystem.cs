@@ -3,6 +3,7 @@ using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Systems.Level;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -154,7 +155,7 @@ namespace Systems.Network
         public async void Disconnect()
         {
             await NetworkRunner.Shutdown();
-            Destroy(this);
+            Destroy(gameObject);
         }
 
         public void OnConnectedToServer(NetworkRunner runner) => OnConnectedToServerEvent?.Invoke(runner);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace InputSystem
@@ -11,8 +12,14 @@ namespace InputSystem
 
         private readonly Dictionary<string, string> deviceToControlScheme = new Dictionary<string, string>();
 
+        private InputActionMap actionMap;
+
         public DetectDevice(InputActionMap inputActionMap)
         {
+            if (actionMap != null)
+                return;
+            
+            Debug.Log($"Action map {inputActionMap} =======================");
             foreach (InputControlScheme inputControlScheme in inputActionMap.controlSchemes)
             {
                 foreach (InputControlScheme.DeviceRequirement deviceRequirement in
@@ -24,6 +31,15 @@ namespace InputSystem
 
             CurrentDevice = deviceToControlScheme.Values.First();
             inputActionMap.actionTriggered += OnAnyInput;
+            actionMap = inputActionMap;
+        }
+
+        public void Finalize()
+        {
+            if (actionMap == null)
+                return;
+
+            actionMap.actionTriggered -= OnAnyInput;
         }
 
         public string CurrentDevice { get; private set; }
