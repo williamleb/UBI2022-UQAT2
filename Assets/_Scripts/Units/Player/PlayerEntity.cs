@@ -66,6 +66,16 @@ namespace Units.Player
             SoundAwake();
         }
 
+        private void OnEnable()
+        {
+            LevelSystem.Instance.OnGameLoad += DeactivateMenuAndCustomization;
+        }
+        
+        private void OnDisable()
+        {
+            LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
+        }
+
         private void AssignBaseArchetype()
         {
             if (Object.HasStateAuthority)
@@ -221,6 +231,12 @@ namespace Units.Player
         {
             OnTeamChanged?.Invoke();
         }
+        
+        private void DeactivateMenuAndCustomization()
+        {
+            CloseMenu();
+            StopCustomization();
+        }
 
         public void OpenMenu()
         {
@@ -266,7 +282,7 @@ namespace Units.Player
             
             CloseMenu();
 
-            ResetReady();
+            //ResetReady();
             RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
         }
@@ -275,6 +291,11 @@ namespace Units.Player
         {
             if (!InCustomization)
                 return;
+            
+            if (!MenuManager.HasInstance)
+                return;
+            
+            MenuManager.Instance.HideMenu(MenuManager.Menu.Customization);
 
             RPC_ChangeInCustomization(false);
             mainCamera.Activate();
