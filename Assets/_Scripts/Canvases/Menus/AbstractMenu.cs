@@ -16,7 +16,6 @@ namespace Canvases.Menu
         public event Action OnHide;
         
         [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
-        [SerializeField] private bool returnToThisMenu;
 
         [SerializeField, Required] private EntryAnimation entry;
         private CanvasGroup canvasGroup;
@@ -96,12 +95,23 @@ namespace Canvases.Menu
         
         private void OnEntered()
         {
+            if (MenuManager.HasInstance)
+            {
+                MenuManager.Instance.PushButtonToReturnTo(firstButtonToFocus);
+            }
+            
             canvasGroup.interactable = true;
             firstButtonToFocus.Select();
         }
         
         private void OnLeft()
         {
+            if (MenuManager.HasInstance)
+            {
+                MenuManager.Instance.RemoveButtonToReturnTo(firstButtonToFocus);
+                MenuManager.Instance.ReturnToButton();
+            }
+            
             OnHide?.Invoke();
         }
     }

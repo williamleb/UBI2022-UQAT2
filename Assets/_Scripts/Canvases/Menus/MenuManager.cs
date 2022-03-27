@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Canvases.Components;
 using Canvases.Matchmaking;
 using Canvases.Menu.Customization;
@@ -21,16 +22,11 @@ namespace Canvases.Menu
 
         private ModalUI modal;
         private int numberOfOpenedMenus;
-        private ButtonUIComponent buttonToReturnTo;
+        private List<ButtonUIComponent> buttonsToReturnTo = new List<ButtonUIComponent>();
 
         private readonly Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
 
         public bool InMenu => numberOfOpenedMenus > 0;
-
-        public ButtonUIComponent ButtonToReturnTo
-        {
-            set => buttonToReturnTo = value;
-        }
 
         private void Start()
         {
@@ -64,9 +60,22 @@ namespace Canvases.Menu
             }
         }
         
-        private void ReturnToButton()
+        public void PushButtonToReturnTo(ButtonUIComponent button)
         {
-            buttonToReturnTo.Select();
+            buttonsToReturnTo.Add(button);
+        }
+
+        public void RemoveButtonToReturnTo(ButtonUIComponent button)
+        {
+            buttonsToReturnTo.Remove(button);
+        }
+
+        public void ReturnToButton()
+        {
+            if (!buttonsToReturnTo.Any())
+                return;
+            
+            buttonsToReturnTo.Last().Select();
         }
 
         public bool HasMenu(Menu menuType)
