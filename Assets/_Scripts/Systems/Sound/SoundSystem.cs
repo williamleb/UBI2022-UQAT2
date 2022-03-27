@@ -50,6 +50,9 @@ using Utilities.Singleton;
         public void StopAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Stop(player.gameObject);
         public void PlayAimReleaseSound(PlayerEntity player) => wwiseObjects.AimReleaseEvent.Post(player.gameObject);
 
+        public float GetMasterVolume() => wwiseObjects.MasterVolumeParameter.GetGlobalValue() / 100f;
+        public float GetMusicVolume() => wwiseObjects.MusicVolumeParameter.GetGlobalValue() / 100f;
+        public float GetSoundEffectsVolume() => wwiseObjects.SoundEffectsVolumeParameter.GetGlobalValue() / 100f;
         public void SetMasterVolume(float volume) => wwiseObjects.MasterVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetMusicVolume(float volume) => wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);

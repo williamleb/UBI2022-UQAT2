@@ -16,6 +16,7 @@ namespace Canvases.Menu
         public event Action OnHide;
         
         [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
+        [SerializeField] private bool returnToThisMenu;
 
         [SerializeField, Required] private EntryAnimation entry;
         private CanvasGroup canvasGroup;

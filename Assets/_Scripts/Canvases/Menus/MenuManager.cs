@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Canvases.Components;
 using Canvases.Matchmaking;
 using Canvases.Menu.Customization;
 using Canvases.Menu.Main;
 using Canvases.Menu.Modal;
+using Canvases.Menu.Options;
 using JetBrains.Annotations;
 using Units.Player;
 using UnityEngine;
@@ -15,14 +17,20 @@ namespace Canvases.Menu
     {
         public event Action<bool> InMenuStatusChanged; 
 
-        public enum Menu { Customization, Main, Host, Join }
+        public enum Menu { Customization, Main, Host, Join, Options, Game, Controls }
 
         private ModalUI modal;
         private int numberOfOpenedMenus;
+        private ButtonUIComponent buttonToReturnTo;
 
         private readonly Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
 
         public bool InMenu => numberOfOpenedMenus > 0;
+
+        public ButtonUIComponent ButtonToReturnTo
+        {
+            set => buttonToReturnTo = value;
+        }
 
         private void Start()
         {
@@ -33,17 +41,37 @@ namespace Canvases.Menu
         private void InitializeMenus()
         {
             modal = FindObjectOfType<ModalUI>();
-            var customizationUI = FindObjectOfType<CustomizationUI>();
-            var mainUI = FindObjectOfType<MainUI>();
-            var hostJoinUIs = FindObjectsOfType<HostJoinUI>();
+            TryAddToMenus<CustomizationUI>(Menu.Customization);
+            TryAddToMenus<MainUI>(Menu.Main);
+            TryAddToMenus<HostJoinUI>(Menu.Host, b => b.Host);
+            TryAddToMenus<HostJoinUI>(Menu.Join, b => !b.Host);
+            TryAddToMenus<OptionsUI>(Menu.Options);
+        }
 
-            menus.Add(Menu.Customization, customizationUI);
-            menus.Add(Menu.Main, mainUI);
+        private void TryAddToMenus<T>(Menu menuType, Func<T, bool> validator = null) where T : AbstractMenu
+        {
+            var menusOfType = FindObjectsOfType<T>();
 
-            foreach (var hostJoinUI in hostJoinUIs)
+            foreach (var menu in menusOfType)
             {
-                menus.Add(hostJoinUI.Host ? Menu.Host : Menu.Join, hostJoinUI);
+                if (menu.gameObject.scene != gameObject.scene)
+                    continue;
+                
+                if (validator != null && !validator.Invoke(menu))
+                    continue;
+                
+                menus.Add(menuType, menu);
             }
+        }
+        
+        private void ReturnToButton()
+        {
+            buttonToReturnTo.Select();
+        }
+
+        public bool HasMenu(Menu menuType)
+        {
+            return menus.ContainsKey(menuType);
         }
 
         protected override void OnDestroy()

@@ -12,8 +12,8 @@ namespace Canvases.Components
         
         [Header("Association")] 
         [SerializeField] [Required] private Slider slider;
-        [SerializeField] [Required] public Image backgroundImage;
-        [SerializeField] [Required] public Image fillImage;
+        [SerializeField] private Image backgroundImage;
+        [SerializeField] private Image fillImage;
 
         public float Value
         {
@@ -25,6 +25,28 @@ namespace Canvases.Components
         {
             get => slider.maxValue;
             set => slider.maxValue = value;
+        }
+        
+        public Color BackgroundColor
+        {
+            set
+            {
+                if (backgroundImage != null)
+                {
+                    backgroundImage.color = value;
+                }
+            }
+        }
+        
+        public Color FillColor
+        {
+            set
+            {
+                if (fillImage != null)
+                {
+                    fillImage.color = value;
+                }
+            }
         }
 
         private void Start()

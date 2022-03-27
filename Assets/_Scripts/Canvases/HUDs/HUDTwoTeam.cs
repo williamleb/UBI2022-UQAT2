@@ -54,8 +54,8 @@ namespace Canvases.HUDs
                 UpdateColor(0);
                 UpdateName(null);
 
-                progressBar.backgroundImage.color = SettingsSystem.CustomizationSettings.GetColor(rightTeam.Color);
-                progressBar.fillImage.color = SettingsSystem.CustomizationSettings.GetColor(leftTeam.Color);
+                progressBar.BackgroundColor = SettingsSystem.CustomizationSettings.GetColor(rightTeam.Color);
+                progressBar.FillColor = SettingsSystem.CustomizationSettings.GetColor(leftTeam.Color);
 
                 Reset();
             }

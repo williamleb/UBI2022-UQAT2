@@ -53,7 +53,10 @@ namespace Canvases.Menu.Main
         
         private void OnOptionsButtonPressed()
         {
-            // TODO
+            if (MenuManager.HasInstance)
+            {
+                MenuManager.Instance.ShowMenu(MenuManager.Menu.Options);
+            }
         }
         
         private void OnExitButtonPressed()
