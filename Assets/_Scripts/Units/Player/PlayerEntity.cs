@@ -234,6 +234,12 @@ namespace Units.Player
         
         private void DeactivateMenuAndCustomization()
         {
+            if (!Object)
+                return;
+
+            if (!Object.HasInputAuthority)
+                return;
+            
             CloseMenu();
             StopCustomization();
         }

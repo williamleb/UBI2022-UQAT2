@@ -40,7 +40,9 @@ namespace Managers.Game
         public GameTimer GameTimer => gameTimer;
         public GameState CurrentState => currentState;
         public bool IsSpawning => spawnAndStartGameCoroutine != null;
-        public float GameProgression => gameTimer.RemainingTime / gameTimer.InitialDuration; // Between 0 and 1
+        public float GameProgression => Math.Max(GameProgressionFromTime, GameProgressionFromScore); // Between 0 (start of game) and 1 (end of game)
+        public float GameProgressionFromTime => 1 - (gameTimer.RemainingTime / gameTimer.InitialDuration); 
+        public float GameProgressionFromScore => ScoreManager.HasInstance ? ScoreManager.Instance.FindTeamWithHighestScore().ScoreValue / (float) settings.NumberOfHomeworksToFinishGame : 0f; 
 
         public bool IsRunning => currentState == GameState.Running;
         public bool IsOvertime => currentState == GameState.Overtime;
