@@ -34,6 +34,9 @@ namespace Managers.Game
         private NetworkedGameData networkedData;
         private GameState currentState;
         private bool endGameOnScore;
+        //At overtime only (null otherwise), this variable contains the favorite team.
+        //By default, the favorite team is the team that had the highest score at the end of the last game.
+        private Team overTimeFavoriteTeam = null;
 
         private Coroutine spawnAndStartGameCoroutine;
         private readonly HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
@@ -157,6 +160,7 @@ namespace Managers.Game
             {
                 if (CanOvertime())
                 {
+                    overTimeFavoriteTeam = ScoreManager.Instance.FindTeamWithHighestScore();
                     networkedData.GameIsOvertime = true;
                     gameTimer.Init(settings.OvertimeDurationInSeconds);
                 }
@@ -217,7 +221,10 @@ namespace Managers.Game
         public void Reset()
         {
             networkedData.Reset();
+
             endGameOnScore = false;
+            overTimeFavoriteTeam = null;
+
             OnReset?.Invoke();
         }
 
@@ -226,6 +233,11 @@ namespace Managers.Game
             if (currentState == GameState.Overtime)
             {
                 if (endGameOnScore)
+                {
+                    EndGame();
+                }
+
+                if (overTimeFavoriteTeam != null &&  team.Equals(overTimeFavoriteTeam))
                 {
                     EndGame();
                 }
