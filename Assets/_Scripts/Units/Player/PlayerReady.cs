@@ -1,4 +1,5 @@
-﻿using Canvases.Markers;
+﻿using System;
+using Canvases.Markers;
 using Fusion;
 using Systems;
 using Systems.Level;
@@ -11,10 +12,12 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        public static event Action OnReadyChanged; 
+        
         [Header("Ready")] 
         [SerializeField] private TextMarkerReceptor readyMarker;
         
-        [Networked(OnChanged = nameof(OnIsReadyChanged)), HideInInspector] public NetworkBool IsReady { get; set; }
+        [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 
         private Team readySubscribedTeam;
 
@@ -28,6 +31,7 @@ namespace Units.Player
             if (!LevelSystem.Instance.IsLobby)
             {
                 IsReady = false;
+                OnReadyChanged?.Invoke();
                 return;
             }
             
@@ -36,6 +40,7 @@ namespace Units.Player
                 if (inputData.IsReadyOnce && !InMenu && !InCustomization)
                 {
                     IsReady = !IsReady;
+                    OnReadyChanged?.Invoke();
                     Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
                 }
             }
@@ -44,6 +49,7 @@ namespace Units.Player
         private void ResetReady()
         {
             IsReady = false;
+            OnReadyChanged?.Invoke();
         }
 
         private void UpdateReadyMarker()

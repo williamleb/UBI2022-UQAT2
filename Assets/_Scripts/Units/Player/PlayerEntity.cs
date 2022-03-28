@@ -52,7 +52,6 @@ namespace Units.Player
         private void OnAwake()
         {
             data = SettingsSystem.Instance.GetPlayerSettings(Archetype.Base);
-            print(data.PlayerArchetype);
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
             customization = GetComponent<PlayerCustomization>();
@@ -117,6 +116,7 @@ namespace Units.Player
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             OnPlayerDespawned?.Invoke(Object);
+            readyMarker.Deactivate();
             TerminateSound();
         }
 
@@ -317,6 +317,14 @@ namespace Units.Player
         private void RPC_ChangeInCustomization(NetworkBool inCustomization)
         {
             InCustomization = inCustomization;
+            if (inCustomization)
+            {
+                MakeImmune();
+            }
+            else
+            {
+                UnmakeImmune();
+            }
         }
         
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]

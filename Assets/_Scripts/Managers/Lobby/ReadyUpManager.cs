@@ -27,9 +27,10 @@ namespace Managers.Lobby
 
             countdownText.gameObject.SetActive(false);
             playerSystem = PlayerSystem.Instance;
+            playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
         }
 
-        private void Update()
+        private void UpdateReadyForAll()
         {
             allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
 
