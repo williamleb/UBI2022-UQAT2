@@ -65,5 +65,12 @@ namespace Units.Player
             await Task.Delay(250);
             IsPushing = false;
         }
+
+        private async void PlayDancingAnim()
+        {
+            IsDancing = true;
+            await Task.Delay(500);
+            IsDancing = false;
+        }
     }
 }

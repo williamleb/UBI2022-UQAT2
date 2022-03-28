@@ -139,7 +139,7 @@ namespace Units.Player
 
                     if (inputData.IsDanceOnce && !InMenu && !InCustomization)
                     {
-                        IsDancing = true;
+                        PlayDancingAnim();
                     }
 
                     if (inputData.IsMenu && !InCustomization && Object.HasInputAuthority)
