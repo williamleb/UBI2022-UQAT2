@@ -20,9 +20,10 @@ namespace Systems.Settings
         [SerializeField] [Tooltip("Secondary time flow rate. Only used when overtime modulation is enabled. (e.g. when the losing team does not have in its possession an homework.")] private int secondaryTimeFlowRate = 2;
 
         [Header("Colors")]
-        [SerializeField] private Color victoryColor = Color.green;
+        [SerializeField] private Color victoryColor = Color.yellow;
         [SerializeField] private Color defeatColor = Color.red;
         [SerializeField] private Color drawColor = Color.grey;
+        [SerializeField] private Color replayReadyColor = Color.green;
         
         public int NumberOfHomeworksToFinishGame => numberOfHomeworksToFinishGame;
         public int GameDurationInSeconds => gameDurationInSeconds;
@@ -34,5 +35,6 @@ namespace Systems.Settings
         public Color VictoryColor => victoryColor;
         public Color DefeatColor => defeatColor;
         public Color DrawColor => drawColor;
+        public Color ReplayReadyColor => replayReadyColor;
     }
 }

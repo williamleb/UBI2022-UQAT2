@@ -61,7 +61,7 @@ namespace Canvases.Menu.End
         {
             for (var i = 0; i < PlayersReadyToReplay.Length; ++i)
             {
-                if (PlayersReadyToReplay[i] != default)
+                if (PlayersReadyToReplay[i] == default)
                 {
                     PlayersReadyToReplay.Set(i, player);
                     return;

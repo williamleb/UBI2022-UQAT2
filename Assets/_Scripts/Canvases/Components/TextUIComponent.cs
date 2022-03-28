@@ -19,6 +19,7 @@ namespace Canvases.Components
         
         public Color Color
         {
+            get => text.color;
             set => text.color = value;
         }
 

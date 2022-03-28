@@ -24,10 +24,12 @@ namespace Canvases.Menu.End
         [SerializeField, Required] private TextUIComponent scoreTeam2Text;
         [SerializeField, Required] private TextUIComponent nameTeam1Text;
         [SerializeField, Required] private TextUIComponent nameTeam2Text;
-        [SerializeField, Required] private TextUIComponent replayText;
+        [SerializeField, Required] private TextUIComponent replayReadyText;
 
         private EndUINetworkData networkData;
         private PlayerEntity player;
+        
+        private Color replayNotReadyColor = Color.black;
         
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
@@ -36,6 +38,8 @@ namespace Canvases.Menu.End
         {
             base.Awake();
             networkData = GetComponent<EndUINetworkData>();
+
+            replayNotReadyColor = replayReadyText.Color;
         }
 
         protected override void OnEnable()
@@ -43,6 +47,9 @@ namespace Canvases.Menu.End
             base.OnEnable();
             replayButton.OnClick += OnReplayPressed;
             mainMenuButton.OnClick += OnMainMenuPressed;
+
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
         protected override void OnDisable()
@@ -50,6 +57,17 @@ namespace Canvases.Menu.End
             base.OnDisable();
             replayButton.OnClick -= OnReplayPressed;
             mainMenuButton.OnClick -= OnMainMenuPressed;
+            
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        }
+        
+        private void OnGameStateChanged(GameState gameState)
+        {
+            if (gameState == GameState.Finished)
+            {
+                Show();
+            }
         }
 
         protected override bool ShowForImplementation(PlayerEntity playerEntity)
@@ -74,12 +92,13 @@ namespace Canvases.Menu.End
 
         private void Init()
         {
-            UpdateTexts();
             networkData.Reset();
             networkData.OnNumberOfPlayersReadyToReplayChanged += OnNumberOfPlayersReadyToReplayChanged;
             networkData.OnReplaying += ReturnToLobby;
             PlayerEntity.OnPlayerSpawned += OnNumberOfPlayersChanged;
             PlayerEntity.OnPlayerDespawned += OnNumberOfPlayersChanged;
+            UpdateTexts();
+            UpdateReadyToLeave();
         }
         
         private void Terminate()
@@ -155,17 +174,19 @@ namespace Canvases.Menu.End
 
         private void UpdateReadyToLeave()
         {
+            var settings = SettingsSystem.GameSettings;
+            replayReadyText.Color = networkData.IsPlayerReadyToReplay(player.Object.InputAuthority) ? settings.ReplayReadyColor : replayNotReadyColor;
+            
             var totalNumber = PlayerSystem.Instance.NumberOfPlayers;
-
             if (networkData.IsReplaying)
             {
-                replayText.Text = $"Replay ({totalNumber}/{totalNumber})";
+                replayReadyText.Text = $"({totalNumber}/{totalNumber})";
                 return;
             }
 
             var numberReadyToReplay = CountNumberOfPlayersReadyToReplay();
             
-            replayText.Text = $"Replay ({numberReadyToReplay}/{totalNumber})";
+            replayReadyText.Text = $"({numberReadyToReplay}/{totalNumber})";
 
             if (numberReadyToReplay >= totalNumber)
             {
