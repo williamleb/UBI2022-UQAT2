@@ -117,7 +117,7 @@ namespace Units.Player
 
         private void RotatePlayer()
         {
-            if (IsDashing || isRagdoll) return;
+            if (IsDashing || isRagdoll || lastMoveDirection == Vector3.zero) return;
             float turnRateDivider = Mathf.Max(1, velocity - data.MoveMaximumSpeed);
             float turnRate = data.TurnRotationSpeed * Runner.DeltaTime / turnRateDivider;
             transform.forward = velocity < data.MoveMaximumSpeed / 2f

@@ -59,9 +59,10 @@ namespace Units.Player
                 IsGettingUpF = !IsGettingUpB;
                 RPC_ToggleRagdoll(false);
             }
+        }
 
-            yield return Helpers.GetWait(0.3f);
-            
+        public void IsUpAnimEvent()
+        {
             CanMove = true;
         }
 

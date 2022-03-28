@@ -74,10 +74,8 @@ namespace Units.Player
         
         private void OnDisable()
         {
-            if (LevelSystem.HasInstance)
-            {
+            if(LevelSystem.HasInstance)
                 LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
-            }
         }
 
         private void AssignBaseArchetype()
@@ -143,7 +141,7 @@ namespace Units.Player
 
                     if (inputData.IsDanceOnce && !InMenu && !InCustomization)
                     {
-                        IsDancing = true;
+                        PlayDancingAnim();
                     }
 
                     if (inputData.IsMenu && !InCustomization && Object.HasInputAuthority)
