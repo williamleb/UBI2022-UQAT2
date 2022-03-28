@@ -53,6 +53,7 @@ namespace Canvases.Menu.Game
         {
             if (MenuManager.HasInstance)
             {
+                Unfocus();
                 MenuManager.Instance.ShowMenu(MenuManager.Menu.Options);
             }
         }

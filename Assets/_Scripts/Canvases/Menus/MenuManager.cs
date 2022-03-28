@@ -8,6 +8,7 @@ using Canvases.Menu.Game;
 using Canvases.Menu.Main;
 using Canvases.Menu.Modal;
 using Canvases.Menu.Options;
+using Canvases.Menu.Rebind;
 using JetBrains.Annotations;
 using Units.Player;
 using UnityEngine;
@@ -23,14 +24,17 @@ namespace Canvases.Menu
 
         private ModalUI modal;
         private int numberOfOpenedMenus;
-        private List<ButtonUIComponent> buttonsToReturnTo = new List<ButtonUIComponent>();
+        private List<AbstractMenu> menusToReturnTo = new List<AbstractMenu>();
+        private bool isOpened = true;
 
         private readonly Dictionary<Menu, AbstractMenu> menus = new Dictionary<Menu, AbstractMenu>();
 
         public bool InMenu => numberOfOpenedMenus > 0;
+        public bool IsOpened => isOpened;
 
         public void Open()
         {
+            isOpened = true;
             foreach (var menu in menus.Values)
             {
                 menu.OnMenuManagerOpened();
@@ -39,6 +43,7 @@ namespace Canvases.Menu
 
         public void Close()
         {
+            isOpened = false;
             foreach (var menu in menus.Values)
             {
                 menu.OnMenuManagerClosed();
@@ -61,6 +66,7 @@ namespace Canvases.Menu
             TryAddToMenus<HostJoinUI>(Menu.Join, menu => !menu.Host);
             TryAddToMenus<OptionsUI>(Menu.Options);
             TryAddToMenus<GameUI>(Menu.Game);
+            TryAddToMenus<RebindUI>(Menu.Controls);
         }
 
         private void TryAddToMenus<T>(Menu menuType, Func<T, bool> validator = null) where T : AbstractMenu
@@ -79,22 +85,22 @@ namespace Canvases.Menu
             }
         }
         
-        public void PushButtonToReturnTo(ButtonUIComponent button)
+        public void PushMenuToReturnTo(AbstractMenu menu)
         {
-            buttonsToReturnTo.Add(button);
+            menusToReturnTo.Add(menu);
         }
 
-        public void RemoveButtonToReturnTo(ButtonUIComponent button)
+        public void RemoveButtonToReturnTo(AbstractMenu menu)
         {
-            buttonsToReturnTo.Remove(button);
+            menusToReturnTo.Remove(menu);
         }
 
-        public void ReturnToButton()
+        public void ReturnToMenu()
         {
-            if (!buttonsToReturnTo.Any())
+            if (!menusToReturnTo.Any())
                 return;
             
-            buttonsToReturnTo.Last().Select();
+            menusToReturnTo.Last().Focus();
         }
 
         public bool HasMenu(Menu menuType)

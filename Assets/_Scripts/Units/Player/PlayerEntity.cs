@@ -74,7 +74,10 @@ namespace Units.Player
         
         private void OnDisable()
         {
-            LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
+            }
         }
 
         private void AssignBaseArchetype()

@@ -2,7 +2,7 @@
 using Canvases.Components;
 using UnityEngine;
 
-namespace Canvases.InputSystem
+namespace Canvases.Menu.Rebind
 {
     [Serializable]
     public class RebindReferences

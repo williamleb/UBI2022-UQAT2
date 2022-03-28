@@ -10,11 +10,15 @@ namespace Canvases.Menu
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class AbstractMenu : MonoBehaviour, IMenu
     {
-        protected enum EntryDirection { Down, Up }
-        
-        public event Action OnShow; 
+        protected enum EntryDirection
+        {
+            Down,
+            Up
+        }
+
+        public event Action OnShow;
         public event Action OnHide;
-        
+
         [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
 
         [SerializeField, Required] private EntryAnimation entry;
@@ -34,8 +38,22 @@ namespace Canvases.Menu
             canvasGroup.alpha = 0f;
             canvasGroup.interactable = false;
         }
-        
-        public bool ShowFor(PlayerEntity playerEntity)
+
+        public void Focus()
+        {
+            if (MenuManager.HasInstance && !MenuManager.Instance.IsOpened)
+                return;
+            
+            canvasGroup.interactable = true;
+            firstButtonToFocus.Select();
+        }
+
+        public void Unfocus()
+        {
+            canvasGroup.interactable = false;
+        }
+
+    public bool ShowFor(PlayerEntity playerEntity)
         {
             if (entry.IsEnteredOrEntering)
                 return false;
@@ -115,7 +133,7 @@ namespace Canvases.Menu
         {
             if (MenuManager.HasInstance)
             {
-                MenuManager.Instance.PushButtonToReturnTo(firstButtonToFocus);
+                MenuManager.Instance.PushMenuToReturnTo(this);
             }
             
             canvasGroup.interactable = true;
@@ -126,8 +144,8 @@ namespace Canvases.Menu
         {
             if (MenuManager.HasInstance)
             {
-                MenuManager.Instance.RemoveButtonToReturnTo(firstButtonToFocus);
-                MenuManager.Instance.ReturnToButton();
+                MenuManager.Instance.RemoveButtonToReturnTo(this);
+                MenuManager.Instance.ReturnToMenu();
             }
             
             OnHide?.Invoke();

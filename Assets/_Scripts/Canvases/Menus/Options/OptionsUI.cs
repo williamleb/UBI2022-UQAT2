@@ -76,6 +76,7 @@ namespace Canvases.Menu.Options
         {
             if (MenuManager.HasInstance)
             {
+                Unfocus();
                 MenuManager.Instance.ShowMenu(MenuManager.Menu.Controls);
             }
         }
