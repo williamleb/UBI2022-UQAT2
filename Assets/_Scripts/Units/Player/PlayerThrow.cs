@@ -40,7 +40,7 @@ namespace Units.Player
 
             if (!CanThrow())
             {
-                if (IsAiming || IsThrowing)
+                if (IsAiming || IsThrowing || RumbleSystem.Instance.HasRumble)
                     CancelAimingAndThrowing();
 
                 return;
@@ -66,6 +66,7 @@ namespace Units.Player
             ThrowForceTimer = Math.Min(ThrowForceTimer + Runner.DeltaTime, data.SecondsBeforeMaxThrowForce);
 
             ThrowForcePercent = data.SecondsBeforeMaxThrowForce != 0 ? ThrowForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
+            print("Adding rumble");
             RumbleSystem.Instance.SetRumble(throwRumbleKey, lowFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent), highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent));
             
             if (Object.HasInputAuthority)
@@ -78,6 +79,9 @@ namespace Units.Player
                 return false;
             
             if (IsDashing)
+                return false;
+
+            if (isRagdoll)
                 return false;
             
             return true;
@@ -93,6 +97,7 @@ namespace Units.Player
 
         private void CancelAimingAndThrowing()
         {
+            print("Cancel rumble");
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
             IsAiming = false;
             IsThrowing = false;
@@ -101,6 +106,7 @@ namespace Units.Player
 
         private void UpdateThrowState()
         {
+            print("Stopping rumble");
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
 
             IsThrowing = true;

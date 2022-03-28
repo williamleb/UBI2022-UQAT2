@@ -12,6 +12,7 @@ namespace Systems
         private readonly Dictionary<Guid, RumbleContribution> contributions = new Dictionary<Guid, RumbleContribution>();
 
         public bool Activated { get; set; } = true;
+        public bool HasRumble => contributions.Count > 0;
 
         public RumbleKey GenerateNewRumbleKeyFromBehaviour(NetworkBehaviour networkBehaviour)
         {
