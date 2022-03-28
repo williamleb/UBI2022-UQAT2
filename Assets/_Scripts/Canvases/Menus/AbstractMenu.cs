@@ -10,18 +10,61 @@ namespace Canvases.Menu
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class AbstractMenu : MonoBehaviour, IMenu
     {
-        protected enum EntryDirection { Down, Up }
-        
-        public event Action OnShow; 
+        protected enum EntryDirection
+        {
+            Down,
+            Up
+        }
+
+        protected enum State
+        {
+            None,
+            Showing,
+            Shown,
+            Hiding,
+            Hidden
+        }
+
+        public event Action OnShow;
         public event Action OnHide;
-        
+
         [SerializeField, Required] private ButtonUIComponent firstButtonToFocus;
 
         [SerializeField, Required] private EntryAnimation entry;
         private CanvasGroup canvasGroup;
 
+        private State currentState = State.None;
+
+        public bool IsInTransition => currentState == State.Hiding || currentState == State.Showing;
+        
         protected abstract EntryDirection EnterDirection { get; }
         protected abstract EntryDirection LeaveDirection { get; }
+
+        public virtual void OnMenuManagerOpened()
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+        }
+
+        public virtual void OnMenuManagerClosed()
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+        }
+
+        public void Focus()
+        {
+            if (MenuManager.HasInstance && !MenuManager.Instance.IsOpened)
+                return;
+            
+            canvasGroup.interactable = true;
+            firstButtonToFocus.Select();
+        }
+
+        public void Unfocus()
+        {
+            canvasGroup.interactable = false;
+        }
 
         public bool ShowFor(PlayerEntity playerEntity)
         {
@@ -64,6 +107,7 @@ namespace Canvases.Menu
 
         private void Enter()
         {
+            currentState = State.Showing;
             if (EnterDirection == EntryDirection.Down)
                 entry.EnterDown();
             else 
@@ -72,19 +116,21 @@ namespace Canvases.Menu
 
         private void Leave()
         {
+            currentState = State.Hiding;
             if (LeaveDirection == EntryDirection.Down)
                 entry.LeaveDown();
             else 
                 entry.LeaveUp();
         }
 
-        public virtual bool ShowForImplementation(PlayerEntity playerEntity) => ShowImplementation();
-        public virtual bool ShowImplementation() => true;
-        public virtual bool HideImplementation() => true;
+        protected virtual bool ShowForImplementation(PlayerEntity playerEntity) => ShowImplementation();
+        protected virtual bool ShowImplementation() => true;
+        protected virtual bool HideImplementation() => true;
 
         protected virtual void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
+            currentState = entry.IsEntered ? State.Shown : State.Hidden;
         }
         
         protected virtual void OnEnable()
@@ -103,22 +149,24 @@ namespace Canvases.Menu
         {
             if (MenuManager.HasInstance)
             {
-                MenuManager.Instance.PushButtonToReturnTo(firstButtonToFocus);
+                MenuManager.Instance.PushMenuToReturnTo(this);
             }
             
             canvasGroup.interactable = true;
             firstButtonToFocus.Select();
+            currentState = State.Shown;
         }
         
         private void OnLeft()
         {
             if (MenuManager.HasInstance)
             {
-                MenuManager.Instance.RemoveButtonToReturnTo(firstButtonToFocus);
-                MenuManager.Instance.ReturnToButton();
+                MenuManager.Instance.RemoveButtonToReturnTo(this);
+                MenuManager.Instance.ReturnToMenu();
             }
             
             OnHide?.Invoke();
+            currentState = State.Hidden;
         }
     }
 }

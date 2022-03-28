@@ -49,6 +49,5 @@ namespace Managers.Game
                 networkedData.OnGameStateChanged?.Invoke(networkedData.GameIsStarted ? GameState.Running : GameState.NotStarted);
             }
         }
-
     }
 }

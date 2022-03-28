@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Scriptables;
 using Sirenix.OdinInspector;
@@ -14,6 +15,11 @@ namespace Systems.MapGeneration
 
         private MapLayouts mapLayouts;
         private MapRooms mapRooms;
+
+        private List<NetworkObject> spawnedRooms = new List<NetworkObject>();
+        private NetworkObject spawnedProp;
+        private NetworkObject spawnedHallways;
+        private NetworkObject spawnedSpawnPoints;
 
         protected override void Awake()
         {
@@ -61,12 +67,37 @@ namespace Systems.MapGeneration
                                    Vector3.up * 0.01f +
                                    Vector3.forward * roomGenerationInfo.Height / 2 +
                                    Vector3.right * roomGenerationInfo.Width / 2;
-                NetworkSystem.Instance.Spawn(randomRoom.GetComponent<NetworkObject>(), position, rotation);
+                var spawnedRoom = NetworkSystem.Instance.Spawn(randomRoom.GetComponent<NetworkObject>(), position, rotation);
+                spawnedRooms.Add(spawnedRoom);
             }
 
-            NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
-            NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
-            NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
+            spawnedProp = NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
+            spawnedHallways = NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
+            spawnedSpawnPoints = NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
+        }
+
+        public void CleanUpMap()
+        {
+            if (!NetworkSystem.HasInstance)
+                return;
+
+            foreach (var spawnedRoom in spawnedRooms)
+            {
+                NetworkSystem.Instance.Despawn(spawnedRoom);
+            }
+            spawnedRooms.Clear();
+            
+            if (spawnedProp)
+                NetworkSystem.Instance.Despawn(spawnedProp);
+            spawnedProp = null;
+            
+            if (spawnedHallways)
+                NetworkSystem.Instance.Despawn(spawnedHallways);
+            spawnedHallways = null;
+            
+            if (spawnedSpawnPoints)
+                NetworkSystem.Instance.Despawn(spawnedSpawnPoints);
+            spawnedSpawnPoints = null;
         }
 
         private Quaternion CalculateRotation(DesiredOrientation randomRoomTopDirection, DesiredOrientation desiredOrientation)

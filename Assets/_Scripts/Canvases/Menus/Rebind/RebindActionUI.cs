@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using Utilities;
 using Utilities.Extensions;
 
-namespace Canvases.InputSystem
+namespace Canvases.Menu.Rebind
 {
     public class RebindActionUI : MonoBehaviour
     {
@@ -196,11 +196,6 @@ namespace Canvases.InputSystem
             UpdateBindingUIEvent += onUpdateBindingUIEvent;
             UpdateActionLabel();
             UpdateBindingDisplay();
-        }
-
-        public void SelectMainBinding()
-        {
-            mainBindingReferences.Button.Select();
         }
     }
 }

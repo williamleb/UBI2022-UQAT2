@@ -1,5 +1,6 @@
 ﻿using Canvases.Components;
 using Sirenix.OdinInspector;
+using Systems.Level;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -19,13 +20,13 @@ namespace Canvases.Menu.Game
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
 
-        public override bool ShowForImplementation(PlayerEntity playerEntity)
+        protected override bool ShowForImplementation(PlayerEntity playerEntity)
         {
             player = playerEntity;
             return true;
         }
 
-        public override bool HideImplementation()
+        protected override bool HideImplementation()
         {
             player = null;
             return true;
@@ -52,14 +53,15 @@ namespace Canvases.Menu.Game
         {
             if (MenuManager.HasInstance)
             {
+                Unfocus();
                 MenuManager.Instance.ShowMenu(MenuManager.Menu.Options);
             }
         }
 
         private void OnMainMenuPressed()
         {
+            LevelSystem.Instance.LoadMainMenu();
             NetworkSystem.Instance.Disconnect();
-            // TODO Return to main menu
         }
 
         private void OnExitPressed()

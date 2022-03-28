@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using Systems;
+using Systems.Level;
 using Systems.Settings;
 using TMPro;
 using Units.Player;
@@ -33,7 +35,7 @@ namespace Managers.Lobby
 
             foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
             {
-                if (playerEntity.Object.HasInputAuthority)
+                if (playerEntity.Object && playerEntity.Object.HasInputAuthority)
                 {
                     readyUpMessage.SetActive(!playerEntity.IsReady);
                 }

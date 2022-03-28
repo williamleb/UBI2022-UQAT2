@@ -1,3 +1,4 @@
+using System;
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +10,21 @@ using Units.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Utilities;
 using Utilities.Event;
 using Utilities.Singleton;
 
-namespace Systems
+namespace Systems.Level
 {
     public class LevelSystem : PersistentSingleton<LevelSystem>
     {
         private const string SCENES_FOLDER_PATH = "Game";
+
+        public event Action OnMainMenuStartLoad;
+        public event Action OnLobbyStartLoad;
+        public event Action OnGameStartLoad;
         
+        public MemoryEvent OnMainMenuLoad;
         public MemoryEvent OnLobbyLoad;
         public MemoryEvent OnGameLoad;
         
@@ -28,7 +35,9 @@ namespace Systems
         private GameScenes scenes;
         private Scene loadedScene;
 
-        public INetworkSceneObjectProvider NetworkSceneObjectProvider { get; private set; }
+        private NetworkSceneManager networkManager;
+
+        public INetworkSceneObjectProvider NetworkSceneObjectProvider => networkManager;
         public LevelState State { get; private set; }
         public int ActiveSceneIndex { get; private set; }
 
@@ -42,18 +51,30 @@ namespace Systems
 
         public enum LevelState
         {
-            TRANSITION,
-            LOBBY,
-            GAME
+            Transition,
+            Lobby,
+            Game,
+            MainMenu
         }
 
         protected override void Awake()
         {
             base.Awake();
-
+            
+            CreateNetworkManager();
             ActiveSceneIndex = SceneManager.GetActiveScene().buildIndex;
             LoadScenes();
         }
+
+        private void CreateNetworkManager()
+        {
+            if (networkManager)
+            {
+                Destroy(networkManager);
+            }
+            networkManager = gameObject.AddComponent<NetworkSceneManager>();
+        }
+            
 
         private void LoadScenes()
         {
@@ -66,55 +87,95 @@ namespace Systems
             scenes = sceneResources.First();
         }
 
-        public void Start()
-        {
-            NetworkSceneObjectProvider = gameObject.AddComponent<NetworkSceneManager>();
-        }
-
         // Since the NetworkRunner is deleted after a connection error (idk why),
         // called by the runner to re-register actions
         public void SubscribeNetworkEvents()
         {
-            NetworkSystem.Instance.OnSceneLoadDoneEvent += ChangeLevelState;
+            NetworkSystem.Instance.OnSceneLoadDoneEvent += OnSceneLoadDone;
         }
         
         public void LoadLobby()
         {
-            State = LevelState.TRANSITION;
+            State = LevelState.Transition;
 
             Debug.Log("Loading lobby scene.");
             ActiveSceneIndex = LobbyScene.BuildIndex;
+            OnLobbyStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(LobbyScene.BuildIndex);
         }
 
         public void LoadGame()
         {
-            State = LevelState.TRANSITION;
+            State = LevelState.Transition;
 
             Debug.Log($"Loading scene with index {GameScene.BuildIndex}");
             ActiveSceneIndex = GameScene.BuildIndex;
+            OnGameStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(GameScene.BuildIndex);
         }
+
+        public void LoadMainMenu()
+        {
+            StartCoroutine(LoadMainMenuRoutine());
+        }
+
+        private IEnumerator LoadMainMenuRoutine()
+        {
+            State = LevelState.Transition;
+            ActiveSceneIndex = MainMenuScene.BuildIndex;
+            OnMainMenuStartLoad?.Invoke();
+            
+            AsyncOperation unloadOperation;
+            try
+            {
+                unloadOperation = SceneManager.UnloadSceneAsync(MainMenuScene.BuildIndex);
+            }
+            catch (ArgumentException)
+            {
+                // The scene was not loaded. Do nothing.
+                unloadOperation = null;
+            }
+            if (unloadOperation != null)
+            {
+                yield return unloadOperation;
+            }
+
+            DontDestroyOnLoadUtils.DestroyAll((o => o != gameObject));
+            
+            yield return SceneManager.LoadSceneAsync(MainMenuScene.BuildIndex);
+            DestroyImmediate(gameObject);
+        }
+
+        private void OnSceneLoadDone(NetworkRunner networkRunner)
+        {
+            ChangeLevelState();
+        }
         
-        private void ChangeLevelState(NetworkRunner networkRunner)
+        private void ChangeLevelState()
         {
             OnLobbyLoad.ClearMemory();
             OnGameLoad.ClearMemory();
+            OnMainMenuLoad.ClearMemory();
             
             if (ActiveSceneIndex == LobbyScene.BuildIndex)
             {
                 Debug.Log("Invoking spawn player");
-                State = LevelState.LOBBY;
+                State = LevelState.Lobby;
                 OnLobbyLoad.InvokeWithMemory();
             }
             else if (ActiveSceneIndex == GameScene.BuildIndex || NetworkSystem.Instance.DebugMode)
             {
-                State = LevelState.GAME;
+                State = LevelState.Game;
                 OnGameLoad.InvokeWithMemory();
+            }
+            else if (ActiveSceneIndex == MainMenuScene.BuildIndex)
+            {
+                State = LevelState.MainMenu;
+                OnMainMenuLoad.InvokeWithMemory();
             }
             else
             {
-                State = LevelState.TRANSITION;
+                State = LevelState.Transition;
             }
 
             PlayerInputHandler.FetchInput = true;
@@ -153,6 +214,8 @@ namespace Systems
 
                 // Delay one frame
                 yield return null;
+                
+                Instance.ActiveSceneIndex = newScene;
 
                 Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
                 finished(sceneObjects);

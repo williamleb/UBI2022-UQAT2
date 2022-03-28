@@ -63,6 +63,7 @@ namespace Canvases.Prompts
             {
                 playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
             }
+            PlayerEntity.OnPlayerSpawned -= Init;
         }
 
         private void Init(NetworkObject player)

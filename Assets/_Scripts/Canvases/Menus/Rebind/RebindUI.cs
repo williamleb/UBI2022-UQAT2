@@ -10,9 +10,9 @@ using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
-namespace Canvases.InputSystem
+namespace Canvases.Menu.Rebind
 {
-    public class RebindUI : MonoBehaviour
+    public class RebindUI : AbstractMenu
     {
         [SerializeField] private ImageUIComponent background;
         [SerializeField] private GameObject rebindMenuContent;
@@ -21,6 +21,7 @@ namespace Canvases.InputSystem
         [SerializeField] private RectTransform scrollRectContent;
         [SerializeField] private TextUIComponent rebindOverlayText;
         [SerializeField] private RebindActionUI rebindPrefab;
+        [SerializeField] private ButtonUIComponent applyButton;
 
         private PlayerInputAction playerInputActionRef;
         private PlayerInputHandler playerInputHandler;
@@ -30,11 +31,32 @@ namespace Canvases.InputSystem
         private readonly List<RebindActionUI> rebindUIs = new List<RebindActionUI>();
         private bool isInitialized;
 
-        private void Awake()
+        protected override EntryDirection EnterDirection => EntryDirection.Down;
+        protected override EntryDirection LeaveDirection => EntryDirection.Down;
+
+        protected override void Awake()
         {
+            base.Awake();
             PlayerEntity.OnPlayerSpawned += Init;
             if (GameManager.HasInstance)
                 GameManager.Instance.OnGameStateChanged += InitOnGameStart;
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            applyButton.OnClick += OnApplyPressed;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            applyButton.OnClick -= OnApplyPressed;
+        }
+
+        private void OnApplyPressed()
+        {
+            Hide();
         }
 
         private void Init(NetworkObject player)
@@ -43,7 +65,6 @@ namespace Canvases.InputSystem
             {
                 isInitialized = true;
                 playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
-                player.GetComponentInChildren<PlayerEntity>().OnMenuPressed += PauseMenuActionOnStarted;
                 playerInputActionRef = playerInputHandler.PlayerInputAction;
                 resetAllButton.OnClick += OnResetAll;
                 Enable();
@@ -92,7 +113,6 @@ namespace Canvases.InputSystem
             if (first)
             {
                 firstButton = actionButton;
-                firstButton.SelectMainBinding();
             }
         }
 
@@ -125,24 +145,19 @@ namespace Canvases.InputSystem
                 playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
         }
 
-        private void PauseMenuActionOnStarted()
+        protected override bool ShowImplementation()
         {
-            if (rebindMenuContent.IsVisible())
+            if (scrollRectContent.childCount == 0)
             {
-                rebindMenuContent.Hide();
-                background.Hide();
-                playerInputHandler.SaveSettings();
+                OnInputDeviceChanged(playerInputHandler.CurrentDevice);
             }
-            else
-            {
-                rebindMenuContent.Show();
-                background.Show();
-                if (scrollRectContent.childCount == 0)
-                {
-                    OnInputDeviceChanged(playerInputHandler.CurrentDevice);
-                }
-                firstButton.SelectMainBinding();
-            }
+            return true;
+        }
+
+        protected override bool HideImplementation()
+        {
+            playerInputHandler.SaveSettings();
+            return true;
         }
     }
 }

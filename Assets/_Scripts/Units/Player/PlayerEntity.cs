@@ -5,6 +5,7 @@ using Fusion;
 using Interfaces;
 using Sirenix.OdinInspector;
 using Systems;
+using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
 using Systems.Teams;
@@ -26,7 +27,6 @@ namespace Units.Player
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
-        public event Action OnMenuPressed;
         public event Action OnArchetypeChanged;
         public event Action OnTeamChanged;
         
@@ -257,7 +257,6 @@ namespace Units.Player
                 return;
             
             RPC_ChangeInMenu(true);
-            OnMenuPressed?.Invoke();
             ResetReady();
         }
 
@@ -269,11 +268,16 @@ namespace Units.Player
             if (!MenuManager.HasInstance)
                 return;
 
+            var gameInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Game);
+            var optionsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Options);
+            var controlsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Controls);
+            if (gameInTransition || optionsInTransition || controlsInTransition)
+                return;
+
             MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
             MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
             MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
             RPC_ChangeInMenu(false);
-            OnMenuPressed?.Invoke();
         }
 
         public void StartCustomization()
@@ -289,7 +293,7 @@ namespace Units.Player
             
             CloseMenu();
 
-            //ResetReady();
+            ResetReady();
             RPC_ChangeInCustomization(true);
             customizationCamera.Activate();
         }
@@ -301,8 +305,9 @@ namespace Units.Player
             
             if (!MenuManager.HasInstance)
                 return;
-            
-            MenuManager.Instance.HideMenu(MenuManager.Menu.Customization);
+
+            if (!MenuManager.Instance.HideMenu(MenuManager.Menu.Customization))
+                return;
 
             RPC_ChangeInCustomization(false);
             mainCamera.Activate();

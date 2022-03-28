@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
 using Units.Player;
@@ -51,6 +52,19 @@ namespace Systems.Teams
 
             CreateTeams();
             PlayerEntity.OnPlayerDespawned += OnPlayerDespawned;
+        }
+        
+        private void OnEnable()
+        {
+            LevelSystem.Instance.OnMainMenuStartLoad += OnReturnToMainMenu;
+        }
+
+        private void OnDisable()
+        {
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnMainMenuStartLoad -= OnReturnToMainMenu;
+            }
         }
 
         private void CreateTeams()
@@ -256,6 +270,11 @@ namespace Systems.Teams
                     }
                 }
             }
+        }
+
+        private void OnReturnToMainMenu()
+        {
+            teams.Clear();
         }
     }
 }

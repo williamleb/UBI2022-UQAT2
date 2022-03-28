@@ -1,5 +1,6 @@
-﻿// ReSharper disable once RedundantUsingDirective
+﻿#if !UNITY_EDITOR
 using UnityEngine;
+#endif
 
 namespace Utilities
 {

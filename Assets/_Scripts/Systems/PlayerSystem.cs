@@ -1,8 +1,10 @@
+using System;
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Scriptables;
+using Systems.Level;
 using Systems.Network;
 using Units.Player;
 using UnityEngine;
@@ -13,49 +15,75 @@ namespace Systems
 	public class PlayerSystem : PersistentSingleton<PlayerSystem>
 	{
 		private const string PREFABS_FOLDER_PATH = "Game";
-		
+
 		private GamePrefabs prefabs;
 
 		private PlayerEntity localPlayer;
 		private readonly List<PlayerEntity> playersEntity = new List<PlayerEntity>();
-		private readonly Dictionary<PlayerRef, NetworkRunner> playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
+
+		private readonly Dictionary<PlayerRef, NetworkRunner>
+			playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
 		private PlayerSpawnLocation[] playerSpawnPoints;
-		
+
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 
 		protected override void Awake()
 		{
 			base.Awake();
-			
+
 			LoadPrefabs();
 		}
-		
+
+		private void OnEnable()
+		{
+			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
+			LevelSystem.Instance.OnLobbyLoad += ResetSpawnPoints;
+			LevelSystem.Instance.OnGameLoad += ResetSpawnPoints;
+		}
+
+		private void OnDisable()
+		{
+			if (LevelSystem.HasInstance)
+			{
+				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
+				LevelSystem.Instance.OnLobbyLoad -= ResetSpawnPoints;
+				LevelSystem.Instance.OnGameLoad -= ResetSpawnPoints;
+			}
+		}
+
+		private void OnMainMenuLoad()
+		{
+			ResetPlayerSystem();
+		}
+
 		private void LoadPrefabs()
 		{
 			var prefabResources = Resources.LoadAll<GamePrefabs>(PREFABS_FOLDER_PATH);
 
-			Debug.Assert(prefabResources.Any(), $"An object of type {nameof(GamePrefabs)} should be in the folder {PREFABS_FOLDER_PATH}");
+			Debug.Assert(prefabResources.Any(),
+				$"An object of type {nameof(GamePrefabs)} should be in the folder {PREFABS_FOLDER_PATH}");
 			if (prefabResources.Length > 1)
-				Debug.LogWarning($"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
+				Debug.LogWarning(
+					$"More than one object of type {nameof(GamePrefabs)} was found in the folder {PREFABS_FOLDER_PATH}. Taking the first one.");
 
 			prefabs = prefabResources.First();
 		}
 
 		private void Start()
-        {
+		{
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
-        }
+		}
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),
 		// called by the runner to re-register actions
 		public void SubscribeNetworkEvents()
-        {
+		{
 			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 		}
-		
+
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
 			Debug.Log($"{playerRef} joined.");
@@ -63,8 +91,8 @@ namespace Systems
 
 			// TODO
 			// - check number of player in game (rejoin?)
-            if (LevelSystem.Instance.State != LevelSystem.LevelState.TRANSITION)
-            {
+			if (LevelSystem.Instance.State != LevelSystem.LevelState.Transition)
+			{
 				SpawnPlayer(runner, playerRef);
 			}
 		}
@@ -93,8 +121,12 @@ namespace Systems
 		private void SpawnPlayers()
         {
 			Debug.Log("Spawning players...");
-			playersJoined.ToList().ForEach(
-				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
+			var alreadySpawnedPlayers = playersEntity.Select(entity => entity.Object.InputAuthority).Where(player => player);
+			playersJoined.ToList().ForEach(keyValuePair =>
+			{
+				if (!alreadySpawnedPlayers.Contains(keyValuePair.Key))
+					SpawnPlayer(keyValuePair.Value, keyValuePair.Key);
+			});
 		}
 
 		public void SetPlayersPositionToSpawn()
@@ -160,8 +192,16 @@ namespace Systems
 
 		public void ResetPlayerSystem()
 		{
+			localPlayer = null;
 			playersEntity.Clear();
+			playersJoined.Clear();
+			ResetSpawnPoints();
 			Debug.Log("Players list from PlayerSystem cleared");
+		}
+
+		private void ResetSpawnPoints()
+		{
+			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 		}
 	}
 }

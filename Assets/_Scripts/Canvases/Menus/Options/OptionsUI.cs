@@ -16,7 +16,7 @@ namespace Canvases.Menu.Options
         protected override EntryDirection EnterDirection => EntryDirection.Down;
         protected override EntryDirection LeaveDirection => EntryDirection.Down;
 
-        public override bool ShowImplementation()
+        protected override bool ShowImplementation()
         {
             if (!base.ShowImplementation())
                 return false;
@@ -76,6 +76,7 @@ namespace Canvases.Menu.Options
         {
             if (MenuManager.HasInstance)
             {
+                Unfocus();
                 MenuManager.Instance.ShowMenu(MenuManager.Menu.Controls);
             }
         }

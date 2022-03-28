@@ -30,6 +30,7 @@ namespace Canvases.Animations
         private Queue<Animations> animationsToPlay = new Queue<Animations>();
 
         public bool IsFadedIn => isFadedIn;
+        public bool IsFadedOut => !isFadedIn;
 
         private void Awake()
         {

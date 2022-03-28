@@ -3,6 +3,7 @@ using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Systems.Level;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -16,6 +17,8 @@ namespace Systems.Network
         
         public NetworkRunner NetworkRunner { get; private set; }
         public bool DebugMode { get; set; } = true;
+
+        public bool IsGameStartedOrStarting => NetworkRunner;
 
         private void Start()
         {
@@ -71,6 +74,9 @@ namespace Systems.Network
 
         async void StartGame(GameMode mode)
         {
+            if (IsGameStartedOrStarting)
+                return;
+            
             NetworkRunner = gameObject.AddComponent<NetworkRunner>();
             NetworkRunner.ProvideInput = true;
 
@@ -85,6 +91,9 @@ namespace Systems.Network
         //Create a hosted game with the given session name. 
         public async Task<bool> CreateGame(string sessionName)
         {
+            if (IsGameStartedOrStarting)
+                return false;
+            
             Debug.Log($"Creating game with session name {sessionName}");
 
             NetworkRunner = gameObject.AddComponent<NetworkRunner>();
@@ -113,6 +122,9 @@ namespace Systems.Network
         //Try to join a game base on a specific session name.
         public async Task<bool> TryJoinGame(string sessionName)
         {
+            if (IsGameStartedOrStarting)
+                return false;
+            
             Debug.Log($"Trying to join game with session name : {sessionName}");
 
             NetworkRunner = gameObject.AddComponent<NetworkRunner>();
@@ -138,6 +150,12 @@ namespace Systems.Network
                 Debug.Log($"Failed to join game with session name : {sessionName}");
                 return false;
             }
+        }
+
+        public async void Disconnect()
+        {
+            await NetworkRunner.Shutdown();
+            Destroy(gameObject);
         }
 
         public void OnConnectedToServer(NetworkRunner runner) => OnConnectedToServerEvent?.Invoke(runner);

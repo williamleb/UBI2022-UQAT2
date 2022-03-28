@@ -51,7 +51,11 @@ namespace Dev.William
 
         private void OnRestart()
         {
-            RPC_RestartGame();
+            if (!GameManager.HasInstance)
+                return;
+            
+            if (Object.HasStateAuthority)
+                GameManager.Instance.CleanUpAndReturnToLobby();
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
