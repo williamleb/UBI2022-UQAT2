@@ -1,4 +1,5 @@
 ﻿using System;
+using Canvases.Markers;
 using Fusion;
 using Systems;
 using Systems.Network;
@@ -11,6 +12,7 @@ namespace Units.Player
         [Header("Throw")] 
         [SerializeField] private AnimationCurve lowFrequencyThrowRumbleCurve;
         [SerializeField] private AnimationCurve highFrequencyThrowRumbleCurve;
+        [SerializeField] private ThrowChargeMarkerReceptor throwMarker;
 
         private RumbleKey throwRumbleKey;
         
@@ -31,7 +33,12 @@ namespace Units.Player
                 return;
 
             if (!Object.HasInputAuthority)
+            {
                 SetAimSoundChargePercentValueLocally(ThrowForcePercent);
+            }
+
+            if (throwMarker)
+                throwMarker.ChargeAmount = ThrowForcePercent;
         }
         
         private void ThrowUpdate(NetworkInputData inputData)
@@ -116,10 +123,19 @@ namespace Units.Player
             if (IsAiming)
             {
                 PlayAimHoldSoundLocally();
+
+                if (throwMarker)
+                {
+                    throwMarker.ChargeAmount = 0f;
+                    throwMarker.Activate();
+                }
             }
             else
             {
                 StopAimHoldSoundLocally();
+                
+                if (throwMarker)
+                    throwMarker.Deactivate();
             }
         }
 
