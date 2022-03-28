@@ -16,6 +16,8 @@ namespace Systems
 	{
 		private const string PREFABS_FOLDER_PATH = "Game";
 
+		public event Action OnAnyPlayerReadyChanged;
+		
 		private GamePrefabs prefabs;
 
 		private PlayerEntity localPlayer;
@@ -74,6 +76,12 @@ namespace Systems
 		private void Start()
 		{
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
+			PlayerEntity.OnReadyChanged += TriggerOnAnyPlayerReadyChanged;
+        }
+
+		private void TriggerOnAnyPlayerReadyChanged()
+		{
+			OnAnyPlayerReadyChanged?.Invoke();
 		}
 
 		// Since the NetworkRunner is deleted after a connection error (idk why),

@@ -130,5 +130,23 @@ namespace Units.Player
             velocity = 0;
             currentMaxMoveSpeed = data.MoveMaximumSpeed;
         }
+
+        private void MakeImmune()
+        {
+            ResetVelocity();
+            nRb.Rigidbody.isKinematic = true;
+            nRb.Rigidbody.detectCollisions = false;
+            isImmune = true;
+            CanMove = false;
+        }
+
+        private void UnmakeImmune()
+        {
+            ResetVelocity();
+            nRb.Rigidbody.isKinematic = false;
+            nRb.Rigidbody.detectCollisions = true;
+            isImmune = false;
+            CanMove = true;
+        }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Systems;
 using Systems.Level;
@@ -27,10 +26,12 @@ namespace Managers.Lobby
 
             countdownText.gameObject.SetActive(false);
             playerSystem = PlayerSystem.Instance;
+            playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
         }
 
-        private void Update()
+        private void UpdateReadyForAll()
         {
+            if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) return;
             allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
 
             foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
