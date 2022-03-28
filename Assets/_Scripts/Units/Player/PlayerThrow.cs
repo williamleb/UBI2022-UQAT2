@@ -40,7 +40,7 @@ namespace Units.Player
 
             if (!CanThrow())
             {
-                if (IsAiming || IsThrowing)
+                if (IsAiming || IsThrowing || RumbleSystem.Instance.HasRumble)
                     CancelAimingAndThrowing();
 
                 return;
@@ -78,6 +78,9 @@ namespace Units.Player
                 return false;
             
             if (IsDashing)
+                return false;
+
+            if (isRagdoll)
                 return false;
             
             return true;

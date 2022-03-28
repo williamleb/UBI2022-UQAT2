@@ -93,7 +93,6 @@ namespace Ingredients.Homework
         private void OnInstantFeedback(Interacter interacter)
         {
             PlayInstantFeedbackSound(interacter);
-            PlayInstantFeedbackGrabAnim(interacter);
             interaction.InteractionEnabled = false;
         }
 
@@ -103,6 +102,7 @@ namespace Ingredients.Homework
                 return;
             
             PlayInteractSound(interacter);
+            PlayGrabAnim(interacter);
 
             var inventory = interacter.GetComponent<Inventory>();
             if (!inventory)
@@ -125,7 +125,7 @@ namespace Ingredients.Homework
             }
         }
         
-        private void PlayInstantFeedbackGrabAnim(Interacter interacter)
+        private void PlayGrabAnim(Interacter interacter)
         {
             if (interacter.gameObject.IsAPlayer())
             {

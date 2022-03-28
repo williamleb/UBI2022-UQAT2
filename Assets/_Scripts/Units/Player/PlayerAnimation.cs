@@ -21,12 +21,14 @@ namespace Units.Player
         private static readonly int Grabbing = Animator.StringToHash("isGrabbing");
         private static readonly int Giving = Animator.StringToHash("isGiving");
 
-        [Networked] private NetworkBool IsGettingUpF { get; set; } = false;
-        [Networked] private NetworkBool IsGettingUpB { get; set; } = false;
-        [Networked] private NetworkBool IsDancing { get; set; } = false;
-        [Networked] private NetworkBool IsPushing { get; set; } = false;
-        [Networked] private NetworkBool IsGrabbing { get; set; } = false;
-        [Networked] private NetworkBool IsGiving { get; set; } = false;
+        [Networked(OnChanged = nameof(UpdateGetUpFAnim))]
+        private NetworkBool IsGettingUpF { get; set; } = false;
+
+        [Networked(OnChanged = nameof(UpdateGetUpBAnim))] private NetworkBool IsGettingUpB { get; set; } = false;
+        [Networked(OnChanged = nameof(UpdateDanceAnim))] private NetworkBool IsDancing { get; set; } = false;
+        [Networked(OnChanged = nameof(UpdatePushAnim))] private NetworkBool IsPushing { get; set; } = false;
+        [Networked(OnChanged = nameof(UpdateGrabFAnim))] private NetworkBool IsGrabbing { get; set; } = false;
+        [Networked(OnChanged = nameof(UpdateGiveFAnim))] private NetworkBool IsGiving { get; set; } = false;
 
         private void AnimationUpdate()
         {
@@ -35,15 +37,27 @@ namespace Units.Player
             networkAnimator.Animator.SetFloat(PlayerRunSpeed, (1 + velocity) / data.MoveMaximumSpeed);
             networkAnimator.Animator.SetBool(Dashing, IsDashing);
             networkAnimator.Animator.SetBool(IsHolding, inventory.HasHomework);
-            networkAnimator.Animator.SetBool(GetUpF, IsGettingUpF);
-            networkAnimator.Animator.SetBool(GetUpB, IsGettingUpB);
             networkAnimator.Animator.SetBool(Aiming, IsAiming);
             networkAnimator.Animator.SetBool(Throwing, IsThrowing);
-            networkAnimator.Animator.SetBool(Dancing, IsDancing);
-            networkAnimator.Animator.SetBool(Pushing, IsPushing);
-            networkAnimator.Animator.SetBool(Grabbing, IsGrabbing);
-            networkAnimator.Animator.SetBool(Giving, IsGiving);
         }
+
+        private static void UpdateGetUpFAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(GetUpF, changed.Behaviour.IsGettingUpF);
+
+        private static void UpdateGetUpBAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(GetUpB, changed.Behaviour.IsGettingUpB);
+
+        private static void UpdateDanceAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(Dancing, changed.Behaviour.IsDancing);
+
+        private static void UpdatePushAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(Pushing, changed.Behaviour.IsPushing);
+
+        private static void UpdateGrabFAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(Grabbing, changed.Behaviour.IsGrabbing);
+
+        private static void UpdateGiveFAnim(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.networkAnimator.Animator.SetBool(Giving, changed.Behaviour.IsGiving);
 
         public async void PlayGrabHomeworkAnim()
         {
@@ -59,7 +73,7 @@ namespace Units.Player
             IsGiving = false;
         }
 
-        public async void PlayPushHomeworkAnim()
+        private async void PlayPushHomeworkAnim()
         {
             IsPushing = true;
             await Task.Delay(250);
