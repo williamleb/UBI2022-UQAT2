@@ -30,6 +30,7 @@ namespace Systems
 
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
+		public int NumberOfPlayers => playersEntity.Count;
 
 		protected override void Awake()
 		{
