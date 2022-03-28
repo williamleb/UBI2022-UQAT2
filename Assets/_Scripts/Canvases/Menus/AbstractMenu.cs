@@ -16,6 +16,15 @@ namespace Canvases.Menu
             Up
         }
 
+        protected enum State
+        {
+            None,
+            Showing,
+            Shown,
+            Hiding,
+            Hidden
+        }
+
         public event Action OnShow;
         public event Action OnHide;
 
@@ -24,6 +33,10 @@ namespace Canvases.Menu
         [SerializeField, Required] private EntryAnimation entry;
         private CanvasGroup canvasGroup;
 
+        private State currentState = State.None;
+
+        public bool IsInTransition => currentState == State.Hiding || currentState == State.Showing;
+        
         protected abstract EntryDirection EnterDirection { get; }
         protected abstract EntryDirection LeaveDirection { get; }
 
@@ -53,7 +66,7 @@ namespace Canvases.Menu
             canvasGroup.interactable = false;
         }
 
-    public bool ShowFor(PlayerEntity playerEntity)
+        public bool ShowFor(PlayerEntity playerEntity)
         {
             if (entry.IsEnteredOrEntering)
                 return false;
@@ -94,6 +107,7 @@ namespace Canvases.Menu
 
         private void Enter()
         {
+            currentState = State.Showing;
             if (EnterDirection == EntryDirection.Down)
                 entry.EnterDown();
             else 
@@ -102,6 +116,7 @@ namespace Canvases.Menu
 
         private void Leave()
         {
+            currentState = State.Hiding;
             if (LeaveDirection == EntryDirection.Down)
                 entry.LeaveDown();
             else 
@@ -115,6 +130,7 @@ namespace Canvases.Menu
         protected virtual void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
+            currentState = entry.IsEntered ? State.Shown : State.Hidden;
         }
         
         protected virtual void OnEnable()
@@ -138,6 +154,7 @@ namespace Canvases.Menu
             
             canvasGroup.interactable = true;
             firstButtonToFocus.Select();
+            currentState = State.Shown;
         }
         
         private void OnLeft()
@@ -149,6 +166,7 @@ namespace Canvases.Menu
             }
             
             OnHide?.Invoke();
+            currentState = State.Hidden;
         }
     }
 }

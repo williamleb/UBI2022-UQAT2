@@ -50,6 +50,14 @@ namespace Canvases.Menu
             }
         }
 
+        public bool IsInTransition(Menu menu)
+        {
+            if (!menus.ContainsKey(menu))
+                return false;
+
+            return menus[menu].IsInTransition;
+        }
+
         private void Start()
         {
             InitializeMenus();
