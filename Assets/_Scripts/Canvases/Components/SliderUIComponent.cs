@@ -14,6 +14,7 @@ namespace Canvases.Components
         [SerializeField] [Required] private Slider slider;
         [SerializeField] private Image backgroundImage;
         [SerializeField] private Image fillImage;
+        [SerializeField] private Image frame;
 
         public float Value
         {
@@ -45,6 +46,16 @@ namespace Canvases.Components
                 if (fillImage != null)
                 {
                     fillImage.color = value;
+                }
+            }
+        }
+        public Color FrameColor
+        {
+            set
+            {
+                if (frame != null)
+                {
+                    frame.color = value;
                 }
             }
         }
