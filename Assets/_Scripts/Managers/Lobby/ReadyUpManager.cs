@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Systems;
 using Systems.Level;
@@ -32,6 +31,7 @@ namespace Managers.Lobby
 
         private void UpdateReadyForAll()
         {
+            if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) return;
             allPlayersReady = playerSystem.AllPlayers.Count > 1 || (playerSystem.AllPlayers.Count == 1 && data.AllowSoloPlay);
 
             foreach (PlayerEntity playerEntity in playerSystem.AllPlayers)
