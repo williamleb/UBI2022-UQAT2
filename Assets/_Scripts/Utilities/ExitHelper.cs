@@ -1,4 +1,7 @@
-﻿namespace Utilities
+﻿// ReSharper disable once RedundantUsingDirective
+using UnityEngine;
+
+namespace Utilities
 {
     public static class ExitHelper
     {
