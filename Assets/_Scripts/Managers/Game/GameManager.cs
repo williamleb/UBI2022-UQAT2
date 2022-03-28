@@ -21,6 +21,7 @@ namespace Managers.Game
         public event Action OnBeginSpawn; // Only called on host
         public event Action OnEndSpawn; // Only called on host
         public event Action OnReset; // Only called on host
+        public event Action OnBeginDespawn; // Only called on host
         public event Action<GameState> OnGameStateChanged; 
         public event Action OnPhaseTotalHomeworkChanged
         {
@@ -168,6 +169,16 @@ namespace Managers.Game
             {
                 networkedData.GameIsEnded = true;
             }
+        }
+
+        public void CleanUpAndReturnToLobby()
+        {
+            OnBeginDespawn?.Invoke();
+            
+            if (MapGenerationSystem.HasInstance)
+                MapGenerationSystem.Instance.CleanUpMap();
+            
+            LevelSystem.Instance.LoadLobby();
         }
 
         private bool CanOvertime() 

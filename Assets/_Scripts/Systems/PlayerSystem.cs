@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,18 +38,22 @@ namespace Systems
 
 		private void OnEnable()
 		{
-			LevelSystem.Instance.OnMainMenuStartLoad += OnReturnToMainMenu;
+			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
+			LevelSystem.Instance.OnLobbyLoad += ResetSpawnPoints;
+			LevelSystem.Instance.OnGameLoad += ResetSpawnPoints;
 		}
 
 		private void OnDisable()
 		{
 			if (LevelSystem.HasInstance)
 			{
-				LevelSystem.Instance.OnMainMenuStartLoad -= OnReturnToMainMenu;
+				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
+				LevelSystem.Instance.OnLobbyLoad -= ResetSpawnPoints;
+				LevelSystem.Instance.OnGameLoad -= ResetSpawnPoints;
 			}
 		}
 
-		private void OnReturnToMainMenu()
+		private void OnMainMenuLoad()
 		{
 			ResetPlayerSystem();
 		}
@@ -118,8 +121,12 @@ namespace Systems
 		private void SpawnPlayers()
         {
 			Debug.Log("Spawning players...");
-			playersJoined.ToList().ForEach(
-				keyValuePair => SpawnPlayer(keyValuePair.Value, keyValuePair.Key));
+			var alreadySpawnedPlayers = playersEntity.Select(entity => entity.Object.InputAuthority).Where(player => player);
+			playersJoined.ToList().ForEach(keyValuePair =>
+			{
+				if (!alreadySpawnedPlayers.Contains(keyValuePair.Key))
+					SpawnPlayer(keyValuePair.Value, keyValuePair.Key);
+			});
 		}
 
 		public void SetPlayersPositionToSpawn()
@@ -188,8 +195,13 @@ namespace Systems
 			localPlayer = null;
 			playersEntity.Clear();
 			playersJoined.Clear();
-			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
+			ResetSpawnPoints();
 			Debug.Log("Players list from PlayerSystem cleared");
+		}
+
+		private void ResetSpawnPoints()
+		{
+			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 		}
 	}
 }

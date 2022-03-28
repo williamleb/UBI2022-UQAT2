@@ -76,13 +76,19 @@ namespace Units.AI
         private void Start()
         {
             if (GameManager.HasInstance)
+            {
                 GameManager.Instance.OnBeginSpawn += SpawnAIsFromSpawnLocations;
+                GameManager.Instance.OnBeginDespawn += DespawnAIs;
+            }
         }
         
         protected override void OnDestroy()
         {
             if (GameManager.HasInstance)
+            {
                 GameManager.Instance.OnBeginSpawn -= SpawnAIsFromSpawnLocations;
+                GameManager.Instance.OnBeginDespawn -= DespawnAIs;
+            }
             
             base.OnDestroy();
         }
@@ -97,6 +103,26 @@ namespace Units.AI
             }
             
             GameManager.Instance.UnlockSpawn(this);
+        }
+
+        private void DespawnAIs()
+        {
+            if (!NetworkSystem.HasInstance)
+                return;
+            
+            if (teacher)
+                NetworkSystem.Instance.Despawn(teacher.Object);
+                
+            
+            foreach (var janitor in janitors)
+            {
+                NetworkSystem.Instance.Despawn(janitor.Object);
+            }
+
+            foreach (var student in students)
+            {
+                NetworkSystem.Instance.Despawn(student.Object);
+            }
         }
 
         private void SpawnAI(AISpawnLocation spawnLocation)

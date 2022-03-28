@@ -88,6 +88,7 @@ namespace Ingredients.Homework
             {
                 GameManager.Instance.OnBeginSpawn += SpawnHomeworks;
                 GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+                GameManager.Instance.OnBeginDespawn += DespawnHomeworks;
             }
         }
         
@@ -97,10 +98,12 @@ namespace Ingredients.Homework
             {
                 GameManager.Instance.OnBeginSpawn -= SpawnHomeworks;
                 GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+                GameManager.Instance.OnBeginDespawn -= DespawnHomeworks;
             }
             
             base.OnDestroy();
         }
+        
         private void UpdateHomeworkSpawned(Homework homework)
         {
             homeworksToSpawn.Remove(homework);
@@ -216,6 +219,17 @@ namespace Ingredients.Homework
                 {
                     NetworkSystem.Instance.Spawn(homeworkDefinition.Prefab, Vector3.down * 1000f, Quaternion.identity, null, (runner, o) =>  ManageHomeworkBeforeSpawned(runner, o, homeworkDefinition.Type));
                 }
+            }
+        }
+
+        private void DespawnHomeworks()
+        {
+            if (!NetworkSystem.HasInstance)
+                return;
+            
+            foreach (var homework in homeworks)
+            {
+                NetworkSystem.Instance.Despawn(homework.Value.Object);
             }
         }
 
