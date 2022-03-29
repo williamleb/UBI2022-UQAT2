@@ -84,7 +84,7 @@ public class HUDDashCharge : MonoBehaviour
     private void Reset()
     {
         dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
-        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemaingTimeDashCoolDown / dashCoolDownTimeInSeconds);
+        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
     }
 
     private void Update()
@@ -98,7 +98,7 @@ public class HUDDashCharge : MonoBehaviour
         if (localPlayerEntity == null || localPlayerEntity.CanDash)
             return;
 
-        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemaingTimeDashCoolDown / dashCoolDownTimeInSeconds);
+        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
     }
 
     private void OnDestroy()
