@@ -21,11 +21,13 @@ namespace Units.Player
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;
 
+        [Networked] private TickTimer dashCooldown { get; set; }
+        [Networked] private bool canDash { get; set; } = true;
+
         private TickTimer dashTimer;
-        private TickTimer dashCooldown;
         private bool hasHitSomeoneThisFrame;
         private bool hasHitSomeone;
-        private bool canDash = true;
+        
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
