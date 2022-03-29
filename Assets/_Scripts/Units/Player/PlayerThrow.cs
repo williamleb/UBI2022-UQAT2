@@ -66,6 +66,11 @@ namespace Units.Player
             }
         }
 
+        private void ResetThrowState()
+        {
+            CancelAimingAndThrowing();
+        } 
+
         private void UpdateAim()
         {
             if (!IsAiming) StartAiming();
@@ -104,6 +109,7 @@ namespace Units.Player
         private void CancelAimingAndThrowing()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
+            StopAimHoldSoundLocally();
             IsAiming = false;
             IsThrowing = false;
             ThrowForcePercent = 0f;
