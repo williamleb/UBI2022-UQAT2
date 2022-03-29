@@ -66,6 +66,11 @@ namespace Units.Player
             }
         }
 
+        private void ResetThrowState()
+        {
+            CancelAimingAndThrowing();
+        } 
+
         private void UpdateAim()
         {
             if (!IsAiming) StartAiming();

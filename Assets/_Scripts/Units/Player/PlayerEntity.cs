@@ -353,6 +353,11 @@ namespace Units.Player
         {
             InMenu = inMenu;
         }
+        
+        private void ResetPlayerState()
+        {
+            ResetThrowState();
+        }
 
         private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
         {
