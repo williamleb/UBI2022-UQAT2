@@ -4,6 +4,7 @@ using Fusion;
 using Managers.Game;
 using Managers.Hallway;
 using Units.AI.Senses;
+using Units.Player.Customisation;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Singleton;
@@ -39,7 +40,9 @@ namespace Units.AI
         public void RegisterStudent(AIEntity student)
         {
             students.Add(student);
-            
+
+            student.GetComponent<PlayerCustomization>().LocalRandomize();
+
             UpdateAISpawned(student);
         }
 

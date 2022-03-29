@@ -40,12 +40,12 @@ namespace Units.Player.Customisation
             base.Spawned();
             
             settings = SettingsSystem.CustomizationSettings;
-            if (Object.HasInputAuthority) Randomize(true);
+            if (Object.HasInputAuthority || gameObject.IsAnAI()) Randomize(true);
             
             // For the clients that joined after the client representing this player
             UpdateAll();
 
-            if (Object.HasInputAuthority)
+            if (Object.HasInputAuthority || gameObject.IsAnAI())
             {
                 // Necessary, because if elements were randomized to 0, the OnChanged will not be called
                 RPC_ForceUpdateAll();
@@ -116,6 +116,16 @@ namespace Units.Player.Customisation
                 Clothes = ((Archetype[])Enum.GetValues(typeof(Archetype))).RandomElement();
                 ClothesColor = Random.Range(0, settings.NumberOfTeamColors);
             }
+        }
+
+        public void LocalRandomize()
+        {
+            settings = SettingsSystem.CustomizationSettings;
+
+            Head = Random.Range(0, settings.NumberOfHeadElements);
+            HairColor = Random.Range(0, settings.NumberOfHairColors);
+            Eyes = Random.Range(0, settings.NumberOfEyeElements);
+            Skin = Random.Range(0, settings.NumberOfSkinElements);
         }
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
