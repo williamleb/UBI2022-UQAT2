@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Canvases.Components;
 using Fusion;
 using Managers.Game;
@@ -88,6 +89,11 @@ namespace Canvases.Menu.End
         {
             Terminate();
             return true;
+        }
+
+        private void OnDestroy()
+        {
+            Terminate();
         }
 
         private void Init()

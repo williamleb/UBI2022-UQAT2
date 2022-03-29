@@ -162,7 +162,11 @@ namespace Canvases.Markers
                 targetSize, 
                 duration, 
                 TweenScaleFunctions.QuadraticEaseOut, 
-                t => rectTransform.localScale = t.CurrentValue * Vector3.one);
+                t =>
+                {
+                    if (rectTransform)
+                        rectTransform.localScale = t.CurrentValue * Vector3.one;
+                });
         }
 
         private void RemoveCurrentTween()

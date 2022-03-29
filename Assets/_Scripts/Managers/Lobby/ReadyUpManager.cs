@@ -29,6 +29,12 @@ namespace Managers.Lobby
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
         }
 
+        protected override void OnDestroy()
+        {
+            if (PlayerSystem.HasInstance)
+                playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyForAll;
+        }
+
         private void UpdateReadyForAll()
         {
             if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) return;

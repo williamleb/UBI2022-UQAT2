@@ -80,6 +80,13 @@ namespace Systems
 			PlayerEntity.OnReadyChanged += TriggerOnAnyPlayerReadyChanged;
         }
 
+		private void OnDestroy()
+		{
+			if (LevelSystem.HasInstance)
+				LevelSystem.Instance.OnLobbyLoad -= SpawnPlayers;
+			PlayerEntity.OnReadyChanged -= TriggerOnAnyPlayerReadyChanged;
+		}
+
 		private void TriggerOnAnyPlayerReadyChanged()
 		{
 			OnAnyPlayerReadyChanged?.Invoke();
