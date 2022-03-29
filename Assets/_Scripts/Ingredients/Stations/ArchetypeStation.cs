@@ -12,7 +12,7 @@ public class ArchetypeStation : MonoBehaviour
     {
         interaction = GetComponent<Interaction>();
         interaction.OnInteractedWith += OnInteractedWith;
-        GetComponentInChildren<TextMarkerReceptor>().Text = $"Select {archetypeTypeStation}";
+        GetComponentInChildren<TextMarkerReceptor>().Text = $"Select\n{archetypeTypeStation}";
     }
 
     private void OnInteractedWith(Interacter interacter)

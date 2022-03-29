@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Canvases.Markers
 {
     public class TextMarkerReceptor : MarkerReceptor<TextMarker>
     {
-        [SerializeField] private string text;
+        [SerializeField, TextArea] private string text;
         [SerializeField] private Color color = Color.white;
 
         public string Text
@@ -29,6 +30,11 @@ namespace Canvases.Markers
         {
             CurrentMarker.Text = text;
             CurrentMarker.Color = color;
+        }
+
+        private void OnValidate()
+        {
+            text = text.Replace("\\n", "\n");
         }
     }
 }
