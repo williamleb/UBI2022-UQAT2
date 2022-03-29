@@ -5,20 +5,27 @@ using Systems.Settings;
 using Systems.Teams;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Canvases.HUDs
 {
     public class HUDTwoTeam : MonoBehaviour
     {
-        [SerializeField, Required] private TextMeshProUGUI rightTeamName;
-        [SerializeField, Required] private ImageUIComponent rightTeamImage;
-        [SerializeField, Required] private TextMeshProUGUI rightTeamScore;
-
+        [Header("Left team")]
         [SerializeField, Required] private TextMeshProUGUI leftTeamName;
-        [SerializeField, Required] private ImageUIComponent leftTeamImage;
+        [SerializeField, Required] private SliderUIComponent leftTeamScoreSlider;
         [SerializeField, Required] private TextMeshProUGUI leftTeamScore;
+        [SerializeField, Required] private Image leftScratch;
 
-        [SerializeField, Required] private SliderUIComponent progressBar;
+        [Header("Right team")]
+        [SerializeField, Required] private TextMeshProUGUI rightTeamName;
+        [SerializeField, Required] private SliderUIComponent rightTeamScoreSlider;
+        [SerializeField, Required] private TextMeshProUGUI rightTeamScore;
+        [SerializeField, Required] private Image rightScratch;
+
+        [Space]
+        [Header("Other settings")]
+        [SerializeField, Required] [Range(0f,1f)] private float scratchAlpha;
 
         private Team leftTeam;
         private Team rightTeam;
@@ -27,11 +34,11 @@ namespace Canvases.HUDs
         {
             if (GameManager.HasInstance)
             {
-                GameManager.Instance.OnGameStateChanged += UpdateTeamHUD;
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
             }
         }
 
-        private void UpdateTeamHUD(GameState gameState)
+        private void OnGameStateChanged(GameState gameState)
         {
             if (gameState == GameState.Running)
             {
@@ -54,33 +61,23 @@ namespace Canvases.HUDs
                 UpdateColor(0);
                 UpdateName(null);
 
-                progressBar.BackgroundColor = SettingsSystem.CustomizationSettings.GetColor(rightTeam.Color);
-                progressBar.FillColor = SettingsSystem.CustomizationSettings.GetColor(leftTeam.Color);
-
                 Reset();
             }
         }
 
         void OnTeamScoreChanged(int _)
         {
-            if (!rightTeamScore || !leftTeamScore || !rightTeam || !leftTeam)
+            if (!rightTeamScoreSlider || !leftTeamScoreSlider || !rightTeamScore || !leftTeamScore || !rightTeam || !leftTeam)
             {
                 Debug.LogWarning("Missing component(s), teams score UI will not be updated.");
                 return;
             }
 
-            if (rightTeam.ScoreValue + leftTeam.ScoreValue != 0)
-            {
-                rightTeamScore.text = rightTeam.ScoreValue.ToString();
-                leftTeamScore.text = leftTeam.ScoreValue.ToString();
-                progressBar.Value = leftTeam.ScoreValue / (float)(rightTeam.ScoreValue + leftTeam.ScoreValue);
-            }
-            else
-            {
-                rightTeamScore.text = rightTeam.ScoreValue.ToString();
-                leftTeamScore.text = leftTeam.ScoreValue.ToString();
-                progressBar.Value = 0.5f;
-            }
+            rightTeamScore.text = rightTeam.ScoreValue.ToString();
+            leftTeamScore.text = leftTeam.ScoreValue.ToString();
+
+            rightTeamScoreSlider.Value = rightTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
+            leftTeamScoreSlider.Value = leftTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
         }
 
         private void UpdateName(string _)
@@ -91,27 +88,51 @@ namespace Canvases.HUDs
                 return;
             }
 
-            rightTeamName.text = leftTeam.Name;
-            leftTeamName.text = rightTeam.Name;
+            rightTeamName.text = rightTeam.Name;
+            leftTeamName.text = leftTeam.Name;
         }
 
         private void UpdateColor(int _)
         {
-            if (!rightTeamImage || !leftTeamImage || !rightTeam || !leftTeam)
+            if (!rightTeamScoreSlider || !leftTeamScoreSlider || !rightTeamName || !leftTeamName || !rightTeamScore || !leftTeamScore || !rightTeam || !leftTeam)
             {
                 Debug.LogWarning("Missing component(s), teams color UI will not be updated.");
                 return;
             }
 
-            rightTeamImage.Color = SettingsSystem.CustomizationSettings.GetColor(leftTeam.Color);
-            leftTeamImage.Color = SettingsSystem.CustomizationSettings.GetColor(rightTeam.Color);
+            Color rightTeamColor = SettingsSystem.CustomizationSettings.GetColor(rightTeam.Color);
+            Color leftTeamColor = SettingsSystem.CustomizationSettings.GetColor(leftTeam.Color);
+            
+            //Bost value for better contrast
+            Color.RGBToHSV(rightTeamColor, out float rH, out float rS, out float _);
+            Color.RGBToHSV(leftTeamColor, out float lH, out float lS, out float _);
+            Color rightTeamColorBoostValue = Color.HSVToRGB(rH, rS, 1);
+            Color leftTeamColorBoostValue = Color.HSVToRGB(lH, lS, 1);
+
+            rightTeamScoreSlider.FillColor = rightTeamColorBoostValue;
+            rightTeamScoreSlider.FrameColor = Color.HSVToRGB(rH, rS, 0.5f);
+            rightTeamScoreSlider.BackgroundColor = Color.HSVToRGB(rH, rS, 0.2f);
+
+            leftTeamScoreSlider.FillColor = leftTeamColorBoostValue;
+            leftTeamScoreSlider.FrameColor = Color.HSVToRGB(lH, lS, 0.5f);
+            leftTeamScoreSlider.BackgroundColor = Color.HSVToRGB(lH, lS, 0.2f);
+
+            rightTeamName.color = rightTeamColorBoostValue;
+            leftTeamName.color = leftTeamColorBoostValue;
+
+            rightTeamScore.color = rightTeamColorBoostValue;
+            leftTeamScore.color = leftTeamColorBoostValue;
+
+            rightScratch.color = new Color(rightTeamColor.r, rightTeamColor.g, rightTeamColor.b, scratchAlpha);
+            leftScratch.color = new Color(leftTeamColor.r, leftTeamColor.g, leftTeamColor.b, scratchAlpha);
         }
 
         private void Reset()
         {
             rightTeamScore.text = rightTeam.ScoreValue.ToString();
             leftTeamScore.text = leftTeam.ScoreValue.ToString();
-            progressBar.Value = 0.5f;
+            rightTeamScoreSlider.Value = rightTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
+            leftTeamScoreSlider.Value = leftTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
         }
 
         private void OnDestroy()
@@ -131,7 +152,7 @@ namespace Canvases.HUDs
             }
 
             if (GameManager.HasInstance)
-                GameManager.Instance.OnGameStateChanged -= UpdateTeamHUD;
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
         }
     }
 }

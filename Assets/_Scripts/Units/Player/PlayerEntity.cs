@@ -114,6 +114,21 @@ namespace Units.Player
             {
                 TeamSystem.Instance.AssignTeam(this);
             }
+            
+            NetworkSystem.Instance.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
+            NetworkSystem.Instance.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
+        }
+
+        private async void OnSceneLoadDoneEvent(NetworkRunner runner)
+        {
+            await Task.Delay(500);
+            UnmakeImmune();
+        }
+
+        private void OnSceneLoadStartEvent(NetworkRunner runner)
+        {
+            MakeImmune();
+            inventory.DropEverything();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
