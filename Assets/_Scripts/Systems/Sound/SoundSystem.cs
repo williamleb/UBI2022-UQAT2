@@ -50,7 +50,11 @@ using Utilities.Singleton;
         public void PlayPickUpHomeworkSound(PlayerEntity player) => wwiseObjects.PickUpHomeworkEvent.Post(player.gameObject);
         public void PlayPickUpHomeworkSound(AIEntity ai) => wwiseObjects.PickUpHomeworkEvent.Post(ai.gameObject);
         public void PlayInteractWorldElementSound(PlayerEntity player) => wwiseObjects.InteractWorldElementEvent.Post(player.gameObject);
-        public void PlayAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Post(player.gameObject);
+        public void PlayAimHoldSound(PlayerEntity player)
+        {
+            StopAimHoldSound(player);
+            wwiseObjects.AimHoldEvent.Post(player.gameObject);
+        }
         public void StopAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Stop(player.gameObject);
         public void PlayAimReleaseSound(PlayerEntity player) => wwiseObjects.AimReleaseEvent.Post(player.gameObject);
         public void PlayHomeworkFlyingSound(Homework homework) => wwiseObjects.HomeworkFlyingEvent.Post(homework.gameObject);

@@ -241,6 +241,9 @@ namespace Units.Player
 
             Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
             inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
+            
+            if (Object.HasStateAuthority && entityNetworkId != Object.Id)
+                RPC_DetectSuccessfulHitOnAllClients();
         }
 
         private void UpdateArchetype()
@@ -352,6 +355,15 @@ namespace Units.Player
         private void RPC_ChangeInMenu(NetworkBool inMenu)
         {
             InMenu = inMenu;
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_DetectSuccessfulHitOnAllClients()
+        {
+            if (Object.HasInputAuthority)
+                PlayDashCollisionSoundLocally();
+            else 
+                StopDashSoundLocally();
         }
         
         private void ResetPlayerState()

@@ -25,6 +25,8 @@ namespace Units.Player.Customisation
         [SerializeField, Required] private CustomizationPoint rightEyeCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint leftAltEyeCustomizationPoint;
         [SerializeField, Required] private CustomizationPoint rightAltEyeCustomizationPoint;
+
+        [SerializeField] private bool randomizeGameplayElementsAtStart;
         
         private CustomizationSettings settings;
         
@@ -40,7 +42,7 @@ namespace Units.Player.Customisation
             base.Spawned();
             
             settings = SettingsSystem.CustomizationSettings;
-            if (Object.HasInputAuthority) Randomize(true);
+            if (Object.HasInputAuthority) Randomize(randomizeGameplayElementsAtStart);
             
             // For the clients that joined after the client representing this player
             UpdateAll();

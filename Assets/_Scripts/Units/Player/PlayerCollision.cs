@@ -23,11 +23,6 @@ namespace Units.Player
                 hitCoroutine = null;
             }
 
-            if (Object.HasStateAuthority)
-            {
-                RPC_DetectHitOnAllClients();
-            }
-            
             hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude, overrideHitDuration));
         }
 
@@ -100,15 +95,6 @@ namespace Units.Player
                     RPC_GetHitAndDropItems(Object.Id, true, -f);
                 }
             }
-        }
-        
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_DetectHitOnAllClients()
-        {
-            if (Object.HasInputAuthority)
-                PlayDashCollisionSoundLocally();
-            else 
-                StopDashSoundLocally();
         }
     }
 }
