@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Fusion;
 using Systems.Network;
@@ -9,7 +10,11 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
+        public event Action<bool> OnDashAvailableChanged;
+
         public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
+        public float RemaingTimeDashCoolDown => dashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (dashCooldown.RemainingTime(Runner) ?? default(float));
+        public bool CanDash => canDash;
 
         [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
@@ -35,6 +40,7 @@ namespace Units.Player
 
         private void ResetDashCoolDown()
         {
+            OnDashAvailableChanged?.Invoke(true);
             canDash = true;
         }
 
@@ -47,6 +53,7 @@ namespace Units.Player
         {
             if (!CanMove || inventory.HasHomework || IsDashing) return;
             canDash = false;
+            OnDashAvailableChanged?.Invoke(false);
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
