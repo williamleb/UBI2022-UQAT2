@@ -125,7 +125,7 @@ namespace Systems
 			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
 			var spawnPosition = playersEntity.Count < playerSpawnPoints.Length
 				? playerSpawnPoints[playersEntity.Count].transform.position
-				: new Vector3(-18,0,18);
+				: new Vector3(-18,0,18); // TODO FIX SPAWN LOCATION
 
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
