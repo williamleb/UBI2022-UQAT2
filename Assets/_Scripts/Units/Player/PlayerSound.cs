@@ -27,6 +27,8 @@ namespace Units.Player
         public void PlayAimReleaseSoundLocally() => SoundSystem.Instance.PlayAimReleaseSound(this);
         public void SetAimSoundChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
         public void PlayDashSoundLocally() => SoundSystem.Instance.PlayDashSound(this);
+        public void StopDashSoundLocally() => SoundSystem.Instance.StopDashSound(this);
+        public void PlayDashCollisionSoundLocally() => SoundSystem.Instance.PlayDashCollisionSound(this);
         
         public void PlayHandInHomeworkSoundOnOtherClients() => RPC_PlayHandInHomeworkSoundOnOtherClients();
         public void PlayPickUpHomeworkSoundOnOtherClients() => RPC_PlayPickUpHomeworkSoundOnOtherClients();

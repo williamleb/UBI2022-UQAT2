@@ -15,30 +15,51 @@ namespace Systems.Sound
         [SerializeField] private Event footstep;
         [SerializeField] private Event fumble;
         [SerializeField] private Event dash;
+        [SerializeField] private Event dashCollision;
+        
         [SerializeField] private Event handInHomework;
         [SerializeField] private Event pickupHomework;
+        [SerializeField] private Event interactWorldElement;
+        
         [SerializeField] private Event aimHold;
         [SerializeField] private Event aimRelease;
+        [SerializeField] private Event homeworkFlying;
 
+        [SerializeField] private Event victoryJingle;
+        [SerializeField] private Event defeatJingle;
+
+        [SerializeField] private Event three;
+        [SerializeField] private Event two;
+        [SerializeField] private Event one;
+        [SerializeField] private Event go;
+        
+        [SerializeField] private Event janitorCaughtAlert;
+        
         [Header("RTCP")] 
         [SerializeField] private RTPC masterVolume;
         [SerializeField] private RTPC musicVolume;
         [SerializeField] private RTPC sfxVolume;
         [SerializeField] private RTPC aimCharge;
         
-        [Header("Switch")] 
-        [SerializeField] private Switch aimChargeDefault;
-
-
         public GameObject SoundBankPrefab => soundBankPrefab;
         
         public Event FootstepEvent => footstep;
         public Event FumbleEvent => fumble;
         public Event DashEvent => dash;
+        public Event DashCollisionEvent => dashCollision;
         public Event HandInHomeworkEvent => handInHomework;
         public Event PickUpHomeworkEvent => pickupHomework;
+        public Event InteractWorldElementEvent => interactWorldElement;
         public Event AimHoldEvent => aimHold;
         public Event AimReleaseEvent => aimRelease;
+        public Event HomeworkFlyingEvent => homeworkFlying;
+        public Event VictoryJingleEvent => victoryJingle;
+        public Event DefeatJingleEvent => defeatJingle;
+        public Event OneEvent => one;
+        public Event TwoEvent => two;
+        public Event ThreeEvent => three;
+        public Event GoEvent => go;
+        public Event JanitorCaughtAlertEvent => janitorCaughtAlert;
 
         public RTPC MasterVolumeParameter => masterVolume;
         public RTPC MusicVolumeParameter => musicVolume;
