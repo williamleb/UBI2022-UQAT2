@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Fusion;
 using Systems.Network;
@@ -9,18 +10,23 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        public bool HasHitSomeoneThisFrame => hasHitSomeoneThisFrame;
+        public event Action<bool> OnDashAvailableChanged;
+
+        public bool HasHitSomeoneThisFrame { get; private set; }
+
+        public float RemainingTimeDashCoolDown => DashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (DashCooldown.RemainingTime(Runner) ?? default(float));
 
         [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;
 
+        [Networked] private TickTimer DashCooldown { get; set; }
+        [Networked] public NetworkBool CanDash { get; private set; } = true;
+
         private TickTimer dashTimer;
-        private TickTimer dashCooldown;
-        private bool hasHitSomeoneThisFrame;
         private bool hasHitSomeone;
-        private bool canDash = true;
+        
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
@@ -30,27 +36,29 @@ namespace Units.Player
             HandleDashInput(inputData);
             if (IsDashing) DetectCollision();
             if (dashTimer.Expired(Runner)) OnHitNothing();
-            if (dashCooldown.Expired(Runner)) ResetDashCoolDown();
+            if (DashCooldown.Expired(Runner)) ResetDashCoolDown();
         }
 
         private void ResetDashCoolDown()
         {
-            canDash = true;
+            OnDashAvailableChanged?.Invoke(true);
+            CanDash = true;
         }
 
         private void HandleDashInput(NetworkInputData inputData)
         {
-            if (inputData.IsDash && canDash && !InMenu && !InCustomization) Dash();
+            if (inputData.IsDash && CanDash && !InMenu && !InCustomization) Dash();
         }
 
         private void Dash()
         {
             if (!CanMove || inventory.HasHomework || IsDashing) return;
-            canDash = false;
+            CanDash = false;
+            OnDashAvailableChanged?.Invoke(false);
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
-            dashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
+            DashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
             Vector3 dirToTarget = GetDirToTarget();
             transform.forward = GetDashDirection(dirToTarget);
             velocity = data.DashForce;
@@ -133,7 +141,7 @@ namespace Units.Player
             }
 
             hasHitSomeone = true;
-            hasHitSomeoneThisFrame = true;
+            HasHitSomeoneThisFrame = true;
         }
 
         private void DetectCollision()
@@ -182,7 +190,7 @@ namespace Units.Player
 
         private void LateUpdate()
         {
-            hasHitSomeoneThisFrame = false;
+            HasHitSomeoneThisFrame = false;
         }
 
         private void OnDrawGizmosSelected()
