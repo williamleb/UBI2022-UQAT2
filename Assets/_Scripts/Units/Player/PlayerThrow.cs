@@ -104,6 +104,7 @@ namespace Units.Player
         private void CancelAimingAndThrowing()
         {
             RumbleSystem.Instance.StopRumble(throwRumbleKey);
+            StopAimHoldSoundLocally();
             IsAiming = false;
             IsThrowing = false;
             ThrowForcePercent = 0f;
