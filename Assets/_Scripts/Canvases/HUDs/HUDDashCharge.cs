@@ -1,4 +1,3 @@
-using Fusion;
 using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
@@ -8,102 +7,107 @@ using Units.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HUDDashCharge : MonoBehaviour
+namespace Canvases.HUDs
 {
-    [SerializeField, Required] private DashChargeMarker dashChargeMarker;
-    [SerializeField, Required] private TextMeshProUGUI dashtText;
-    [SerializeField, Required] private Image dashButton;
-
-    private Color dashTextColorFull;
-    private Color dashTextColorSemi;
-    private Color dashButtonColorFull;
-    private Color dashButtonColorSemi;
-
-    private PlayerEntity localPlayerEntity;
-    private float dashCoolDownTimeInSeconds;
-
-    [SerializeField, Required] 
-    void Start()
+    public class HUDDashCharge : MonoBehaviour
     {
-        if (GameManager.HasInstance)
+        [SerializeField, Required] private DashChargeMarker dashChargeMarker;
+        [SerializeField, Required] private TextMeshProUGUI dashText;
+        [SerializeField, Required] private Image dashButton;
+
+        private Color dashTextColorFull;
+        private Color dashTextColorSemi;
+        private Color dashButtonColorFull;
+        private Color dashButtonColorSemi;
+
+        private PlayerEntity localPlayerEntity;
+        private float dashCoolDownTimeInSeconds;
+    
+        private void Start()
         {
-            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            if (GameManager.HasInstance)
+            {
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            }
+
+            dashTextColorFull = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 1);
+            dashTextColorSemi = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 0.3f);
+            dashButtonColorFull = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 1);
+            dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 0.3f);
         }
 
-        dashTextColorFull = new Color(dashtText.color.r, dashtText.color.g, dashtText.color.b, 1);
-        dashTextColorSemi = new Color(dashtText.color.r, dashtText.color.g, dashtText.color.b, 0.3f);
-        dashButtonColorFull = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 1);
-        dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 0.3f);
-    }
-
-    private void OnGameStateChanged(GameState gameState)
-    {
-        if (gameState == GameState.Running)
+        private void OnGameStateChanged(GameState gameState)
         {
-            localPlayerEntity = PlayerSystem.Instance.LocalPlayer;
+            if (gameState == GameState.Running)
+            {
+                localPlayerEntity = PlayerSystem.Instance.LocalPlayer;
 
+                if (localPlayerEntity == null)
+                {
+                    Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
+                    return;
+                }
+
+                localPlayerEntity.OnArchetypeChanged += OnArchetypeChanged;
+                localPlayerEntity.OnDashAvailableChanged += OnDashAvailableChanged;
+                OnArchetypeChanged();
+
+                Reset();
+            }
+        }
+
+        private void OnArchetypeChanged()
+        {
             if (localPlayerEntity == null)
             {
-                Debug.LogWarning("Cannot retreive local player entity. Not updating dash charge.");
+                Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
                 return;
             }
 
-            localPlayerEntity.OnArchetypeChanged += OnArchetypeChanged;
-            localPlayerEntity.OnDashAvailableChanged += OnDashAvailableChanged;
-            OnArchetypeChanged();
-
-            Reset();
+            dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
         }
-    }
 
-    private void OnArchetypeChanged()
-    {
-        if (localPlayerEntity == null)
+        private void OnDashAvailableChanged(bool isAvailable)
         {
-            Debug.LogWarning("Cannot retreive local player entity. Not updating dash charge.");
-            return;
+            if (isAvailable)
+            {
+                dashText.color = dashTextColorFull;
+                dashButton.color = dashButtonColorFull;
+            }
+            else
+            {
+                dashText.color = dashTextColorSemi;
+                dashButton.color = dashButtonColorSemi;
+            }
         }
 
-        dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
-    }
-
-    private void OnDashAvailableChanged(bool isAvailable)
-    {
-        if (isAvailable)
+        private void Reset()
         {
-            dashtText.color = dashTextColorFull;
-            dashButton.color = dashButtonColorFull;
+            dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
+            dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
         }
-        else
+
+        private void Update()
         {
-            dashtText.color = dashTextColorSemi;
-            dashButton.color = dashButtonColorSemi;
+            if (dashChargeMarker == null)
+            {
+                Debug.LogWarning("Missing dash charge marker reference. Not updating dash charge.");
+                return;
+            }
+
+            if (localPlayerEntity == null || localPlayerEntity.CanDash)
+                return;
+
+            dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
         }
-    }
 
-    private void Reset()
-    {
-        dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
-        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
-    }
-
-    private void Update()
-    {
-        if (dashChargeMarker == null)
+        private void OnDestroy()
         {
-            Debug.LogWarning("Missing dash charge marker reference. Not updating dash charge.");
-            return;
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+        
+            localPlayerEntity.OnArchetypeChanged -= OnArchetypeChanged;
+            localPlayerEntity.OnDashAvailableChanged -= OnDashAvailableChanged;
         }
-
-        if (localPlayerEntity == null || localPlayerEntity.CanDash)
-            return;
-
-        dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
-    }
-
-    private void OnDestroy()
-    {
-        if (GameManager.HasInstance)
-            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
     }
 }
