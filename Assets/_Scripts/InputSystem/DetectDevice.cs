@@ -12,13 +12,10 @@ namespace InputSystem
 
         private readonly Dictionary<string, string> deviceToControlScheme = new Dictionary<string, string>();
 
-        private InputActionMap actionMap;
+        private readonly InputActionMap actionMap;
 
         public DetectDevice(InputActionMap inputActionMap)
         {
-            if (actionMap != null)
-                return;
-            
             Debug.Log($"Action map {inputActionMap} =======================");
             foreach (InputControlScheme inputControlScheme in inputActionMap.controlSchemes)
             {
@@ -34,7 +31,7 @@ namespace InputSystem
             actionMap = inputActionMap;
         }
 
-        public void Finalize()
+        public void FinalizeInit()
         {
             if (actionMap == null)
                 return;
