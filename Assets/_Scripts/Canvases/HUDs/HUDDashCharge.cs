@@ -25,35 +25,28 @@ namespace Canvases.HUDs
     
         private void Start()
         {
-            if (GameManager.HasInstance)
-            {
-                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
-            }
-
+            PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
             dashTextColorFull = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 1);
             dashTextColorSemi = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 0.3f);
             dashButtonColorFull = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 1);
             dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 0.3f);
         }
 
-        private void OnGameStateChanged(GameState gameState)
+        private void OnLocalPlayerSpawned(PlayerEntity playerEntity)
         {
-            if (gameState == GameState.Running)
+            localPlayerEntity = playerEntity;
+
+            if (localPlayerEntity == null)
             {
-                localPlayerEntity = PlayerSystem.Instance.LocalPlayer;
-
-                if (localPlayerEntity == null)
-                {
-                    Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
-                    return;
-                }
-
-                localPlayerEntity.OnArchetypeChanged += OnArchetypeChanged;
-                localPlayerEntity.OnDashAvailableChanged += OnDashAvailableChanged;
-                OnArchetypeChanged();
-
-                Reset();
+                Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
+                return;
             }
+
+            localPlayerEntity.OnArchetypeChanged += OnArchetypeChanged;
+            localPlayerEntity.OnDashAvailableChanged += OnDashAvailableChanged;
+            OnArchetypeChanged();
+
+            Reset();
         }
 
         private void OnArchetypeChanged()
@@ -103,9 +96,9 @@ namespace Canvases.HUDs
 
         private void OnDestroy()
         {
-            if (GameManager.HasInstance)
-                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
-        
+            if (PlayerSystem.HasInstance)
+                PlayerSystem.Instance.OnLocalPlayerSpawned -= OnLocalPlayerSpawned;
+
             localPlayerEntity.OnArchetypeChanged -= OnArchetypeChanged;
             localPlayerEntity.OnDashAvailableChanged -= OnDashAvailableChanged;
         }
