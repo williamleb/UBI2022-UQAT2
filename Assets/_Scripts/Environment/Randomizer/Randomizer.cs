@@ -48,7 +48,8 @@ namespace Environment.Randomizer
 
         private void UpdateElement()
         {
-            UpdateElement(CurrentElementIndex);
+            if (CurrentElementIndex >= 0 && CurrentElementIndex < NumberOfElements)
+                UpdateElement(CurrentElementIndex);
         }
 
         private static void OnCurrentElementIndexChanged(Changed<Randomizer> changed)

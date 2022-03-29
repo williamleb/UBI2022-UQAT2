@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Canvases.Menu;
 using Fusion;
 using Interfaces;
+using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Level;
@@ -48,6 +49,8 @@ namespace Units.Player
 
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
+
+        private bool IsGameFinished => GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
 
         private void OnAwake()
         {
@@ -137,6 +140,9 @@ namespace Units.Player
 
         public override void FixedUpdateNetwork()
         {
+            if (IsGameFinished)
+                return;
+            
             ThrowUpdateOnAllClients();
             
             if (GetInput(out NetworkInputData inputData))

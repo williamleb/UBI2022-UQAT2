@@ -30,6 +30,7 @@ namespace Systems
 
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
+		public int NumberOfPlayers => playersEntity.Count;
 
 		protected override void Awake()
 		{
@@ -78,6 +79,13 @@ namespace Systems
 			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
 			PlayerEntity.OnReadyChanged += TriggerOnAnyPlayerReadyChanged;
         }
+
+		private void OnDestroy()
+		{
+			if (LevelSystem.HasInstance)
+				LevelSystem.Instance.OnLobbyLoad -= SpawnPlayers;
+			PlayerEntity.OnReadyChanged -= TriggerOnAnyPlayerReadyChanged;
+		}
 
 		private void TriggerOnAnyPlayerReadyChanged()
 		{
