@@ -17,6 +17,7 @@ namespace Systems
 		private const string PREFABS_FOLDER_PATH = "Game";
 
 		public event Action OnAnyPlayerReadyChanged;
+		public event Action<PlayerEntity> OnLocalPlayerSpawned;
 		
 		private GamePrefabs prefabs;
 
@@ -125,8 +126,8 @@ namespace Systems
 			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
 			var spawnPosition = playersEntity.Count < playerSpawnPoints.Length
 				? playerSpawnPoints[playersEntity.Count].transform.position
-				: Vector3.zero;
-			
+				: new Vector3(-18,0,18); // TODO FIX SPAWN LOCATION
+
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
 						spawnPosition,
@@ -171,11 +172,13 @@ namespace Systems
 			return null;
 		}
 
-		//Called by the playerEntity on Spawned()
 		public void AddPlayer(PlayerEntity playerEntity)
 		{
 			if (playerEntity.Object.HasInputAuthority)
+            {
 				localPlayer = playerEntity;
+				OnLocalPlayerSpawned?.Invoke(playerEntity);
+			}
 			
 			playersEntity.Add(playerEntity);
 		}
