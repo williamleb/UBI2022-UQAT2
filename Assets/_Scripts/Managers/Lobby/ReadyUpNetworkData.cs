@@ -23,7 +23,7 @@ namespace Managers.Lobby
         public void Revert(int maxTime)
         {
             IsStarting = false;
-            Time = maxTime;
+            Time = maxTime + 1;
             NumberOfDots = 0;
         }
 
