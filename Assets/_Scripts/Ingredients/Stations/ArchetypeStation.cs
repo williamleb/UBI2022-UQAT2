@@ -1,5 +1,7 @@
 using Canvases.Markers;
+using Fusion;
 using Managers.Interactions;
+using Systems.Sound;
 using Units.Player;
 using UnityEngine;
 
@@ -19,5 +21,13 @@ public class ArchetypeStation : MonoBehaviour
     {
         var playerEntity = interacter.GetComponent<PlayerEntity>();
         playerEntity.AssignArchetype(archetypeTypeStation);
+        
+        RPC_NotifyInteractedToInputAuthority();
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_NotifyInteractedToInputAuthority()
+    {
+        SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
     }
 }

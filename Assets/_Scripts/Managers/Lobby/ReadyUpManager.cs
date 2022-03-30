@@ -1,17 +1,13 @@
-using System;
 using System.Collections;
 using Canvases.Components;
 using Systems;
 using Systems.Level;
-using Systems.Network;
 using Systems.Settings;
 using Systems.Sound;
-using TMPro;
 using Units.Player;
 using UnityEngine;
 using Utilities;
 using Utilities.Singleton;
-using Object = System.Object;
 
 namespace Managers.Lobby
 {

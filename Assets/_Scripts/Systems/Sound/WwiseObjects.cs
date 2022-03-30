@@ -20,6 +20,10 @@ namespace Systems.Sound
         [SerializeField] private Event handInHomework;
         [SerializeField] private Event pickupHomework;
         [SerializeField] private Event interactWorldElement;
+        [SerializeField] private Event characterSelectBase;
+        [SerializeField] private Event characterSelectRunner;
+        [SerializeField] private Event characterSelectThrower;
+        [SerializeField] private Event characterSelectDasher;
         
         [SerializeField] private Event aimHold;
         [SerializeField] private Event aimRelease;
@@ -50,6 +54,10 @@ namespace Systems.Sound
         public Event HandInHomeworkEvent => handInHomework;
         public Event PickUpHomeworkEvent => pickupHomework;
         public Event InteractWorldElementEvent => interactWorldElement;
+        public Event CharacterSelectBaseEvent => characterSelectBase;
+        public Event CharacterSelectRunnerEvent => characterSelectRunner;
+        public Event CharacterSelectThrowerEvent => characterSelectThrower;
+        public Event CharacterSelectDasherEvent => characterSelectDasher;
         public Event AimHoldEvent => aimHold;
         public Event AimReleaseEvent => aimRelease;
         public Event HomeworkFlyingEvent => homeworkFlying;

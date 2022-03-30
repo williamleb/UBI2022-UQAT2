@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Ingredients.Homework;
 using Sirenix.OdinInspector;
 using Units.AI;
@@ -49,7 +50,27 @@ using Utilities.Singleton;
         public void PlayHandInHomeworkSound(AIEntity ai) => wwiseObjects.HandInHomeworkEvent.Post(ai.gameObject);
         public void PlayPickUpHomeworkSound(PlayerEntity player) => wwiseObjects.PickUpHomeworkEvent.Post(player.gameObject);
         public void PlayPickUpHomeworkSound(AIEntity ai) => wwiseObjects.PickUpHomeworkEvent.Post(ai.gameObject);
-        public void PlayInteractWorldElementSound(PlayerEntity player) => wwiseObjects.InteractWorldElementEvent.Post(player.gameObject);
+        public void PlayInteractWorldElementSound() => wwiseObjects.InteractWorldElementEvent.Post(gameObject);
+        public void PlayCharacterSelectSound(Archetype archetype)
+        {
+            switch (archetype)
+            {
+                case Archetype.Base:
+                    wwiseObjects.CharacterSelectBaseEvent.Post(gameObject);
+                    break;
+                case Archetype.Runner:
+                    wwiseObjects.CharacterSelectRunnerEvent.Post(gameObject);
+                    break;
+                case Archetype.Dasher:
+                    wwiseObjects.CharacterSelectDasherEvent.Post(gameObject);
+                    break;
+                case Archetype.Thrower:
+                    wwiseObjects.CharacterSelectThrowerEvent.Post(gameObject);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(archetype), archetype, null);
+            }
+        }
         public void PlayAimHoldSound(PlayerEntity player)
         {
             StopAimHoldSound(player);
