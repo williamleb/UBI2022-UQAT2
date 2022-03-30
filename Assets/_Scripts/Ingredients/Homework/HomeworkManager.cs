@@ -405,9 +405,16 @@ namespace Ingredients.Homework
             burstsToRemove.Clear();
             foreach (var burstToDo in allBurstToDo)
             {
-                if (burstToDo.Burst.AtProgress <= GameManager.Instance.GameProgression)
+                if (GameManager.HasInstance)
                 {
-                    burstsToRemove.Add(burstToDo);
+                    if (burstToDo.Burst.AtProgress <= GameManager.Instance.GameProgression)
+                    {
+                        burstsToRemove.Add(burstToDo);
+                    }
+                }
+                else
+                {
+                    return;
                 }
             }
 
