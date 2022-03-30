@@ -14,6 +14,7 @@ namespace Canvases.Components
 
         public string Text
         {
+            get => text.text;
             set => text.text = string.IsNullOrEmpty(value) ? string.Empty : value;
         }
         
