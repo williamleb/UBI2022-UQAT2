@@ -227,7 +227,7 @@ namespace Ingredients.Homework
             if (!NetworkSystem.HasInstance)
                 return;
             
-            foreach (var homework in homeworks)
+            foreach (var homework in homeworks.ToList())
             {
                 NetworkSystem.Instance.Despawn(homework.Value.Object);
             }
