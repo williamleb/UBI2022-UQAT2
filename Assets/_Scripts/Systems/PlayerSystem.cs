@@ -2,6 +2,7 @@ using System;
 using Fusion;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Scriptables;
 using Systems.Level;
@@ -121,12 +122,16 @@ namespace Systems
 			RemovePlayer(player);
 		}
 
-		private void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
+		private async void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
 		{
-			playerSpawnPoints ??= FindObjectsOfType<PlayerSpawnLocation>();
+			while (playerSpawnPoints.Length == 0)
+			{
+				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
+				await Task.Delay(10);
+			}
 			var spawnPosition = playersEntity.Count < playerSpawnPoints.Length
 				? playerSpawnPoints[playersEntity.Count].transform.position
-				: new Vector3(-18,0,18); // TODO FIX SPAWN LOCATION
+				: Vector3.zero;
 
 			Debug.Log($"Spawning {playerRef}");
 			runner.Spawn(prefabs.PlayerPrefab,
@@ -146,9 +151,13 @@ namespace Systems
 			});
 		}
 
-		public void SetPlayersPositionToSpawn()
+		public async void SetPlayersPositionToSpawn()
 		{
-			playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
+			while (playerSpawnPoints.Length == 0)
+			{
+				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
+				await Task.Delay(10);
+			}
 			for (int i = 0; i < playersEntity.Count; i++)
 			{
 				PlayerEntity playerEntity = playersEntity[i];
