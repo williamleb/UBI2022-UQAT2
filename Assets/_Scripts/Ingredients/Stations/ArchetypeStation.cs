@@ -1,3 +1,4 @@
+using System;
 using Canvases.Markers;
 using Fusion;
 using Managers.Interactions;
@@ -14,20 +15,24 @@ public class ArchetypeStation : MonoBehaviour
     {
         interaction = GetComponent<Interaction>();
         interaction.OnInteractedWith += OnInteractedWith;
+        interaction.OnInstantFeedback += OnInstantFeedback;
         GetComponentInChildren<TextMarkerReceptor>().Text = $"Select\n{archetypeTypeStation}";
+    }
+
+    private void OnDestroy()
+    {
+        interaction.OnInteractedWith -= OnInteractedWith;
+        interaction.OnInstantFeedback -= OnInstantFeedback;
+    }
+
+    private void OnInstantFeedback(Interacter interacter)
+    {
+        SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
     }
 
     private void OnInteractedWith(Interacter interacter)
     {
         var playerEntity = interacter.GetComponent<PlayerEntity>();
         playerEntity.AssignArchetype(archetypeTypeStation);
-        
-        RPC_NotifyInteractedToInputAuthority();
-    }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    private void RPC_NotifyInteractedToInputAuthority()
-    {
-        SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
     }
 }

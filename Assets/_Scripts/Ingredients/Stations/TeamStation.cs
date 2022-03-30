@@ -13,18 +13,16 @@ public class TeamStation : MonoBehaviour
     {
         interaction = GetComponent<Interaction>();
         interaction.OnInteractedWith += OnInteractedWith;
+        interaction.OnInstantFeedback += OnInstantFeedback;
     }
 
     private void OnInteractedWith(Interacter interacter)
     {
         var playerEntity = interacter.GetComponent<PlayerEntity>();
         TeamSystem.Instance.AssignTeam(playerEntity);
-        
-        RPC_NotifyInteractedToInputAuthority();
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    private void RPC_NotifyInteractedToInputAuthority()
+    private void OnInstantFeedback(Interacter interacter)
     {
         SoundSystem.Instance.PlayInteractWorldElementSound();
     }
