@@ -46,8 +46,7 @@ namespace Units.Player
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default,
-            float forceMagnitude = 0)
+        private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = 0)
         {
             isRagdoll = isActivate;
 

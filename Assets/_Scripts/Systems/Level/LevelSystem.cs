@@ -116,12 +116,18 @@ namespace Systems.Level
 
         public void LoadMainMenu()
         {
+            if (State == LevelState.Transition)
+            {
+                Debug.LogWarning("Cannot load the main menu while in a scene transition.");
+                return;
+            }
+            
+            State = LevelState.Transition;
             StartCoroutine(LoadMainMenuRoutine());
         }
 
         private IEnumerator LoadMainMenuRoutine()
         {
-            State = LevelState.Transition;
             ActiveSceneIndex = MainMenuScene.BuildIndex;
             OnMainMenuStartLoad?.Invoke();
             

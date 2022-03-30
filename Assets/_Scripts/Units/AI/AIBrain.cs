@@ -106,5 +106,15 @@ namespace Units.AI
             if (entity.Agent.enabled)
                 entity.Agent.speed = BaseSpeed;
         }
+
+        public void PlayAlert()
+        {
+            entity.PlayAlert();
+        }
+
+        public void StopAlert()
+        {
+            entity.StopAlert();
+        }
     }
 }

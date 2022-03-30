@@ -1,5 +1,6 @@
 ﻿using System;
 using Managers.Interactions;
+using Systems.Sound;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -29,7 +30,8 @@ namespace Ingredients.Stations
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
             if (!player)
                 return;
-            
+
+            SoundSystem.Instance.PlayInteractWorldElementSound();
             player.StartCustomization();
         }
     }

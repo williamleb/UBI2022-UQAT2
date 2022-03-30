@@ -60,7 +60,14 @@ namespace Units.Player
             transform.forward = GetDashDirection(dirToTarget);
             velocity = data.DashForce;
 
-            PlayDashSound();
+            if (Object.HasStateAuthority)
+                RPC_DetectDashOnAllClients();
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_DetectDashOnAllClients()
+        {
+            PlayDashSoundLocally();
         }
 
         private Vector3 GetDirToTarget()

@@ -1,5 +1,8 @@
+using System;
 using Canvases.Markers;
+using Fusion;
 using Managers.Interactions;
+using Systems.Sound;
 using Units.Player;
 using UnityEngine;
 
@@ -12,7 +15,19 @@ public class ArchetypeStation : MonoBehaviour
     {
         interaction = GetComponent<Interaction>();
         interaction.OnInteractedWith += OnInteractedWith;
+        interaction.OnInstantFeedback += OnInstantFeedback;
         GetComponentInChildren<TextMarkerReceptor>().Text = $"Select\n{archetypeTypeStation}";
+    }
+
+    private void OnDestroy()
+    {
+        interaction.OnInteractedWith -= OnInteractedWith;
+        interaction.OnInstantFeedback -= OnInstantFeedback;
+    }
+
+    private void OnInstantFeedback(Interacter interacter)
+    {
+        SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
     }
 
     private void OnInteractedWith(Interacter interacter)

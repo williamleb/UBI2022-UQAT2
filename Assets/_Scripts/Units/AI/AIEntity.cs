@@ -36,6 +36,14 @@ namespace Units.AI
         [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
         private GameObject brainToAddOnSpawned;
 
+        [SerializeField] private ParticleSystem alertParticleEffect;
+        
+        [SerializeField] private Transform ragdollTransform;
+
+        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
+        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
+        private bool isRagdoll;
+
         private AkGameObj audioObject;
         private NavMeshAgent agent;
         private Inventory inventory;
@@ -47,10 +55,6 @@ namespace Units.AI
         private AITaskSensor taskSensor;
         private AIBrain brain;
 
-        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
-        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
-        [SerializeField] private Transform ragdollTransform;
-        private bool isRagdoll;
         private Collider aiCollider;
 
         private AISettings settings;
@@ -286,6 +290,17 @@ namespace Units.AI
         {
             StopHitRoutine();
         }
+
+        public void PlayAlert()
+        {
+            RPC_PlayAlertSoundOnAllClients();
+            RPC_PlayAlertParticleEffectOnAllClients();
+        }
+
+        public void StopAlert()
+        {
+            RPC_StopAlertParticleEffectOnAllClients();
+        }
         
         public void PlayFootstepSoundLocally() => SoundSystem.Instance.PlayFootstepSound(this);
         public void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
@@ -297,6 +312,26 @@ namespace Units.AI
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayPickUpHomeworkSoundOnAllClients() => SoundSystem.Instance.PlayPickUpHomeworkSound(this);
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayAlertSoundOnAllClients() => SoundSystem.Instance.PlayJanitorCaughtAlertSound(this);
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_PlayAlertParticleEffectOnAllClients()
+        {
+            if (alertParticleEffect)
+            {
+                alertParticleEffect.Play();
+            }
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_StopAlertParticleEffectOnAllClients()
+        {
+            if (alertParticleEffect)
+            {
+                alertParticleEffect.Stop();
+            }
+        }
         
 #if UNITY_EDITOR
         private void OnValidate()

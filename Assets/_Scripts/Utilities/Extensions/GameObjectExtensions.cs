@@ -39,6 +39,16 @@ namespace Utilities.Extensions
             return component;
         }
         
+        public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+        {
+            if (!gameObject.TryGetComponent(out T component))
+            {
+                component = gameObject.AddComponent<T>();
+            }
+
+            return component;
+        }
+        
         public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : Component
         {
             return gameObject.gameObject.GetComponentInEntity<T>();

@@ -69,7 +69,7 @@ namespace Units.Player
 
         private void OnCollisionStay(Collision collision)
         {
-            if (!IsDashing && IsMovingFast)
+            if (Object && !IsDashing && IsMovingFast)
             {
                 Transform t = transform;
                 Vector3 f = t.forward;

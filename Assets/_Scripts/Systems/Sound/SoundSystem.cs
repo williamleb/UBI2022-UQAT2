@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Ingredients.Homework;
 using Sirenix.OdinInspector;
 using Units.AI;
 using Units.Player;
@@ -42,13 +44,48 @@ using Utilities.Singleton;
         public void PlayFumbleSound(PlayerEntity player) => wwiseObjects.FumbleEvent.Post(player.gameObject);
         public void PlayFumbleSound(AIEntity ai) => wwiseObjects.FumbleEvent.Post(ai.gameObject);
         public void PlayDashSound(PlayerEntity player) => wwiseObjects.DashEvent.Post(player.gameObject);
+        public void StopDashSound(PlayerEntity player) => wwiseObjects.DashEvent.Stop(player.gameObject);
+        public void PlayDashCollisionSound(PlayerEntity player) => wwiseObjects.DashCollisionEvent.Post(player.gameObject);
         public void PlayHandInHomeworkSound(PlayerEntity player) => wwiseObjects.HandInHomeworkEvent.Post(player.gameObject);
         public void PlayHandInHomeworkSound(AIEntity ai) => wwiseObjects.HandInHomeworkEvent.Post(ai.gameObject);
         public void PlayPickUpHomeworkSound(PlayerEntity player) => wwiseObjects.PickUpHomeworkEvent.Post(player.gameObject);
         public void PlayPickUpHomeworkSound(AIEntity ai) => wwiseObjects.PickUpHomeworkEvent.Post(ai.gameObject);
-        public void PlayAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Post(player.gameObject);
+        public void PlayInteractWorldElementSound() => wwiseObjects.InteractWorldElementEvent.Post(gameObject);
+        public void PlayCharacterSelectSound(Archetype archetype)
+        {
+            switch (archetype)
+            {
+                case Archetype.Base:
+                    wwiseObjects.CharacterSelectBaseEvent.Post(gameObject);
+                    break;
+                case Archetype.Runner:
+                    wwiseObjects.CharacterSelectRunnerEvent.Post(gameObject);
+                    break;
+                case Archetype.Dasher:
+                    wwiseObjects.CharacterSelectDasherEvent.Post(gameObject);
+                    break;
+                case Archetype.Thrower:
+                    wwiseObjects.CharacterSelectThrowerEvent.Post(gameObject);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(archetype), archetype, null);
+            }
+        }
+        public void PlayAimHoldSound(PlayerEntity player)
+        {
+            StopAimHoldSound(player);
+            wwiseObjects.AimHoldEvent.Post(player.gameObject);
+        }
         public void StopAimHoldSound(PlayerEntity player) => wwiseObjects.AimHoldEvent.Stop(player.gameObject);
         public void PlayAimReleaseSound(PlayerEntity player) => wwiseObjects.AimReleaseEvent.Post(player.gameObject);
+        public void PlayHomeworkFlyingSound(Homework homework) => wwiseObjects.HomeworkFlyingEvent.Post(homework.gameObject);
+        public void PlayVictoryJingleSound() => wwiseObjects.VictoryJingleEvent.Post(gameObject);
+        public void PlayDefeatJingleSound() => wwiseObjects.DefeatJingleEvent.Post(gameObject);
+        public void PlayOneSound() => wwiseObjects.OneEvent.Post(gameObject);
+        public void PlayTwoSound() => wwiseObjects.TwoEvent.Post(gameObject);
+        public void PlayThreeSound() => wwiseObjects.ThreeEvent.Post(gameObject);
+        public void PlayGoSound() => wwiseObjects.GoEvent.Post(gameObject);
+        public void PlayJanitorCaughtAlertSound(AIEntity janitor) => wwiseObjects.JanitorCaughtAlertEvent.Post(janitor.gameObject);
 
         public float GetMasterVolume() => wwiseObjects.MasterVolumeParameter.GetGlobalValue() / 100f;
         public float GetMusicVolume() => wwiseObjects.MusicVolumeParameter.GetGlobalValue() / 100f;

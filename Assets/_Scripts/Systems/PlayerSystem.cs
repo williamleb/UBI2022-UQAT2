@@ -115,7 +115,7 @@ namespace Systems
 		}
 
 		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
-        {
+		{
 			Debug.Log($"{playerRef} left.");
 			PlayerEntity player = GetPlayerEntity(playerRef);
 			RemovePlayer(player);

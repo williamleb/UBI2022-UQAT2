@@ -5,6 +5,7 @@ using Systems;
 using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
+using Systems.Sound;
 using Systems.Teams;
 using UnityEngine;
 
@@ -42,6 +43,9 @@ namespace Units.Player
                     IsReady = !IsReady;
                     OnReadyChanged?.Invoke();
                     Debug.Log($"Toggle ready for player id {PlayerId} : {IsReady}");
+                    
+                    if (Object.HasInputAuthority)
+                        SoundSystem.Instance.PlayInteractWorldElementSound();
                 }
             }
         }

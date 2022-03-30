@@ -9,6 +9,7 @@ using Systems;
 using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
+using Systems.Sound;
 using Systems.Teams;
 using Units.Player;
 using UnityEngine;
@@ -120,11 +121,11 @@ namespace Canvases.Menu.End
             if (!ScoreManager.HasInstance)
                 return;
             
-            UpdateWinnerText();
+            UpdateWinnerTextAndPlayAccordingSound();
             UpdateTeamPointsText();
         }
 
-        private void UpdateWinnerText()
+        private void UpdateWinnerTextAndPlayAccordingSound()
         {
             var settings = SettingsSystem.GameSettings;
             
@@ -132,6 +133,7 @@ namespace Canvases.Menu.End
             {
                 winnerText.Color = settings.DrawColor;
                 winnerText.Text = "DRAW";
+                SoundSystem.Instance.PlayDefeatJingleSound();
             }
             else
             {
@@ -143,11 +145,13 @@ namespace Canvases.Menu.End
                 {
                     winnerText.Color = settings.VictoryColor;
                     winnerText.Text = "VICTORY!";
+                    SoundSystem.Instance.PlayVictoryJingleSound();
                 }
                 else
                 {
                     winnerText.Color = settings.DefeatColor;
                     winnerText.Text = "DEFEAT...";
+                    SoundSystem.Instance.PlayDefeatJingleSound();
                 }
             }
         }

@@ -11,44 +11,112 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="702482391" Language="SFX" Hash="2781038789">
+		<SoundBank Id="702482391" Language="SFX" Hash="118267713">
 			<ObjectPath>\SoundBanks\Default Work Unit\Game</ObjectPath>
 			<ShortName>Game</ShortName>
 			<Path>Game.bnk</Path>
 			<IncludedEvents>
-				<Event Id="1017685259" Name="AimHold" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimHold" DurationType="Infinite">
+				<Event Id="1017685259" Name="AimHold" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimHold" MaxAttenuation="100." DurationType="Infinite">
 					<IncludedMemoryFiles>
+						<File Id="339248168" Language="SFX">
+							<ShortName>AimMax_Redo.wav</ShortName>
+							<Path>SFX\AimMax_Redo_10C4C929.wem</Path>
+						</File>
 						<File Id="415484373" Language="SFX">
 							<ShortName>AimHold_Redo.wav</ShortName>
 							<Path>SFX\AimHold_Redo_D79FB2B7.wem</Path>
-						</File>
-						<File Id="423616169" Language="SFX">
-							<ShortName>AimMax.wav</ShortName>
-							<Path>SFX\AimMax_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 					<DefaultSwitchValue>{CC1761DC-5D4C-4604-883A-B3DE0331EABD}</DefaultSwitchValue>
 					<SwitchContainers>
 						<SwitchContainer SwitchValue="{B499EF81-9213-4855-A417-C3019ED83265}">
 							<Media>
-								<File Id="423616169"/>
+								<File Id="339248168"/>
 							</Media>
 						</SwitchContainer>
 					</SwitchContainers>
 				</Event>
-				<Event Id="3512360027" Name="AimRelease" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimRelease" DurationType="OneShot" DurationMin="1.122018" DurationMax="1.122018">
+				<Event Id="3512360027" Name="AimRelease" ObjectPath="\Events\Default Work Unit\PlayerInteraction\AimSounds\AimRelease" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.837029" DurationMax="0.837029">
 					<IncludedMemoryFiles>
-						<File Id="107268317" Language="SFX">
-							<ShortName>AimRelease.wav</ShortName>
-							<Path>SFX\AimRelease_10C4C929.wem</Path>
+						<File Id="154958069" Language="SFX">
+							<ShortName>AimRelease_Redo.wav</ShortName>
+							<Path>SFX\AimRelease_Redo_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="1942692385" Name="Dash" ObjectPath="\Events\Default Work Unit\Movement\Dash" DurationType="OneShot" DurationMin="1.110726" DurationMax="1.110726">
+				<Event Id="3669241130" Name="CharacterSelect" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect" DurationType="OneShot" DurationMin="0.628005" DurationMax="0.757687">
+					<IncludedMemoryFiles>
+						<File Id="225314442" Language="SFX">
+							<ShortName>CharacterSelect-002.wav</ShortName>
+							<Path>SFX\CharacterSelect-002_10C4C929.wem</Path>
+						</File>
+						<File Id="730066950" Language="SFX">
+							<ShortName>CharacterSelect-001.wav</ShortName>
+							<Path>SFX\CharacterSelect-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1940068652" Name="CharacterSelect2" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect2" DurationType="OneShot" DurationMin="0.432063" DurationMax="0.439796">
+					<IncludedMemoryFiles>
+						<File Id="898339527" Language="SFX">
+							<ShortName>CharacterSelect-006.wav</ShortName>
+							<Path>SFX\CharacterSelect-006_10C4C929.wem</Path>
+						</File>
+						<File Id="1035939997" Language="SFX">
+							<ShortName>CharacterSelect-005.wav</ShortName>
+							<Path>SFX\CharacterSelect-005_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1940068653" Name="CharacterSelect3" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect3" DurationType="OneShot" DurationMin="0.824286" DurationMax="1.020703">
+					<IncludedMemoryFiles>
+						<File Id="156119104" Language="SFX">
+							<ShortName>CharacterSelect-007.wav</ShortName>
+							<Path>SFX\CharacterSelect-007_10C4C929.wem</Path>
+						</File>
+						<File Id="263338687" Language="SFX">
+							<ShortName>CharacterSelect-008.wav</ShortName>
+							<Path>SFX\CharacterSelect-008_10C4C929.wem</Path>
+						</File>
+						<File Id="707104934" Language="SFX">
+							<ShortName>CharacterSelect-009.wav</ShortName>
+							<Path>SFX\CharacterSelect-009_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1940068650" Name="CharacterSelect4" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect4" DurationType="OneShot" DurationMin="0.523197" DurationMax="0.935261">
+					<IncludedMemoryFiles>
+						<File Id="386416456" Language="SFX">
+							<ShortName>CharacterSelect-003.wav</ShortName>
+							<Path>SFX\CharacterSelect-003_10C4C929.wem</Path>
+						</File>
+						<File Id="645694249" Language="SFX">
+							<ShortName>CharacterSelect-004.wav</ShortName>
+							<Path>SFX\CharacterSelect-004_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1942692385" Name="Dash" ObjectPath="\Events\Default Work Unit\Movement\Dash" MaxAttenuation="100." DurationType="OneShot" DurationMin="1.110726" DurationMax="1.110726">
 					<IncludedMemoryFiles>
 						<File Id="276913622" Language="SFX">
 							<ShortName>Dash.wav</ShortName>
 							<Path>SFX\Dash_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3790351127" Name="DashCollision" ObjectPath="\Events\Default Work Unit\Movement\DashCollision" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.587664" DurationMax="0.587664">
+					<IncludedMemoryFiles>
+						<File Id="753060674" Language="SFX">
+							<ShortName>DashCollision.wav</ShortName>
+							<Path>SFX\DashCollision_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1855274195" Name="DefeatJingle" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\DefeatJingle" DurationType="OneShot" DurationMin="1.539615" DurationMax="1.539615">
+					<IncludedMemoryFiles>
+						<File Id="1043426126" Language="SFX">
+							<ShortName>DefeatJingle.wav</ShortName>
+							<Path>SFX\DefeatJingle_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
@@ -228,7 +296,7 @@
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="4254277742" Name="Fumble" ObjectPath="\Events\Default Work Unit\Movement\Fumble" DurationType="OneShot" DurationMin="0.13127" DurationMax="0.49068">
+				<Event Id="4254277742" Name="Fumble" ObjectPath="\Events\Default Work Unit\Movement\Fumble" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.13127" DurationMax="0.49068">
 					<IncludedMemoryFiles>
 						<File Id="11255049" Language="SFX">
 							<ShortName>Fumble Sounds\FumbleSound-004.wav</ShortName>
@@ -300,19 +368,59 @@
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="2964874869" Name="HandinHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\HandinHomework" DurationType="OneShot" DurationMin="0.771224" DurationMax="0.945578">
+				<Event Id="1786192775" Name="Go" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\Countdown\Go" DurationType="OneShot" DurationMin="1.506009" DurationMax="1.506009">
 					<IncludedMemoryFiles>
-						<File Id="412594150" Language="SFX">
-							<ShortName>HandinHomework\HandinHomework-002.wav</ShortName>
-							<Path>SFX\HandinHomework\HandinHomework-002_10C4C929.wem</Path>
-						</File>
-						<File Id="996869217" Language="SFX">
-							<ShortName>HandinHomework\HandinHomework-001.wav</ShortName>
-							<Path>SFX\HandinHomework\HandinHomework-001_10C4C929.wem</Path>
+						<File Id="1072399833" Language="SFX">
+							<ShortName>Countdown Go-004.wav</ShortName>
+							<Path>SFX\Countdown Go-004_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="412537003" Name="PickupHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\PickupHomework" DurationType="OneShot" DurationMin="0.248594" DurationMax="0.385964">
+				<Event Id="2964874869" Name="HandinHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\HandinHomework" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.693469" DurationMax="0.825805">
+					<IncludedMemoryFiles>
+						<File Id="270060992" Language="SFX">
+							<ShortName>HandinHomework_Redo-002.wav</ShortName>
+							<Path>SFX\HandinHomework_Redo-002_10C4C929.wem</Path>
+						</File>
+						<File Id="487582154" Language="SFX">
+							<ShortName>HandinHomework_Redo-001.wav</ShortName>
+							<Path>SFX\HandinHomework_Redo-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="18754590" Name="HomeworkFlying" ObjectPath="\Events\Default Work Unit\PlayerInteraction\HomeworkFlying" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.394898" DurationMax="0.394898">
+					<IncludedMemoryFiles>
+						<File Id="926012706" Language="SFX">
+							<ShortName>HomeworkFlying_Redo2.wav</ShortName>
+							<Path>SFX\HomeworkFlying_Redo2_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2578587127" Name="InteractWorldElement" ObjectPath="\Events\Default Work Unit\PlayerInteraction\InteractWorldElement" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.4261" DurationMax="0.4261">
+					<IncludedMemoryFiles>
+						<File Id="268522528" Language="SFX">
+							<ShortName>InteractWorldElement.wav</ShortName>
+							<Path>SFX\InteractWorldElement_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1443756366" Name="JanitorCaughtAlert" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\JanitorCaughtAlert" DurationType="OneShot" DurationMin="0.516463" DurationMax="0.516463">
+					<IncludedMemoryFiles>
+						<File Id="562299762" Language="SFX">
+							<ShortName>JanitorcaughtAlert.wav</ShortName>
+							<Path>SFX\JanitorcaughtAlert_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1064933119" Name="One" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\Countdown\One" DurationType="OneShot" DurationMin="0.605011" DurationMax="0.605011">
+					<IncludedMemoryFiles>
+						<File Id="266955091" Language="SFX">
+							<ShortName>Countdown 1-001.wav</ShortName>
+							<Path>SFX\Countdown 1-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="412537003" Name="PickupHomework" ObjectPath="\Events\Default Work Unit\PlayerInteraction\PickupHomework" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.248594" DurationMax="0.385964">
 					<IncludedMemoryFiles>
 						<File Id="162520259" Language="SFX">
 							<ShortName>PickupHomework\PickupHomework-003.wav</ShortName>
@@ -332,11 +440,59 @@
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
+				<Event Id="912956111" Name="Three" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\Countdown\Three" DurationType="OneShot" DurationMin="0.534104" DurationMax="0.534104">
+					<IncludedMemoryFiles>
+						<File Id="291359003" Language="SFX">
+							<ShortName>Countdown 3-003.wav</ShortName>
+							<Path>SFX\Countdown 3-003_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="678209053" Name="Two" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\Countdown\Two" DurationType="OneShot" DurationMin="0.471293" DurationMax="0.471293">
+					<IncludedMemoryFiles>
+						<File Id="800286968" Language="SFX">
+							<ShortName>Countdown 2-002.wav</ShortName>
+							<Path>SFX\Countdown 2-002_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1838029456" Name="UIButtonBackward" ObjectPath="\Events\Default Work Unit\UI Sounds\UIButtonBackward" DurationType="OneShot" DurationMin="0.465941" DurationMax="0.465941">
+					<IncludedMemoryFiles>
+						<File Id="978603119" Language="SFX">
+							<ShortName>UIButtonBackward-003.wav</ShortName>
+							<Path>SFX\UIButtonBackward-003_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1020090074" Name="UIButtonForward" ObjectPath="\Events\Default Work Unit\UI Sounds\UIButtonForward" DurationType="OneShot" DurationMin="0.314581" DurationMax="0.314581">
+					<IncludedMemoryFiles>
+						<File Id="498144658" Language="SFX">
+							<ShortName>UIButtonForward-002.wav</ShortName>
+							<Path>SFX\UIButtonForward-002_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="937414339" Name="UIButtonSelect" ObjectPath="\Events\Default Work Unit\UI Sounds\UIButtonSelect" DurationType="OneShot" DurationMin="0.372358" DurationMax="0.372358">
+					<IncludedMemoryFiles>
+						<File Id="764575069" Language="SFX">
+							<ShortName>UIButtonSelect-001.wav</ShortName>
+							<Path>SFX\UIButtonSelect-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="4009253126" Name="VictoryJingle" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\VictoryJingle" DurationType="OneShot" DurationMin="1.268526" DurationMax="1.268526">
+					<IncludedMemoryFiles>
+						<File Id="954104453" Language="SFX">
+							<ShortName>VictoryJingle.wav</ShortName>
+							<Path>SFX\VictoryJingle_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
-				<File Id="423616169" Language="SFX">
-					<ShortName>AimMax.wav</ShortName>
-					<Path>SFX\AimMax_10C4C929.wem</Path>
+				<File Id="339248168" Language="SFX">
+					<ShortName>AimMax_Redo.wav</ShortName>
+					<Path>SFX\AimMax_Redo_10C4C929.wem</Path>
 				</File>
 			</IncludedMemoryFiles>
 			<GameParameters>
