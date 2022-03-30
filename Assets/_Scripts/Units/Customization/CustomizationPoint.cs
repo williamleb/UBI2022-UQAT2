@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Units.Player.Customisation
+namespace Units.Customization
 {
     public class CustomizationPoint : MonoBehaviour
     {

@@ -4,7 +4,7 @@ using Fusion;
 using Managers.Game;
 using Managers.Hallway;
 using Units.AI.Senses;
-using Units.Player.Customisation;
+using Units.Customization;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Singleton;
@@ -13,7 +13,7 @@ namespace Units.AI
 {
     public class AIManager : Singleton<AIManager>
     {
-        private AIEntity teacher = null;
+        private AIEntity teacher;
         private readonly List<AIEntity> students = new List<AIEntity>();
         private readonly List<AIEntity> janitors = new List<AIEntity>();
 
@@ -25,9 +25,10 @@ namespace Units.AI
 
         public void RegisterTeacher(AIEntity teacherAI)
         {
-            Debug.Assert(!teacher, "Trying to assign a teacher when there is already another teacher (there can only be one teacher)");
+            Debug.Assert(!teacher,
+                "Trying to assign a teacher when there is already another teacher (there can only be one teacher)");
             teacher = teacherAI;
-            
+
             UpdateAISpawned(teacherAI);
         }
 
@@ -41,7 +42,7 @@ namespace Units.AI
         {
             students.Add(student);
 
-            student.GetComponent<PlayerCustomization>().LocalRandomize();
+            student.GetComponent<AICustomization>().LocalRandomize();
 
             UpdateAISpawned(student);
         }
@@ -50,11 +51,11 @@ namespace Units.AI
         {
             students.Remove(student);
         }
-        
+
         public void RegisterJanitor(AIEntity janitor)
         {
             janitors.Add(janitor);
-            
+
             UpdateAISpawned(janitor);
         }
 
@@ -84,7 +85,7 @@ namespace Units.AI
                 GameManager.Instance.OnBeginDespawn += DespawnAIs;
             }
         }
-        
+
         protected override void OnDestroy()
         {
             if (GameManager.HasInstance)
@@ -92,7 +93,7 @@ namespace Units.AI
                 GameManager.Instance.OnBeginSpawn -= SpawnAIsFromSpawnLocations;
                 GameManager.Instance.OnBeginDespawn -= DespawnAIs;
             }
-            
+
             base.OnDestroy();
         }
 
@@ -104,7 +105,7 @@ namespace Units.AI
             {
                 SpawnAI(spawnLocation);
             }
-            
+
             GameManager.Instance.UnlockSpawn(this);
         }
 
@@ -112,11 +113,11 @@ namespace Units.AI
         {
             if (!NetworkSystem.HasInstance)
                 return;
-            
+
             if (teacher)
                 NetworkSystem.Instance.Despawn(teacher.Object);
-                
-            
+
+
             foreach (var janitor in janitors)
             {
                 NetworkSystem.Instance.Despawn(janitor.Object);
@@ -132,16 +133,16 @@ namespace Units.AI
         {
             var spawnLocationTransform = spawnLocation.transform;
             var entityGameObject = NetworkSystem.Instance.Spawn(
-                spawnLocation.AIEntityPrefab, 
-                spawnLocationTransform.position, 
-                spawnLocationTransform.rotation, 
-                null, 
+                spawnLocation.AIEntityPrefab,
+                spawnLocationTransform.position,
+                spawnLocationTransform.rotation,
+                null,
                 (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway));
-            
+
             var entity = entityGameObject.GetComponentInEntity<AIEntity>();
             Debug.Assert(entity);
             entity.AddBrain(spawnLocation.AIBrainPrefab);
-            
+
             aisToSpawn.Add(entity);
         }
 
@@ -149,7 +150,7 @@ namespace Units.AI
         {
             var entity = aiObject.GetComponent<AIEntity>();
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
-            
+
             entity.AssignHallway(assignedHallway);
 
             var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();

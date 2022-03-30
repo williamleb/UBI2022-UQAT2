@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Units.Player;
+using UnityEngine;
 
-namespace Units.Player.Customisation
+namespace Units.Customization
 {
     public class ClothesCustomizer : MonoBehaviour
     {

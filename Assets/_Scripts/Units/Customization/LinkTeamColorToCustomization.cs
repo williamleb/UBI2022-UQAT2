@@ -1,9 +1,10 @@
 ﻿using Fusion;
 using Systems.Teams;
+using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
 
-namespace Units.Player.Customisation
+namespace Units.Customization
 {
     [RequireComponent(typeof(PlayerEntity))]
     [RequireComponent(typeof(PlayerCustomization))]
@@ -12,7 +13,7 @@ namespace Units.Player.Customisation
         private PlayerEntity entity;
         private PlayerCustomization customization;
         private Team currentTeam;
-        
+
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
@@ -36,6 +37,7 @@ namespace Units.Player.Customisation
                 {
                     currentTeam.OnColorChanged -= UpdateCustomization;
                 }
+
                 entity.OnTeamChanged -= UpdateTeam;
             }
         }
@@ -49,7 +51,7 @@ namespace Units.Player.Customisation
 
             if (!entity.TeamId.IsNullOrEmpty())
                 currentTeam = TeamSystem.Instance.GetTeam(entity.TeamId);
-            
+
             if (currentTeam)
             {
                 UpdateCustomization(currentTeam.Color);
