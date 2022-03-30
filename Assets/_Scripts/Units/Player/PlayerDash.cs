@@ -13,7 +13,7 @@ namespace Units.Player
         public event Action<bool> OnDashAvailableChanged;
 
         public bool HasHitSomeoneThisFrame { get; private set; }
-
+        public bool CanDash = true;
         public float RemainingTimeDashCoolDown => DashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (DashCooldown.RemainingTime(Runner) ?? default(float));
 
         [Header("Dash")]
@@ -21,12 +21,9 @@ namespace Units.Player
 
         [Networked] private NetworkBool IsDashing { get; set; } = false;
 
-        [Networked] private TickTimer DashCooldown { get; set; }
-        [Networked] public NetworkBool CanDash { get; private set; } = true;
-
         private TickTimer dashTimer;
+        private TickTimer DashCooldown;
         private bool hasHitSomeone;
-        
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();

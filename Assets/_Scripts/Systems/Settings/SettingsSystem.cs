@@ -17,6 +17,7 @@ namespace Systems.Settings
         public static GameSettings GameSettings => Instance.GameSetting;
         public static TeamSettings TeamSettings => Instance.TeamSetting;
         public static CustomizationSettings CustomizationSettings => Instance.CustomizationSetting;
+        public static HUDSettings HUDSettings => Instance.HUDSetting;
 
         private PlayerSettings[] playerSettings;
         private AISettings aiSetting;
@@ -26,6 +27,8 @@ namespace Systems.Settings
         private TeamSettings teamSetting;
         private CustomizationSettings customizationSettings;
 
+        private HUDSettings hudSetting;
+
         private PlayerSettings[] PlayerSetting => playerSettings;
         private AISettings AISetting => aiSetting;
         private MatchmakingSettings MatchmakingSetting => matchmakingSetting;
@@ -33,6 +36,7 @@ namespace Systems.Settings
         private GameSettings GameSetting => gameSetting;
         private TeamSettings TeamSetting => teamSetting;
         private CustomizationSettings CustomizationSetting => customizationSettings;
+        private HUDSettings HUDSetting => hudSetting;
 
         public PlayerSettings GetPlayerSettings(Archetype archetype)
         {
@@ -56,6 +60,7 @@ namespace Systems.Settings
             LoadSettings(out gameSetting);
             LoadSettings(out teamSetting);
             LoadSettings(out customizationSettings);
+            LoadSettings(out hudSetting);
         }
 
         private void LoadSettings<T>(out T memberToInitialize) where T : ScriptableObject
