@@ -14,6 +14,11 @@
             
             This will deal with all communication done with the Photon Cloud
             </summary>
+            <summary>
+            Fusion Realtime Client
+            
+            This will deal with all communication done with the Photon Cloud
+            </summary>
         </member>
         <member name="F:Fusion.Photon.Realtime.FusionRelayClient.KeepAliveInBackground">
             <summary>Defines for how long the Fallback Thread should keep the connection, before it may time out as usual.</summary>
@@ -58,6 +63,33 @@
             </summary>
             <returns>True if the Thread should keep running, false otherwise.</returns>
         </member>
+        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.OnEventHandler(ExitGames.Client.Photon.EventData)">
+            <summary>
+            Handles all received events from the Photon Cloud
+            </summary>
+            <param name="evt">Event Data</param>
+        </member>
+        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.SendEvent(System.Int32,System.Byte,System.Byte*,System.Int32,System.Boolean)">
+            <summary>
+            Send data to another Actor on the Room
+            </summary>
+            <param name="target">Target Actor of the Event</param>
+            <param name="eventCode">Event Code</param>
+            <param name="buffer">Data to be sent</param>
+            <param name="bufferLength">Buffer Length</param>
+            <param name="reliable">Flag to set reliability on the Event</param>
+            <returns>True if the event was sent, false otherwise</returns>
+        </member>
+        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.ExtractData(System.Object,System.Byte[],System.Int32@)">
+            <summary>
+            Utility method used to extract the content of a <see cref="T:ExitGames.Client.Photon.ByteArraySlice"/> from a object holder.
+            This is necessary so there are no references of Photon Lib DLLs other than on the Fusion.Realtime project
+            </summary>
+            <param name="dataObj">Data Object Holder, this must be a reference of a <see cref="T:ExitGames.Client.Photon.ByteArraySlice"/></param>
+            <param name="buffer">Buffer to write the content of the array slice</param>
+            <param name="bufferLength">Output size of the written buffer</param>
+            <returns>True if the extraction was done correctly, false otherwise</returns>
+        </member>
         <member name="F:Fusion.Photon.Realtime.FusionRelayClient.FUSION_PLUGIN_NAME">
             <summary>
             Fusion Plugin Name for request
@@ -77,33 +109,6 @@
             <summary>
             Signal if some room property has changed
             </summary>
-        </member>
-        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.OnEventHandler(ExitGames.Client.Photon.EventData)">
-            <summary>
-            Handles all received events from the Photon Cloud
-            </summary>
-            <param name="evt">Event Data</param>
-        </member>
-        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.SendEvent(System.Int32,System.Byte,System.Byte*,System.Int32,System.Boolean)">
-            <summary>
-            Send data to another Actor on the Room
-            </summary>
-            <param name="target">Target Actor of the Event</param>
-            <param name="eventCode">Event Code</param>
-            <param name="buffer">Data to be sent</param>
-            <param name="bufferLength">Buffer Length</param>
-            <param name="reliable">Flag to set reliability on the Event</param>
-            <returns>True if the event was sent, false otherwise</returns>
-        </member>
-        <member name="M:Fusion.Photon.Realtime.FusionRelayClient.ExtractData(System.Object,System.Byte*,System.Int32@)">
-            <summary>
-            Utility method used to extract the content of a <see cref="T:ExitGames.Client.Photon.ByteArraySlice"/> from a object holder.
-            This is necessary so there are no references of Photon Lib DLLs other than on the Fusion.Realtime project
-            </summary>
-            <param name="dataObj">Data Object Holder, this must be a reference of a <see cref="T:ExitGames.Client.Photon.ByteArraySlice"/></param>
-            <param name="buffer">Buffer to write the content of the array slice</param>
-            <param name="bufferLength">Output size of the written buffer</param>
-            <returns>True if the extraction was done correctly, false otherwise</returns>
         </member>
         <member name="M:Fusion.Photon.Realtime.FusionRelayClient.UpdateRoomProperties(System.Collections.Generic.Dictionary{System.String,Fusion.SessionProperty})">
             <summary>

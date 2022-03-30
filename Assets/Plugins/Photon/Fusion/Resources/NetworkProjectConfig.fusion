@@ -35,12 +35,14 @@
     "InvokeRenderInBatchMode": true,
     "MaxNetworkedObjectCount": 8192,
     "NetworkIdIsObjectName": false,
+    "EnableHostMigration": false,
+    "HostMigrationSnapshotInterval": 60,
     "Simulation": {
         "InputDataWordCount": 0,
         "TickRate": 60,
-        "DefaultPlayers": 10,
+        "DefaultPlayers": 6,
         "ReplicationMode": 0,
-        "InterestManagement": false,
+        "ObjectInterest": false,
         "SimulationCulling": false,
         "ServerPacketInterval": 1,
         "ClientPacketInterval": 1
@@ -61,7 +63,7 @@
         "ConnectionTimeout": 10.0,
         "ConnectionPingInterval": 1.0,
         "ConnectionShutdownTime": 1.0,
-        "MtuDefault": 1232,
+        "MtuDefault": 1136,
         "ReliableDataTransferModes": 3
     },
     "NetworkConditions": {
@@ -153,5 +155,6 @@
         "Assembly-CSharp",
         "Assembly-CSharp-firstpass"
     ],
-    "UseSerializableDictionary": true
+    "UseSerializableDictionary": true,
+    "NullChecksForNetworkedProperties": true
 }

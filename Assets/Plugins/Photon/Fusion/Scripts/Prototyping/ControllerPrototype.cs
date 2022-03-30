@@ -2,43 +2,48 @@
 using UnityEngine;
 using Fusion;
 
-[OrderBefore(typeof(NetworkTransformAnchor))]
 [ScriptHelp(BackColor = EditorHeaderBackColor.Steel)]
 public class ControllerPrototype : Fusion.NetworkBehaviour {
-
-  protected NetworkCharacterController _ncc;
+  protected NetworkCharacterControllerPrototype _ncc;
   protected NetworkRigidbody _nrb;
   protected NetworkRigidbody2D _nrb2d;
   protected NetworkTransform _nt;
 
+  [Networked]
+  public Vector3 MovementDirection { get; set; }
+
   public bool TransformLocal = false;
 
-  /// <summary>
-  /// If object is not using <see cref="NetworkCharacterController"/>, this controls how much change is applied to the transform/rigidbody.
-  /// </summary>
   [DrawIf(nameof(ShowSpeed), DrawIfHideType.Hide, DoIfCompareOperator.NotEqual)]
   public float Speed = 6f;
 
-  bool HasNCC => GetComponent<NetworkCharacterController>();
+  bool HasNCC => GetComponent<NetworkCharacterControllerPrototype>();
 
-  bool ShowSpeed => this && !TryGetComponent<NetworkCharacterController>(out _);
+  bool ShowSpeed => this && !TryGetComponent<NetworkCharacterControllerPrototype>(out _);
 
-  public override void Spawned() {
-
-    _ncc = GetComponent<NetworkCharacterController>();
-    _nrb = GetComponent<NetworkRigidbody>();
-    _nrb2d = GetComponent<NetworkRigidbody2D>();
-    _nt = GetComponent<NetworkTransform>();
+  public void Awake() {
+    CacheComponents();
   }
 
+  public override void Spawned() {
+    CacheComponents();
+  }
+
+  private void CacheComponents() {
+    if (!_ncc) _ncc     = GetComponent<NetworkCharacterControllerPrototype>();
+    if (!_nrb) _nrb     = GetComponent<NetworkRigidbody>();
+    if (!_nrb2d) _nrb2d = GetComponent<NetworkRigidbody2D>();
+    if (!_nt) _nt       = GetComponent<NetworkTransform>();
+  }
+  
   public override void FixedUpdateNetwork() {
     if (Runner.Config.PhysicsEngine == NetworkProjectConfig.PhysicsEngines.None) {
       return;
     }
 
-    Vector3 direction = default;
+    Vector3 direction;
     if (GetInput(out NetworkInputPrototype input)) {
-      //Debug.Log("There's input " + input.Buttons + " " + Runner.IsClient);
+      direction = default;
 
       if (input.IsDown(NetworkInputPrototype.BUTTON_FORWARD)) {
         direction += TransformLocal ? transform.forward : Vector3.forward;
@@ -58,6 +63,8 @@ public class ControllerPrototype : Fusion.NetworkBehaviour {
 
       direction = direction.normalized;
 
+      MovementDirection = direction;
+
       if (input.IsDown(NetworkInputPrototype.BUTTON_JUMP)) {
         if (_ncc) {
           _ncc.Jump();
@@ -65,6 +72,8 @@ public class ControllerPrototype : Fusion.NetworkBehaviour {
           direction += (TransformLocal ? transform.up : Vector3.up);
         }
       }
+    } else {
+      direction = MovementDirection;
     }
 
     if (_ncc) {
