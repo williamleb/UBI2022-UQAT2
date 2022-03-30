@@ -91,7 +91,7 @@ namespace Systems.Level
         // called by the runner to re-register actions
         public void SubscribeNetworkEvents()
         {
-            NetworkSystem.Instance.OnSceneLoadDoneEvent += OnSceneLoadDone;
+            NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDone;
         }
         
         public void LoadLobby()
@@ -156,7 +156,12 @@ namespace Systems.Level
         {
             ChangeLevelState();
         }
-        
+
+        private void OnDestroy()
+        {
+            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone;
+        }
+
         private void ChangeLevelState()
         {
             OnLobbyLoad.ClearMemory();

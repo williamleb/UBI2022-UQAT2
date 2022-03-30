@@ -44,7 +44,7 @@ namespace Systems
 		private void OnEnable()
 		{
 			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
-			NetworkSystem.Instance.OnSceneLoadStartEvent += ResetSpawnPoints;
+			NetworkSystem.OnSceneLoadStartEvent += ResetSpawnPoints;
 		}
 
 		private void OnDisable()
@@ -52,7 +52,7 @@ namespace Systems
 			if (LevelSystem.HasInstance)
 			{
 				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
-				NetworkSystem.Instance.OnSceneLoadStartEvent -= ResetSpawnPoints;
+				NetworkSystem.OnSceneLoadStartEvent -= ResetSpawnPoints;
 			}
 		}
 

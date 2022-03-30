@@ -18,7 +18,9 @@ namespace Canvases.Menu
 {
     public class MenuManager : Singleton<MenuManager>
     {
-        public event Action<bool> InMenuStatusChanged; 
+        public event Action<bool> InMenuStatusChanged;
+        public event Action OnModalShow;
+        public event Action OnModalHide;
 
         public enum Menu { Customization, Main, Host, Join, Options, Game, Controls, End }
 
@@ -68,6 +70,9 @@ namespace Canvases.Menu
         private void InitializeMenus()
         {
             modal = FindObjectOfType<ModalUI>();
+            modal.OnHide += ModalHide;
+            modal.OnShow += ModalShow;
+
             TryAddToMenus<CustomizationUI>(Menu.Customization);
             TryAddToMenus<MainUI>(Menu.Main);
             TryAddToMenus<HostJoinUI>(Menu.Host, menu => menu.Host);
@@ -163,12 +168,22 @@ namespace Canvases.Menu
             InMenuStatusChanged?.Invoke(InMenu);
         }
 
-        public bool ShowModal(string text, string header, float seconds = 5f)
+        public bool ShowModal(string text, string header, float seconds = 5f )
         {
             if (!modal)
                 return false;
             
             return modal.Show(text, header, seconds);
+        }
+
+        public void ModalShow()
+        {
+            OnModalShow?.Invoke();
+        }
+
+        public void ModalHide()
+        {
+            OnModalHide?.Invoke();
         }
 
         public bool ShowMenuForPlayer(Menu menuToShow, PlayerEntity playerEntity) 

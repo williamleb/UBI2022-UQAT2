@@ -17,7 +17,6 @@ namespace Managers.Lobby
         public override void Spawned()
         {
             base.Spawned();
-            Debug.Log("Spawned");
         }
 
         public void Revert(int maxTime)

@@ -15,7 +15,7 @@ namespace Managers.Lobby
     public class ReadyUpManager : Singleton<ReadyUpManager>
     {
         private bool allPlayersReady;
-        private MatchmakingSettings data;
+        private NetworkSettings data;
         private Coroutine startCoroutine;
         private PlayerSystem playerSystem;
         private ReadyUpNetworkData networkData;
@@ -31,7 +31,7 @@ namespace Managers.Lobby
 
         private void Start()
         {
-            data = SettingsSystem.MatchmakingSettings;
+            data = SettingsSystem.NetworkSettings;
 
             countdownText.gameObject.SetActive(false);
             playerSystem = PlayerSystem.Instance;

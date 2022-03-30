@@ -12,31 +12,31 @@ namespace Systems.Settings
 
         public static PlayerSettings[] PlayerSettings => Instance.PlayerSetting;
         public static AISettings AISettings => Instance.AISetting;
-        public static MatchmakingSettings MatchmakingSettings => Instance.MatchmakingSetting;
         public static HomeworkSettings HomeworkSettings => Instance.HomeworkSetting;
         public static GameSettings GameSettings => Instance.GameSetting;
         public static TeamSettings TeamSettings => Instance.TeamSetting;
         public static CustomizationSettings CustomizationSettings => Instance.CustomizationSetting;
         public static HUDSettings HUDSettings => Instance.HUDSetting;
+        public static NetworkSettings NetworkSettings => Instance.NetworkSetting;
 
         private PlayerSettings[] playerSettings;
         private AISettings aiSetting;
-        private MatchmakingSettings matchmakingSetting;
         private HomeworkSettings homeworkSetting;
         private GameSettings gameSetting;
         private TeamSettings teamSetting;
         private CustomizationSettings customizationSettings;
+        private NetworkSettings networkSetting;
 
         private HUDSettings hudSetting;
 
         private PlayerSettings[] PlayerSetting => playerSettings;
         private AISettings AISetting => aiSetting;
-        private MatchmakingSettings MatchmakingSetting => matchmakingSetting;
         private HomeworkSettings HomeworkSetting => homeworkSetting;
         private GameSettings GameSetting => gameSetting;
         private TeamSettings TeamSetting => teamSetting;
         private CustomizationSettings CustomizationSetting => customizationSettings;
         private HUDSettings HUDSetting => hudSetting;
+        private NetworkSettings NetworkSetting => networkSetting;
 
         public PlayerSettings GetPlayerSettings(Archetype archetype)
         {
@@ -54,9 +54,9 @@ namespace Systems.Settings
             base.Awake();
 
             LoadAllSettings(out playerSettings);
+            LoadSettings(out networkSetting);
             LoadSettings(out aiSetting);
             LoadSettings(out homeworkSetting);
-            LoadSettings(out matchmakingSetting);
             LoadSettings(out gameSetting);
             LoadSettings(out teamSetting);
             LoadSettings(out customizationSettings);

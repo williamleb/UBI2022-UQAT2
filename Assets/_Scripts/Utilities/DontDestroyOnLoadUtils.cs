@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,7 +18,7 @@ namespace Utilities
 
         public static void DestroyAll(Func<GameObject, bool> filter = null)
         {
-            foreach (var managedObject in managedObjects)
+            foreach (var managedObject in managedObjects.ToList())
             {
                 if (filter != null && !filter.Invoke(managedObject))
                     continue;
