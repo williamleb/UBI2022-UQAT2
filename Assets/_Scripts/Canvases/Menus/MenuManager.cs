@@ -127,6 +127,12 @@ namespace Canvases.Menu
 
         protected override void OnDestroy()
         {
+            if(modal != null)
+            {
+                modal.OnHide -= ModalHide;
+                modal.OnShow -= ModalShow;
+            }
+
             UnSubscribeToMenus();
             base.OnDestroy();
         }
