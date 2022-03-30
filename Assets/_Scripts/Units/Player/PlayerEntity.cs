@@ -71,12 +71,24 @@ namespace Units.Player
         private void OnEnable()
         {
             LevelSystem.Instance.OnGameLoad += DeactivateMenuAndCustomization;
+
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
         
         private void OnDisable()
         {
             if(LevelSystem.HasInstance)
                 LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
+            
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+        }
+
+        private void OnGameStateChanged(GameState state)
+        {
+            if (state == GameState.Finished)
+                DeactivateMenuAndCustomization();
         }
 
         private void AssignBaseArchetype()
