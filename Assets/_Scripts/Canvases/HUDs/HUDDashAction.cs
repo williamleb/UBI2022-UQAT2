@@ -1,3 +1,4 @@
+using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Settings;
@@ -28,6 +29,9 @@ namespace Canvases.HUDs
         {
             settings = SettingsSystem.HUDSettings;
 
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+
             PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
 
             dashTextColorFull = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 1);
@@ -36,7 +40,23 @@ namespace Canvases.HUDs
             dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, settings.DeactivatedActionOpacity);
         }
 
+        private void OnGameStateChanged(GameState gameState)
+        {
+            if (gameState == GameState.Running)
+            {
+                SetLocalPlayer(PlayerSystem.Instance.LocalPlayer);
+            }
+        }
+
         private void OnLocalPlayerSpawned(PlayerEntity playerEntity)
+        {
+            if (localPlayerEntity == null)
+            {
+                SetLocalPlayer(playerEntity);
+            }
+        }
+
+        private void SetLocalPlayer(PlayerEntity playerEntity)
         {
             localPlayerEntity = playerEntity;
 
@@ -68,11 +88,13 @@ namespace Canvases.HUDs
         {
             if (isAvailable)
             {
+                dashChargeMarker.gameObject.SetActive(false);
                 dashText.color = dashTextColorFull;
                 dashButton.color = dashButtonColorFull;
             }
             else
             {
+                dashChargeMarker.gameObject.SetActive(true);
                 dashText.color = dashTextColorSemi;
                 dashButton.color = dashButtonColorSemi;
             }
@@ -80,6 +102,7 @@ namespace Canvases.HUDs
 
         private void Reset()
         {
+            dashChargeMarker.gameObject.SetActive(false);
             dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
             dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
         }
