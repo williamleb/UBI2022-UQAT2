@@ -16,7 +16,7 @@ namespace Systems.MapGeneration
         private MapLayouts mapLayouts;
         private MapRooms mapRooms;
 
-        private List<NetworkObject> spawnedRooms = new List<NetworkObject>();
+        private readonly List<NetworkObject> spawnedRooms = new List<NetworkObject>();
         private NetworkObject spawnedProp;
         private NetworkObject spawnedHallways;
         private NetworkObject spawnedSpawnPoints;
@@ -50,7 +50,6 @@ namespace Systems.MapGeneration
             mapRooms = rooms.First();
         }
 
-        [Button]
         public void GenerateMap()
         {
             MapReference mapReference = mapLayouts.GetRandomMapLayout();
@@ -75,6 +74,52 @@ namespace Systems.MapGeneration
             spawnedHallways = NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
             spawnedSpawnPoints = NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
         }
+
+#if UNITY_EDITOR
+        [Button(ButtonSizes.Gigantic)]
+        private void LocalGenerateMap()
+        {
+            LoadLayouts();
+            LoadRooms();
+            GameObject localMap = GameObject.Find("local Map");
+            LocalCleanUpMap(localMap);
+            localMap = new GameObject
+            {
+                name = "local Map"
+            };
+
+            MapReference mapReference = mapLayouts.GetRandomMapLayout();
+            MapGenerationInfo mapGenerationInfo = mapReference.MapGenerationInfo;
+            NetworkObject propPrefab = mapReference.PropPrefab;
+            
+            foreach (RoomGenerationInfo roomGenerationInfo in mapGenerationInfo.Rooms)
+            {
+                RoomInfo randomRoom = mapRooms.GetRandomMatchingRoom(roomGenerationInfo);
+                Debug.Assert(randomRoom != null , $"Didn't find any matching room for settings {roomGenerationInfo.DoorLayout} - {roomGenerationInfo.RoomSize}");
+                Quaternion rotation = CalculateRotation(randomRoom.TopDirection,roomGenerationInfo.DesiredOrientation);
+                Vector3 position = roomGenerationInfo.transform.position +
+                                   Vector3.up * 0.01f +
+                                   Vector3.forward * roomGenerationInfo.Height / 2 +
+                                   Vector3.right * roomGenerationInfo.Width / 2;
+            Instantiate(randomRoom, position, rotation,localMap.transform);
+            }
+            Instantiate(propPrefab, propPrefab.transform.position, Quaternion.identity, localMap.transform);
+        }
+
+        [Button(ButtonSizes.Gigantic)]
+        private void CleanUp()
+        {
+            LocalCleanUpMap(GameObject.Find("local Map"));   
+        }
+        
+        private void LocalCleanUpMap(GameObject map)
+        {
+            if (map != null)
+            {
+                DestroyImmediate(map);
+            }
+        }
+#endif
 
         public void CleanUpMap()
         {
