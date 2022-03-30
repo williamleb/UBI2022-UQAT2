@@ -68,11 +68,13 @@ namespace Canvases.HUDs
         {
             if (isAvailable)
             {
+                dashChargeMarker.gameObject.SetActive(false);
                 dashText.color = dashTextColorFull;
                 dashButton.color = dashButtonColorFull;
             }
             else
             {
+                dashChargeMarker.gameObject.SetActive(true);
                 dashText.color = dashTextColorSemi;
                 dashButton.color = dashButtonColorSemi;
             }
@@ -80,6 +82,7 @@ namespace Canvases.HUDs
 
         private void Reset()
         {
+            dashChargeMarker.gameObject.SetActive(false);
             dashCoolDownTimeInSeconds = SettingsSystem.Instance.GetPlayerSettings(localPlayerEntity.Archetype).DashCoolDown;
             dashChargeMarker.ChargeAmount = 1 - (localPlayerEntity.RemainingTimeDashCoolDown / dashCoolDownTimeInSeconds);
         }
