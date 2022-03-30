@@ -1,7 +1,8 @@
 ﻿using Fusion;
+using Units.Player;
 using UnityEngine;
 
-namespace Units.Player.Customisation
+namespace Units.Customization
 {
     [RequireComponent(typeof(PlayerEntity))]
     [RequireComponent(typeof(PlayerCustomization))]

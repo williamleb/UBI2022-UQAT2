@@ -1,7 +1,6 @@
-﻿namespace Units.Player.Customisation
+﻿namespace Units.Customization
 {
     public class SkinCustomizer : MaterialCustomizer
     {
-        
     }
 }

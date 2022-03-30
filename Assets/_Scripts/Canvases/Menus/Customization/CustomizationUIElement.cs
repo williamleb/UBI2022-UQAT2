@@ -1,5 +1,5 @@
-﻿using Units.Player;
-using Units.Player.Customisation;
+﻿using Units.Customization;
+using Units.Player;
 using UnityEngine;
 
 namespace Canvases.Menu.Customization

@@ -1,8 +1,7 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Units.Player.Customisation
+namespace Units.Customization
 {
     [RequireComponent(typeof(Renderer))]
     public class MaterialCustomizer : MonoBehaviour
@@ -23,7 +22,7 @@ namespace Units.Player.Customisation
 
             if (materialIndex < 0 || materialIndex >= meshRenderer.materials.Length)
                 return;
-            
+
             var materials = meshRenderer.materials;
             materials[materialIndex] = material;
             meshRenderer.materials = materials;
