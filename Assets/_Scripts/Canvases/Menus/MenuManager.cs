@@ -70,8 +70,12 @@ namespace Canvases.Menu
         private void InitializeMenus()
         {
             modal = FindObjectOfType<ModalUI>();
-            modal.OnHide += ModalHide;
-            modal.OnShow += ModalShow;
+
+            if(modal != null)
+            {
+                modal.OnHide += ModalHide;
+                modal.OnShow += ModalShow;
+            }            
 
             TryAddToMenus<CustomizationUI>(Menu.Customization);
             TryAddToMenus<MainUI>(Menu.Main);
@@ -168,7 +172,7 @@ namespace Canvases.Menu
             InMenuStatusChanged?.Invoke(InMenu);
         }
 
-        public bool ShowModal(string text, string header, float seconds = 5f )
+        public bool ShowModal(string text, string header, float seconds = 5f)
         {
             if (!modal)
                 return false;
