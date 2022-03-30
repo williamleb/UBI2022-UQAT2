@@ -41,8 +41,7 @@ namespace Utilities.Extensions
         
         public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
         {
-            var component = gameObject.GetComponent<T>();
-            if (!component)
+            if (!gameObject.TryGetComponent(out T component))
             {
                 component = gameObject.AddComponent<T>();
             }
