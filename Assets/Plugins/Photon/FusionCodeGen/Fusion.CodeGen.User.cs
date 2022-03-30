@@ -2,8 +2,9 @@
 namespace Fusion.CodeGen {
   static partial class ILWeaverSettings {
 
-    static partial void OverrideNetworkProjectConfigPath(ref string path) {
-            path = "Assets/Plugins/Photon/Fusion/Resources/NetworkProjectConfig.fusion";
+    static partial void OverrideNetworkProjectConfigPath(ref string path)
+    {
+      path = "Assets\\Plugins\\Photon\\Fusion\\Resources\\NetworkProjectConfig.fusion";
     }
   }
 }

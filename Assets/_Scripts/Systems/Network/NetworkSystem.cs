@@ -139,6 +139,7 @@ namespace Systems.Network
                 DisableClientSessionCreation = true
             });
 
+            
             if (result.Ok)
             {
                 Debug.Log($"Connected to session name : {sessionName}.");
@@ -162,6 +163,7 @@ namespace Systems.Network
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) => OnConnectFailedEvent?.Invoke(runner,remoteAddress,reason);
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) => OnConnectRequestEvent?.Invoke(runner,request,token);
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) => OnCustomAuthenticationResponseEvent?.Invoke(runner,data);
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { } //TODO HOST MIGRATION
         public void OnDisconnectedFromServer(NetworkRunner runner) => OnDisconnectedFromServerEvent?.Invoke(runner);
         public void OnInput(NetworkRunner runner, NetworkInput input) => OnInputEvent?.Invoke(runner,input);
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) => OnInputMissingEvent?.Invoke(runner,player,input);
