@@ -84,7 +84,7 @@ namespace Units.Player
                 SetAimSoundChargePercentValueLocally(ThrowForcePercent);
         }
 
-        private bool CanThrow()
+        public bool CanThrow()
         {
             if (!inventory.HasHomework)
                 return false;

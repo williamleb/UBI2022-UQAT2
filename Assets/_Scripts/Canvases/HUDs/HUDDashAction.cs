@@ -1,4 +1,3 @@
-using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Settings;
@@ -9,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Canvases.HUDs
 {
-    public class HUDDashCharge : MonoBehaviour
+    public class HUDDashAction : MonoBehaviour
     {
         [SerializeField, Required] private DashChargeMarker dashChargeMarker;
         [SerializeField, Required] private TextMeshProUGUI dashText;
@@ -22,14 +21,19 @@ namespace Canvases.HUDs
 
         private PlayerEntity localPlayerEntity;
         private float dashCoolDownTimeInSeconds;
-    
+
+        private HUDSettings settings;
+
         private void Start()
         {
+            settings = SettingsSystem.HUDSettings;
+
             PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+
             dashTextColorFull = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 1);
-            dashTextColorSemi = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 0.3f);
+            dashTextColorSemi = new Color(dashText.color.r, dashText.color.g, dashText.color.b, settings.DeactivatedActionOpacity);
             dashButtonColorFull = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 1);
-            dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, 0.3f);
+            dashButtonColorSemi = new Color(dashButton.color.r, dashButton.color.g, dashButton.color.b, settings.DeactivatedActionOpacity);
         }
 
         private void OnLocalPlayerSpawned(PlayerEntity playerEntity)
