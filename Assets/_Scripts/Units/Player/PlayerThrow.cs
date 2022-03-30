@@ -15,6 +15,7 @@ namespace Units.Player
         [SerializeField] private ThrowChargeMarkerReceptor throwMarker;
 
         private RumbleKey throwRumbleKey;
+        public bool CanThrow;
         
         [Networked(OnChanged = nameof(OnIsAimingChanged))] private NetworkBool IsAiming { get; set; } = false;
         [Networked] private NetworkBool IsThrowing { get; set; } = false;
@@ -45,7 +46,9 @@ namespace Units.Player
         {
             if (!Runner.IsForward) return;
 
-            if (!CanThrow())
+            UpdateCanThrow();
+
+            if (!CanThrow)
             {
                 if (IsAiming || IsThrowing || RumbleSystem.Instance.HasRumble)
                     CancelAimingAndThrowing();
@@ -84,18 +87,16 @@ namespace Units.Player
                 SetAimSoundChargePercentValueLocally(ThrowForcePercent);
         }
 
-        public bool CanThrow()
+        public void UpdateCanThrow()
         {
-            if (!inventory.HasHomework)
-                return false;
-            
-            if (IsDashing)
-                return false;
-
-            if (isRagdoll)
-                return false;
-            
-            return true;
+            if (!inventory.HasHomework || IsDashing || isRagdoll)
+            {
+                CanThrow = false;
+            }
+            else
+            {
+                CanThrow = true;
+            }
         }
 
         private void StartAiming()

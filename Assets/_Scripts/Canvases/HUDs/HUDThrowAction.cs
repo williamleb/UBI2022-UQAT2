@@ -53,7 +53,7 @@ namespace Canvases.HUDs
             if (localPlayerEntity == null || throwText == null || throwButton == null)
                 return;
 
-            if (localPlayerEntity.CanThrow())
+            if (localPlayerEntity.CanThrow)
             {
                 throwText.color = throwTextColorFull;
                 throwButton.color = throwButtonColorFull;
