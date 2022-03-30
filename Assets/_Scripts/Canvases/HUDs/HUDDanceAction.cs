@@ -1,3 +1,4 @@
+using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
 using Systems.Settings;
@@ -26,6 +27,9 @@ namespace Canvases.HUDs
         {
             settings = SettingsSystem.HUDSettings;
 
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+
             PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
 
             if (danceText == null || danceButton == null)
@@ -37,7 +41,23 @@ namespace Canvases.HUDs
             danceButtonColorSemi = new Color(danceButton.color.r, danceButton.color.g, danceButton.color.b, settings.DeactivatedActionOpacity);
         }
 
+        private void OnGameStateChanged(GameState gameState)
+        {
+            if (gameState == GameState.Running)
+            {
+                SetLocalPlayer(PlayerSystem.Instance.LocalPlayer);
+            }
+        }
+
         private void OnLocalPlayerSpawned(PlayerEntity playerEntity)
+        {
+            if (localPlayerEntity == null)
+            {
+                SetLocalPlayer(playerEntity);
+            }
+        }
+
+        private void SetLocalPlayer(PlayerEntity playerEntity)
         {
             localPlayerEntity = playerEntity;
 
