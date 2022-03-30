@@ -44,8 +44,7 @@ namespace Systems
 		private void OnEnable()
 		{
 			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
-			LevelSystem.Instance.OnLobbyLoad += ResetSpawnPoints;
-			LevelSystem.Instance.OnGameLoad += ResetSpawnPoints;
+			NetworkSystem.Instance.OnSceneLoadStartEvent += ResetSpawnPoints;
 		}
 
 		private void OnDisable()
@@ -53,8 +52,7 @@ namespace Systems
 			if (LevelSystem.HasInstance)
 			{
 				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
-				LevelSystem.Instance.OnLobbyLoad -= ResetSpawnPoints;
-				LevelSystem.Instance.OnGameLoad -= ResetSpawnPoints;
+				NetworkSystem.Instance.OnSceneLoadStartEvent -= ResetSpawnPoints;
 			}
 		}
 
@@ -227,7 +225,7 @@ namespace Systems
 			Debug.Log("Players list from PlayerSystem cleared");
 		}
 
-		private void ResetSpawnPoints()
+		private void ResetSpawnPoints(NetworkRunner _ = null)
 		{
 			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 		}
