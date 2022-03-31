@@ -75,9 +75,9 @@ namespace Systems.MapGeneration
             }
 
             spawnedProp = NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
+            navMeshSurface.BuildNavMesh();
             spawnedHallways = NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
             spawnedSpawnPoints = NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
-            navMeshSurface.BuildNavMesh();
         }
 
 #if UNITY_EDITOR
