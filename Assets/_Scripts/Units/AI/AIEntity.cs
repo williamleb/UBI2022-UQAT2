@@ -293,7 +293,7 @@ namespace Units.AI
             if (ragdollTransform)
             {
                 var isGettingUpBackDown = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
-                if (Animator) Animator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
+                if (NetworkAnimator) NetworkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
             }
             
             RPC_ToggleRagdoll(false);
