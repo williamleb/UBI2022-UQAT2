@@ -19,6 +19,8 @@ namespace Systems.Teams
     {
         private const string PREFABS_FOLDER_PATH = "Game";
 
+        public static event Action OnTeamCreated;
+
         private TeamSettings teamSettings;
         private GamePrefabs prefabs;
         private bool areTeamsCreated = false;
@@ -97,6 +99,7 @@ namespace Systems.Teams
             }
 
             areTeamsCreated = true;
+            OnTeamCreated?.Invoke();
         }
 
         public Team AssignTeam(PlayerEntity playerEntity, string teamId = default)
