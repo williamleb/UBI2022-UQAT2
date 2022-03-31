@@ -101,7 +101,7 @@ namespace Canvases.HUDs
                 rightTeam.OnColorChanged -= UpdateColor;
             }
 
-            TeamSystem.OnTeamCreated += OnTeamCreated;
+            TeamSystem.OnTeamCreated -= OnTeamCreated;
         }
     }
 }
