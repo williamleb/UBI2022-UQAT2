@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Canvases.Markers;
 using Fusion;
 using Ingredients.Homework;
@@ -11,6 +12,8 @@ namespace Units
     public class Inventory : NetworkBehaviour
     {
         private const int NO_HOMEWORK = -1;
+        
+        public event Action OnInventoryChanged; 
 
         [SerializeField] private SpriteMarkerReceptor marker;
         [SerializeField] private Transform homeworkHoldingTransform;
@@ -122,6 +125,7 @@ namespace Units
         private static void OnHeldHomeworkChanged(Changed<Inventory> changed)
         {
             changed.Behaviour.UpdateMarkerVisibility();
+            changed.Behaviour.OnInventoryChanged?.Invoke();
         }
     }
 }

@@ -68,6 +68,9 @@ namespace Units.AI
 
         public bool IsInAnimationTransition(int layerIndex)
         {
+            if (!entity.Animator)
+                return false;
+            
             return entity.Animator.IsInTransition(layerIndex);
         }
 

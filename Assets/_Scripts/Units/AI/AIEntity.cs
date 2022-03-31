@@ -20,7 +20,10 @@ namespace Units.AI
     [RequireComponent(typeof(AkGameObj))]
     public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
     {
-        private static readonly int Walking = Animator.StringToHash("IsWalking");
+        private static readonly int SpeedParam = Animator.StringToHash("Speed");
+        private static readonly int IsHoldingHomeworkParam = Animator.StringToHash("IsHoldingHomework");
+        private static readonly int GetUpBackDownParam = Animator.StringToHash("GetUpBackDown");
+        private static readonly int GetUpFaceDownParam = Animator.StringToHash("GetUpFaceDown");
 
         public static event Action<AIEntity> OnAISpawned;
         public static event Action<AIEntity> OnAIDespawned;
@@ -37,7 +40,6 @@ namespace Units.AI
         private GameObject brainToAddOnSpawned;
 
         [SerializeField] private ParticleSystem alertParticleEffect;
-        
         [SerializeField] private Transform ragdollTransform;
 
         private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
@@ -48,7 +50,6 @@ namespace Units.AI
         private NavMeshAgent agent;
         private Inventory inventory;
         private AIInteracter interacter;
-        private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
         private PlayerBadBehaviorDetection playerBadBehaviorDetection;
         private HomeworkHandingStation homeworkHandingStation;
@@ -70,7 +71,7 @@ namespace Units.AI
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
-        public Animator Animator => animator;
+        public Animator Animator => networkAnimator.Animator;
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => playerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
@@ -80,6 +81,7 @@ namespace Units.AI
         public bool IsHit => hitCoroutine != null;
 
         public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
+        public float MaxSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.ChaseBadBehaviorSpeed : settings.BaseStudentSpeed;
 
         private void Awake()
         {
@@ -87,7 +89,6 @@ namespace Units.AI
             agent = GetComponent<NavMeshAgent>();
             inventory = GetComponent<Inventory>();
             interacter = GetComponent<AIInteracter>();
-            animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
             playerBadBehaviorDetection = GetComponent<PlayerBadBehaviorDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
@@ -121,12 +122,18 @@ namespace Units.AI
             RegisterToManager();
             InitializeRagdoll();
             OnAISpawned?.Invoke(this);
+
+            if (Inventory)
+                Inventory.OnInventoryChanged += OnInventoryChanged;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             UnregisterToManager();
             OnAIDespawned?.Invoke(this);
+            
+            if (Inventory)
+                Inventory.OnInventoryChanged -= OnInventoryChanged;
         }
 
         public override void FixedUpdateNetwork()
@@ -145,12 +152,21 @@ namespace Units.AI
             if (!Object.HasStateAuthority)
                 return;
 
-            if (!animator)
+            if (!Animator)
                 return;
 
-            // We will probably want to send the speed directly to the animator in the future and do a blend space
-            var isWalking = agent.velocity.sqrMagnitude > 0.3f;
-            animator.SetBool(Walking, isWalking);
+            Animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (MaxSpeed * MaxSpeed));
+        }
+        
+        private void OnInventoryChanged()
+        {
+            if (!Object.HasStateAuthority)
+                return;
+
+            if (!Animator)
+                return;
+
+            Animator.SetBool(IsHoldingHomeworkParam, Inventory.HasHomework);
         }
 
         private void RegisterToManager()
@@ -227,7 +243,7 @@ namespace Units.AI
             isRagdoll = isActivate;
 
             agent.enabled = !isActivate;
-            animator.enabled = !isActivate;
+            Animator.enabled = !isActivate;
 
             if (aiCollider)
                 aiCollider.enabled = !isActivate;
@@ -273,6 +289,13 @@ namespace Units.AI
         {
             var secondsToWait = overrideHitDuration > 0f ? overrideHitDuration : settings.SecondsDownAfterBeingHit;
             yield return new WaitForSeconds(secondsToWait);
+
+            if (ragdollTransform)
+            {
+                var isGettingUpBackDown = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
+                if (NetworkAnimator) NetworkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
+            }
+            
             RPC_ToggleRagdoll(false);
             hitCoroutine = null;
         }
