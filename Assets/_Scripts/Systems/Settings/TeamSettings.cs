@@ -9,12 +9,8 @@ public class TeamSettings : ScriptableObject
 
     [Tooltip("Number of team")] [SerializeField] [MinValue(2)]
     private int numberOfTeam = 2;
-
-    [Tooltip("Allow tackling between players of the same team")] [SerializeField] 
-    private bool allowFriendlyFire = true;
     public int MaxPlayerPerTeam => maxPlayerPerTeam;
     public int NumberOfTeam => numberOfTeam;
-    public bool AllowFriendlyFire => allowFriendlyFire;
     public string[] TeamPronouns => teamPronouns;
     public string[] TeamAdjectives => teamAdjectives;
     
