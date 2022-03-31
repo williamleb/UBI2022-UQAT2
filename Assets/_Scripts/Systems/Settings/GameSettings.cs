@@ -16,9 +16,6 @@ namespace Systems.Settings
         [Header("Overtime")]
         [SerializeField] [Tooltip("Enable overtime")] private bool enableOvertime = true;
         [SerializeField] [Tooltip("Maximum duration of overtime in seconds")] private int overtimeDurationInSeconds = 30;
-        [SerializeField] [Tooltip("Activates the modulation of the overtime flow according to the game situation.")] private bool enableOvertimeModulation = true;
-        [SerializeField] [Tooltip("Secondary time flow rate. Only used when overtime modulation is enabled. (e.g. when the losing team does not have in its possession an homework.")] private int secondaryTimeFlowRate = 2;
-
         [Header("Colors")]
         [SerializeField] private Color victoryColor = Color.yellow;
         [SerializeField] private Color defeatColor = Color.red;
@@ -29,8 +26,6 @@ namespace Systems.Settings
         public int GameDurationInSeconds => gameDurationInSeconds;
         public bool EnableOvertime => enableOvertime;
         public int OvertimeDurationInSeconds => overtimeDurationInSeconds;
-        public bool EnableOvertimeModulation => enableOvertimeModulation;
-        public int SecondaryTimeFlowRate => secondaryTimeFlowRate;
 
         public Color VictoryColor => victoryColor;
         public Color DefeatColor => defeatColor;
