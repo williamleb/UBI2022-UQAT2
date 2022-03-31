@@ -127,8 +127,8 @@ namespace Units.Player
                 TeamSystem.Instance.AssignTeam(this);
             }
             
-            NetworkSystem.Instance.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
-            NetworkSystem.Instance.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
+            NetworkSystem.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
+            NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
         }
 
         private async void OnSceneLoadDoneEvent(NetworkRunner runner)
@@ -219,6 +219,9 @@ namespace Units.Player
                     Runner.Despawn(Object);
                 }
             }
+
+            NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
+            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
         }
 
         public void ExternalHit(float overrideHitDuration = -1f)
@@ -392,6 +395,11 @@ namespace Units.Player
         {
             changed.Behaviour.UpdateTeam();
         }
+        private void OnDestroy()
+        {
+            NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
+            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
+        }
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -415,7 +423,7 @@ namespace Units.Player
                 Debug.LogWarning(
                     $"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
         }
-        
+
         private bool showDebugMenu;
         
         [Button("ToggleDebugMenu")]

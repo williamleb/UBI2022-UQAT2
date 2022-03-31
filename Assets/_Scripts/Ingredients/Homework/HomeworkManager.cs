@@ -227,7 +227,7 @@ namespace Ingredients.Homework
             if (!NetworkSystem.HasInstance)
                 return;
             
-            foreach (var homework in homeworks)
+            foreach (var homework in homeworks.ToList())
             {
                 NetworkSystem.Instance.Despawn(homework.Value.Object);
             }
@@ -405,9 +405,16 @@ namespace Ingredients.Homework
             burstsToRemove.Clear();
             foreach (var burstToDo in allBurstToDo)
             {
-                if (burstToDo.Burst.AtProgress <= GameManager.Instance.GameProgression)
+                if (GameManager.HasInstance)
                 {
-                    burstsToRemove.Add(burstToDo);
+                    if (burstToDo.Burst.AtProgress <= GameManager.Instance.GameProgression)
+                    {
+                        burstsToRemove.Add(burstToDo);
+                    }
+                }
+                else
+                {
+                    return;
                 }
             }
 

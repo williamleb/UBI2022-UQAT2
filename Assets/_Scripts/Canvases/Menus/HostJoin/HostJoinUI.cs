@@ -23,13 +23,13 @@ namespace Canvases.Matchmaking
         protected override EntryDirection EnterDirection => EntryDirection.Up;
         protected override EntryDirection LeaveDirection => EntryDirection.Up;
         
-        private MatchmakingSettings data;
+        private NetworkSettings data;
 
         public bool Host => host;
 
         void Start()
         {
-            data = SettingsSystem.MatchmakingSettings;
+            data = SettingsSystem.NetworkSettings;
             hostOrJoinButton.Enabled = false;
         }
 

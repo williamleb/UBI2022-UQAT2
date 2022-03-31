@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Systems.Level;
+using Systems.Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities.Singleton;
@@ -12,16 +13,14 @@ namespace Systems.Network
 {
     public partial class NetworkSystem : PersistentSingleton<NetworkSystem>, INetworkRunnerCallbacks
     {
-        //TODO move lobby name out
-        [SerializeField] private static string customLobbyName = "bababooeyLobby";
-        
         public NetworkRunner NetworkRunner { get; private set; }
         public bool DebugMode { get; set; } = true;
-
+        private NetworkSettings settings;
         public bool IsGameStartedOrStarting => NetworkRunner;
 
         private void Start()
         {
+            settings = SettingsSystem.NetworkSettings;
             LevelSystem.Instance.SubscribeNetworkEvents();
             PlayerSystem.Instance.SubscribeNetworkEvents();
         }
@@ -40,8 +39,8 @@ namespace Systems.Network
         public event Action<NetworkRunner, ShutdownReason> OnShutdownEvent;
         public event Action<NetworkRunner, List<SessionInfo>> OnSessionListUpdateEvent;
         public event Action<NetworkRunner, Dictionary<string, object>> OnCustomAuthenticationResponseEvent;
-        public event Action<NetworkRunner> OnSceneLoadDoneEvent;
-        public event Action<NetworkRunner> OnSceneLoadStartEvent;
+        public static event Action<NetworkRunner> OnSceneLoadDoneEvent;
+        public static event Action<NetworkRunner> OnSceneLoadStartEvent;
         public event Action<NetworkRunner, PlayerRef, ArraySegment<byte>> OnReliableDataEvent;
 
         #endregion
@@ -102,7 +101,7 @@ namespace Systems.Network
             var result = await NetworkRunner.StartGame(new StartGameArgs()
             {
                 SessionName = sessionName.ToLower(),
-                CustomLobbyName = customLobbyName,
+                CustomLobbyName = settings.LobbyName,
                 GameMode = GameMode.Host,
                 SceneObjectProvider = LevelSystem.Instance.NetworkSceneObjectProvider
             });
@@ -133,7 +132,7 @@ namespace Systems.Network
             var result = await NetworkRunner.StartGame(new StartGameArgs()
             {
                 SessionName = sessionName.ToLower(),
-                CustomLobbyName = customLobbyName,
+                CustomLobbyName = settings.LobbyName,
                 GameMode = GameMode.Client,
                 SceneObjectProvider = LevelSystem.Instance.NetworkSceneObjectProvider,
                 DisableClientSessionCreation = true
@@ -155,7 +154,9 @@ namespace Systems.Network
 
         public async void Disconnect()
         {
-            await NetworkRunner.Shutdown();
+            if (NetworkRunner != null)
+                await NetworkRunner.Shutdown();
+
             Destroy(gameObject);
         }
 

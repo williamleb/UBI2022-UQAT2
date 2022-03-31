@@ -3,9 +3,14 @@ using UnityEngine;
 
 namespace Systems.Settings
 {
-    [CreateAssetMenu(menuName = "Settings/Matchmaking Settings")]
-    public class MatchmakingSettings : ScriptableObject
+    [CreateAssetMenu(menuName = "Settings/Network Settings")]
+    public class NetworkSettings : ScriptableObject
     {
+        [Header("Network settings")]
+        [SerializeField] private string lobbyName = "bababooeyLobby";
+        [SerializeField] private string hostConnectionLostHeader = "Lost connection";
+        [SerializeField] private string hostConnectionLostMessage = "The connection with the host has been lost.";
+
         [Header("Matchmaking settings")]
         [Tooltip("Allow to start a single player game when only one player is in the lobby and ready")]
         [SerializeField]
@@ -37,5 +42,8 @@ namespace Systems.Settings
         public string ErrorMessageCreatingGame => errorMessageCreatingGame;
         public int CountDownTime => countDownTime;
         public string CountDownMessage => countDownMessage;
+        public string LobbyName => lobbyName;
+        public string HostConnectionLostHeader => hostConnectionLostHeader;
+        public string HostConnectionLostMessage => hostConnectionLostMessage;
     }
 }
