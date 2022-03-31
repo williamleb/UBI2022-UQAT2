@@ -34,6 +34,7 @@ Transform:
   - {fileID: 821383986255325104}
   - {fileID: 821383987252767866}
   - {fileID: 2345368296673885203}
+  - {fileID: 6288644739793655982}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -48,8 +49,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.73363817, y: 0.949808, z: 0.3490366}
-  m_Center: {x: -0.00029546022, y: 0.48718518, z: 0.027535662}
+  m_Size: {x: 0.73363817, y: 0.64635, z: 0.3490366}
+  m_Center: {x: -0.00029546022, y: 0.3354562, z: 0.027535662}
 --- !u!114 &821383985989318856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,11 +77,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 2305
   NetworkGuid:
     RawGuidValue: d08bb4d51b1adef4ea638b15a9960608
@@ -200,6 +201,50 @@ MonoBehaviour:
   padding: {x: 10, y: 10}
   text: Change team
   color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!1 &2117686355922044233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6288644739793655982}
+  - component: {fileID: 8908420005533566075}
+  m_Layer: 0
+  m_Name: triangle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6288644739793655982
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117686355922044233}
+  m_LocalRotation: {x: -0, y: -0, z: 0.38268343, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 0.654, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 821383985989318861}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
+--- !u!65 &8908420005533566075
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117686355922044233}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6, y: 0.6, z: 0.35751683}
+  m_Center: {x: 0, y: 0, z: 0.024685092}
 --- !u!1 &2692123688151015058
 GameObject:
   m_ObjectHideFlags: 0
