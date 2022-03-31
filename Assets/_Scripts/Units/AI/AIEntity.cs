@@ -20,7 +20,7 @@ namespace Units.AI
     [RequireComponent(typeof(AkGameObj))]
     public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
     {
-        private static readonly int SpeedParam = Animator.StringToHash("IsWalking");
+        private static readonly int SpeedParam = Animator.StringToHash("Speed");
 
         public static event Action<AIEntity> OnAISpawned;
         public static event Action<AIEntity> OnAIDespawned;
@@ -38,7 +38,6 @@ namespace Units.AI
 
         [SerializeField] private ParticleSystem alertParticleEffect;
         [SerializeField] private Transform ragdollTransform;
-        [SerializeField] private Animator animator;
 
         private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
         private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
@@ -69,7 +68,7 @@ namespace Units.AI
         public NavMeshAgent Agent => agent;
         public Inventory Inventory => inventory;
         public AIInteracter Interacter => interacter;
-        public Animator Animator => animator;
+        public Animator Animator => networkAnimator.Animator;
         public NetworkMecanimAnimator NetworkAnimator => networkAnimator;
         public PlayerBadBehaviorDetection PlayerBadBehaviorDetection => playerBadBehaviorDetection;
         public HomeworkHandingStation HomeworkHandingStation => homeworkHandingStation;
@@ -79,6 +78,7 @@ namespace Units.AI
         public bool IsHit => hitCoroutine != null;
 
         public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
+        public float MaxSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.ChaseBadBehaviorSpeed : settings.BaseStudentSpeed;
 
         private void Awake()
         {
@@ -86,7 +86,6 @@ namespace Units.AI
             agent = GetComponent<NavMeshAgent>();
             inventory = GetComponent<Inventory>();
             interacter = GetComponent<AIInteracter>();
-            animator = GetComponent<Animator>();
             networkAnimator = GetComponent<NetworkMecanimAnimator>();
             playerBadBehaviorDetection = GetComponent<PlayerBadBehaviorDetection>();
             homeworkHandingStation = GetComponentInChildren<HomeworkHandingStation>();
@@ -144,10 +143,10 @@ namespace Units.AI
             if (!Object.HasStateAuthority)
                 return;
 
-            if (!animator)
+            if (!Animator)
                 return;
 
-            animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (BaseSpeed * BaseSpeed));
+            Animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (MaxSpeed * MaxSpeed));
         }
 
         private void RegisterToManager()
@@ -224,7 +223,7 @@ namespace Units.AI
             isRagdoll = isActivate;
 
             agent.enabled = !isActivate;
-            animator.enabled = !isActivate;
+            Animator.enabled = !isActivate;
 
             if (aiCollider)
                 aiCollider.enabled = !isActivate;
