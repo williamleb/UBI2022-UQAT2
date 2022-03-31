@@ -200,7 +200,7 @@ namespace Systems
 			
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
-			playersJoined.Remove(player.Object.InputAuthority);
+			playersJoined.Remove(player.Object.InputAuthority); //TODO fix null reference
 			Debug.Log("Player removed " + player.PlayerId);
 		}
 
