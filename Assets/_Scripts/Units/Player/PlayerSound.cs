@@ -141,7 +141,7 @@ namespace Units.Player
             if (!listenedObjects.Contains(objectToStopListeningTo))
                 return;
             
-            audioListener.StopListeningToEmitter(objectToStopListeningTo.AudioObject);
+            // We don't need to stop listening to the emitter here since it is done automatically by Wwise when the object is destroyed
             listenedObjects.Remove(objectToStopListeningTo);
         }
 

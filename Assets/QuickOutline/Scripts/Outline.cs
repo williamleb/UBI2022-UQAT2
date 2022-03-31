@@ -80,8 +80,13 @@ public class Outline : MonoBehaviour {
 
   private bool needsUpdate;
 
-  void Awake() {
-
+  void Awake()
+  {
+    // TODO Remove
+    renderers = Array.Empty<Renderer>();
+    enabled = false;
+    return;
+    
     // Cache renderers
     renderers = GetComponentsInChildren<Renderer>();
 

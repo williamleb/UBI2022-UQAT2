@@ -27,6 +27,8 @@ namespace Systems.Level
         public MemoryEvent OnMainMenuLoad;
         public MemoryEvent OnLobbyLoad;
         public MemoryEvent OnGameLoad;
+
+        public event Action OnBeforeUnload;
         
         [SerializeField, FormerlySerializedAs("mainMenuSceneIndex")] private SceneField mainMenuOverride;
         [SerializeField, FormerlySerializedAs("lobbySceneIndex")] private SceneField lobbyOverride;
@@ -100,6 +102,7 @@ namespace Systems.Level
 
             Debug.Log("Loading lobby scene.");
             ActiveSceneIndex = LobbyScene.BuildIndex;
+            OnBeforeUnload?.Invoke();
             OnLobbyStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(LobbyScene.BuildIndex);
         }
@@ -110,6 +113,7 @@ namespace Systems.Level
 
             Debug.Log($"Loading scene with index {GameScene.BuildIndex}");
             ActiveSceneIndex = GameScene.BuildIndex;
+            OnBeforeUnload?.Invoke();
             OnGameStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(GameScene.BuildIndex);
         }
@@ -123,6 +127,7 @@ namespace Systems.Level
             }
             
             State = LevelState.Transition;
+            OnBeforeUnload?.Invoke();
             StartCoroutine(LoadMainMenuRoutine());
         }
 

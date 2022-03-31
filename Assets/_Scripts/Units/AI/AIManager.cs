@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Systems.Network;
 using Fusion;
 using Managers.Game;
 using Managers.Hallway;
+using Systems.Level;
 using Units.AI.Senses;
 using Units.Customization;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Singleton;
 
@@ -84,6 +88,17 @@ namespace Units.AI
                 GameManager.Instance.OnBeginSpawn += SpawnAIsFromSpawnLocations;
                 GameManager.Instance.OnBeginDespawn += DespawnAIs;
             }
+            else
+            {
+                StartCoroutine(SpawnAIsWhenConnectedRoutine());
+                LevelSystem.Instance.OnBeforeUnload += DespawnAIs;
+            }
+        }
+
+        private IEnumerator SpawnAIsWhenConnectedRoutine()
+        {
+            yield return new WaitUntil(() => NetworkSystem.Instance.IsConnected);
+            SpawnAIsFromSpawnLocations();
         }
 
         protected override void OnDestroy()
@@ -94,19 +109,27 @@ namespace Units.AI
                 GameManager.Instance.OnBeginDespawn -= DespawnAIs;
             }
 
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnBeforeUnload -= DespawnAIs;
+            }
+            
+            StopAllCoroutines();
             base.OnDestroy();
         }
 
         private void SpawnAIsFromSpawnLocations()
         {
-            GameManager.Instance.LockSpawn(this);
+            if (GameManager.HasInstance)
+                GameManager.Instance.LockSpawn(this);
 
             foreach (var spawnLocation in FindObjectsOfType<AISpawnLocation>())
             {
                 SpawnAI(spawnLocation);
             }
 
-            GameManager.Instance.UnlockSpawn(this);
+            if (GameManager.HasInstance)
+                GameManager.Instance.UnlockSpawn(this);
         }
 
         private void DespawnAIs()
@@ -118,12 +141,12 @@ namespace Units.AI
                 NetworkSystem.Instance.Despawn(teacher.Object);
 
 
-            foreach (var janitor in janitors)
+            foreach (var janitor in janitors.ToList())
             {
                 NetworkSystem.Instance.Despawn(janitor.Object);
             }
 
-            foreach (var student in students)
+            foreach (var student in students.ToList())
             {
                 NetworkSystem.Instance.Despawn(student.Object);
             }
@@ -132,25 +155,20 @@ namespace Units.AI
         private void SpawnAI(AISpawnLocation spawnLocation)
         {
             var spawnLocationTransform = spawnLocation.transform;
-            var entityGameObject = NetworkSystem.Instance.Spawn(
+            NetworkSystem.Instance.Spawn(
                 spawnLocation.AIEntityPrefab,
                 spawnLocationTransform.position,
                 spawnLocationTransform.rotation,
                 null,
-                (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway));
-
-            var entity = entityGameObject.GetComponentInEntity<AIEntity>();
-            Debug.Assert(entity);
-            entity.AddBrain(spawnLocation.AIBrainPrefab);
-
-            aisToSpawn.Add(entity);
+                (runner, aiObject) => SetupAIEntityBeforeSpawn(aiObject, spawnLocation.AssignedHallway, spawnLocation.AIBrainPrefab));
         }
 
-        private void SetupAIEntityBeforeSpawn(NetworkObject aiObject, HallwayColor assignedHallway)
+        private void SetupAIEntityBeforeSpawn(NetworkObject aiObject, HallwayColor assignedHallway, GameObject brainPrefab)
         {
             var entity = aiObject.GetComponent<AIEntity>();
             Debug.Assert(entity, $"An AI must have a {nameof(AIEntity)} attached");
-
+            
+            entity.AddBrain(brainPrefab);
             entity.AssignHallway(assignedHallway);
 
             var homeworkHandingStation = aiObject.GetComponentInChildren<HomeworkHandingStation>();
@@ -159,6 +177,8 @@ namespace Units.AI
             if (homeworkHandingStation) entity.MarkAsTeacher();
             else if (janitorVision) entity.MarkAsJanitor();
             else entity.MarkAsStudent();
+            
+            aisToSpawn.Add(entity);
         }
     }
 }
