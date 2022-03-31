@@ -20,7 +20,7 @@ namespace Units.AI
     [RequireComponent(typeof(AkGameObj))]
     public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
     {
-        private static readonly int Walking = Animator.StringToHash("IsWalking");
+        private static readonly int SpeedParam = Animator.StringToHash("IsWalking");
 
         public static event Action<AIEntity> OnAISpawned;
         public static event Action<AIEntity> OnAIDespawned;
@@ -37,8 +37,8 @@ namespace Units.AI
         private GameObject brainToAddOnSpawned;
 
         [SerializeField] private ParticleSystem alertParticleEffect;
-        
         [SerializeField] private Transform ragdollTransform;
+        [SerializeField] private Animator animator;
 
         private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
         private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
@@ -48,7 +48,6 @@ namespace Units.AI
         private NavMeshAgent agent;
         private Inventory inventory;
         private AIInteracter interacter;
-        private Animator animator;
         private NetworkMecanimAnimator networkAnimator;
         private PlayerBadBehaviorDetection playerBadBehaviorDetection;
         private HomeworkHandingStation homeworkHandingStation;
@@ -148,9 +147,7 @@ namespace Units.AI
             if (!animator)
                 return;
 
-            // We will probably want to send the speed directly to the animator in the future and do a blend space
-            var isWalking = agent.velocity.sqrMagnitude > 0.3f;
-            animator.SetBool(Walking, isWalking);
+            animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (BaseSpeed * BaseSpeed));
         }
 
         private void RegisterToManager()
