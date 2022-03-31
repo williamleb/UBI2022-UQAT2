@@ -79,7 +79,7 @@ namespace Units.AI.Actions
 
             foreach (var student in AIManager.Instance.Students)
             {
-                if (!student.TaskSensor || !student.TaskSensor.CanReceiveTask)
+                if (!student.TaskSensor || !student.TaskSensor.CanReceiveTask || !homework)
                     continue;
                 
                 var distanceWithStudent = homework.transform.position.SqrDistanceWith(student.transform.position);

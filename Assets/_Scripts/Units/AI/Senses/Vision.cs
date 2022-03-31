@@ -38,7 +38,7 @@ namespace Units.AI.Senses
             aisInSight.Clear();
             interactionsInSight.Clear();
 
-            if (Runner.GetPhysicsScene().OverlapSphere(transform.position, data.VisionMaxDistance, colliders,Layers.GAMEPLAY_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
+            if (Runner && Runner.GetPhysicsScene().OverlapSphere(transform.position, data.VisionMaxDistance, colliders,Layers.GAMEPLAY_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
 
             foreach (var objectCollider in colliders)
             {

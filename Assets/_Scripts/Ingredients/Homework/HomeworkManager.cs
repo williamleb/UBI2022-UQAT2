@@ -6,6 +6,7 @@ using Fusion;
 using JetBrains.Annotations;
 using Managers.Game;
 using Sirenix.Utilities;
+using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
 using UnityEngine;
@@ -90,6 +91,18 @@ namespace Ingredients.Homework
                 GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
                 GameManager.Instance.OnBeginDespawn += DespawnHomeworks;
             }
+            else
+            {
+                StartCoroutine(SpawnHomeworksAndInitializeWhenConnectedRoutine());
+                LevelSystem.Instance.OnBeforeUnload += DespawnHomeworks;
+            }
+        }
+
+        private IEnumerator SpawnHomeworksAndInitializeWhenConnectedRoutine()
+        {
+            yield return new WaitUntil(() => NetworkSystem.Instance.IsConnected);
+            SpawnHomeworks();
+            InitializeManager();
         }
         
         protected override void OnDestroy()
@@ -100,7 +113,13 @@ namespace Ingredients.Homework
                 GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
                 GameManager.Instance.OnBeginDespawn -= DespawnHomeworks;
             }
+
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnBeforeUnload -= DespawnHomeworks;
+            }
             
+            StopAllCoroutines();
             base.OnDestroy();
         }
         
@@ -121,10 +140,7 @@ namespace Ingredients.Homework
         {
             if (newGameState == GameState.Running)
             {
-                InitializeSpawnPoints();
-                InitializeCooldowns();
-                InitializeBursts();
-                StartHomeworkRoutines();
+                InitializeManager();
             }else if (newGameState == GameState.Overtime)
             {
                 //TODO do we need to do something?
@@ -133,6 +149,14 @@ namespace Ingredients.Homework
             {
                 StopHomeworkRoutines();
             }
+        }
+
+        private void InitializeManager()
+        {
+            InitializeSpawnPoints();
+            InitializeCooldowns();
+            InitializeBursts();
+            StartHomeworkRoutines();
         }
         
         private void InitializeSpawnPoints()
@@ -211,7 +235,8 @@ namespace Ingredients.Homework
 
         private void SpawnHomeworks()
         {
-            GameManager.Instance.LockSpawn(this);
+            if (GameManager.HasInstance)
+                GameManager.Instance.LockSpawn(this);
 
             foreach (var homeworkDefinition in settings.HomeworkDefinitions)
             {
