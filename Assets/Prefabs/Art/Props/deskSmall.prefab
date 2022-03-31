@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8937347773666222664}
   m_Layer: 0
   m_Name: deskSmall
-  m_TagString: Collidable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
       propertyPath: m_TagString
-      value: Collidable
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df45a20f8136d1f4aa022cd45d1b1e4c, type: 3}
@@ -147,6 +147,32 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 30.250502, y: 22.26942, z: 10.76045}
   m_Center: {x: 15.199142, y: 14.360996, z: 26.520094}
+--- !u!65 &3820971868466610613
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322830342296346021}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.8485084, y: 25.173683, z: 32.070312}
+  m_Center: {x: 27.934618, y: 14.369051, z: 15.865147}
+--- !u!65 &4602470166896358730
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322830342296346021}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.857603, y: 22.066553, z: 32.070312}
+  m_Center: {x: -0.014009859, y: 13.836341, z: 15.865147}
 --- !u!208 &1600955406
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -176,9 +202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _interpolationTarget: {fileID: 4797931546580272927}
-  DetachInterpTarget: 0
-  SyncParent: 1
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 4797931546580272927}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -190,9 +215,6 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  SyncScale: 0
-  Space: 1
-  SyncDragAndMass: 0
 --- !u!114 &6866105391402904432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,40 +227,14 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 0
   NetworkGuid:
     RawGuidValue: 00000000000000000000000000000000
   NestedObjects: []
   NetworkedBehaviours: []
   SimulationBehaviours: []
---- !u!65 &3820971868466610613
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5322830342296346021}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5.8485084, y: 25.173683, z: 32.070312}
-  m_Center: {x: 27.934618, y: 14.369051, z: 15.865147}
---- !u!65 &4602470166896358730
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5322830342296346021}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.857603, y: 22.066553, z: 32.070312}
-  m_Center: {x: -0.014009859, y: 13.836341, z: 15.865147}
