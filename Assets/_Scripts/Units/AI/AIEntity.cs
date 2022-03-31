@@ -115,10 +115,9 @@ namespace Units.AI
             {
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
+                Agent.enabled = true;
             }
-
-            Agent.enabled = true;
-
+            //TODO only run this on the host?
             RegisterToManager();
             InitializeRagdoll();
             OnAISpawned?.Invoke(this);
