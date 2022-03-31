@@ -82,11 +82,6 @@ public class Outline : MonoBehaviour {
 
   void Awake()
   {
-    // TODO Remove
-    renderers = Array.Empty<Renderer>();
-    enabled = false;
-    return;
-    
     // Cache renderers
     renderers = GetComponentsInChildren<Renderer>();
 
