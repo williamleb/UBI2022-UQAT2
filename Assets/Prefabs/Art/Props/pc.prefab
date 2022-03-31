@@ -157,11 +157,11 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.21800001, y: 0.15100001, z: 0.15400001}
+  m_Extents: {x: 0.069000006, y: 0.11100001, z: 0.143}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
-  m_Center: {x: -0.003, y: 0.15100001, z: 0.008}
+  m_Center: {x: -0.007, y: 0.11100001, z: 0.006}
   m_TimeToStationary: 0.5
 --- !u!114 &175658596288550352
 MonoBehaviour:
@@ -175,11 +175,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 0
   NetworkGuid:
     RawGuidValue: 00000000000000000000000000000000
@@ -199,9 +199,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _interpolationTarget: {fileID: 0}
-  DetachInterpTarget: 0
-  SyncParent: 1
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 0}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -213,6 +212,3 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  SyncScale: 0
-  Space: 1
-  SyncDragAndMass: 0

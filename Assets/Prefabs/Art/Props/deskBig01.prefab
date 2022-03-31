@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3659791837194007756}
   m_Layer: 0
   m_Name: deskBig01
-  m_TagString: Collidable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,9 +202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _interpolationTarget: {fileID: 5968764171236780687}
-  DetachInterpTarget: 0
-  SyncParent: 1
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 5968764171236780687}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -216,9 +215,6 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  SyncScale: 0
-  Space: 1
-  SyncDragAndMass: 0
 --- !u!114 &4152916112602894604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,11 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 0
   NetworkGuid:
     RawGuidValue: 00000000000000000000000000000000
