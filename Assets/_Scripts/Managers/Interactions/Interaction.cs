@@ -96,7 +96,7 @@ namespace Managers.Interactions
 
             if (col && col.bounds.Contains(interacter.transform.position)) return true;
             
-            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position,out hit,Layers.GAMEPLAY) )
+            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position,out hit) )
                 return false;
             
             if (!interacter.gameObject.CompareEntities(hit.collider.gameObject))
