@@ -21,6 +21,7 @@ namespace Units.AI
     public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
     {
         private static readonly int SpeedParam = Animator.StringToHash("Speed");
+        private static readonly int IsHoldingHomeworkParam = Animator.StringToHash("IsHoldingHomework");
 
         public static event Action<AIEntity> OnAISpawned;
         public static event Action<AIEntity> OnAIDespawned;
@@ -119,12 +120,18 @@ namespace Units.AI
             RegisterToManager();
             InitializeRagdoll();
             OnAISpawned?.Invoke(this);
+
+            if (Inventory)
+                Inventory.OnInventoryChanged += OnInventoryChanged;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             UnregisterToManager();
             OnAIDespawned?.Invoke(this);
+            
+            if (Inventory)
+                Inventory.OnInventoryChanged -= OnInventoryChanged;
         }
 
         public override void FixedUpdateNetwork()
@@ -147,6 +154,17 @@ namespace Units.AI
                 return;
 
             Animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (MaxSpeed * MaxSpeed));
+        }
+        
+        private void OnInventoryChanged()
+        {
+            if (!Object.HasStateAuthority)
+                return;
+
+            if (!Animator)
+                return;
+
+            Animator.SetBool(IsHoldingHomeworkParam, Inventory.HasHomework);
         }
 
         private void RegisterToManager()
