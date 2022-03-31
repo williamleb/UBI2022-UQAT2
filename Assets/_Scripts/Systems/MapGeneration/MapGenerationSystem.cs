@@ -5,6 +5,7 @@ using Scriptables;
 using Sirenix.OdinInspector;
 using Systems.Network;
 using UnityEngine;
+using UnityEngine.AI;
 using Utilities.Singleton;
 
 namespace Systems.MapGeneration
@@ -21,11 +22,14 @@ namespace Systems.MapGeneration
         private NetworkObject spawnedHallways;
         private NetworkObject spawnedSpawnPoints;
 
+        private NavMeshSurface navMeshSurface;
+
         protected override void Awake()
         {
             base.Awake();
             LoadLayouts();
             LoadRooms();
+            navMeshSurface = FindObjectOfType<NavMeshSurface>();
         }
 
         private void LoadLayouts()
@@ -73,6 +77,7 @@ namespace Systems.MapGeneration
             spawnedProp = NetworkSystem.Instance.Spawn(propPrefab, propPrefab.transform.position, Quaternion.identity);
             spawnedHallways = NetworkSystem.Instance.Spawn(hallways, hallways.transform.position, Quaternion.identity);
             spawnedSpawnPoints = NetworkSystem.Instance.Spawn(spawnPoints, spawnPoints.transform.position, Quaternion.identity);
+            navMeshSurface.BuildNavMesh();
         }
 
 #if UNITY_EDITOR
