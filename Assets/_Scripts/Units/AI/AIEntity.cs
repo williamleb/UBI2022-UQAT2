@@ -111,19 +111,22 @@ namespace Units.AI
 
         public override void Spawned()
         {
+            interacter.Activated = false;
+            
             if (Object.HasStateAuthority)
             {
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
                 Agent.enabled = true;
+                
+                if (Inventory)
+                    Inventory.OnInventoryChanged += OnInventoryChanged;
             }
+            
             //TODO only run this on the host?
             RegisterToManager();
             InitializeRagdoll();
             OnAISpawned?.Invoke(this);
-
-            if (Inventory)
-                Inventory.OnInventoryChanged += OnInventoryChanged;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -161,6 +164,8 @@ namespace Units.AI
         {
             if (!Object.HasStateAuthority)
                 return;
+
+            Interacter.Activated = Inventory.HasHomework;
 
             if (!Animator)
                 return;
