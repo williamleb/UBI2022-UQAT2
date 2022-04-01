@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.LayerUtils;
 using Utilities.Unity;
 
 namespace Managers.Interactions
@@ -13,11 +15,14 @@ namespace Managers.Interactions
         private const float UPDATE_RATE = 0.1f;
     
         [SerializeField] private float radius = 5f;
+        [SerializeField] private List<SingleUnityLayer> layersToIgnoreCheck = new List<SingleUnityLayer>();
 
         private readonly List<Interaction> interactionsInReach = new List<Interaction>(NUMBER_OF_COLLIDERS_TO_CHECK);
         private bool isActivated = true;
 
         public float Radius => radius;
+
+        public int LayerMask => layersToIgnoreCheck.Aggregate(~0, (current, layer) => current & ~layer.Mask);
 
         public IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
         public bool Activated
