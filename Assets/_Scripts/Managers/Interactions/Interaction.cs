@@ -95,8 +95,8 @@ namespace Managers.Interactions
             }
 
             if (col && col.bounds.Contains(interacter.transform.position)) return true;
-            
-            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position,out hit) )
+
+            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position, out hit, interacter.Radius, interacter.LayerMask))
                 return false;
             
             if (!interacter.gameObject.CompareEntities(hit.collider.gameObject))
@@ -145,8 +145,8 @@ namespace Managers.Interactions
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.INTERACTION))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.INTERACTION}. Instead, it has {thisGameObject.tag}");
             
-            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.INTERACTION))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.INTERACTION} ({Layers.NAME_INTERACTION}). Instead, it has {thisGameObject.layer}");
         }
 #endif
     }

@@ -85,7 +85,7 @@ namespace Systems.Level
             Debug.Assert(sceneResources.Any(), $"An object of type {nameof(GameScenes)} should be in the folder {SCENES_FOLDER_PATH}");
             if (sceneResources.Length > 1)
                 Debug.LogWarning($"More than one object of type {nameof(GameScenes)} was found in the folder {SCENES_FOLDER_PATH}. Taking the first one.");
-
+ 
             scenes = sceneResources.First();
         }
 
@@ -164,7 +164,7 @@ namespace Systems.Level
 
         private void OnDestroy()
         {
-            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone;
+            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone; 
         }
 
         private void ChangeLevelState()

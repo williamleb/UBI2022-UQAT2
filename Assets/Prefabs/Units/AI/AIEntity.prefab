@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3398730047245474198}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 1258915672279333070}
   - component: {fileID: 1001097674528342328}
   - component: {fileID: 7701471376786898261}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: AIEntity
   m_TagString: AI
   m_Icon: {fileID: 0}
@@ -198,7 +198,6 @@ MonoBehaviour:
   brainToAddOnSpawned: {fileID: 0}
   alertParticleEffect: {fileID: 0}
   ragdollTransform: {fileID: 0}
-  animator: {fileID: 0}
   _AssignedHallway: 0
 --- !u!114 &7344221456409342414
 MonoBehaviour:
@@ -229,6 +228,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   radius: 2
+  layersToIgnoreCheck:
+  - layerIndex: 2
+  - layerIndex: 6
+  - layerIndex: 3
 --- !u!114 &5506188373800945084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2902276269587113352}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: InterpolationTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +356,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6002998913264652346}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: TempHoldingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4488588120089596193}
   - component: {fileID: 4019246899689579017}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: InventoryMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}

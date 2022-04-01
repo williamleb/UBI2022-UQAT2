@@ -419,9 +419,9 @@ namespace Units.Player
                 Debug.LogWarning(
                     $"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
 
-            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.PLAYER))
                 Debug.LogWarning(
-                    $"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+                    $"Player {thisGameObject.name} should have the layer {Layers.PLAYER} ({Layers.NAME_PLAYER}). Instead, it has {thisGameObject.layer}");
         }
 
         private bool showDebugMenu;
