@@ -126,8 +126,11 @@ namespace Canvases.HUDs
             if (PlayerSystem.HasInstance)
                 PlayerSystem.Instance.OnLocalPlayerSpawned -= OnLocalPlayerSpawned;
 
-            localPlayerEntity.OnArchetypeChanged -= OnArchetypeChanged;
-            localPlayerEntity.OnDashAvailableChanged -= OnDashAvailableChanged;
+            if(localPlayerEntity != null)
+            {
+                localPlayerEntity.OnArchetypeChanged -= OnArchetypeChanged;
+                localPlayerEntity.OnDashAvailableChanged -= OnDashAvailableChanged;
+            }
         }
     }
 }

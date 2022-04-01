@@ -27,12 +27,19 @@ namespace Canvases.HUDs
 
         private void Start()
         {
-            TeamSystem.OnTeamCreated += OnTeamCreated;
+            
+            if (TeamSystem.HasInstance && TeamSystem.Instance.AreTeamsCreated)
+            {
+                OnTeamCreated();
+            }
+            else
+            {
+                TeamSystem.OnTeamCreated += OnTeamCreated;
+            }
         }
 
         private void OnTeamCreated()
         {
-            Debug.Log("Team created");
             if (TeamSystem.Instance.Teams.Count != 2)
             {
                 Debug.LogWarning("The game has more than two teams and the UI for two teams is activated. Therefore the UI will not be updated.");
