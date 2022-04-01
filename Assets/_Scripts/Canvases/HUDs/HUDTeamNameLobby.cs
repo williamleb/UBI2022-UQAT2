@@ -27,24 +27,13 @@ namespace Canvases.HUDs
 
         private void Start()
         {
-            
-            if (TeamSystem.HasInstance && TeamSystem.Instance.AreTeamsCreated)
-            {
-                OnTeamCreated();
-            }
-            else
-            {
-                TeamSystem.OnTeamCreated += OnTeamCreated;
-            }
+            TeamSystem.OnTeamRegistered += OnTeamRegistered;
         }
 
-        private void OnTeamCreated()
+        private void OnTeamRegistered(Team team)
         {
             if (TeamSystem.Instance.Teams.Count != 2)
-            {
-                Debug.LogWarning("The game has more than two teams and the UI for two teams is activated. Therefore the UI will not be updated.");
                 return;
-            }
 
             leftTeam = TeamSystem.Instance.Teams[0];
             leftTeam.OnNameChanged += UpdateName;
@@ -108,7 +97,7 @@ namespace Canvases.HUDs
                 rightTeam.OnColorChanged -= UpdateColor;
             }
 
-            TeamSystem.OnTeamCreated -= OnTeamCreated;
+            TeamSystem.OnTeamRegistered -= OnTeamRegistered;
         }
     }
 }
