@@ -44,6 +44,7 @@ namespace Systems
 		private void OnEnable()
 		{
 			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
+			LevelSystem.Instance.OnLobbyLoad += OnLobyLoad;
 			NetworkSystem.OnSceneLoadStartEvent += ResetSpawnPoints;
 		}
 
@@ -52,6 +53,7 @@ namespace Systems
 			if (LevelSystem.HasInstance)
 			{
 				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
+				LevelSystem.Instance.OnLobbyLoad -= OnLobyLoad;
 				NetworkSystem.OnSceneLoadStartEvent -= ResetSpawnPoints;
 			}
 		}
@@ -60,6 +62,11 @@ namespace Systems
 		{
 			ResetPlayerSystem();
 		}
+
+		private void OnLobyLoad()
+        {
+			SetPlayersPositionToSpawn();
+        }
 
 		private void LoadPrefabs()
 		{
@@ -151,6 +158,7 @@ namespace Systems
 
 		public async void SetPlayersPositionToSpawn()
 		{
+			Debug.Log("Setting players to spawn position...");
 			while (playerSpawnPoints.Length == 0)
 			{
 				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
@@ -227,6 +235,7 @@ namespace Systems
 
 		private void ResetSpawnPoints(NetworkRunner _ = null)
 		{
+			Debug.Log("ResetSpawnPoints");
 			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 		}
 	}
