@@ -27,7 +27,7 @@ namespace Canvases.HUDs
 
         private void Start()
         {
-            if (TeamSystem.Instance.AreTeamsCreated)
+            if (TeamSystem.HasInstance && TeamSystem.Instance.AreTeamsCreated)
             {
                 OnTeamRegistered(null);
             }
