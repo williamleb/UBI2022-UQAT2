@@ -27,7 +27,14 @@ namespace Canvases.HUDs
 
         private void Start()
         {
-            TeamSystem.OnTeamRegistered += OnTeamRegistered;
+            if (TeamSystem.Instance.AreTeamsCreated)
+            {
+                OnTeamRegistered(null);
+            }
+            else
+            {
+                TeamSystem.OnTeamRegistered += OnTeamRegistered;
+            }
         }
 
         private void OnTeamRegistered(Team team)
