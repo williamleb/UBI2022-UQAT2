@@ -91,6 +91,7 @@ namespace Canvases.Prompts
             if (!playerInputHandler || action == null)
                 return;
 
+            // Only the player input action knows the current customized bindings for the action, which is why we replace our action here 
             foreach (var playerAction in playerInputHandler.PlayerInputAction)
             {
                 if (action.name == playerAction.name)
