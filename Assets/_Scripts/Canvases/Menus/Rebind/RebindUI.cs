@@ -116,7 +116,11 @@ namespace Canvases.Menu.Rebind
             }
         }
 
-        private void OnUpdateBindingUIEvent(string deviceLayoutName, string mainControlPath) => UpdateAllRebindUI();
+        private void OnUpdateBindingUIEvent(string deviceLayoutName, string mainControlPath)
+        {
+            UpdateAllRebindUI();
+            if (playerInputHandler) playerInputHandler.UpdateBindings();
+        }
 
         private void UpdateAllRebindUI()
         {
@@ -124,8 +128,6 @@ namespace Canvases.Menu.Rebind
             {
                 rebindActionUI.UpdateBindingDisplay(false);
             }
-            
-            if (playerInputHandler) playerInputHandler.UpdateBindings();
         }
 
         private void Enable()

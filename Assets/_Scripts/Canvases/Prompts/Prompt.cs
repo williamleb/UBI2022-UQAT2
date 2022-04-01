@@ -43,9 +43,10 @@ namespace Canvases.Prompts
             // We wait for the player to be spawned before having access to the inputs bindings
             // The downside to this is that we cannot show prompts when the player isn't spawned
             PlayerEntity.OnPlayerSpawned += Init;
-            InitIfLocalPlayerIsAlreadySpawned();
             
             action = actionAtStart.action;
+            InitIfLocalPlayerIsAlreadySpawned();
+            
             UpdateIcon();
         }
         
