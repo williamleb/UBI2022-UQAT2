@@ -77,6 +77,7 @@ MonoBehaviour:
   markerScale: 3
   lockInPlace: 1
   showOutsideCameraBorders: 1
+  activateOnStart: 0
   padding: {x: 10, y: 10}
   sprite: {fileID: 21300000, guid: 4a3f79e785ba3b74d982cdc40e77faab, type: 3}
 --- !u!1 &4696352038361210478
@@ -155,6 +156,7 @@ MonoBehaviour:
   markerScale: 3
   lockInPlace: 1
   showOutsideCameraBorders: 0
+  activateOnStart: 0
   padding: {x: 10, y: 10}
   actionReference: {fileID: -8964356537790128568, guid: 4f878948d09c1d74bb22b3dcaca44dcf, type: 3}
 --- !u!1 &7778799847435167800
@@ -174,7 +176,7 @@ GameObject:
   - component: {fileID: 7778799847435167776}
   - component: {fileID: 8445365399247779791}
   - component: {fileID: 5047067772390118055}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Homework
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -237,11 +239,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 2305
   NetworkGuid:
     RawGuidValue: 023fb7e0cc43b4b4d9d97d21ffa2c7e9
@@ -281,9 +283,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _interpolationTarget: {fileID: 4526205713884226856}
-  DetachInterpTarget: 0
-  SyncParent: 1
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 4526205713884226856}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -295,9 +296,6 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  SyncScale: 0
-  Space: 0
-  SyncDragAndMass: 0
 --- !u!114 &7778799847435167776
 MonoBehaviour:
   m_ObjectHideFlags: 0

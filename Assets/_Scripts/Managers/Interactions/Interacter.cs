@@ -9,13 +9,15 @@ namespace Managers.Interactions
 {
     public class Interacter : NetworkBehaviour
     {
-        private const int NUMBER_OF_COLLIDERS_TO_CHECK = 10;
+        private const int NUMBER_OF_COLLIDERS_TO_CHECK = 2;
         private const float UPDATE_RATE = 0.1f;
     
         [SerializeField] private float radius = 5f;
 
         private readonly List<Interaction> interactionsInReach = new List<Interaction>(NUMBER_OF_COLLIDERS_TO_CHECK);
         private bool isActivated = true;
+
+        public float Radius => radius;
 
         public IEnumerable<Interaction> InteractionsInReach => interactionsInReach;
         public bool Activated
@@ -67,10 +69,8 @@ namespace Managers.Interactions
             if (!Activated)
                 return;
          
-            Debug.Log($"Hello ================ {gameObject.name}");
-            
             interactionsInReach.Clear();
-            if (Runner && Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Layers.GAMEPLAY_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
+            if (Runner && Runner.GetPhysicsScene().OverlapSphere(transform.position, radius, colliders, Layers.INTERACTION_MASK, QueryTriggerInteraction.UseGlobal) <= 0) return;
             foreach (Collider interact in colliders)
             {
                 if (interact && interact.CompareTag(Tags.INTERACTION))

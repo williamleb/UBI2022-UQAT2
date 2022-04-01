@@ -9,6 +9,7 @@
         public const string NAME_GAMEPLAY = "Gameplay";
         public const string NAME_WATER = "Water";
         public const string NAME_UI = "UI";
+        public const string NAME_INTERACTION = "Interaction";
         public const string NAME_POST_PROCESSING = "PostProcessing";
         public const string NAME_NOR_IN_REFLEXION = "Not in Reflection";
 
@@ -18,6 +19,7 @@
         public const int GAMEPLAY = 3;
         public const int WATER = 4;
         public const int UI = 5;
+        public const int INTERACTION = 6;
         public const int POST_PROCESSING = 8;
         public const int NOT_IN_REFLEXION = 9;
 
@@ -27,6 +29,7 @@
         public const int GAMEPLAY_MASK = 1 << 3;
         public const int WATER_MASK = 1 << 4;
         public const int UI_MASK = 1 << 5;
+        public const int INTERACTION_MASK = 1 << 6;
         public const int POST_PROCESSING_MASK = 1 << 8;
         public const int NOT_IN_REFLEXION_MASK = 1 << 9;
     }

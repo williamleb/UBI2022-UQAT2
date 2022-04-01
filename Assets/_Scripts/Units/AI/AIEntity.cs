@@ -117,8 +117,10 @@ namespace Units.AI
             {
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
-                Agent.enabled = true;
                 
+                Agent.enabled = true;
+                interacter.Activated = true;
+
                 if (Inventory)
                     Inventory.OnInventoryChanged += OnInventoryChanged;
             }
@@ -164,8 +166,6 @@ namespace Units.AI
         {
             if (!Object.HasStateAuthority)
                 return;
-
-            Interacter.Activated = Inventory.HasHomework;
 
             if (!Animator)
                 return;
