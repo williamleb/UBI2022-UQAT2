@@ -27,6 +27,7 @@ namespace Canvases.Prompts
             set
             {
                 action = value;
+                ReplaceActionByActionFromPlayerInputHandler();
                 UpdateIcon();
             }
         }
@@ -62,6 +63,7 @@ namespace Canvases.Prompts
             if (playerInputHandler)
             {
                 playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
+                playerInputHandler.OnInputsRebinded -= UpdateIcon;
             }
             PlayerEntity.OnPlayerSpawned -= Init;
         }
@@ -73,11 +75,26 @@ namespace Canvases.Prompts
 
             playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
             Debug.Assert(playerInputHandler);
+            
+            ReplaceActionByActionFromPlayerInputHandler();
 
             playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
+            playerInputHandler.OnInputsRebinded += UpdateIcon;
             inputDevice = playerInputHandler.CurrentDevice;
 
             UpdateIcon();
+        }
+
+        private void ReplaceActionByActionFromPlayerInputHandler()
+        {
+            if (!playerInputHandler || action == null)
+                return;
+
+            foreach (var playerAction in playerInputHandler.PlayerInputAction)
+            {
+                if (action.name == playerAction.name)
+                    action = playerAction;
+            }
         }
 
         private void OnInputDeviceChanged(string device)

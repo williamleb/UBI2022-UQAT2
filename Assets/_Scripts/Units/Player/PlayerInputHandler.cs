@@ -9,6 +9,8 @@ namespace Units.Player
 {
     public class PlayerInputHandler : NetworkBehaviour
     {
+        public event Action OnInputsRebinded;
+        
         public event Action<string> OnInputDeviceChanged
         {
             add => detectDevice.OnInputDeviceChanged += value;
@@ -120,6 +122,11 @@ namespace Units.Player
                 NetworkSystem.Instance.OnInputEvent -= OnInput;
             DisposeInputs();
             detectDevice?.FinalizeInit();
+        }
+
+        public void UpdateBindings()
+        {
+            OnInputsRebinded?.Invoke();
         }
     }
 }

@@ -124,6 +124,8 @@ namespace Canvases.Menu.Rebind
             {
                 rebindActionUI.UpdateBindingDisplay(false);
             }
+            
+            if (playerInputHandler) playerInputHandler.UpdateBindings();
         }
 
         private void Enable()
