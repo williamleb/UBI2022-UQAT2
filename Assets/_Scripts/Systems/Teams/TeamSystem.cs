@@ -20,6 +20,7 @@ namespace Systems.Teams
         private const string PREFABS_FOLDER_PATH = "Game";
 
         public static event Action OnTeamCreated;
+        public static event Action<Team> OnTeamRegistered;
 
         private TeamSettings teamSettings;
         private GamePrefabs prefabs;
@@ -37,6 +38,7 @@ namespace Systems.Teams
 
             Debug.Log($"Registering team {team.Name}");
             teams.Add(team.TeamId, team);
+            OnTeamRegistered?.Invoke(team);
         }
 
         public void UnregisterTeam(Team team)
