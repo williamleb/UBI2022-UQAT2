@@ -28,8 +28,13 @@ namespace Systems.Teams
         private readonly Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public List<Team> Teams => teams.Values.ToList();
 
+        public bool AreTeamsCreated => areTeamsCreated;
+
         public void RegisterTeam(Team team)
         {
+            if (!areTeamsCreated)
+                areTeamsCreated = true;
+
             Debug.Log($"Registering team {team.Name}");
             teams.Add(team.TeamId, team);
         }
