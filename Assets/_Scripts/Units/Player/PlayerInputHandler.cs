@@ -119,7 +119,7 @@ namespace Units.Player
             if (NetworkSystem.HasInstance)
                 NetworkSystem.Instance.OnInputEvent -= OnInput;
             DisposeInputs();
-            detectDevice.FinalizeInit();
+            detectDevice?.FinalizeInit();
         }
     }
 }
