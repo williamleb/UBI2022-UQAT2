@@ -28,7 +28,7 @@ namespace Systems
 		private readonly Dictionary<PlayerRef, NetworkRunner>
 			playersJoined = new Dictionary<PlayerRef, NetworkRunner>();
 
-		private PlayerSpawnLocation[] playerSpawnPoints;
+		private PlayerSpawnLocation[] playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;

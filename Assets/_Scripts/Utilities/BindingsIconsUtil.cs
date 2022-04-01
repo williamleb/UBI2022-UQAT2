@@ -36,7 +36,7 @@ namespace Utilities
             {
                 icon = xbox.GetSprite(mainControlPath);
             }
-            else if (IsFirstLayoutBasedOnSecond(deviceLayoutName, "Keyboard"))
+            else if (IsFirstLayoutBasedOnSecond(deviceLayoutName, "Keyboard") || IsFirstLayoutBasedOnSecond(deviceLayoutName, "Mouse"))
             {
                 icon = mouseKeyboard.GetSprite(mainControlPath);
             }
@@ -49,7 +49,7 @@ namespace Utilities
             if (inputAction == null || string.IsNullOrEmpty(deviceName))
                 return null;
 
-            var mainBindings = GetRelevantMainBindings(inputAction, deviceName);
+            var mainBindings = GetRelevantMainBindings(inputAction, deviceName, true);
             if (!mainBindings.Any())
                 return null;
 
@@ -63,7 +63,7 @@ namespace Utilities
         // So we don't create an instance each time the next method is called
         private static readonly List<int> RelevantMainBindings = new List<int>();
 
-        public static List<int> GetRelevantMainBindings(InputAction inputAction, string deviceName)
+        public static List<int> GetRelevantMainBindings(InputAction inputAction, string deviceName, bool checkUnrebindableBindings = false)
         {
             RelevantMainBindings.Clear();
             if (inputAction.bindings.Count >= 4)
@@ -87,7 +87,7 @@ namespace Utilities
                     RelevantMainBindings.Add(deviceName == "Gamepad" ? 2 : 0);
                 }
             }
-            else if (inputAction.bindings.Count >= 2)
+            else if (inputAction.bindings.Count >= 2 && checkUnrebindableBindings)
             {
                 RelevantMainBindings.Add(deviceName == "Gamepad" ? 1 : 0);
             }
