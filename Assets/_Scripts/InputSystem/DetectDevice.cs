@@ -8,6 +8,8 @@ namespace InputSystem
 {
     public class DetectDevice
     {
+        private const float THRESHOLD_TO_DETECT_DEVICE_FROM_MOVEMENT = 0.2f;
+        
         public event Action<string> OnInputDeviceChanged;
 
         private readonly Dictionary<string, string> deviceToControlScheme = new Dictionary<string, string>();
@@ -45,6 +47,14 @@ namespace InputSystem
         {
             if (obj.control.device.name == "Mouse") return;
 
+            // We don't want to detect a new device from small movement (controllers can often drift)
+            if (obj.action.name == "Movement" && obj.valueType == typeof(Vector2))
+            {
+                var value = obj.ReadValue<Vector2>();
+                if (value.sqrMagnitude < THRESHOLD_TO_DETECT_DEVICE_FROM_MOVEMENT)
+                    return;
+            }
+            
             foreach (string key in deviceToControlScheme.Keys)
             {
                 if (obj.control.device.name.Contains(key.Substring(1, key.Length - 2)))

@@ -44,7 +44,6 @@ namespace Units.Player
                 PlayerInputAction = new PlayerInputAction();
                 detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
                 RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
-                detectDevice.FinalizeInit();
                 EnableInput();
                 NetworkSystem.Instance.OnInputEvent += OnInput;
             }
@@ -120,6 +119,7 @@ namespace Units.Player
             if (NetworkSystem.HasInstance)
                 NetworkSystem.Instance.OnInputEvent -= OnInput;
             DisposeInputs();
+            detectDevice?.FinalizeInit();
         }
     }
 }
