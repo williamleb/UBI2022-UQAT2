@@ -68,7 +68,6 @@ namespace Managers.Game
             networkedData.OnGameStateChanged += HandleGameStateChanged;
             gameTimer.OnTimerExpired += EndGame;
             LevelSystem.Instance.OnGameLoad += OnGameLoaded;
-            LevelSystem.Instance.OnLobbyLoad += OnLobbyLoaded;
             ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
         }
 
@@ -80,7 +79,6 @@ namespace Managers.Game
             if (LevelSystem.HasInstance)
             {
                 LevelSystem.Instance.OnGameLoad -= OnGameLoaded;
-                LevelSystem.Instance.OnLobbyLoad -= OnLobbyLoaded;
             }
 
             if (spawnAndStartGameCoroutine != null)
@@ -108,15 +106,6 @@ namespace Managers.Game
             
             if (NetworkSystem.Instance.IsHost)
                 spawnAndStartGameCoroutine = StartCoroutine(SpawnAndStartGameRoutine());
-        }
-        
-        private void OnLobbyLoaded()
-        {
-            if (currentState == GameState.Running || IsSpawning)
-                return;
-            
-            if (NetworkSystem.Instance.IsHost)
-                PlayerSystem.Instance.SetPlayersPositionToSpawn();
         }
         
         public void LockSpawn(MonoBehaviour spawnLock)
