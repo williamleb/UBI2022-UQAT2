@@ -235,7 +235,7 @@ namespace Systems
 
 		private void ResetSpawnPoints(NetworkRunner _ = null)
 		{
-			Debug.Log("ResetSpawnPoints");
+			Debug.Log("Reseting spawnpoints");
 			playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 		}
 	}
