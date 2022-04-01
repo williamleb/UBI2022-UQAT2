@@ -377,8 +377,8 @@ namespace Units.AI
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.AI))
                 Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.AI}. Instead, it has {thisGameObject.tag}");
             
-            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.GAMEPLAY))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.GAMEPLAY} ({Layers.NAME_GAMEPLAY}). Instead, it has {thisGameObject.layer}");
+            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.AI))
+                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.AI} ({Layers.NAME_AI}). Instead, it has {thisGameObject.layer}");
         }
 #endif
     }

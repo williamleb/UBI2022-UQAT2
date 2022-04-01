@@ -96,7 +96,7 @@ namespace Managers.Interactions
 
             if (col && col.bounds.Contains(interacter.transform.position)) return true;
             
-            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position, out hit, interacter.Radius, Layers.GAMEPLAY) )
+            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up,interacter.transform.position - transform.position, out hit, interacter.Radius, ~(Layers.INTERACTION_MASK | Layers.AI_MASK | Layers.IGNORE_RAYCAST_MASK)))
                 return false;
             
             if (!interacter.gameObject.CompareEntities(hit.collider.gameObject))
