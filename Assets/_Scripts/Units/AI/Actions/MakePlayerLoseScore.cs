@@ -29,7 +29,7 @@ namespace Units.AI.Actions
                 return TaskStatus.Failure;
 
             if (!ScoreManager.HasInstance)
-                return TaskStatus.Failure;
+                return TaskStatus.Success;
             
             ScoreManager.Instance.DecrementScore(player, scoreToRemove.Value);
             return TaskStatus.Success;
