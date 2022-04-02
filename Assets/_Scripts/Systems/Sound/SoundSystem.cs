@@ -107,7 +107,17 @@ using Utilities.Singleton;
 
             wwiseObjects.MusicEvent.Post(gameObject);
             isMusicPlaying = true;
-        } 
+        }
+
+        public void SetInMenu() => wwiseObjects.InMenuState.SetValue();
+        public void SetInGame() => wwiseObjects.InGameState.SetValue();
+
+        private void OnDestroy()
+        {
+            if (isMusicPlaying)
+                wwiseObjects.MusicEvent.Stop(gameObject);
+            isMusicPlaying = false;
+        }
 
 #if UNITY_EDITOR
         private bool showDebugMenu;
