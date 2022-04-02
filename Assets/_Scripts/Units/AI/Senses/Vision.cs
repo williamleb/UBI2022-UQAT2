@@ -108,7 +108,7 @@ namespace Units.AI.Senses
         private RaycastHit hit;
         private bool IsVisible(Collider objectCollider)
         {
-            if (!Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up, objectCollider.transform.position - transform.position, out hit))
+            if (Runner == null || !Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up, objectCollider.transform.position - transform.position, out hit))
                 return false;
 
             if (!objectCollider.gameObject.CompareEntities(hit.collider.gameObject))
