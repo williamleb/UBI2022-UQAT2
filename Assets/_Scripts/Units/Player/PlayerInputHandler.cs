@@ -44,7 +44,6 @@ namespace Units.Player
             if (Object.HasInputAuthority)
             {
                 PlayerInputAction = new PlayerInputAction();
-                PlayerInputAction = new PlayerInputAction();
                 detectDevice = new DetectDevice(PlayerInputAction.Player.Get());
                 RebindSaveLoad.LoadOverrides(PlayerInputAction.asset);
                 EnableInput();
