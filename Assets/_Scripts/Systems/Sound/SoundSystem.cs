@@ -12,6 +12,9 @@ using Utilities.Singleton;
     public class SoundSystem : PersistentSingleton<SoundSystem>
     {
         private const string SOUNDS_FOLDER_PATH = "Wwise";
+        private const string MASTER_VOLUME_SAVE_KEY = "master_volume";
+        private const string MUSIC_VOLUME_SAVE_KEY = "music_volume";
+        private const string SOUND_EFFECTS_VOLUME_SAVE_KEY = "sfx_volume";
 
         private WwiseObjects wwiseObjects;
 
@@ -23,6 +26,7 @@ using Utilities.Singleton;
 
             LoadSoundEvents();
             LoadBank();
+            LoadAllVolumes();
         }
 
         private void LoadSoundEvents()
@@ -95,11 +99,23 @@ using Utilities.Singleton;
         public float GetMasterVolume() => wwiseObjects.MasterVolumeParameter.GetGlobalValue() / 100f;
         public float GetMusicVolume() => wwiseObjects.MusicVolumeParameter.GetGlobalValue() / 100f;
         public float GetSoundEffectsVolume() => wwiseObjects.SoundEffectsVolumeParameter.GetGlobalValue() / 100f;
-        public void SetMasterVolume(float volume) => wwiseObjects.MasterVolumeParameter.SetGlobalValue(volume * 100f);
-        public void SetMusicVolume(float volume) => wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
-        public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
+        public void SetMasterVolume(float volume)
+        {
+            wwiseObjects.MasterVolumeParameter.SetGlobalValue(volume * 100f);
+            SaveMasterVolume();
+        }
+        public void SetMusicVolume(float volume) 
+        {
+            wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
+            SaveMusicVolume();
+        }
+        public void SetSoundEffectsVolume(float volume)
+        {
+            wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
+            SaveSoundEffectsVolume();
+        }
         public void SetAimCharge(PlayerEntity player, float charge) => wwiseObjects.AimChargeParameter.SetValue(player.gameObject, charge * 100f);
-        
+
         public void PlayMusic()
         {
             if (isMusicPlaying)
@@ -117,6 +133,31 @@ using Utilities.Singleton;
             if (isMusicPlaying)
                 wwiseObjects.MusicEvent.Stop(gameObject);
             isMusicPlaying = false;
+        }
+        
+        private void SaveMasterVolume()
+        { 
+            PlayerPrefs.SetFloat(MASTER_VOLUME_SAVE_KEY, wwiseObjects.MasterVolumeParameter.GetGlobalValue());
+        }
+
+        private void SaveMusicVolume()
+        {
+            PlayerPrefs.SetFloat(MUSIC_VOLUME_SAVE_KEY, wwiseObjects.MusicVolumeParameter.GetGlobalValue());
+        }
+
+        private void SaveSoundEffectsVolume()
+        {
+            PlayerPrefs.SetFloat(SOUND_EFFECTS_VOLUME_SAVE_KEY, wwiseObjects.SoundEffectsVolumeParameter.GetGlobalValue());
+        }
+
+        private void LoadAllVolumes()
+        {
+            if (PlayerPrefs.HasKey(MASTER_VOLUME_SAVE_KEY))
+                wwiseObjects.MasterVolumeParameter.SetGlobalValue(PlayerPrefs.GetFloat(MASTER_VOLUME_SAVE_KEY));
+            if (PlayerPrefs.HasKey(MUSIC_VOLUME_SAVE_KEY))
+                wwiseObjects.MusicVolumeParameter.SetGlobalValue(PlayerPrefs.GetFloat(MUSIC_VOLUME_SAVE_KEY));
+            if (PlayerPrefs.HasKey(SOUND_EFFECTS_VOLUME_SAVE_KEY))
+                wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(PlayerPrefs.GetFloat(SOUND_EFFECTS_VOLUME_SAVE_KEY));
         }
 
 #if UNITY_EDITOR
