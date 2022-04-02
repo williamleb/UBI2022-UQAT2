@@ -92,7 +92,7 @@ namespace Utilities
                 RelevantMainBindings.Add(deviceName == "Gamepad" ? 1 : 0);
             }
 
-            return RelevantMainBindings;
+            return RelevantMainBindings.ToList();
         }
     }
 }

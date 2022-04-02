@@ -27,6 +27,7 @@ namespace Canvases.Prompts
             set
             {
                 action = value;
+                ReplaceActionByActionFromPlayerInputHandler();
                 UpdateIcon();
             }
         }
@@ -42,9 +43,10 @@ namespace Canvases.Prompts
             // We wait for the player to be spawned before having access to the inputs bindings
             // The downside to this is that we cannot show prompts when the player isn't spawned
             PlayerEntity.OnPlayerSpawned += Init;
-            InitIfLocalPlayerIsAlreadySpawned();
             
             action = actionAtStart.action;
+            InitIfLocalPlayerIsAlreadySpawned();
+            
             UpdateIcon();
         }
         
@@ -62,6 +64,7 @@ namespace Canvases.Prompts
             if (playerInputHandler)
             {
                 playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
+                playerInputHandler.OnInputsRebinded -= UpdateIcon;
             }
             PlayerEntity.OnPlayerSpawned -= Init;
         }
@@ -73,11 +76,27 @@ namespace Canvases.Prompts
 
             playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
             Debug.Assert(playerInputHandler);
+            
+            ReplaceActionByActionFromPlayerInputHandler();
 
             playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
+            playerInputHandler.OnInputsRebinded += UpdateIcon;
             inputDevice = playerInputHandler.CurrentDevice;
 
             UpdateIcon();
+        }
+
+        private void ReplaceActionByActionFromPlayerInputHandler()
+        {
+            if (!playerInputHandler || action == null)
+                return;
+
+            // Only the player input action knows the current customized bindings for the action, which is why we replace our action here 
+            foreach (var playerAction in playerInputHandler.PlayerInputAction)
+            {
+                if (action.name == playerAction.name)
+                    action = playerAction;
+            }
         }
 
         private void OnInputDeviceChanged(string device)
