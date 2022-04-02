@@ -1,5 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	18754590	HomeworkFlying			\Default Work Unit\PlayerInteraction\HomeworkFlying	
+	196949612	CharacterSelect_Dasher			\Default Work Unit\UI Sounds\CharacterSelect_Dasher	
 	412537003	PickupHomework			\Default Work Unit\PlayerInteraction\PickupHomework	
 	678209053	Two			\Default Work Unit\GeneralGameSounds\Countdown\Two	
 	912956111	Three			\Default Work Unit\GeneralGameSounds\Countdown\Three	
@@ -11,16 +12,16 @@ Event	ID	Name			Wwise Object Path	Notes
 	1786192775	Go			\Default Work Unit\GeneralGameSounds\Countdown\Go	
 	1838029456	UIButtonBackward			\Default Work Unit\UI Sounds\UIButtonBackward	
 	1855274195	DefeatJingle			\Default Work Unit\GeneralGameSounds\DefeatJingle	
-	1940068650	CharacterSelect4			\Default Work Unit\UI Sounds\CharacterSelect4	
-	1940068652	CharacterSelect2			\Default Work Unit\UI Sounds\CharacterSelect2	
-	1940068653	CharacterSelect3			\Default Work Unit\UI Sounds\CharacterSelect3	
 	1942692385	Dash			\Default Work Unit\Movement\Dash	
 	2385628198	Footsteps			\Default Work Unit\Movement\Footsteps	
 	2578587127	InteractWorldElement			\Default Work Unit\PlayerInteraction\InteractWorldElement	
+	2754137701	CharacterSelect_Normie			\Default Work Unit\UI Sounds\CharacterSelect_Normie	
+	2794489219	CharacterSelect_Runner			\Default Work Unit\UI Sounds\CharacterSelect_Runner	
 	2964874869	HandinHomework			\Default Work Unit\PlayerInteraction\HandinHomework	
+	2987628722	CharacterSelect_Thrower			\Default Work Unit\UI Sounds\CharacterSelect_Thrower	
 	3512360027	AimRelease			\Default Work Unit\PlayerInteraction\AimSounds\AimRelease	
-	3669241130	CharacterSelect			\Default Work Unit\UI Sounds\CharacterSelect	
 	3790351127	DashCollision			\Default Work Unit\Movement\DashCollision	
+	3991942870	Music			\Default Work Unit\Music\Music	
 	4009253126	VictoryJingle			\Default Work Unit\GeneralGameSounds\VictoryJingle	
 	4254277742	Fumble			\Default Work Unit\Movement\Fumble	
 
@@ -30,6 +31,14 @@ Switch Group	ID	Name			Wwise Object Path	Notes
 Switch	ID	Name	Switch Group			Notes
 	1330394413	Maximum	AimCharge			
 	1673175614	BelowMax	AimCharge			
+
+State Group	ID	Name			Wwise Object Path	Notes
+	3103015060	MusicStates			\Default Work Unit\MusicStates	
+
+State	ID	Name	State Group			Notes
+	748895195	None	MusicStates			
+	984691642	InGame	MusicStates			
+	2607556080	Menu	MusicStates			
 
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	1194647800	AimCharge			\Default Work Unit\AimCharge	
@@ -41,11 +50,11 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	66055709	FumbleSound-010	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-010_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-010		56372
 	71501934	FumbleSound-005	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-005_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-005		64124
 	72414144	FootstepsRedo-013	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-013_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-013		26800
+	87799180	CharacterSelectNew_Dasher	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelectNew_Dasher_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelectNew_Dasher		98616
 	117121440	FootstepsRedo-029	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-029_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-029		20788
 	119407109	FootstepsRedo-030	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-030_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-030		25488
 	144943243	FootstepsRedo-022	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-022_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-022		23516
 	154958069	AimRelease_Redo	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\AimRelease_Redo_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\AimSounds\AimRelease_Redo		147716
-	156119104	CharacterSelect-007	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-007_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect3\CharacterSelect-007		145468
 	162520259	PickupHomework-003	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\PickupHomework\PickupHomework-003_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\PickupHomework\PickupHomework-003		43916
 	168588046	FootstepsRedo-037	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-037_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-037		29092
 	180158941	FootstepsRedo-011	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-011_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-011		28276
@@ -54,17 +63,16 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	199016176	FumbleSound-014	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-014_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-014		64216
 	204978112	FootstepsRedo-033	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-033_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-033		21708
 	209325162	FootstepsRedo-020	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-020_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-020		21516
-	225314442	CharacterSelect-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect\CharacterSelect-002		133720
 	231726091	FumbleSound-009	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-009_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-009		41352
 	237240672	FumbleSound-006	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-006_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-006		23220
 	247004850	FootstepsRedo-043	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-043_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-043		32616
-	263338687	CharacterSelect-008	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-008_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect3\CharacterSelect-008		180116
 	266955091	Countdown 1-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Countdown 1-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\GameGeneralAudio\Countdown\Countdown 1-001		106788
 	268008506	PickupHomework-004	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\PickupHomework\PickupHomework-004_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\PickupHomework\PickupHomework-004		68148
 	268522528	InteractWorldElement	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\InteractWorldElement_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\InteractWorldElement		75228
 	268716061	FootstepsRedo-038	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-038_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-038		27144
 	268719986	FootstepsRedo-041	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-041_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-041		21892
 	270060992	HandinHomework_Redo-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\HandinHomework_Redo-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\HandinHomework\HandinHomework_Redo-002		145736
+	272346968	CharacterSelectNew_Thrower	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelectNew_Thrower_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelectNew_Thrower		94928
 	276913622	Dash	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Dash_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Dash		195996
 	281896687	FumbleSound-012	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-012_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-012		62928
 	291359003	Countdown 3-003	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Countdown 3-003_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\GameGeneralAudio\Countdown\Countdown 3-003		94280
@@ -73,16 +81,17 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	331615741	FootstepsRedo-024	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-024_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-024		32656
 	339248168	AimMax_Redo	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\AimMax_Redo_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\AimSounds\AimCharge\AimMax_Redo		201220
 	339814850	FumbleSound-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-001		86620
+	356482695	Test Music 160BPM-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Test Music\Test Music 160BPM-002_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\Test Music\TestGame\Test Music 160BPM-002\Test Music 160BPM-002		35632676
 	365379716	FootstepsRedo-042	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-042_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-042		21972
 	366188920	FootstepsRedo-018	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-018_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-018		35524
 	366547448	FootstepsRedo-005	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-005_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-005		38452
 	372950712	FumbleSound-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-002		41444
 	384602870	FootstepsRedo-044	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-044_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-044		41520
-	386416456	CharacterSelect-003	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-003_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect4\CharacterSelect-003		92356
 	415484373	AimHold_Redo	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\AimHold_Redo_D79FB2B7.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\AimSounds\AimHold_Redo		53976
 	444800018	PickupHomework-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\PickupHomework\PickupHomework-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\PickupHomework\PickupHomework-001		47852
 	449397302	FootstepsRedo-019	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-019_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-019		35524
 	452864009	FootstepsRedo-015	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-015_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-015		32368
+	462276620	CharacterSelectNew_Normie	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelectNew_Normie_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelectNew_Normie		94876
 	466502181	FumbleSound-007	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-007_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-007		45184
 	487582154	HandinHomework_Redo-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\HandinHomework_Redo-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\HandinHomework\HandinHomework_Redo-001		122392
 	498144658	UIButtonForward-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\UIButtonForward-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\UIButtonForward-002		55556
@@ -94,26 +103,24 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	563773228	FootstepsRedo-040	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-040_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-040		21256
 	603204707	FumbleSound-013	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-013_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-013		85072
 	613579607	FumbleSound-017	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-017_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-017		61576
-	645694249	CharacterSelect-004	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-004_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect4\CharacterSelect-004		165044
 	651079106	FootstepsRedo-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-002		27848
 	664380585	FootstepsRedo-039	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-039_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-039		35524
+	673644251	Test Music 160BPM-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Test Music\Test Music 160BPM-001_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\Test Music\TestMenu\Test Music 160BPM-001\Test Music 160BPM-001		5991868
 	680285764	FumbleSound-003	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-003_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-003		45524
 	702289318	FootstepsRedo-008	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-008_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-008		20784
 	705287605	FootstepsRedo-036	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-036_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-036		32196
-	707104934	CharacterSelect-009	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-009_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect3\CharacterSelect-009		151724
 	710336912	PickupHomework-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\PickupHomework\PickupHomework-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\PickupHomework\PickupHomework-002		61520
 	711844498	FootstepsRedo-025	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-025_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-025		41520
 	713297588	FootstepsRedo-014	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-014_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-014		30380
 	719871041	FootstepsRedo-023	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-023_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-023		21908
-	730066950	CharacterSelect-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect\CharacterSelect-001		110844
 	753060674	DashCollision	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\DashCollision_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\DashCollision		103728
 	753063255	FumbleSound-015	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-015_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-015		51692
 	764575069	UIButtonSelect-001	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\UIButtonSelect-001_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\UIButtonSelect-001		65748
 	778416031	FootstepsRedo-028	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-028_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-028		16504
 	799056927	FootstepsRedo-007	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-007_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-007		36132
 	800286968	Countdown 2-002	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Countdown 2-002_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\GameGeneralAudio\Countdown\Countdown 2-002		83200
+	815368098	CharacterSelectNew_Runner	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelectNew_Runner_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelectNew_Runner		97512
 	874755701	FumbleSound-016	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-016_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-016		68044
-	898339527	CharacterSelect-006	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-006_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect2\CharacterSelect-006		77644
 	926012706	HomeworkFlying_Redo2	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\HomeworkFlying_Redo2_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player Interaction SFX\AimSounds\HomeworkFlying_Redo2		69724
 	950555377	FootstepsRedo-027	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-027_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-027		36328
 	954104453	VictoryJingle	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\VictoryJingle_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\GameGeneralAudio\VictoryJingle		223832
@@ -121,7 +128,6 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	978603119	UIButtonBackward-003	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\UIButtonBackward-003_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\UIButtonBackward-003		82256
 	1010538104	FootstepsRedo-006	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-006_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-006		16596
 	1025064550	FootstepsRedo-031	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-031_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-031		44384
-	1035939997	CharacterSelect-005	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\CharacterSelect-005_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CharacterSelect2\CharacterSelect-005		76280
 	1043426126	DefeatJingle	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\DefeatJingle_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\GameGeneralAudio\DefeatJingle		271652
 	1050178419	FumbleSound-011	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\Fumble Sounds\FumbleSound-011_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Fumble Sounds\FumbleSound-011		41312
 	1056235520	FootstepsRedo-021	C:\Users\willi\UnityProjects\UBI2022-UQAT2\Library\Wwise\UBI2022-UQAT2\.cache\Windows\SFX\New Footsteps\FootstepsRedo-021_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\New Footsteps\FootstepsRedo-021		21972
