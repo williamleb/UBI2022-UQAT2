@@ -14,6 +14,8 @@ using Utilities.Singleton;
         private const string SOUNDS_FOLDER_PATH = "Wwise";
 
         private WwiseObjects wwiseObjects;
+
+        private bool isMusicPlaying;
         
         protected override void Awake()
         {
@@ -86,6 +88,9 @@ using Utilities.Singleton;
         public void PlayThreeSound() => wwiseObjects.ThreeEvent.Post(gameObject);
         public void PlayGoSound() => wwiseObjects.GoEvent.Post(gameObject);
         public void PlayJanitorCaughtAlertSound(AIEntity janitor) => wwiseObjects.JanitorCaughtAlertEvent.Post(janitor.gameObject);
+        public void PlayMenuElementSelectSound() => wwiseObjects.MenuElementSelectEvent.Post(gameObject);
+        public void PlayMenuElementForwardSound() => wwiseObjects.MenuElementForwardEvent.Post(gameObject);
+        public void PlayMenuElementBackwardSound() => wwiseObjects.MenuElementBackwardEvent.Post(gameObject);
 
         public float GetMasterVolume() => wwiseObjects.MasterVolumeParameter.GetGlobalValue() / 100f;
         public float GetMusicVolume() => wwiseObjects.MusicVolumeParameter.GetGlobalValue() / 100f;
@@ -94,6 +99,15 @@ using Utilities.Singleton;
         public void SetMusicVolume(float volume) => wwiseObjects.MusicVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetSoundEffectsVolume(float volume) => wwiseObjects.SoundEffectsVolumeParameter.SetGlobalValue(volume * 100f);
         public void SetAimCharge(PlayerEntity player, float charge) => wwiseObjects.AimChargeParameter.SetValue(player.gameObject, charge * 100f);
+        
+        public void PlayMusic()
+        {
+            if (isMusicPlaying)
+                return;
+
+            wwiseObjects.MusicEvent.Post(gameObject);
+            isMusicPlaying = true;
+        } 
 
 #if UNITY_EDITOR
         private bool showDebugMenu;

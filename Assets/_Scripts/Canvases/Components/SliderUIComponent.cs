@@ -1,10 +1,10 @@
 using System;
 using Sirenix.OdinInspector;
+using Systems.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities.Extensions;
-using Event = AK.Wwise.Event;
 
 namespace Canvases.Components
 {
@@ -20,11 +20,9 @@ namespace Canvases.Components
         [SerializeField] private Image fillImage;
         [SerializeField] private Image frame;
         
-        [Header("Sound")] 
-        [SerializeField] private Event onSelectSound;
-        
         private EventTrigger.Entry selectEventTriggerEntry;
-        
+        private CanvasGroup parentCanvasGroup;
+
         public float Value
         {
             get => slider.value;
@@ -72,6 +70,7 @@ namespace Canvases.Components
         private void Awake()
         {
             AddSelectEventTrigger();
+            parentCanvasGroup = gameObject.GetComponentInParents<CanvasGroup>();
         }
 
         private void AddSelectEventTrigger()
@@ -106,10 +105,10 @@ namespace Canvases.Components
         
         private void OnSliderSelected(BaseEventData data)
         {
-            if (!slider.interactable)
+            if (!slider.interactable || parentCanvasGroup != null && !parentCanvasGroup.interactable)
                 return;
             
-            onSelectSound?.Post(gameObject);
+            SoundSystem.Instance.PlayMenuElementSelectSound();
             OnSelected?.Invoke();
         }
 
