@@ -194,8 +194,7 @@ namespace Units.Player
 
                 if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
             }
-
-            AnimationUpdate();
+            
             RagdollUpdate();
         }
 

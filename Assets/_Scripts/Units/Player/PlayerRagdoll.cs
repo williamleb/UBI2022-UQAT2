@@ -58,7 +58,6 @@ namespace Units.Player
             isRagdoll = isActivate;
 
             networkAnimator.Animator.enabled = false;
-            AnimationUpdate();
 
             if (!isActivate)
             {
