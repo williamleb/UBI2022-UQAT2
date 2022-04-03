@@ -6,6 +6,7 @@ using Fusion;
 using JetBrains.Annotations;
 using Managers.Game;
 using Sirenix.Utilities;
+using Systems;
 using Systems.Level;
 using Systems.Network;
 using Systems.Settings;
@@ -253,7 +254,7 @@ namespace Ingredients.Homework
             {
                 for (var i = 0; i < Math.Min(settings.MaxNumberOfHomeworksInPlay, homeworkDefinition.MaxAmountAtTheSameTime); ++i)
                 {
-                    NetworkSystem.Instance.Spawn(homeworkDefinition.Prefab, Vector3.down * 1000f, Quaternion.identity, null, (runner, o) =>  ManageHomeworkBeforeSpawned(runner, o, homeworkDefinition.Type));
+                    NetworkSystem.Instance.Spawn(homeworkDefinition.Prefab, Vector3.down * 1000f, Quaternion.identity, null, (runner, o) => ManageHomeworkBeforeSpawned(o, homeworkDefinition.Type));
                 }
             }
         }
@@ -285,7 +286,7 @@ namespace Ingredients.Homework
 
         private bool DoesNotHaveMaximumAmountOfHomeworksActivated()
         {
-            return homeworks.Values.Count(homework => !homework.IsFree) < settings.MaxNumberOfHomeworksInPlay;
+            return homeworks.Values.Count(homework => !homework.IsFree) < Mathf.CeilToInt(PlayerSystem.Instance.NumberOfPlayers / 2f);
         }
 
         private bool IsEveryHomeworkFree()
@@ -311,7 +312,7 @@ namespace Ingredients.Homework
             return validSpawnPoints.Any() ? validSpawnPoints.WeightedRandomElement() : null;
         }
 
-        private void ManageHomeworkBeforeSpawned(NetworkRunner runner, NetworkObject homeworkObject, string type)
+        private void ManageHomeworkBeforeSpawned(NetworkObject homeworkObject, string type)
         {
             var homework = homeworkObject.GetComponent<Homework>();
             Debug.Assert(homework);
