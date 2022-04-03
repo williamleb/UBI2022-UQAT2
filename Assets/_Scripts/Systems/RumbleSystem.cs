@@ -50,6 +50,15 @@ namespace Systems
             UpdateRumble();
         }
 
+        public void SetRumbleIfUsingController(RumbleKey key, float lowFrequency, float highFrequency,
+            bool isUsingController)
+        {
+            if (isUsingController)
+                SetRumble(key,lowFrequency,highFrequency);
+            else
+                StopRumble(key);
+        }
+
         public void StopRumble(RumbleKey key)
         {
             if (key == null)
@@ -106,7 +115,7 @@ namespace Systems
             }
         }
     }
-    
+
     public class RumbleKey
     {
         public bool CanInfluenceRumble { get; private set; }
