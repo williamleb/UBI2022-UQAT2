@@ -34,9 +34,11 @@ namespace Units.Player
         private PlayerInteracter interacter;
         private Inventory inventory;
         private PlayerCustomization customization;
+        private PlayerInputHandler playerInputHandler;
 
         private TickTimer immunityTimer;
         private NetworkBool isImmune;
+        private string currentDeviceName;
 
         public int PlayerId { get; private set; }
         [Networked] private NetworkInputData Inputs { get; set; }
@@ -56,6 +58,8 @@ namespace Units.Player
         private bool IsGameFinished =>
             GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
 
+        private bool IsUsingGamePad => currentDeviceName == "Gamepad";
+
         private void Awake()
         {
             //TODO Hide player model while loading everything
@@ -67,6 +71,7 @@ namespace Units.Player
             interacter = GetComponent<PlayerInteracter>();
             inventory = GetComponent<Inventory>();
             customization = GetComponent<PlayerCustomization>();
+            playerInputHandler = GetComponent<PlayerInputHandler>();
 
             inventory.AssignVelocityObject(this);
 
@@ -112,6 +117,8 @@ namespace Units.Player
         {
             base.Spawned();
             OnAwake();
+            InitDash();
+            InitCollision();
             InitThrow();
             InitCamera();
             InitSound();
@@ -125,14 +132,14 @@ namespace Units.Player
 
             await Task.Delay(100);
             OnPlayerSpawned?.Invoke(Object);
-
+            
             PlayerSystem.Instance.AddPlayer(this);
 
             if (NetworkSystem.Instance.IsHost)
             {
                 TeamSystem.Instance.AssignTeam(this);
             }
-
+            playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
             NetworkSystem.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
             NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
         }
@@ -385,11 +392,13 @@ namespace Units.Player
     private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateArchetype();
 
     private static void OnNetworkTeamIdChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateTeam();
+    private void OnInputDeviceChanged(string newDeviceName) => currentDeviceName = newDeviceName;
 
     private void OnDestroy()
     {
         AnimOnDestroy();
         ReadyOnDestroy();
+        playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
         NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
         NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
     }
