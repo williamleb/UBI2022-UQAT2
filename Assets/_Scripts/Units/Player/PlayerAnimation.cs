@@ -56,7 +56,7 @@ namespace Units.Player
 
         private void AnimationUpdate()
         {
-            if (!isImmune && !networkAnimator.Animator.enabled)
+            if (!isRagdoll && !isImmune && !networkAnimator.Animator.enabled)
                 networkAnimator.Animator.enabled = true;
         }
 

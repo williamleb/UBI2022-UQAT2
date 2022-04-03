@@ -13,6 +13,7 @@ using UnityEngine.AI;
 using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
+using BodyPart = Units.Player.BodyPart;
 
 namespace Units.AI
 {
@@ -44,10 +45,8 @@ namespace Units.AI
         [SerializeField] private ParticleSystem alertParticleEffect;
         [SerializeField] private Transform ragdollTransform;
 
-        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders =
-            new List<(Collider, Vector3, Quaternion)>();
-
-        private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
+        private readonly List<BodyPart> ragdollColliders = new List<BodyPart>();
+       
         private bool isRagdoll;
 
         private AkGameObj audioObject;
@@ -183,6 +182,8 @@ namespace Units.AI
             if (!Animator)
                 return;
 
+            if (IsJanitor || IsTeacher) return;
+            
             Animator.SetBool(IsHoldingHomeworkParam, Inventory.HasHomework);
         }
 
@@ -242,12 +243,15 @@ namespace Units.AI
                 if (col.transform.gameObject != transform.gameObject)
                 {
                     Transform colTransform = col.transform;
-                    ragdollColliders.Add((col, colTransform.localPosition, colTransform.localRotation));
+                    BodyPart bp = new BodyPart
+                    {
+                        Collider = col,
+                        Position = colTransform.localPosition,
+                        Rotation = colTransform.localRotation
+                    };
+                    ragdollColliders.Add(bp);
                     col.isTrigger = true;
-
-                    var rigidBody = col.gameObject.GetComponent<Rigidbody>();
-                    rigidBody.isKinematic = true;
-                    ragdollRigidbody.Add(rigidBody);
+                    col.attachedRigidbody.isKinematic = true;
                 }
             }
         }
@@ -261,23 +265,20 @@ namespace Units.AI
 
             isRagdoll = isActivate;
 
-            agent.enabled = !isActivate;
+            if (Object.HasStateAuthority)
+                agent.enabled = !isActivate;
             Animator.enabled = false;
 
             if (aiCollider)
                 aiCollider.enabled = !isActivate;
 
-            foreach ((Collider col, Vector3 _, Quaternion _) in ragdollColliders)
+            foreach (BodyPart bp in ragdollColliders)
             {
-                col.isTrigger = !isActivate;
-            }
-
-            foreach (Rigidbody rb in ragdollRigidbody)
-            {
-                rb.isKinematic = !isActivate;
+                bp.Collider.isTrigger = !isActivate;
+                bp.Rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
-                    rb.AddForce(
+                    bp.Rb.AddForce(
                         forceDirection.normalized * (forceMagnitude == 0 ? Velocity.magnitude : forceMagnitude),
                         ForceMode.Impulse);
             }
@@ -316,21 +317,20 @@ namespace Units.AI
                     networkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
                 StartCoroutine(AfterGetUp(isGettingUpBackDown));
             }
-
-            hitCoroutine = null;
         }
 
         private IEnumerator AfterGetUp(bool isGettingUpBackDown)
         {
-            yield return Helpers.GetWait(isGettingUpBackDown ? 0.7f : 0.633f);
-            foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
+            yield return Helpers.GetWait(isGettingUpBackDown ? 0.6f : 0.533f);
+            foreach (BodyPart bp in ragdollColliders)
             {
-                Transform elementTransform = col.transform;
-                elementTransform.localPosition = localPos;
-                elementTransform.localRotation = localRot;
+                Transform elementTransform = bp.Collider.transform;
+                elementTransform.localPosition = bp.Position;
+                elementTransform.localRotation = bp.Rotation;
             }
 
             IsImmune = false;
+            hitCoroutine = null;
         }
 
         private void StopHitRoutine()

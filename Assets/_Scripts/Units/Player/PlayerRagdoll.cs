@@ -15,10 +15,10 @@ namespace Units.Player
         [Header("Ragdoll")] [SerializeField]
         private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
 
-        [Networked(OnChanged = nameof(OnGetUpChangedCallback))]
+        [Networked(OnChanged = nameof(OnGetUpFChangedCallback))]
         private bool GetUpF { get; set; }
 
-        [Networked(OnChanged = nameof(OnGetUpChangedCallback))]
+        [Networked(OnChanged = nameof(OnGetUpBChangedCallback))]
         private bool GetUpB { get; set; }
         private bool IsFacingUp => Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
         
@@ -97,12 +97,19 @@ namespace Units.Player
             }
         }
         
-        private static void OnGetUpChangedCallback(Changed<PlayerEntity> changed)
+        private static void OnGetUpFChangedCallback(Changed<PlayerEntity> changed)
         {
             changed.Behaviour.networkAnimator.Animator.enabled = true;
             changed.Behaviour.AnimationSetBool(GetUpFAnim, changed.Behaviour.GetUpF);
+            if (changed.Behaviour.GetUpF)
+                changed.Behaviour.StartCoroutine(changed.Behaviour.AfterGetUp(changed.Behaviour.GetUpF));
+        }
+        private static void OnGetUpBChangedCallback(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.networkAnimator.Animator.enabled = true;
             changed.Behaviour.AnimationSetBool(GetUpBAnim, changed.Behaviour.GetUpB);
-            changed.Behaviour.StartCoroutine(changed.Behaviour.AfterGetUp(changed.Behaviour.GetUpF));
+            if (changed.Behaviour.GetUpB)
+                changed.Behaviour.StartCoroutine(changed.Behaviour.AfterGetUp(changed.Behaviour.GetUpF));
         }
     }
 }

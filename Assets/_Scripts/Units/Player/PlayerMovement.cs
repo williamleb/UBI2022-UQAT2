@@ -130,7 +130,7 @@ namespace Units.Player
 
         private IEnumerator AfterGetUp(bool isGettingUpBackDown)
         {
-            yield return Helpers.GetWait(isGettingUpBackDown ? 0.7f : 0.633f);
+            yield return Helpers.GetWait(isGettingUpBackDown ? 0.6f : 0.533f);
             CanMove = true;
             immunityTimer = TickTimer.CreateFromSeconds(Runner, data.ImmunityTime);
             ResetGetUp();

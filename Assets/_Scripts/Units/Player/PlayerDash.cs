@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
-using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -138,15 +136,18 @@ namespace Units.Player
             IsDashing = false;
         }
 
-        private bool PlayingPushAnim => networkAnimator.Animator.GetCurrentAnimatorClipInfo(1)[0].clip.name == "playerPush";
+        private TickTimer pushAnimTimer;
 
         private void OnHitOtherEntity(GameObject otherEntity)
         {
             print("Hit other entity");
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
-            if (!PlayingPushAnim)
+            if (pushAnimTimer.ExpiredOrNotRunning(Runner))
+            {
                 AnimationSetTrigger(Pushing);
+                pushAnimTimer = TickTimer.CreateFromSeconds(Runner,0.533f);
+            }
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
             if (Archetype != Archetype.Dasher)
             {
