@@ -150,8 +150,6 @@ namespace Managers.Game
             
             TransitionScreenSystem.Instance.Hide();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
-            
-            // TODO Enable player inputs
         }
         
         public void StartGame()
@@ -202,8 +200,6 @@ namespace Managers.Game
 
         private IEnumerator CleanUpAndReturnToLobbyRoutine()
         {
-            // TODO Disable player inputs
-            
             TransitionScreenSystem.Instance.Show();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             

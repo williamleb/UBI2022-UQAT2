@@ -180,8 +180,6 @@ namespace Managers.Lobby
 
             isStarting = true;
 
-            // TODO Disable player inputs
-            
             TransitionScreenSystem.Instance.Show();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             
@@ -209,8 +207,6 @@ namespace Managers.Lobby
             
             TransitionScreenSystem.Instance.Hide();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
-            
-            // TODO Enable player inputs
         }
     }
 }
