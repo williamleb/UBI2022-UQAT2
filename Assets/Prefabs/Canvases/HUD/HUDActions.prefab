@@ -277,7 +277,6 @@ GameObject:
   - component: {fileID: 2863460069288848115}
   - component: {fileID: 2863460069288848079}
   - component: {fileID: 2863460069288848072}
-  - component: {fileID: 2863460069288848012}
   m_Layer: 5
   m_Name: DancePrompt
   m_TagString: Untagged
@@ -380,20 +379,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &2863460069288848012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2863460069288848113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 246c8383e8f61d548ab18ad9954a6f06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  danceText: {fileID: 3316532878878849125}
-  danceButton: {fileID: 2863460069288848077}
 --- !u!1 &2863460069509088293
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,7 +625,6 @@ GameObject:
   - component: {fileID: 2863460070480948220}
   - component: {fileID: 2863460070480948160}
   - component: {fileID: 2863460070480948167}
-  - component: {fileID: 2863460070480948223}
   m_Layer: 5
   m_Name: ThrowPrompt
   m_TagString: Untagged
@@ -743,20 +727,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &2863460070480948223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2863460070480948222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc991112bddce77428aa25983a3641d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  throwText: {fileID: 3316532878338377491}
-  throwButton: {fileID: 2863460070480948162}
 --- !u!1 &3117696696949204495
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,7 +956,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3316532877797866479}
   - component: {fileID: 3316532877797866480}
-  - component: {fileID: 3316532877797866481}
   m_Layer: 5
   m_Name: DashChargeIndicator
   m_TagString: Untagged
@@ -1040,21 +1009,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3316532877797866481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3316532877797866478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34e22abc455608743a3bce8d0262ba74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dashChargeMarker: {fileID: 3117696696949204496}
-  dashText: {fileID: 3316532877766487755}
-  dashButton: {fileID: 2863460069509088281}
 --- !u!1 &3316532878338377489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1469,6 +1423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3316532879254627662}
   - component: {fileID: 2987278251319382626}
+  - component: {fileID: 8624912665087966802}
   m_Layer: 0
   m_Name: HUDActions
   m_TagString: Untagged
@@ -1531,6 +1486,27 @@ MonoBehaviour:
   m_Spacing: {x: -20, y: -5}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &8624912665087966802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3316532879254627661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040a1b217c0cdf14c8f1a1426c459231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashChargeMarker: {fileID: 3117696696949204496}
+  dashText: {fileID: 3316532877766487755}
+  dashPrompt: {fileID: 2863460069509088281}
+  throwText: {fileID: 3316532878338377491}
+  throwPrompt: {fileID: 2863460070480948162}
+  sprintText: {fileID: 3316532878361441855}
+  sprintPrompt: {fileID: 2863460069811704792}
+  danceText: {fileID: 3316532878878849125}
+  dancePrompt: {fileID: 2863460069288848077}
 --- !u!1 &4643937401947824397
 GameObject:
   m_ObjectHideFlags: 0

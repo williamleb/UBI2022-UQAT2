@@ -110,6 +110,12 @@ namespace Systems.Teams
                 return;
 
             ScoreValue += scoreToAdd;
+            RPC_IncrementScore(scoreToAdd);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_IncrementScore(int scoreToAdd)
+        {
             OnScoreIncrement?.Invoke(scoreToAdd);
         }
 
@@ -119,6 +125,12 @@ namespace Systems.Teams
                 return;
 
             ScoreValue = Math.Max(0, ScoreValue - scoreToRemove);
+            RPC_DecrementScore(scoreToRemove);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_DecrementScore(int scoreToRemove)
+        {
             OnScoreDecrement?.Invoke(-scoreToRemove);
         }
 
