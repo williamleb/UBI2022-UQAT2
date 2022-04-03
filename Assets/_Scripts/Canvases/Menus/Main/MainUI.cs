@@ -55,6 +55,7 @@ namespace Canvases.Menu.Main
         {
             if (MenuManager.HasInstance)
             {
+                Unfocus();
                 MenuManager.Instance.ShowMenu(MenuManager.Menu.Options);
             }
         }
