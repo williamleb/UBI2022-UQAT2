@@ -128,10 +128,7 @@ public class HUDActions : MonoBehaviour
     void DashActionUpdate()
     {
         if (dashChargeMarker == null)
-        {
-            Debug.LogWarning("Missing HUD Dash action components. NOT updating Dash action HUD...");
             return;
-        }
 
         if (localPlayerEntity == null || localPlayerEntity.CanDash)
             return;
@@ -142,10 +139,7 @@ public class HUDActions : MonoBehaviour
     void ThrowActionUpdate()
     {
         if (throwText == null || throwPrompt == null)
-        {
-            Debug.LogWarning("Missing HUD Throw action components. NOT updating Throw action HUD...");
             return;
-        }
 
         if (localPlayerEntity == null)
             return;
@@ -170,10 +164,7 @@ public class HUDActions : MonoBehaviour
     void DanceActionUpdate()
     {
         if (localPlayerEntity == null || danceText == null || dancePrompt == null)
-        {
-            Debug.LogWarning("Missing HUD Dance action components. NOT updating Dance action HUD...");
             return;
-        }   
 
         if (localPlayerEntity.CurrentSpeed > 0)
         {
