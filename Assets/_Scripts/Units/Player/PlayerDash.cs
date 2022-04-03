@@ -12,7 +12,7 @@ namespace Units.Player
         public event Action<bool> OnDashAvailableChanged;
 
         public bool HasHitSomeoneThisFrame { get; private set; }
-        public bool CanDash = true;
+        [Networked] public bool CanDash { get; set; } = true;
         public float RemainingTimeDashCoolDown => dashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (dashCooldown.RemainingTime(Runner) ?? default(float));
 
         [Header("Dash")]
@@ -49,13 +49,19 @@ namespace Units.Player
         }
 
         private void HandleDashInput()
-        {
+        {   
             if (Inputs.IsDash && CanDash && !InMenu && !InCustomization) Dash();
         }
 
         private void Dash()
         {
-            if (!CanMove || inventory.HasHomework || IsDashing) return;
+            if (!CanMove || inventory.HasHomework || IsDashing)
+            {
+                CanDash = false;
+                OnDashAvailableChanged?.Invoke(false);
+                return;
+            }
+            
             CanDash = false;
             OnDashAvailableChanged?.Invoke(false);
             IsDashing = true;

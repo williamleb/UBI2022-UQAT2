@@ -10,7 +10,7 @@ namespace Units.Player
 {
     public partial class PlayerEntity : IVelocityObject
     {
-        [Header("Movement")] 
+        [Header("Movement")]
         [SerializeField] private DustTrailController dustTrailController;
         [SerializeField] private Transform cameraPoint;
         private NetworkRigidbody nRb;
@@ -20,7 +20,7 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public float WalkMaxSpeed => data.MoveMaximumSpeed;
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
-        public bool CanSprint = true;
+        [Networked] public NetworkBool CanSprint {get; set;} = true;
 
         [Networked (OnChanged = nameof(OnCurrentSpeedChanged)), Accuracy(0.5f)] public float CurrentSpeed { get; private set; }
         private static void OnCurrentSpeedChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateMoveAnim();
