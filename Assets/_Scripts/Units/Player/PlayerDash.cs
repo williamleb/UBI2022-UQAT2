@@ -12,7 +12,7 @@ namespace Units.Player
         public event Action<bool> OnDashAvailableChanged;
 
         public bool HasHitSomeoneThisFrame { get; private set; }
-        public bool CanDash = true;
+        [Networked] public bool CanDash { get; set; } = true;
         public float RemainingTimeDashCoolDown => dashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (dashCooldown.RemainingTime(Runner) ?? default(float));
 
         [Header("Dash")]
@@ -20,7 +20,7 @@ namespace Units.Player
 
         [SerializeField] private bool ragdollOnDashMiss;
 
-        [Networked (OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
+        [Networked(OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
 
         private static void OnIsDashingChanged(Changed<PlayerEntity> changed)
         {
@@ -39,25 +39,50 @@ namespace Units.Player
             HandleDashInput();
             if (IsDashing) DetectCollision();
             if (dashTimer.Expired(Runner)) OnHitNothing();
-            if (dashCooldown.Expired(Runner)) ResetDashCoolDown();
-        }
-
-        private void ResetDashCoolDown()
-        {
-            OnDashAvailableChanged?.Invoke(true);
-            CanDash = true;
         }
 
         private void HandleDashInput()
         {
-            if (Inputs.IsDash && CanDash && !InMenu && !InCustomization) Dash();
+            if (UpdateCanDash() && Inputs.IsDash ) Dash();
+        }
+
+        private bool UpdateCanDash()
+        {
+            if (IsDashing || InCustomization || InMenu || !CanMove || inventory.HasHomework)
+            {
+                if (CanDash)
+                {
+                    OnDashAvailableChanged?.Invoke(false);
+                }
+
+                CanDash = false;
+                return false;
+            }else{
+                if (dashCooldown.ExpiredOrNotRunning(Runner))
+                {
+                    if (!CanDash)
+                    {
+                        OnDashAvailableChanged?.Invoke(true);
+                    }
+
+                    CanDash = true;
+                    return true;
+                }
+                else
+                {
+                    if (CanDash)
+                    {
+                        OnDashAvailableChanged?.Invoke(false);
+                    }
+
+                    CanDash = false;
+                    return false;
+                }
+            }
         }
 
         private void Dash()
         {
-            if (!CanMove || inventory.HasHomework || IsDashing) return;
-            CanDash = false;
-            OnDashAvailableChanged?.Invoke(false);
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);

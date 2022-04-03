@@ -13,7 +13,7 @@ namespace Units.Player
         [SerializeField] private ThrowChargeMarkerReceptor throwMarker;
 
         private RumbleKey throwRumbleKey;
-        public bool CanThrow;
+        [Networked] public NetworkBool CanThrow { get; set; } = false;
 
         [Networked(OnChanged = nameof(OnAimChangedCallback))]
         private NetworkBool IsAiming { get; set; } = false;

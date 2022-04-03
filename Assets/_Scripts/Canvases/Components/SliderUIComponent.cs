@@ -19,14 +19,41 @@ namespace Canvases.Components
         [SerializeField] private Image backgroundImage;
         [SerializeField] private Image fillImage;
         [SerializeField] private Image frame;
-        
+
+        [Header("Animation")]
+        [SerializeField] private bool isChangeValueAnimated = false;
+        [SerializeField] [Range(0f, 1f)] private float animationSpeed = 0.05f;
+
         private EventTrigger.Entry selectEventTriggerEntry;
         private CanvasGroup parentCanvasGroup;
+ 
+        private float targetValue;
+        private float currentValue;
+
+        private bool isLastValueChangeNegative;
+        private Color initalColor = Color.black;
+        public Color ValueIncreaseColor = Color.green;
+        public Color ValueDecreaseColor = Color.red;
 
         public float Value
         {
-            get => slider.value;
-            set => slider.value = value;
+            get => currentValue;
+            set {
+                if (isChangeValueAnimated)
+                {
+                    targetValue = value;
+
+                    if (targetValue < currentValue)
+                        isLastValueChangeNegative = true;
+                    else
+                        isLastValueChangeNegative = false;
+                }
+                else
+                {
+                    currentValue = value;
+                    slider.value = value;
+                }            
+            }
         }
 
         public float MaxValue
@@ -52,7 +79,8 @@ namespace Canvases.Components
             {
                 if (fillImage != null)
                 {
-                    fillImage.color = value;
+                    initalColor = value;
+                    fillImage.color = initalColor;
                 }
             }
         }
@@ -88,6 +116,43 @@ namespace Canvases.Components
         {
             Debug.Assert(slider, $"A {nameof(slider)} must be assigned to a {nameof(SliderUIComponent)}");
             slider.onValueChanged.AddListener(OnSliderChanged);
+        }
+
+        private void Update()
+        {
+            if (isChangeValueAnimated)
+            {
+                if (!isLastValueChangeNegative)
+                {
+                    if (currentValue < targetValue)
+                    {
+                        currentValue += animationSpeed * Time.deltaTime;
+                        slider.value = currentValue;
+                        fillImage.color = ValueIncreaseColor;
+                    }
+                    else
+                    {
+                        currentValue = targetValue;
+                        slider.value = currentValue;
+                        fillImage.color = initalColor;
+                    }
+                }
+                else {
+
+                    if (currentValue > targetValue)
+                    {
+                        currentValue -= animationSpeed * Time.deltaTime;
+                        slider.value = currentValue;
+                        fillImage.color = ValueDecreaseColor;
+                    }
+                    else
+                    {
+                        currentValue = targetValue;
+                        slider.value = currentValue;
+                        fillImage.color = initalColor;
+                    }
+                }
+            }
         }
 
         private void OnDestroy()
