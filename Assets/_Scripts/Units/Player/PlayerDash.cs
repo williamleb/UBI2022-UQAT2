@@ -55,7 +55,7 @@ namespace Units.Player
 
         private bool UpdateCanDash()
         {
-            if (InCustomization || InMenu || !CanMove || inventory.HasHomework || IsDashing)
+            if (InCustomization || InMenu || !CanMove || inventory.HasHomework)
             {
                 if (CanDash)
                 {
@@ -77,7 +77,8 @@ namespace Units.Player
         }
 
         private void Dash()
-        {            
+        {
+            if (IsDashing) return;
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
