@@ -51,6 +51,7 @@ namespace Canvases.Components
                 else
                 {
                     currentValue = value;
+                    slider.value = value;
                 }            
             }
         }
