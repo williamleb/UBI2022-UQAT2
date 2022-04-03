@@ -8,7 +8,7 @@ namespace Units.Player
     public partial class PlayerEntity
     {
         [Header("Animation")] [SerializeField] private NetworkMecanimAnimator networkAnimator;
-        
+
         private static readonly int PlayerVelocity = Animator.StringToHash("playerVelocity");
         private static readonly int PlayerRunSpeed = Animator.StringToHash("playerRunSpeed");
         private static readonly int IsHolding = Animator.StringToHash("isHolding");
@@ -32,26 +32,38 @@ namespace Units.Player
 
         [Networked(OnChanged = nameof(OnDancingChangedCallback))]
         private bool IsDancing { get; set; }
-        private static void OnDancingChangedCallback(Changed<PlayerEntity> changed) => changed.Behaviour.AnimationSetTrigger(Dancing, changed.Behaviour.IsDancing);
-        
+
+        private static void OnDancingChangedCallback(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.AnimationSetTrigger(Dancing, changed.Behaviour.IsDancing);
+
         [Networked(OnChanged = nameof(OnGivingChangedCallback))]
         private bool IsGiving { get; set; }
-        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed) => changed.Behaviour.AnimationSetTrigger(Giving, changed.Behaviour.IsGiving);
-        
+
+        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.AnimationSetTrigger(Giving, changed.Behaviour.IsGiving);
+
         [Networked(OnChanged = nameof(OnGrabbingChangedCallback))]
         private bool IsGrabbing { get; set; }
-        private static void OnGrabbingChangedCallback(Changed<PlayerEntity> changed) => changed.Behaviour.AnimationSetTrigger(Grabbing, changed.Behaviour.IsGrabbing);
-        
+
+        private static void OnGrabbingChangedCallback(Changed<PlayerEntity> changed) =>
+            changed.Behaviour.AnimationSetTrigger(Grabbing, changed.Behaviour.IsGrabbing);
+
         private void UpdateMoveAnim()
         {
             networkAnimator.Animator.SetFloat(PlayerVelocity, CurrentSpeed);
             networkAnimator.Animator.SetFloat(PlayerRunSpeed, SpeedOnMaxSpeed);
         }
 
+        private void AnimationUpdate()
+        {
+            if (!isImmune && !networkAnimator.Animator.enabled)
+                networkAnimator.Animator.enabled = true;
+        }
+
         private void AnimationSetTrigger(int triggerHash, bool val = true)
         {
             if (!val) return;
-            
+
             if (Object.HasStateAuthority)
                 networkAnimator.SetTrigger(triggerHash);
             else if (Object.HasInputAuthority)
@@ -71,6 +83,7 @@ namespace Units.Player
             yield return Helpers.GetWait(0.1f);
             IsGiving = false;
         }
+
         public void SetGrabbing()
         {
             StartCoroutine(ResetGrabbing());
@@ -82,7 +95,5 @@ namespace Units.Player
             yield return Helpers.GetWait(0.1f);
             IsGrabbing = false;
         }
-        
-        
     }
 }

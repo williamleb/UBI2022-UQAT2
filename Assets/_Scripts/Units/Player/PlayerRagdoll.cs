@@ -63,6 +63,7 @@ namespace Units.Player
             {
                 GetUpB = IsFacingUp;
                 GetUpF = !GetUpB;
+                
                 Vector3 euler = transform.eulerAngles;
                 euler.y = ragdollTransform.eulerAngles.y;
                 transform.eulerAngles = euler;
@@ -82,6 +83,7 @@ namespace Units.Player
                 PlayFumbleSoundLocally();
         }
         
+        
         private void ResetGetUp()
         {
             GetUpF = false;
@@ -100,6 +102,7 @@ namespace Units.Player
             changed.Behaviour.networkAnimator.Animator.enabled = true;
             changed.Behaviour.AnimationSetBool(GetUpFAnim, changed.Behaviour.GetUpF);
             changed.Behaviour.AnimationSetBool(GetUpBAnim, changed.Behaviour.GetUpB);
+            changed.Behaviour.StartCoroutine(changed.Behaviour.AfterGetUp(changed.Behaviour.GetUpF));
         }
     }
 }

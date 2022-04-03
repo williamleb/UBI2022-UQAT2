@@ -16,6 +16,8 @@ namespace Units.Player
         
         private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
+            if (isImmune) return;
+
             ResetPlayerState();
             if (hitCoroutine != null)
             {

@@ -26,8 +26,6 @@ namespace Units.Player
 
         [UsedImplicitly]
         private void AnimationEvent_Throw(AnimationEvent animationEvent) => playerEntity.ThrowOnAnimEvent();
-
-        [UsedImplicitly]
-        private void AnimationEvent_GetUp(AnimationEvent animationEvent) => playerEntity.IsUpAnimEvent();
+        
     }
 }

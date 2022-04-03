@@ -7,6 +7,7 @@ using Managers.Hallway;
 using Systems.Settings;
 using Systems.Sound;
 using Units.AI.Senses;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using Utilities;
@@ -157,6 +158,9 @@ namespace Units.AI
                 ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
             }
 
+            if (!IsImmune && !networkAnimator.Animator.enabled)
+                networkAnimator.Animator.enabled = true;
+
             UpdateWalkingAnimation();
         }
 
@@ -178,7 +182,7 @@ namespace Units.AI
 
             if (!Animator)
                 return;
-            
+
             Animator.SetBool(IsHoldingHomeworkParam, Inventory.HasHomework);
         }
 
@@ -285,6 +289,8 @@ namespace Units.AI
             if (IsTeacher)
                 return;
 
+            if (IsImmune) return;
+
             if (hitCoroutine != null)
             {
                 StopHitRoutine();
@@ -301,19 +307,22 @@ namespace Units.AI
             yield return Helpers.GetWait(secondsToWait);
 
             RPC_ToggleRagdoll(false);
-            
+
             Animator.enabled = true;
             if (ragdollTransform)
             {
                 var isGettingUpBackDown = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
-                if (networkAnimator) networkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
+                if (networkAnimator)
+                    networkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
+                StartCoroutine(AfterGetUp(isGettingUpBackDown));
             }
 
             hitCoroutine = null;
         }
-        
-        public void IsUpAnimEvent()
+
+        private IEnumerator AfterGetUp(bool isGettingUpBackDown)
         {
+            yield return Helpers.GetWait(isGettingUpBackDown ? 0.7f : 0.633f);
             foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
             {
                 Transform elementTransform = col.transform;
@@ -385,7 +394,7 @@ namespace Units.AI
         private void OnValidate()
         {
             if (!Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += AssignTagAndLayer;
+                EditorApplication.delayCall += AssignTagAndLayer;
         }
 
         private void AssignTagAndLayer()

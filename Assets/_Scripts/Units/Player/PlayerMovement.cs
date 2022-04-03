@@ -1,6 +1,8 @@
+using System.Collections;
 using Fusion;
 using Interfaces;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using VFX;
 
@@ -126,8 +128,9 @@ namespace Units.Player
                 : Vector3.RotateTowards(transform.forward, lastMoveDirection, turnRate, 0);
         }
 
-        public void IsUpAnimEvent()
+        private IEnumerator AfterGetUp(bool isGettingUpBackDown)
         {
+            yield return Helpers.GetWait(isGettingUpBackDown ? 0.7f : 0.633f);
             CanMove = true;
             immunityTimer = TickTimer.CreateFromSeconds(Runner, data.ImmunityTime);
             ResetGetUp();
