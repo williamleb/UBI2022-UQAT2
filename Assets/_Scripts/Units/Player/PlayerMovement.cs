@@ -27,6 +27,9 @@ namespace Units.Player
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
         private Vector3 lastMoveDirection = Vector3.zero;
+        
+        private TickTimer isOnWallTimer;
+        private bool IsOnWall => !isOnWallTimer.ExpiredOrNotRunning(Runner);
         private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
         private bool IsMovingFast => CurrentSpeed >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
         private bool CanRotate => IsDashing || isRagdoll || lastMoveDirection == Vector3.zero;
@@ -79,7 +82,7 @@ namespace Units.Player
             {
                 if (!IsAiming)
                 {
-                    bool canSprint = isSprinting && !inventory.HasHomework && CurrentSpeed >= data.MoveMaximumSpeed;
+                    bool canSprint = isSprinting && !inventory.HasHomework && CurrentSpeed >= data.MoveMaximumSpeed && !IsOnWall;
                     float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                     float sprintAcceleration =
                         (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
