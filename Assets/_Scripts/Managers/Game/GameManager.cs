@@ -2,6 +2,7 @@ using Managers.Score;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Canvases.TransitionScreen;
 using Systems;
 using Systems.Level;
 using Systems.MapGeneration;
@@ -9,6 +10,7 @@ using Systems.Network;
 using Systems.Settings;
 using Systems.Teams;
 using UnityEngine;
+using Utilities;
 using Utilities.Singleton;
 
 namespace Managers.Game
@@ -18,6 +20,8 @@ namespace Managers.Game
     [RequireComponent(typeof(NetworkedGameData))]
     public class GameManager : Singleton<GameManager>
     {
+        private const float BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME = 1f;
+        
         public event Action OnBeginSpawn; // Only called on host
         public event Action OnEndSpawn; // Only called on host
         public event Action OnReset; // Only called on host
@@ -87,6 +91,7 @@ namespace Managers.Game
                 spawnAndStartGameCoroutine = null;
             }
             
+            StopAllCoroutines();
             base.OnDestroy();
         }
 
@@ -138,6 +143,13 @@ namespace Managers.Game
             
             StartGame();
             PlayerSystem.Instance.SetPlayersPositionToSpawn();
+
+            yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME);
+            
+            TransitionScreenSystem.Instance.Hide();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
+            
+            // TODO Enable player inputs
         }
         
         public void StartGame()
@@ -179,11 +191,22 @@ namespace Managers.Game
 
         public void CleanUpAndReturnToLobby()
         {
+            StartCoroutine(CleanUpAndReturnToLobbyRoutine());
+        }
+
+        private IEnumerator CleanUpAndReturnToLobbyRoutine()
+        {
+            // TODO Disable player inputs
+            
+            TransitionScreenSystem.Instance.Show();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
+            
             OnBeginDespawn?.Invoke();
             
             if (MapGenerationSystem.HasInstance)
                 MapGenerationSystem.Instance.CleanUpMap();
             
+            // The lobby (ReadyUpManager) will manage hiding the transition screen and enabling the player inputs
             LevelSystem.Instance.LoadLobby();
         }
 

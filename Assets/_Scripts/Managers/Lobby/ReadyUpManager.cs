@@ -1,5 +1,6 @@
 using System.Collections;
 using Canvases.Components;
+using Canvases.TransitionScreen;
 using Systems;
 using Systems.Level;
 using Systems.Settings;
@@ -23,6 +24,8 @@ namespace Managers.Lobby
         [SerializeField] private TextUIComponent countdownText;
         [SerializeField] private GameObject readyUpMessage;
 
+        private bool isStarting;
+
         protected override void Awake()
         {
             base.Awake();
@@ -38,6 +41,8 @@ namespace Managers.Lobby
             
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyUpMessage;
+            
+            LevelSystem.Instance.OnLobbyLoad += OnLobbyLoaded;
         }
 
         protected override void OnDestroy()
@@ -47,6 +52,14 @@ namespace Managers.Lobby
                 playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyForAll;
                 playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyUpMessage;
             }
+
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnLobbyLoad -= OnLobbyLoaded;
+            }
+            
+            StopAllCoroutines();
+            base.OnDestroy();
         }
 
         private void OnEnable()
@@ -116,6 +129,9 @@ namespace Managers.Lobby
         {
             if (!networkData.Object.HasStateAuthority)
                 return;
+
+            if (isStarting)
+                return;
             
             if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) 
                 return;
@@ -160,8 +176,15 @@ namespace Managers.Lobby
             }
             networkData.Time = 0;
 
-            LevelSystem.Instance.LoadGame();
+            isStarting = true;
 
+            // TODO Disable player inputs
+            
+            TransitionScreenSystem.Instance.Show();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
+            
+            // The game (GameManager) will manage hiding the transition screen and enabling the player inputs
+            LevelSystem.Instance.LoadGame();
             ResetIsReadyAllPlayer();
         }
 
@@ -171,6 +194,19 @@ namespace Managers.Lobby
             {
                 playerEntity.IsReady = false;
             }
+        }
+        
+        private void OnLobbyLoaded()
+        {
+            StartCoroutine(StartLobbyRoutine());
+        }
+
+        private IEnumerator StartLobbyRoutine()
+        {
+            TransitionScreenSystem.Instance.Hide();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
+            
+            // TODO Enable player inputs
         }
     }
 }
