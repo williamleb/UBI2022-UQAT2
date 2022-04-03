@@ -11,16 +11,18 @@ namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        public static event Action OnReadyChanged; 
-        
-        [Header("Ready")] 
-        [SerializeField] private TextMarkerReceptor readyMarker;
-        
-        [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
+        public static event Action OnReadyChanged;
+
+        [Header("Ready")] [SerializeField] private TextMarkerReceptor readyMarker;
+
+        [Networked(OnChanged = nameof(OnIsReadyChanged))]
+        public NetworkBool IsReady { get; set; }
 
         private Team readySubscribedTeam;
 
         private void InitReady() => OnTeamChanged += ReadyOnTeamChanged;
+
+        private void ReadyOnDestroy() => OnTeamChanged -= ReadyOnTeamChanged;
 
         private void ReadyUpdate()
         {

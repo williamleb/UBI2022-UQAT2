@@ -388,6 +388,7 @@ namespace Units.Player
     private void OnDestroy()
     {
         AnimOnDestroy();
+        ReadyOnDestroy();
         NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
         NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
     }

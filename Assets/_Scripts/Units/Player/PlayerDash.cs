@@ -18,6 +18,8 @@ namespace Units.Player
         [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
+        [SerializeField] private bool ragdollOnDashMiss;
+
         [Networked (OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
 
         private static void OnIsDashingChanged(Changed<PlayerEntity> changed)
@@ -123,7 +125,7 @@ namespace Units.Player
             if (!hasHitSomeone)
             {
                 print("Hit nothing");
-                Hit(transform.forward);   
+                if (ragdollOnDashMiss) Hit(transform.forward);
             }
             IsDashing = false;
         }
