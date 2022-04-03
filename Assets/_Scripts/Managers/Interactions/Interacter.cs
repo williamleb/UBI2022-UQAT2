@@ -77,7 +77,8 @@ namespace Managers.Interactions
             {
                 if (interact && interact.CompareTag(Tags.INTERACTION))
                 {
-                    if (Vector3.Distance(transform.position, interact.transform.position) <= radius)
+                    if (Vector3.Distance(transform.position, interact.transform.position) <= radius ||
+                        interact.bounds.Contains(transform.position))
                         interactionsInReach.Add(interact.GetComponent<Interaction>());   
                 }
             }
