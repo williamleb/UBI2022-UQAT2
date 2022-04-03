@@ -54,7 +54,7 @@ namespace Canvases.Menu
 
         public void Focus()
         {
-            if (MenuManager.HasInstance && !MenuManager.Instance.IsOpened)
+            if (MenuManager.HasInstance && !MenuManager.Instance.IsOpened || canvasGroup == null || firstButtonToFocus == null)
                 return;
             
             canvasGroup.interactable = true;

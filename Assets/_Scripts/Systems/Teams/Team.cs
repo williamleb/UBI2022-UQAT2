@@ -14,6 +14,8 @@ namespace Systems.Teams
         public static event Action<Team> OnTeamSpawned;
         public static event Action<Team> OnTeamDespawned;
         public event Action<int> OnScoreChanged;
+        public event Action<int> OnScoreIncrement;
+        public event Action<int> OnScoreDecrement;
 
         private TeamSettings teamSettings;
         private TeamSystem teamSystem;
@@ -108,6 +110,7 @@ namespace Systems.Teams
                 return;
 
             ScoreValue += scoreToAdd;
+            OnScoreIncrement?.Invoke(scoreToAdd);
         }
 
         public void DecrementScore(int scoreToRemove)
@@ -116,6 +119,7 @@ namespace Systems.Teams
                 return;
 
             ScoreValue = Math.Max(0, ScoreValue - scoreToRemove);
+            OnScoreDecrement?.Invoke(-scoreToRemove);
         }
 
         public void ResetScore()
