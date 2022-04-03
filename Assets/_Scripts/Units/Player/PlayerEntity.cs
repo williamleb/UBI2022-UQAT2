@@ -177,6 +177,7 @@ namespace Units.Player
                 if (Inputs.IsInteractOnce && !InMenu && !InCustomization && !IsDashing)
                 {
                     interacter.InteractWithClosestInteraction();
+                    CancelAimingAndThrowing();
                 }
 
                 if (!InMenu && !InCustomization)
