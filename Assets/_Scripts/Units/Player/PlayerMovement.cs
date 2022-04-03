@@ -27,6 +27,7 @@ namespace Units.Player
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
         private Vector3 lastMoveDirection = Vector3.zero;
+        private float angleWithLastDirection;
         
         private TickTimer isOnWallTimer;
         private bool IsOnWall => !isOnWallTimer.ExpiredOrNotRunning(Runner);
@@ -63,7 +64,12 @@ namespace Units.Player
 
             if (!IsDashing && !InMenu && !InCustomization)
             {
-                if (HasMoveInput) lastMoveDirection = MoveDirection.normalized;
+                if (HasMoveInput)
+                {
+                    angleWithLastDirection = Vector3.Angle(MoveDirection.normalized, lastMoveDirection);
+                    lastMoveDirection = MoveDirection.normalized;
+                }
+
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
                 MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
                 ChangeMoveSpeed(Inputs.IsSprint);
@@ -126,9 +132,18 @@ namespace Units.Player
             if (CanRotate) return;
             float turnRateDivider = Mathf.Max(1, CurrentSpeed - data.MoveMaximumSpeed);
             float turnRate = data.TurnRotationSpeed * Runner.DeltaTime / turnRateDivider;
-            transform.forward = CurrentSpeed < data.MoveMaximumSpeed / 2f
-                ? lastMoveDirection
-                : Vector3.RotateTowards(transform.forward, lastMoveDirection, turnRate, 0);
+
+            if (angleWithLastDirection >= 179.5)
+            {
+                Vector3 randomDirection = transform.right * (Random.Range(0, 1) * 2 - 1);
+                transform.forward = Vector3.RotateTowards(transform.forward, randomDirection, turnRate, 0);
+            }
+            else
+            {
+                transform.forward = CurrentSpeed < data.MoveMaximumSpeed / 2f
+                    ? lastMoveDirection
+                    : Vector3.RotateTowards(transform.forward, lastMoveDirection, turnRate, 0);
+            }
         }
 
         private IEnumerator AfterGetUp(bool isGettingUpBackDown)
