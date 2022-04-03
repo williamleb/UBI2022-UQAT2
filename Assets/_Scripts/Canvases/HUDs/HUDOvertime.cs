@@ -1,56 +1,76 @@
-using Managers.Game;
+using System;
 using System.Threading.Tasks;
+using Canvases.Components;
+using Managers.Game;
 using Systems.Settings;
 using Systems.Teams;
-using TMPro;
 using UnityEngine;
 
-public class HUDOvertime : MonoBehaviour
+namespace Canvases.HUDs
 {
-    private Color leftTeamColor;
-    private Color rightTeamColor;
-    private Animator animator;
-    private TextMeshProUGUI overtimeText;
-
-    void Start()
+    public class HUDOvertime : MonoBehaviour
     {
-        overtimeText = GetComponentInChildren<TextMeshProUGUI>();
-        animator = GetComponentInChildren<Animator>();
+        [SerializeField] private TextUIComponent overtimeText;
 
-        if (GameManager.HasInstance)
-        {
-            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
-        }
-    }
+        private Color leftTeamColor;
+        private Color rightTeamColor;
 
-    private async void OnGameStateChanged(GameState gameState)
-    {
-        if (overtimeText == null || animator == null)
+        private void Awake()
         {
-            Debug.LogWarning("Missing component on Overtime text. Not displaying it.");
-            return;
+            if (overtimeText == null)
+            {
+                Debug.LogWarning("Missing TextUIComponent on Overtime text.");
+                return;
+            }
+            overtimeText.Hide();
         }
 
-        if (gameState == GameState.Running)
+        private void Start()
         {
-            Color.RGBToHSV(SettingsSystem.CustomizationSettings.GetColor(TeamSystem.Instance.Teams[0].Color), out float lH, out float lS, out float _);
-            Color.RGBToHSV(SettingsSystem.CustomizationSettings.GetColor(TeamSystem.Instance.Teams[1].Color), out float rH, out float rS, out float _);
-            leftTeamColor = Color.HSVToRGB(lH,lS,1);
-            rightTeamColor = Color.HSVToRGB(rH, rS, 1);
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
-        if(gameState == GameState.Overtime)
+        private void OnDestroy()
         {
-            await Task.Delay(50);
-            animator.SetTrigger("Spawn");
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
         }
-    }
 
-    void Update()
-    {
-        if (overtimeText == null || leftTeamColor == null || rightTeamColor == null)
-            return;
+        private async void OnGameStateChanged(GameState gameState)
+        {
+            if (overtimeText == null)
+            {
+                Debug.LogWarning("Missing component on Overtime text. Not displaying it.");
+                return;
+            }
 
-        overtimeText.color = Color.Lerp(rightTeamColor, leftTeamColor, Mathf.PingPong(Time.time, 1));
+            if (gameState == GameState.Running)
+            {
+                Color.RGBToHSV(SettingsSystem.CustomizationSettings.GetColor(TeamSystem.Instance.Teams[0].Color), out float lH, out float lS, out float _);
+                Color.RGBToHSV(SettingsSystem.CustomizationSettings.GetColor(TeamSystem.Instance.Teams[1].Color), out float rH, out float rS, out float _);
+                leftTeamColor = Color.HSVToRGB(lH,lS,1);
+                rightTeamColor = Color.HSVToRGB(rH, rS, 1);
+            }
+
+            if(gameState == GameState.Overtime)
+            {
+                await Task.Delay(50);
+                overtimeText.Show();
+            }
+        }
+
+        private void Update()
+        {
+            if (overtimeText == null)
+                return;
+
+            overtimeText.Color = Color.Lerp(rightTeamColor, leftTeamColor, Mathf.PingPong(Time.time, 1));
+        }
+
+        private void OnValidate()
+        {
+            overtimeText = GetComponentInChildren<TextUIComponent>();
+        }
     }
 }
