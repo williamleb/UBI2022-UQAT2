@@ -39,23 +39,16 @@ namespace Units.Player
             HandleDashInput();
             if (IsDashing) DetectCollision();
             if (dashTimer.Expired(Runner)) OnHitNothing();
-            if (dashCooldown.Expired(Runner)) ResetDashCoolDown();
-        }
-
-        private void ResetDashCoolDown()
-        {
-            OnDashAvailableChanged?.Invoke(true);
-            CanDash = true;
         }
 
         private void HandleDashInput()
         {
-            if (UpdateCanDash() && Inputs.IsDash) Dash();
+            if (UpdateCanDash() && Inputs.IsDash ) Dash();
         }
 
         private bool UpdateCanDash()
         {
-            if (InCustomization || InMenu || !CanMove || inventory.HasHomework)
+            if (IsDashing || InCustomization || InMenu || !CanMove || inventory.HasHomework)
             {
                 if (CanDash)
                 {
@@ -65,20 +58,31 @@ namespace Units.Player
                 CanDash = false;
                 return false;
             }else{
-
-                if (!CanDash)
+                if (dashCooldown.ExpiredOrNotRunning(Runner))
                 {
-                    OnDashAvailableChanged?.Invoke(true);
-                }
+                    if (!CanDash)
+                    {
+                        OnDashAvailableChanged?.Invoke(true);
+                    }
 
-                CanDash = true;
-                return true;
+                    CanDash = true;
+                    return true;
+                }
+                else
+                {
+                    if (CanDash)
+                    {
+                        OnDashAvailableChanged?.Invoke(false);
+                    }
+
+                    CanDash = false;
+                    return false;
+                }
             }
         }
 
         private void Dash()
         {
-            if (IsDashing) return;
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);

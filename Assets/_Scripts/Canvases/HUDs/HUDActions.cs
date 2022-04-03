@@ -104,7 +104,15 @@ public class HUDActions : MonoBehaviour
         }
         else
         {
-            dashChargeMarker.gameObject.SetActive(true);
+            if (localPlayerEntity.RemainingTimeDashCoolDown > 0)
+            {
+                dashChargeMarker.gameObject.SetActive(true);
+            }
+            else
+            {
+                dashChargeMarker.gameObject.SetActive(false);
+            }
+            
             dashText.color = textColorSemi;
             dashPrompt.color = promptColorSemi;
         }
