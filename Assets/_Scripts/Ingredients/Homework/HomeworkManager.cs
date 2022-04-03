@@ -153,8 +153,11 @@ namespace Ingredients.Homework
             if (newGameState == GameState.Running)
             {
                 InitializeManager();
+            }else if (newGameState == GameState.Overtime)
+            {
+                //TODO do we need to do something?
             }
-            else if (newGameState != GameState.Overtime)
+            else
             {
                 StopHomeworkRoutines();
             }
