@@ -9,6 +9,7 @@ using Systems.Sound;
 using Units.AI.Senses;
 using UnityEngine;
 using UnityEngine.AI;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -27,7 +28,7 @@ namespace Units.AI
 
         public static event Action<AIEntity> OnAISpawned;
         public static event Action<AIEntity> OnAIDespawned;
-        public event Action<GameObject> OnHit; 
+        public event Action<GameObject> OnHit;
 
         private enum AIType : byte
         {
@@ -36,13 +37,15 @@ namespace Units.AI
             Janitor
         }
 
-        [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")] 
+        [SerializeField, Tooltip("Only use if this AI cannot be spawned by the AI Manager")]
         private GameObject brainToAddOnSpawned;
 
         [SerializeField] private ParticleSystem alertParticleEffect;
         [SerializeField] private Transform ragdollTransform;
 
-        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders = new List<(Collider, Vector3, Quaternion)>();
+        private readonly List<(Collider, Vector3, Quaternion)> ragdollColliders =
+            new List<(Collider, Vector3, Quaternion)>();
+
         private readonly List<Rigidbody> ragdollRigidbody = new List<Rigidbody>();
         private bool isRagdoll;
 
@@ -64,8 +67,8 @@ namespace Units.AI
         [Networked, Capacity(8)] private AIType Type { get; set; }
         private bool IsTeacher => Type == AIType.Teacher;
         private bool IsJanitor => Type == AIType.Janitor;
-        
-        [Networked, Capacity(8)] public HallwayColor AssignedHallway{ get; private set; }
+
+        [Networked, Capacity(8)] public HallwayColor AssignedHallway { get; private set; }
 
         public AkGameObj AudioObject => audioObject;
         public NavMeshAgent Agent => agent;
@@ -80,8 +83,13 @@ namespace Units.AI
 
         public bool IsHit => hitCoroutine != null;
 
-        public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
-        public float MaxSpeed => IsTeacher ? settings.BaseTeacherSpeed : IsJanitor ? settings.ChaseBadBehaviorSpeed : settings.BaseStudentSpeed;
+        public bool IsImmune { get; set; }
+
+        public float BaseSpeed => IsTeacher ? settings.BaseTeacherSpeed :
+            IsJanitor ? settings.BaseJanitorSpeed : settings.BaseStudentSpeed;
+
+        private float MaxSpeed => IsTeacher ? settings.BaseTeacherSpeed :
+            IsJanitor ? settings.ChaseBadBehaviorSpeed : settings.BaseStudentSpeed;
 
         private void Awake()
         {
@@ -112,20 +120,19 @@ namespace Units.AI
         public override void Spawned()
         {
             interacter.Activated = false;
-            
+
             if (Object.HasStateAuthority)
             {
                 if (brainToAddOnSpawned)
                     AddBrain(brainToAddOnSpawned);
-                
+
                 Agent.enabled = true;
                 interacter.Activated = true;
 
                 if (Inventory)
                     Inventory.OnInventoryChanged += OnInventoryChanged;
             }
-            
-            //TODO only run this on the host?
+
             RegisterToManager();
             InitializeRagdoll();
             OnAISpawned?.Invoke(this);
@@ -135,16 +142,18 @@ namespace Units.AI
         {
             UnregisterToManager();
             OnAIDespawned?.Invoke(this);
-            
+
             if (Inventory)
                 Inventory.OnInventoryChanged -= OnInventoryChanged;
         }
 
         public override void FixedUpdateNetwork()
         {
+            base.FixedUpdateNetwork();
             if (isRagdoll)
             {
-                transform.position =  Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+                // ReSharper disable Unity.InefficientPropertyAccess
+                transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
                 ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
             }
 
@@ -161,7 +170,7 @@ namespace Units.AI
 
             Animator.SetFloat(SpeedParam, Velocity.sqrMagnitude / (MaxSpeed * MaxSpeed));
         }
-        
+
         private void OnInventoryChanged()
         {
             if (!Object.HasStateAuthority)
@@ -169,7 +178,7 @@ namespace Units.AI
 
             if (!Animator)
                 return;
-
+            
             Animator.SetBool(IsHoldingHomeworkParam, Inventory.HasHomework);
         }
 
@@ -212,8 +221,9 @@ namespace Units.AI
             brainGameObject.name = brainPrefab.name;
 
             brain = brainGameObject.GetComponent<AIBrain>();
-            Debug.Assert(brain, $"Calling {nameof(AddBrain)} with a prefab that doesn't have a script {nameof(AIBrain)}");
-            
+            Debug.Assert(brain,
+                $"Calling {nameof(AddBrain)} with a prefab that doesn't have a script {nameof(AIBrain)}");
+
             brain.AssignEntity(this);
         }
 
@@ -239,7 +249,8 @@ namespace Units.AI
         }
 
         [Rpc(RpcSources.All, RpcTargets.All)]
-        public void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default, float forceMagnitude = default)
+        private void RPC_ToggleRagdoll(NetworkBool isActivate, Vector3 forceDirection = default,
+            float forceMagnitude = 0)
         {
             if (Type != AIType.Student)
                 return;
@@ -247,21 +258,14 @@ namespace Units.AI
             isRagdoll = isActivate;
 
             agent.enabled = !isActivate;
-            Animator.enabled = !isActivate;
+            Animator.enabled = false;
 
             if (aiCollider)
                 aiCollider.enabled = !isActivate;
 
-            foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
+            foreach ((Collider col, Vector3 _, Quaternion _) in ragdollColliders)
             {
                 col.isTrigger = !isActivate;
-
-                if (!isActivate)
-                {
-                    Transform elementTransform = col.transform;
-                    elementTransform.localPosition = localPos;
-                    elementTransform.localRotation = localRot;
-                }
             }
 
             foreach (Rigidbody rb in ragdollRigidbody)
@@ -269,7 +273,9 @@ namespace Units.AI
                 rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
-                    rb.AddForce(forceDirection.normalized * (forceMagnitude != default ? forceMagnitude : Velocity.magnitude), ForceMode.Impulse);
+                    rb.AddForce(
+                        forceDirection.normalized * (forceMagnitude == 0 ? Velocity.magnitude : forceMagnitude),
+                        ForceMode.Impulse);
             }
         }
 
@@ -278,7 +284,7 @@ namespace Units.AI
             // Teachers cannot be hit
             if (IsTeacher)
                 return;
-            
+
             if (hitCoroutine != null)
             {
                 StopHitRoutine();
@@ -292,23 +298,37 @@ namespace Units.AI
         private IEnumerator HitRoutine(float overrideHitDuration)
         {
             var secondsToWait = overrideHitDuration > 0f ? overrideHitDuration : settings.SecondsDownAfterBeingHit;
-            yield return new WaitForSeconds(secondsToWait);
+            yield return Helpers.GetWait(secondsToWait);
 
+            RPC_ToggleRagdoll(false);
+            
+            Animator.enabled = true;
             if (ragdollTransform)
             {
                 var isGettingUpBackDown = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
-                if (NetworkAnimator) NetworkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
+                if (networkAnimator) networkAnimator.SetTrigger(isGettingUpBackDown ? GetUpBackDownParam : GetUpFaceDownParam);
             }
-            
-            RPC_ToggleRagdoll(false);
+
             hitCoroutine = null;
         }
         
+        public void IsUpAnimEvent()
+        {
+            foreach ((Collider col, Vector3 localPos, Quaternion localRot) in ragdollColliders)
+            {
+                Transform elementTransform = col.transform;
+                elementTransform.localPosition = localPos;
+                elementTransform.localRotation = localRot;
+            }
+
+            IsImmune = false;
+        }
+
         private void StopHitRoutine()
         {
             if (hitCoroutine == null)
                 return;
-            
+
             StopCoroutine(hitCoroutine);
             hitCoroutine = null;
         }
@@ -328,17 +348,18 @@ namespace Units.AI
         {
             RPC_StopAlertParticleEffectOnAllClients();
         }
-        
+
         public void PlayFootstepSoundLocally() => SoundSystem.Instance.PlayFootstepSound(this);
         public void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
         public void PlayHandInHomeworkSoundOnAllClients() => RPC_PlayHandInHomeworkSoundOnAllClients();
         public void PlayPickUpHomeworkSoundOnAllClients() => RPC_PlayPickUpHomeworkSoundOnAllClients();
-        
+
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayHandInHomeworkSoundOnAllClients() => SoundSystem.Instance.PlayHandInHomeworkSound(this);
-        
+
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayPickUpHomeworkSoundOnAllClients() => SoundSystem.Instance.PlayPickUpHomeworkSound(this);
+
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayAlertSoundOnAllClients() => SoundSystem.Instance.PlayJanitorCaughtAlertSound(this);
 
@@ -359,7 +380,7 @@ namespace Units.AI
                 alertParticleEffect.Stop();
             }
         }
-        
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -371,14 +392,16 @@ namespace Units.AI
         {
             if (this == null)
                 return;
-            
+
             var thisGameObject = gameObject;
-            
+
             if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.AI))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the tag {Tags.AI}. Instead, it has {thisGameObject.tag}");
-            
+                Debug.LogWarning(
+                    $"Player {thisGameObject.name} should have the tag {Tags.AI}. Instead, it has {thisGameObject.tag}");
+
             if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.AI))
-                Debug.LogWarning($"Player {thisGameObject.name} should have the layer {Layers.AI} ({Layers.NAME_AI}). Instead, it has {thisGameObject.layer}");
+                Debug.LogWarning(
+                    $"Player {thisGameObject.name} should have the layer {Layers.AI} ({Layers.NAME_AI}). Instead, it has {thisGameObject.layer}");
         }
 #endif
     }

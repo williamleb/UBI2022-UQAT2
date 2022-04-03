@@ -1,8 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Fusion;
-using Systems.Network;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -14,26 +15,31 @@ namespace Units.Player
 
         public bool HasHitSomeoneThisFrame { get; private set; }
         public bool CanDash = true;
-        public float RemainingTimeDashCoolDown => DashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (DashCooldown.RemainingTime(Runner) ?? default(float));
+        public float RemainingTimeDashCoolDown => dashCooldown.ExpiredOrNotRunning(Runner) ? 0 : (dashCooldown.RemainingTime(Runner) ?? default(float));
 
         [Header("Dash")]
         [SerializeField] private Transform tacklePoint;
 
-        [Networked] private NetworkBool IsDashing { get; set; } = false;
+        [Networked (OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
+
+        private static void OnIsDashingChanged(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.networkAnimator.Animator.SetBool(Dashing, changed.Behaviour.IsDashing);
+        }
 
         private TickTimer dashTimer;
-        private TickTimer DashCooldown;
+        private TickTimer dashCooldown;
         private bool hasHitSomeone;
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
 
-        private void DashUpdate(NetworkInputData inputData)
+        private void DashUpdate()
         {
-            HandleDashInput(inputData);
+            HandleDashInput();
             if (IsDashing) DetectCollision();
             if (dashTimer.Expired(Runner)) OnHitNothing();
-            if (DashCooldown.Expired(Runner)) ResetDashCoolDown();
+            if (dashCooldown.Expired(Runner)) ResetDashCoolDown();
         }
 
         private void ResetDashCoolDown()
@@ -42,9 +48,9 @@ namespace Units.Player
             CanDash = true;
         }
 
-        private void HandleDashInput(NetworkInputData inputData)
+        private void HandleDashInput()
         {
-            if (inputData.IsDash && CanDash && !InMenu && !InCustomization) Dash();
+            if (Inputs.IsDash && CanDash && !InMenu && !InCustomization) Dash();
         }
 
         private void Dash()
@@ -55,10 +61,10 @@ namespace Units.Player
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);
-            DashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
+            dashCooldown = TickTimer.CreateFromSeconds(Runner, data.DashCoolDown);
             Vector3 dirToTarget = GetDirToTarget();
             transform.forward = GetDashDirection(dirToTarget);
-            velocity = data.DashForce;
+            CurrentSpeed = data.DashForce;
 
             if (Object.HasStateAuthority)
                 RPC_DetectDashOnAllClients();
@@ -132,11 +138,15 @@ namespace Units.Player
             IsDashing = false;
         }
 
+        private bool PlayingPushAnim => networkAnimator.Animator.GetCurrentAnimatorClipInfo(1)[0].clip.name == "playerPush";
+
         private void OnHitOtherEntity(GameObject otherEntity)
         {
             print("Hit other entity");
             NetworkObject networkObject = otherEntity.GetComponentInEntity<NetworkObject>();
             Debug.Assert(networkObject, $"A player or an AI should have a {nameof(NetworkObject)}");
+            if (!PlayingPushAnim)
+                AnimationSetTrigger(Pushing);
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
             if (Archetype != Archetype.Dasher)
             {
@@ -150,52 +160,54 @@ namespace Units.Player
 
         private void DetectCollision()
         {
-            LagCompensatedHit closestHit = new LagCompensatedHit();
-            float distance = float.MaxValue;
-            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, data.DashDetectionSphereRadius, Object.InputAuthority, collisions,
-                    options: HitOptions.IncludePhysX) > 0)
-            {
-                Transform t = transform;
-                foreach (LagCompensatedHit collision in collisions)
-                {
-                    if (collision.GameObject == gameObject ||
-                        collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
-                    float dst = Vector3.Distance(t.position, collision.GameObject.transform.position);
-                    if (dst < distance)
-                    {
-                        closestHit = collision;
-                        distance = dst;
-                    }
-                }
+            if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, data.DashDetectionSphereRadius,
+                    Object.InputAuthority, collisions,
+                    options: HitOptions.IncludePhysX) <= 0) return;
+            
+            Transform t = transform;
+            LagCompensatedHit closestHit = FindClosestHit();
 
-                GameObject go = closestHit.GameObject;
-                if (!go) return;
+            GameObject go = closestHit.GameObject;
+            if (!go) return;
                 
-                if (go.IsAPlayerOrAI())
-                {
-                    OnHitOtherEntity(go);
-                    PlayPushHomeworkAnim();
-                }
-                else if (go.CompareTag(Tags.COLLIDABLE))
-                {
+            if (go.IsAPlayerOrAI())
+            {
+                OnHitOtherEntity(go);
+            }
+            else if (go.CompareTag(Tags.COLLIDABLE))
+            {
                     
-                    Runner.GetPhysicsScene().Raycast(tacklePoint.position, t.forward, out RaycastHit info);
-                    if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
-                    {
-                        t.forward = Vector3.Reflect(t.forward, info.normal);
-                    }
-                    else
-                    {
-                        OnHitObject();
-                    }
+                Runner.GetPhysicsScene().Raycast(tacklePoint.position, t.forward, out RaycastHit info);
+                if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
+                {
+                    t.forward = Vector3.Reflect(t.forward, info.normal);
+                }
+                else
+                {
+                    OnHitObject();
                 }
             }
         }
-
-        private void LateUpdate()
+        
+        private LagCompensatedHit FindClosestHit()
         {
-            HasHitSomeoneThisFrame = false;
+            LagCompensatedHit closestHit = new LagCompensatedHit();
+            float distance = float.MaxValue;
+            foreach (LagCompensatedHit collision in collisions)
+            {
+                if (collision.GameObject == gameObject || collision.GameObject.transform.IsChildOf(gameObject.transform)) continue;
+                
+                float dst = Vector3.Distance(transform.position, collision.GameObject.transform.position);
+                
+                if (!(dst < distance)) continue;
+                
+                closestHit = collision;
+                distance = dst;
+            }
+            return closestHit;
         }
+
+        private void LateUpdate() => HasHitSomeoneThisFrame = false;
 
         private void OnDrawGizmosSelected()
         {
@@ -204,7 +216,7 @@ namespace Units.Player
                 //Tackle aim assist sphere + view angle
                 Gizmos.color = Color.red;
                 Vector3 pos = transform.position;
-                Vector3 tpos = tacklePoint.position;
+                Vector3 tPos = tacklePoint.position;
                 Gizmos.DrawWireSphere(pos, data.DashMaxAimAssistRange);
                 float y = transform.eulerAngles.y;
                 float angleA = data.DashAimAssistAngle + y;
@@ -217,11 +229,11 @@ namespace Units.Player
 
                 //Tackled detection orb
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(tpos,data.DashDetectionSphereRadius);
+                Gizmos.DrawWireSphere(tPos,data.DashDetectionSphereRadius);
                 
                 Gizmos.color = Color.black;
-                Runner.GetPhysicsScene().Raycast(tpos, transform.forward, out RaycastHit info);
-                Gizmos.DrawLine(tpos,info.point);
+                Runner.GetPhysicsScene().Raycast(tPos, transform.forward, out RaycastHit info);
+                Gizmos.DrawLine(tPos,info.point);
                 Vector3 infoPos = info.transform.position;
                 Gizmos.DrawLine(infoPos,infoPos + info.normal);
             }

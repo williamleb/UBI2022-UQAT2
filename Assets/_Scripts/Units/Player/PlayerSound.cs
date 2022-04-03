@@ -19,16 +19,16 @@ namespace Units.Player
         public AkGameObj AudioObject => audioObject;
 
         public void PlayFootstepSoundLocally() => SoundSystem.Instance.PlayFootstepSound(this);
-        public void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
+        private void PlayFumbleSoundLocally() => SoundSystem.Instance.PlayFumbleSound(this);
         public void PlayHandInHomeworkSoundLocally() => SoundSystem.Instance.PlayHandInHomeworkSound(this);
         public void PlayPickUpHomeworkSoundLocally() => SoundSystem.Instance.PlayPickUpHomeworkSound(this);
-        public void PlayAimHoldSoundLocally() => SoundSystem.Instance.PlayAimHoldSound(this);
-        public void StopAimHoldSoundLocally() => SoundSystem.Instance.StopAimHoldSound(this);
-        public void PlayAimReleaseSoundLocally() => SoundSystem.Instance.PlayAimReleaseSound(this);
-        public void SetAimSoundChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
-        public void PlayDashSoundLocally() => SoundSystem.Instance.PlayDashSound(this);
-        public void StopDashSoundLocally() => SoundSystem.Instance.StopDashSound(this);
-        public void PlayDashCollisionSoundLocally() => SoundSystem.Instance.PlayDashCollisionSound(this);
+        private void PlayAimHoldSoundLocally() => SoundSystem.Instance.PlayAimHoldSound(this);
+        private void StopAimHoldSoundLocally() => SoundSystem.Instance.StopAimHoldSound(this);
+        private void PlayAimReleaseSoundLocally() => SoundSystem.Instance.PlayAimReleaseSound(this);
+        private void SetAimSoundChargePercentValueLocally(float value) => SoundSystem.Instance.SetAimCharge(this, value);
+        private void PlayDashSoundLocally() => SoundSystem.Instance.PlayDashSound(this);
+        private void StopDashSoundLocally() => SoundSystem.Instance.StopDashSound(this);
+        private void PlayDashCollisionSoundLocally() => SoundSystem.Instance.PlayDashCollisionSound(this);
         
         public void PlayHandInHomeworkSoundOnOtherClients() => RPC_PlayHandInHomeworkSoundOnOtherClients();
         public void PlayPickUpHomeworkSoundOnOtherClients() => RPC_PlayPickUpHomeworkSoundOnOtherClients();

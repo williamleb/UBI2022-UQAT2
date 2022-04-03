@@ -48,8 +48,6 @@ namespace Managers.Interactions
             }
         }
 
-        private Interaction GetInteractionFromId(int interactionId) => interactionsInReach.FirstOrDefault(interaction => interaction.InteractionId == interactionId);
-
         protected Interaction GetClosestAvailableInteraction()
         {
             if (!interactionsInReach.Any())

@@ -1,9 +1,7 @@
 ﻿using System;
 using Canvases.Markers;
 using Fusion;
-using Systems;
 using Systems.Level;
-using Systems.Network;
 using Systems.Settings;
 using Systems.Sound;
 using Systems.Teams;
@@ -22,12 +20,9 @@ namespace Units.Player
 
         private Team readySubscribedTeam;
 
-        private void InitReady()
-        {
-            OnTeamChanged += ReadyOnTeamChanged;
-        }
+        private void InitReady() => OnTeamChanged += ReadyOnTeamChanged;
 
-        private void ReadyUpdate(NetworkInputData inputData)
+        private void ReadyUpdate()
         {
             if (!LevelSystem.Instance.IsLobby)
             {
@@ -38,7 +33,7 @@ namespace Units.Player
             
             if (Runner.IsForward)
             {
-                if (inputData.IsReadyOnce && !InMenu && !InCustomization)
+                if (Inputs.IsReadyOnce && !InMenu && !InCustomization)
                 {
                     IsReady = !IsReady;
                     OnReadyChanged?.Invoke();

@@ -15,6 +15,13 @@ namespace Units.Player
         [Header("Ragdoll")] [SerializeField]
         private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
 
+        [Networked(OnChanged = nameof(OnGetUpChangedCallback))]
+        private bool GetUpF { get; set; }
+
+        [Networked(OnChanged = nameof(OnGetUpChangedCallback))]
+        private bool GetUpB { get; set; }
+        private bool IsFacingUp => Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
+        
         private void RagdollAwake()
         {
             InitializeRagdoll();
@@ -50,11 +57,13 @@ namespace Units.Player
         {
             isRagdoll = isActivate;
 
-            networkAnimator.Animator.enabled = !isActivate;
+            networkAnimator.Animator.enabled = false;
             AnimationUpdate();
 
             if (!isActivate)
             {
+                GetUpB = IsFacingUp;
+                GetUpF = !GetUpB;
                 Vector3 euler = transform.eulerAngles;
                 euler.y = ragdollTransform.eulerAngles.y;
                 transform.eulerAngles = euler;
@@ -64,14 +73,6 @@ namespace Units.Player
             foreach (BodyPart bp in ragdollColliders)
             {
                 bp.Collider.isTrigger = !isActivate;
-                //Reset bones to local position
-                if (!isActivate)
-                {
-                    Transform elementTransform = bp.Collider.transform;
-                    elementTransform.localPosition = bp.Position;
-                    elementTransform.localRotation = bp.Rotation;
-                }
-                
                 bp.Rb.isKinematic = !isActivate;
 
                 if (isActivate && forceDirection != default)
@@ -80,6 +81,26 @@ namespace Units.Player
 
             if (isActivate)
                 PlayFumbleSoundLocally();
+        }
+        
+        private void ResetGetUp()
+        {
+            GetUpF = false;
+            GetUpB = false;
+
+            foreach (BodyPart bp in ragdollColliders)
+            {
+                Transform elementTransform = bp.Collider.transform;
+                elementTransform.localPosition = bp.Position;
+                elementTransform.localRotation = bp.Rotation;
+            }
+        }
+        
+        private static void OnGetUpChangedCallback(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.networkAnimator.Animator.enabled = true;
+            changed.Behaviour.AnimationSetBool(GetUpFAnim, changed.Behaviour.GetUpF);
+            changed.Behaviour.AnimationSetBool(GetUpBAnim, changed.Behaviour.GetUpB);
         }
     }
 }

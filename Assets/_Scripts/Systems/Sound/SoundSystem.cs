@@ -40,11 +40,8 @@ using Utilities.Singleton;
             wwiseObjects = soundEvents.First();
         }
         
-        private void LoadBank()
-        {
-            Instantiate(wwiseObjects.SoundBankPrefab, transform);
-        }
-
+        private void LoadBank() => Instantiate(wwiseObjects.SoundBankPrefab, transform);
+        
         public void PlayFootstepSound(PlayerEntity player) => wwiseObjects.FootstepEvent.Post(player.gameObject);
         public void PlayFootstepSound(AIEntity ai) => wwiseObjects.FootstepEvent.Post(ai.gameObject);
         public void PlayFumbleSound(PlayerEntity player) => wwiseObjects.FumbleEvent.Post(player.gameObject);
