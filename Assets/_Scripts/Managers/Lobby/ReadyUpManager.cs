@@ -15,6 +15,8 @@ namespace Managers.Lobby
     [RequireComponent(typeof(ReadyUpNetworkData))]
     public class ReadyUpManager : Singleton<ReadyUpManager>
     {
+        private const float BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_LOBBY = 1f;
+        
         private bool allPlayersReady;
         private NetworkSettings data;
         private Coroutine startCoroutine;
@@ -203,6 +205,8 @@ namespace Managers.Lobby
 
         private IEnumerator StartLobbyRoutine()
         {
+            yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_LOBBY);
+            
             TransitionScreenSystem.Instance.Hide();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
             

@@ -45,6 +45,8 @@ namespace Managers.Game
         private Coroutine spawnAndStartGameCoroutine;
         private readonly HashSet<MonoBehaviour> spawnLocks = new HashSet<MonoBehaviour>();
 
+        private bool returningToLobby;
+
         public int HomeworksNeededToFinishGame => settings.NumberOfHomeworksToFinishGame;
         public GameTimer GameTimer => gameTimer;
         public GameState CurrentState => currentState;
@@ -191,6 +193,10 @@ namespace Managers.Game
 
         public void CleanUpAndReturnToLobby()
         {
+            if (returningToLobby)
+                return;
+
+            returningToLobby = true;
             StartCoroutine(CleanUpAndReturnToLobbyRoutine());
         }
 

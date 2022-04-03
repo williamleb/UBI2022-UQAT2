@@ -1,5 +1,6 @@
 ﻿using System;
 using Canvases.Animations;
+using Canvases.Components;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -20,11 +21,17 @@ namespace Canvases.TransitionScreen
         }
         
         [SerializeField, Required] private FadeAnimation fade;
+        [SerializeField, Required] private TextUIComponent text;
 
         public bool IsShown => fade.IsFadedIn;
         public bool IsHidden => fade.IsFadedOut;
 
         public void Show() => fade.FadeIn();
         public void Hide() => fade.FadeOut();
+
+        public void ChangeText(string newText)
+        {
+            text.Text = $"{newText}...";
+        }
     }
 }

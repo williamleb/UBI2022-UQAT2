@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Scriptables;
 using UnityEngine;
 using Utilities.Singleton;
@@ -8,6 +7,8 @@ namespace Canvases.TransitionScreen
 {
     public class TransitionScreenSystem : PersistentSingleton<TransitionScreenSystem>
     {
+        private const string DEFAULT_TEXT = "LOADING";
+        
         private const string PREFABS_FOLDER_PATH = "Game";
         
         private GamePrefabs prefabs;
@@ -44,10 +45,13 @@ namespace Canvases.TransitionScreen
             Debug.Assert(transitionScreen, $"Could not find script {nameof(TransitionScreen)} in the transition screen prefab.");
         }
 
-        public void Show()
+        public void Show(string text = DEFAULT_TEXT)
         {
             if (transitionScreen)
+            {
+                transitionScreen.ChangeText(text);
                 transitionScreen.Show();
+            }
         }
         
         public void Hide()
