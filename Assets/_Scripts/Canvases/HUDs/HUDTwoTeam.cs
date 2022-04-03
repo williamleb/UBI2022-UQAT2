@@ -15,12 +15,14 @@ namespace Canvases.HUDs
         [SerializeField, Required] private TextMeshProUGUI leftTeamName;
         [SerializeField, Required] private SliderUIComponent leftTeamScoreSlider;
         [SerializeField, Required] private TextMeshProUGUI leftTeamScore;
+        [SerializeField, Required] private Animator leftTeamScoreAnimator;
         [SerializeField, Required] private Image leftScratch;
 
         [Header("Right team")]
         [SerializeField, Required] private TextMeshProUGUI rightTeamName;
         [SerializeField, Required] private SliderUIComponent rightTeamScoreSlider;
         [SerializeField, Required] private TextMeshProUGUI rightTeamScore;
+        [SerializeField, Required] private Animator rightTeamScoreAnimator;
         [SerializeField, Required] private Image rightScratch;
 
         [Space]
@@ -51,12 +53,14 @@ namespace Canvases.HUDs
                 leftTeam = TeamSystem.Instance.Teams[0];
                 leftTeam.OnNameChanged += UpdateName;
                 leftTeam.OnColorChanged += UpdateColor;
-                leftTeam.OnScoreChanged += OnTeamScoreChanged;
+                leftTeam.OnScoreIncrement += OnLeftTeamScoreChanged;
+                leftTeam.OnScoreDecrement += OnLeftTeamScoreChanged;
 
                 rightTeam = TeamSystem.Instance.Teams[1];
                 rightTeam.OnNameChanged += UpdateName;
                 rightTeam.OnColorChanged += UpdateColor;
-                rightTeam.OnScoreChanged += OnTeamScoreChanged;
+                rightTeam.OnScoreIncrement += OnRightTeamScoreChanged;
+                rightTeam.OnScoreDecrement += OnRightTeamScoreChanged;
 
                 UpdateColor(0);
                 UpdateName(null);
@@ -65,19 +69,46 @@ namespace Canvases.HUDs
             }
         }
 
-        void OnTeamScoreChanged(int _)
+        void OnLeftTeamScoreChanged(int scoreChange)
         {
-            if (!rightTeamScoreSlider || !leftTeamScoreSlider || !rightTeamScore || !leftTeamScore || !rightTeam || !leftTeam)
+            if (leftTeamScoreSlider == null || leftTeamScore == null || leftTeam == null || leftTeamScoreAnimator == null)
             {
                 Debug.LogWarning("Missing component(s), teams score UI will not be updated.");
                 return;
             }
 
-            rightTeamScore.text = rightTeam.ScoreValue.ToString();
-            leftTeamScore.text = leftTeam.ScoreValue.ToString();
+            if(scoreChange > 0)
+            {
+                leftTeamScoreAnimator.SetTrigger("ScoreUp");
+            }
+            else
+            {
+                leftTeamScoreAnimator.SetTrigger("ScoreDown");
+            }
 
-            rightTeamScoreSlider.Value = rightTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
+            leftTeamScore.text = leftTeam.ScoreValue.ToString();
             leftTeamScoreSlider.Value = leftTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
+        }
+
+        void OnRightTeamScoreChanged(int scoreChange)
+        {
+            if (rightTeamScoreSlider == null || rightTeamScore == null || rightTeam == null || rightTeamScoreAnimator == null)
+            {
+                Debug.LogWarning("Missing component(s), teams score UI will not be updated.");
+                return;
+            }
+
+            if (scoreChange > 0)
+            {
+                rightTeamScoreAnimator.SetTrigger("ScoreUp");
+            }
+            else
+            {
+                rightTeamScoreAnimator.SetTrigger("ScoreDown");
+            }
+
+            rightTeamScore.text = rightTeam.ScoreValue.ToString();
+            rightTeamScoreSlider.Value = rightTeam.ScoreValue / (float)SettingsSystem.GameSettings.NumberOfHomeworksToFinishGame;
         }
 
         private void UpdateName(string _)
@@ -141,14 +172,16 @@ namespace Canvases.HUDs
             {
                 leftTeam.OnNameChanged -= UpdateName;
                 leftTeam.OnColorChanged -= UpdateColor;
-                leftTeam.OnScoreChanged -= OnTeamScoreChanged;
+                leftTeam.OnScoreIncrement -= OnLeftTeamScoreChanged;
+                leftTeam.OnScoreDecrement -= OnLeftTeamScoreChanged;
             }
 
             if (rightTeam)
             {
                 rightTeam.OnNameChanged -= UpdateName;
                 rightTeam.OnColorChanged -= UpdateColor;
-                rightTeam.OnScoreChanged -= OnTeamScoreChanged;
+                rightTeam.OnScoreIncrement -= OnRightTeamScoreChanged;
+                rightTeam.OnScoreDecrement -= OnRightTeamScoreChanged;
             }
 
             if (GameManager.HasInstance)

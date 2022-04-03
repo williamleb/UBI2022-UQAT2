@@ -20,6 +20,8 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public float WalkMaxSpeed => data.MoveMaximumSpeed;
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
+        public bool CanSprint = true;
+
         [Networked (OnChanged = nameof(OnCurrentSpeedChanged)), Accuracy(0.5f)] public float CurrentSpeed { get; private set; }
         private static void OnCurrentSpeedChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateMoveAnim();
         
@@ -82,7 +84,7 @@ namespace Units.Player
             {
                 if (!IsAiming)
                 {
-                    bool canSprint = isSprinting && !inventory.HasHomework && CurrentSpeed >= data.MoveMaximumSpeed && !IsOnWall;
+                    bool canSprint = CanSprintUpdate() && isSprinting;
                     float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                     float sprintAcceleration =
                         (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
@@ -98,6 +100,21 @@ namespace Units.Player
             {
                 currentMaxMoveSpeed = Mathf.MoveTowards(currentMaxMoveSpeed, data.MoveMaximumSpeed, data.SprintBraking);
             }
+        }
+
+        private bool CanSprintUpdate()
+        {
+            if (!inventory.HasHomework)
+            {
+                CanSprint = true;
+                if (CurrentSpeed >= data.MoveMaximumSpeed)
+                    return true;
+                else
+                    return false;
+            }
+
+            CanSprint = false;
+            return false;
         }
 
         private void CalculateVelocity()
