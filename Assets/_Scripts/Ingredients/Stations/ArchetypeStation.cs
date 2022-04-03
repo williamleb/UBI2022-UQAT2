@@ -1,6 +1,4 @@
-using System;
 using Canvases.Markers;
-using Fusion;
 using Managers.Interactions;
 using Systems.Sound;
 using Units.Player;

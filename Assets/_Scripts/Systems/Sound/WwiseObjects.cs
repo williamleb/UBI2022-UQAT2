@@ -39,11 +39,23 @@ namespace Systems.Sound
         
         [SerializeField] private Event janitorCaughtAlert;
         
+        [SerializeField] private Event menuElementSelect;
+        [SerializeField] private Event menuElementForward;
+        [SerializeField] private Event menuElementBackward;
+
+        
         [Header("RTCP")] 
         [SerializeField] private RTPC masterVolume;
         [SerializeField] private RTPC musicVolume;
         [SerializeField] private RTPC sfxVolume;
         [SerializeField] private RTPC aimCharge;
+        
+        [Header("Music")]
+        [SerializeField] private Event music;
+
+        [Header("States")] 
+        [SerializeField] private State inMenu;
+        [SerializeField] private State inGame;
         
         public GameObject SoundBankPrefab => soundBankPrefab;
         
@@ -68,10 +80,18 @@ namespace Systems.Sound
         public Event ThreeEvent => three;
         public Event GoEvent => go;
         public Event JanitorCaughtAlertEvent => janitorCaughtAlert;
+        public Event MenuElementSelectEvent => menuElementSelect;
+        public Event MenuElementForwardEvent => menuElementForward;
+        public Event MenuElementBackwardEvent => menuElementBackward;
 
         public RTPC MasterVolumeParameter => masterVolume;
         public RTPC MusicVolumeParameter => musicVolume;
         public RTPC SoundEffectsVolumeParameter => sfxVolume;
         public RTPC AimChargeParameter => aimCharge;
+        
+        public Event MusicEvent => music;
+        
+        public State InMenuState => inMenu;
+        public State InGameState => inGame;
     }
 }
