@@ -20,7 +20,7 @@ namespace Units.Player
 
         [SerializeField] private bool ragdollOnDashMiss;
 
-        [Networked (OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
+        [Networked(OnChanged = nameof(OnIsDashingChanged))] private NetworkBool IsDashing { get; set; } = false;
 
         private static void OnIsDashingChanged(Changed<PlayerEntity> changed)
         {
@@ -49,21 +49,35 @@ namespace Units.Player
         }
 
         private void HandleDashInput()
-        {   
-            if (Inputs.IsDash && CanDash && !InMenu && !InCustomization) Dash();
+        {
+            if (UpdateCanDash() && Inputs.IsDash) Dash();
+        }
+
+        private bool UpdateCanDash()
+        {
+            if (InCustomization || InMenu || !CanMove || inventory.HasHomework || IsDashing)
+            {
+                if (CanDash)
+                {
+                    OnDashAvailableChanged?.Invoke(false);
+                }
+
+                CanDash = false;
+                return false;
+            }else{
+
+                if (!CanDash)
+                {
+                    OnDashAvailableChanged?.Invoke(true);
+                }
+
+                CanDash = true;
+                return true;
+            }
         }
 
         private void Dash()
-        {
-            if (!CanMove || inventory.HasHomework || IsDashing)
-            {
-                CanDash = false;
-                OnDashAvailableChanged?.Invoke(false);
-                return;
-            }
-            
-            CanDash = false;
-            OnDashAvailableChanged?.Invoke(false);
+        {            
             IsDashing = true;
             hasHitSomeone = false;
             dashTimer = TickTimer.CreateFromSeconds(Runner, data.DashDuration);

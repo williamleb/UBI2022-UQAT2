@@ -107,7 +107,7 @@ namespace Units.Player
             if (!inventory.HasHomework)
             {
                 CanSprint = true;
-                if (CurrentSpeed >= data.MoveMaximumSpeed)
+                if (CurrentSpeed >= data.MoveMaximumSpeed && !IsOnWall)
                     return true;
                 else
                     return false;
