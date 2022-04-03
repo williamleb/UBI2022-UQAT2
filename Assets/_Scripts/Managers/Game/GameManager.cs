@@ -200,7 +200,7 @@ namespace Managers.Game
 
         private IEnumerator CleanUpAndReturnToLobbyRoutine()
         {
-            TransitionScreenSystem.Instance.Show();
+            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.GameToLobbyMessage);
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             
             OnBeginDespawn?.Invoke();

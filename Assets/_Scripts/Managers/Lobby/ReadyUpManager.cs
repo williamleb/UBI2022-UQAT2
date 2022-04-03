@@ -180,7 +180,7 @@ namespace Managers.Lobby
 
             isStarting = true;
 
-            TransitionScreenSystem.Instance.Show();
+            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.LobbyToGameMessage);
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             
             // The game (GameManager) will manage hiding the transition screen and enabling the player inputs

@@ -80,7 +80,7 @@ namespace Canvases.Matchmaking
             if (NetworkSystem.Instance.IsGameStartedOrStarting)
                 return;
             
-            TransitionScreenSystem.Instance.Show("CONNECTING");
+            TransitionScreenSystem.Instance.Show(data.HostToLobbyMessage);
            
             var isGameCreated = await NetworkSystem.Instance.CreateGame(sequence.Value);
 
@@ -105,7 +105,7 @@ namespace Canvases.Matchmaking
             if (NetworkSystem.Instance.IsGameStartedOrStarting)
                 return;
             
-            TransitionScreenSystem.Instance.Show("CONNECTING");
+            TransitionScreenSystem.Instance.Show(data.ClientToLobbyMessage);
 
             var isGameJoined = await NetworkSystem.Instance.TryJoinGame(sequence.Value);
 
