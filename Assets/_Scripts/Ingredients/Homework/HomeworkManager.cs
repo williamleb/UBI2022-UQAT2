@@ -81,6 +81,17 @@ namespace Ingredients.Homework
             return -1;
         }
 
+        public HomeworkDefinition GetHomeworkDefinitionFromScoreValue(int scoreValue)
+        {
+            foreach (var definition in settings.HomeworkDefinitions)
+            {
+                if (definition.Points == scoreValue)
+                    return definition;
+            }
+
+            return null;
+        }
+
         private void Start()
         {
             settings = SettingsSystem.HomeworkSettings;

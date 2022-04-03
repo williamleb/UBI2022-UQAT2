@@ -44,7 +44,7 @@ namespace Units.Player
                 return;
 
             audioListener = gameObject.AddComponent<AkAudioListener>();
-            audioListener.isDefaultListener = false;
+            audioListener.SetIsDefaultListener(false);
             
             ListenToExistingObjects();
             SubscribeToAudioObjectsSpawned();

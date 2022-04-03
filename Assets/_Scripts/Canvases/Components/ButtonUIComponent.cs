@@ -1,25 +1,22 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using Systems.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utilities.Extensions;
-using Event = AK.Wwise.Event;
 
 namespace Canvases.Components
 {
-    // ReSharper disable once InconsistentNaming Reason: UI should be capitalized
     public class ButtonUIComponent : UIComponentBase
     {
+        private enum Type {Forward, Backward}
+        
         public event Action OnClick;
         public event Action OnSelected;
         
-        [Header("Association")] [Required]
-        [SerializeField] private Button button;
-
-        [Header("Sound")] 
-        [SerializeField] private Event onClickSound;
-        [SerializeField] private Event onSelectSound;
+        [SerializeField, Required] private Button button;
+        [SerializeField] private Type type;
 
         private EventTrigger.Entry selectEventTriggerEntry;
         private CanvasGroup parentCanvasGroup;
@@ -39,7 +36,7 @@ namespace Canvases.Components
         private void Awake()
         {
             AddSelectEventTrigger();
-            GetParentCanvasGroup();
+            parentCanvasGroup = gameObject.GetComponentInParents<CanvasGroup>();
         }
 
         private void AddSelectEventTrigger()
@@ -51,18 +48,6 @@ namespace Canvases.Components
             };
             selectEventTriggerEntry.callback.AddListener(OnButtonSelected);
             eventTrigger.triggers.Add(selectEventTriggerEntry);
-        }
-
-        private void GetParentCanvasGroup()
-        {
-            parentCanvasGroup = null;
-
-            var currentParent = button.gameObject;
-            while (currentParent.GetComponent<Canvas>() == null && parentCanvasGroup == null)
-            {
-                currentParent = currentParent.GetParent();
-                parentCanvasGroup = currentParent.GetComponent<CanvasGroup>();
-            }
         }
 
         private void Start()
@@ -81,8 +66,23 @@ namespace Canvases.Components
         
         private void OnButtonClicked()
         {
-            onClickSound?.Post(gameObject);
+            PlayClickedSound();
             OnClick?.Invoke();
+        }
+
+        private void PlayClickedSound()
+        {
+            switch (type)
+            {
+                case Type.Forward:
+                    SoundSystem.Instance.PlayMenuElementForwardSound();
+                    break;
+                case Type.Backward:
+                    SoundSystem.Instance.PlayMenuElementBackwardSound();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void OnButtonSelected(BaseEventData data)
@@ -90,7 +90,8 @@ namespace Canvases.Components
             if (!button.interactable || parentCanvasGroup != null && !parentCanvasGroup.interactable)
                 return;
             
-            onSelectSound?.Post(gameObject);
+            
+            SoundSystem.Instance.PlayMenuElementSelectSound();
             OnSelected?.Invoke();
         }
 

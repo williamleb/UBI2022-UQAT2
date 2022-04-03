@@ -13,6 +13,5 @@ namespace Scriptables
         public NetworkObject PlayerPrefab => playerPrefab;
         public NetworkObject TeamPrefab => teamPrefab;
         public GameObject TransitionScreenPrefab => transitionScreenPrefab;
-
     }
 }

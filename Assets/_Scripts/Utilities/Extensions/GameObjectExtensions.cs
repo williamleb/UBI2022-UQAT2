@@ -1,4 +1,5 @@
 using Fusion;
+using JetBrains.Annotations;
 using UnityEngine;
 using Utilities.Unity;
 
@@ -48,6 +49,22 @@ namespace Utilities.Extensions
 
             return component;
         }
+
+        [CanBeNull]
+        public static T GetComponentInParents<T>(this GameObject gameObject) where T : Component
+        {
+            T parentComponent = null;
+
+            var currentParent = gameObject;
+            var root = gameObject.GetRoot();
+            while (currentParent != root && currentParent.GetComponent<T>() == null && parentComponent == null)
+            {
+                currentParent = currentParent.GetParent();
+                parentComponent = currentParent.GetComponent<T>();
+            }
+
+            return parentComponent;
+        }
         
         public static T GetComponentInEntity<T>(this NetworkObject gameObject) where T : Component
         {
@@ -58,6 +75,12 @@ namespace Utilities.Extensions
         {
             var parent = gameObject.transform.parent;
             return parent ? parent.gameObject : gameObject;
+        }
+        
+        public static GameObject GetRoot(this GameObject gameObject)
+        {
+            var root = gameObject.transform.root;
+            return root ? root.gameObject : gameObject;
         }
 
         public static bool CompareEntities(this GameObject gameObject, GameObject other)
