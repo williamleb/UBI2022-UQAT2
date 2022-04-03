@@ -97,7 +97,6 @@ namespace Managers.Game
             yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME);
             
             TransitionScreenSystem.Instance.Hide();
-            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
         }
 
         protected override void OnDestroy()

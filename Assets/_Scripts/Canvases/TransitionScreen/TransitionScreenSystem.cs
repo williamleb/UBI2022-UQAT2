@@ -15,7 +15,7 @@ namespace Canvases.TransitionScreen
         private TransitionScreen transitionScreen;
 
         public bool IsShown => transitionScreen && transitionScreen.IsShown;
-        public bool IsHidden => !transitionScreen || transitionScreen.IsShown;
+        public bool IsHidden => transitionScreen == null || transitionScreen.IsHidden;
         
         protected override void Awake()
         {
