@@ -30,7 +30,8 @@ namespace Managers.Game
         
         public void NotifyStartedLoadingLobby()
         {
-            RPC_NotifyStartedLoadingLobbyOnAllClients();
+            if (Object.HasStateAuthority)
+                RPC_NotifyStartedLoadingLobbyOnAllClients();
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

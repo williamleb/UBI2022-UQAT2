@@ -9,8 +9,6 @@ using Systems.Level;
 using Units.AI.Senses;
 using Units.Customization;
 using UnityEngine;
-using Utilities;
-using Utilities.Extensions;
 using Utilities.Singleton;
 
 namespace Units.AI
@@ -38,7 +36,11 @@ namespace Units.AI
 
         public void UnregisterTeacher(AIEntity teacherAI)
         {
-            Debug.Assert(teacher == teacherAI, "Trying to unregister a teacher that was not the current teacher");
+            if (teacher != teacherAI)
+            {
+                Debug.LogWarning("Trying to unregister a teacher that was not the current teacher");
+                return;
+            }
             teacher = null;
         }
 

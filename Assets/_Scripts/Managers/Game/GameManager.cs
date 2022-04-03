@@ -21,12 +21,13 @@ namespace Managers.Game
     public class GameManager : Singleton<GameManager>
     {
         private const float BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME = 1f;
-        
+
         public event Action OnBeginSpawn; // Only called on host
         public event Action OnEndSpawn; // Only called on host
         public event Action OnReset; // Only called on host
         public event Action OnBeginDespawn; // Only called on host
-        public event Action<GameState> OnGameStateChanged; 
+        public event Action<GameState> OnGameStateChanged;
+
         public event Action OnPhaseTotalHomeworkChanged
         {
             add => networkedData.OnPhaseTotalHomeworkChanged += value;
@@ -37,7 +38,9 @@ namespace Managers.Game
         private GameTimer gameTimer;
         private NetworkedGameData networkedData;
         private GameState currentState;
+
         private bool endGameOnScore;
+
         //At overtime only (null otherwise), this variable contains the favorite team.
         //By default, the favorite team is the team that had the highest score at the end of the last game.
         private Team overTimeFavoriteTeam = null;
@@ -51,9 +54,17 @@ namespace Managers.Game
         public GameTimer GameTimer => gameTimer;
         public GameState CurrentState => currentState;
         public bool IsSpawning => spawnAndStartGameCoroutine != null;
-        public float GameProgression => Math.Max(GameProgressionFromTime, GameProgressionFromScore); // Between 0 (start of game) and 1 (end of game)
-        public float GameProgressionFromTime => 1 - (gameTimer.RemainingTime / gameTimer.InitialDuration); 
-        public float GameProgressionFromScore => ScoreManager.HasInstance ? ScoreManager.Instance.FindTeamWithHighestScore().ScoreValue / (float) settings.NumberOfHomeworksToFinishGame : 0f; 
+
+        public float GameProgression =>
+            Math.Max(GameProgressionFromTime,
+                GameProgressionFromScore); // Between 0 (start of game) and 1 (end of game)
+
+        public float GameProgressionFromTime => 1 - (gameTimer.RemainingTime / gameTimer.InitialDuration);
+
+        public float GameProgressionFromScore => ScoreManager.HasInstance
+            ? ScoreManager.Instance.FindTeamWithHighestScore().ScoreValue /
+              (float)settings.NumberOfHomeworksToFinishGame
+            : 0f;
 
         public bool IsRunning => currentState == GameState.Running;
         public bool IsOvertime => currentState == GameState.Overtime;
@@ -65,17 +76,28 @@ namespace Managers.Game
             settings = SettingsSystem.GameSettings;
             networkedData = GetComponent<NetworkedGameData>();
             gameTimer = GetComponent<GameTimer>();
-            
+
         }
-        
+
         private void Start()
         {
-
             networkedData.OnGameStateChanged += HandleGameStateChanged;
             networkedData.OnStartedLoadingLobby += ShowTransitionScreen;
             gameTimer.OnTimerExpired += EndGame;
             LevelSystem.Instance.OnGameLoad += OnGameLoaded;
             ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
+
+            StartCoroutine(HideTransitionScreenRoutine());
+        }
+
+        private IEnumerator HideTransitionScreenRoutine()
+        {
+            yield return new WaitUntil(() => currentState == GameState.Running);
+            
+            yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME);
+            
+            TransitionScreenSystem.Instance.Hide();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
         }
 
         protected override void OnDestroy()
@@ -145,13 +167,8 @@ namespace Managers.Game
             spawnAndStartGameCoroutine = null;
             OnEndSpawn?.Invoke();
             
-            StartGame();
             PlayerSystem.Instance.SetPlayersPositionToSpawn();
-
-            yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_GAME);
-            
-            TransitionScreenSystem.Instance.Hide();
-            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
+            StartGame();
         }
         
         public void StartGame()

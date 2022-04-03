@@ -26,7 +26,7 @@ namespace Managers.Lobby
         [SerializeField] private TextUIComponent countdownText;
         [SerializeField] private GameObject readyUpMessage;
 
-        private bool isStarting;
+        private bool isLoadingGame;
 
         protected override void Awake()
         {
@@ -134,7 +134,7 @@ namespace Managers.Lobby
             if (!networkData.Object.HasStateAuthority)
                 return;
 
-            if (isStarting)
+            if (isLoadingGame)
                 return;
             
             if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) 
@@ -180,7 +180,7 @@ namespace Managers.Lobby
             }
             networkData.Time = 0;
 
-            isStarting = true;
+            isLoadingGame = true;
 
             networkData.NotifyStartedLoadingGame();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
@@ -205,10 +205,10 @@ namespace Managers.Lobby
         
         private void OnLobbyLoaded()
         {
-            StartCoroutine(StartLobbyRoutine());
+            StartCoroutine(HideTransitionScreenRoutine());
         }
 
-        private IEnumerator StartLobbyRoutine()
+        private IEnumerator HideTransitionScreenRoutine()
         {
             yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_LOBBY);
             
