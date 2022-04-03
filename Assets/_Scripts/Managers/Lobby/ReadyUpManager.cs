@@ -69,6 +69,7 @@ namespace Managers.Lobby
             networkData.OnStartingChanged += UpdateCountdownText;
             networkData.OnTimeChanged += UpdateCountdownTime;
             networkData.OnNumberOfDotsChanged += UpdateCountdownText;
+            networkData.OnStartedLoadingGame += ShowTransitionScreen;
         }
 
         private void OnDisable()
@@ -76,6 +77,7 @@ namespace Managers.Lobby
             networkData.OnStartingChanged -= UpdateCountdownText;
             networkData.OnTimeChanged -= UpdateCountdownTime;
             networkData.OnNumberOfDotsChanged -= UpdateCountdownText;
+            networkData.OnStartedLoadingGame -= ShowTransitionScreen;
         }
 
         private void UpdateCountdownTime()
@@ -180,12 +182,17 @@ namespace Managers.Lobby
 
             isStarting = true;
 
-            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.LobbyToGameMessage);
+            networkData.NotifyStartedLoadingGame();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             
             // The game (GameManager) will manage hiding the transition screen and enabling the player inputs
             LevelSystem.Instance.LoadGame();
             ResetIsReadyAllPlayer();
+        }
+
+        private void ShowTransitionScreen()
+        {
+            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.LobbyToGameMessage);
         }
 
         private void ResetIsReadyAllPlayer()

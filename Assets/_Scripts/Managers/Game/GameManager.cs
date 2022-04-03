@@ -72,6 +72,7 @@ namespace Managers.Game
         {
 
             networkedData.OnGameStateChanged += HandleGameStateChanged;
+            networkedData.OnStartedLoadingLobby += ShowTransitionScreen;
             gameTimer.OnTimerExpired += EndGame;
             LevelSystem.Instance.OnGameLoad += OnGameLoaded;
             ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
@@ -80,6 +81,7 @@ namespace Managers.Game
         protected override void OnDestroy()
         {
             networkedData.OnGameStateChanged -= HandleGameStateChanged;
+            networkedData.OnStartedLoadingLobby -= ShowTransitionScreen;
             gameTimer.OnTimerExpired -= EndGame;
 
             if (LevelSystem.HasInstance)
@@ -200,7 +202,7 @@ namespace Managers.Game
 
         private IEnumerator CleanUpAndReturnToLobbyRoutine()
         {
-            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.GameToLobbyMessage);
+            networkedData.NotifyStartedLoadingLobby();
             yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
             
             OnBeginDespawn?.Invoke();
@@ -212,6 +214,11 @@ namespace Managers.Game
             LevelSystem.Instance.LoadLobby();
         }
 
+        private void ShowTransitionScreen()
+        {
+            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.GameToLobbyMessage);
+        }
+ 
         private bool CanOvertime() 
         {
             if (!settings.EnableOvertime)

@@ -9,21 +9,28 @@ namespace Managers.Lobby
         public event Action OnStartingChanged;
         public event Action OnTimeChanged;
         public event Action OnNumberOfDotsChanged;
+        public event Action OnStartedLoadingGame;
         
         [Networked(OnChanged = nameof(NetworkOnStartingChanged))] public NetworkBool IsStarting { get; set; }
         [Networked(OnChanged = nameof(NetworkOnTimeChanged))] public int Time { get; set; }
         [Networked(OnChanged = nameof(NetworkOnNumberOfDotsChanged))] public int NumberOfDots { get; set; }
-
-        public override void Spawned()
-        {
-            base.Spawned();
-        }
-
+        
         public void Revert(int maxTime)
         {
             IsStarting = false;
             Time = maxTime + 1;
             NumberOfDots = 0;
+        }
+        
+        public void NotifyStartedLoadingGame()
+        {
+            RPC_NotifyStartedLoadingGameOnAllClients();
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_NotifyStartedLoadingGameOnAllClients()
+        {
+            OnStartedLoadingGame?.Invoke();
         }
 
         private static void NetworkOnStartingChanged(Changed<ReadyUpNetworkData> changed)
