@@ -62,7 +62,9 @@ namespace Units.Player
 
         private void OnCollisionStay(Collision collision)
         {
-            if (Object && !IsDashing && IsMovingFast)
+            if (!Object || IsDashing) return;
+            
+            if (IsMovingFast)
             {
                 Transform t = transform;
                 Vector3 f = t.forward;
@@ -87,6 +89,11 @@ namespace Units.Player
                     RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f);
                     RPC_GetHitAndDropItems(Object.Id, true, -f);
                 }
+            }
+            else
+            {
+                if (collision.gameObject.CompareTag(Tags.COLLIDABLE) || collision.gameObject.IsAPlayerOrAI())
+                    isOnWallTimer = TickTimer.CreateFromSeconds(Runner,0.1f);
             }
         }
     }
