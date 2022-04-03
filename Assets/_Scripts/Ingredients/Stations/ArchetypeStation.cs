@@ -14,7 +14,6 @@ public class ArchetypeStation : MonoBehaviour
         interaction = GetComponent<Interaction>();
         interaction.OnInteractedWith += OnInteractedWith;
         interaction.OnInstantFeedback += OnInstantFeedback;
-        GetComponentInChildren<TextMarkerReceptor>().Text = $"Select\n{archetypeTypeStation}";
     }
 
     private void OnDestroy()
