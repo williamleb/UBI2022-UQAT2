@@ -18,8 +18,10 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public float WalkMaxSpeed => data.MoveMaximumSpeed;
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
-        public float CurrentSpeed { get; private set; }
-
+        [Networked (OnChanged = nameof(OnCurrentSpeedChanged)), Accuracy(0.5f)] public float CurrentSpeed { get; private set; }
+        private static void OnCurrentSpeedChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateMoveAnim();
+        
+        
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
         private Vector3 lastMoveDirection = Vector3.zero;

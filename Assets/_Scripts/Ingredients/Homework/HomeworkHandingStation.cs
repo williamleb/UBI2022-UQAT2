@@ -115,7 +115,7 @@ namespace Units.AI
         private void HandHomework(Interacter interacter, HomeworkDefinition homeworkDefinition)
         {
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
-            player.AnimationSetTrigger(PlayerEntity.Giving);
+            player.SetGiving();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
             
             if (ScoreManager.HasInstance)

@@ -129,7 +129,7 @@ namespace Ingredients.Homework
             if (interacter.gameObject.IsAPlayer())
             {
                 var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
-                player.AnimationSetTrigger(PlayerEntity.Grabbing);
+                player.SetGrabbing();
             }
         }
 
