@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Canvases.Components;
 using Fusion;
 using Managers.Game;

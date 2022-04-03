@@ -35,6 +35,11 @@ namespace Systems.Settings
         [SerializeField]
         private string countDownMessage = "La partie débute dans";
 
+        [Header("Transition settings")] 
+        [SerializeField] private string hostToLobbyMessage = "CREATING GAME";
+        [SerializeField] private string clientToLobbyMessage = "JOINING GAME";
+        [SerializeField] private string gameToLobbyMessage = "RETURNING TO LOBBY";
+        [SerializeField] private string lobbyToGameMessage = "LOADING GAME";
 
         public bool AllowSoloPlay => allowSoloPlay;
         public string ErrorMessageHeader => errorMessageHeader;
@@ -45,5 +50,9 @@ namespace Systems.Settings
         public string LobbyName => lobbyName;
         public string HostConnectionLostHeader => hostConnectionLostHeader;
         public string HostConnectionLostMessage => hostConnectionLostMessage;
+        public string HostToLobbyMessage => hostToLobbyMessage;
+        public string ClientToLobbyMessage => clientToLobbyMessage;
+        public string GameToLobbyMessage => gameToLobbyMessage;
+        public string LobbyToGameMessage => lobbyToGameMessage;
     }
 }

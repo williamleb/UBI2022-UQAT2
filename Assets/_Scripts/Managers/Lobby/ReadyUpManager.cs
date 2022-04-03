@@ -1,5 +1,6 @@
 using System.Collections;
 using Canvases.Components;
+using Canvases.TransitionScreen;
 using Systems;
 using Systems.Level;
 using Systems.Settings;
@@ -14,6 +15,8 @@ namespace Managers.Lobby
     [RequireComponent(typeof(ReadyUpNetworkData))]
     public class ReadyUpManager : Singleton<ReadyUpManager>
     {
+        private const float BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_LOBBY = 1f;
+        
         private bool allPlayersReady;
         private NetworkSettings data;
         private Coroutine startCoroutine;
@@ -22,6 +25,8 @@ namespace Managers.Lobby
 
         [SerializeField] private TextUIComponent countdownText;
         [SerializeField] private GameObject readyUpMessage;
+
+        private bool isLoadingGame;
 
         protected override void Awake()
         {
@@ -38,6 +43,8 @@ namespace Managers.Lobby
             
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyUpMessage;
+            
+            LevelSystem.Instance.OnLobbyLoad += OnLobbyLoaded;
         }
 
         protected override void OnDestroy()
@@ -47,6 +54,14 @@ namespace Managers.Lobby
                 playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyForAll;
                 playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyUpMessage;
             }
+
+            if (LevelSystem.HasInstance)
+            {
+                LevelSystem.Instance.OnLobbyLoad -= OnLobbyLoaded;
+            }
+            
+            StopAllCoroutines();
+            base.OnDestroy();
         }
 
         private void OnEnable()
@@ -54,6 +69,7 @@ namespace Managers.Lobby
             networkData.OnStartingChanged += UpdateCountdownText;
             networkData.OnTimeChanged += UpdateCountdownTime;
             networkData.OnNumberOfDotsChanged += UpdateCountdownText;
+            networkData.OnStartedLoadingGame += ShowTransitionScreen;
         }
 
         private void OnDisable()
@@ -61,6 +77,7 @@ namespace Managers.Lobby
             networkData.OnStartingChanged -= UpdateCountdownText;
             networkData.OnTimeChanged -= UpdateCountdownTime;
             networkData.OnNumberOfDotsChanged -= UpdateCountdownText;
+            networkData.OnStartedLoadingGame -= ShowTransitionScreen;
         }
 
         private void UpdateCountdownTime()
@@ -116,6 +133,9 @@ namespace Managers.Lobby
         {
             if (!networkData.Object.HasStateAuthority)
                 return;
+
+            if (isLoadingGame)
+                return;
             
             if (!(LevelSystem.HasInstance && LevelSystem.Instance.IsLobby)) 
                 return;
@@ -160,9 +180,19 @@ namespace Managers.Lobby
             }
             networkData.Time = 0;
 
-            LevelSystem.Instance.LoadGame();
+            isLoadingGame = true;
 
+            networkData.NotifyStartedLoadingGame();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsShown);
+            
+            // The game (GameManager) will manage hiding the transition screen and enabling the player inputs
+            LevelSystem.Instance.LoadGame();
             ResetIsReadyAllPlayer();
+        }
+
+        private void ShowTransitionScreen()
+        {
+            TransitionScreenSystem.Instance.Show(SettingsSystem.NetworkSettings.LobbyToGameMessage);
         }
 
         private void ResetIsReadyAllPlayer()
@@ -171,6 +201,19 @@ namespace Managers.Lobby
             {
                 playerEntity.IsReady = false;
             }
+        }
+        
+        private void OnLobbyLoaded()
+        {
+            StartCoroutine(HideTransitionScreenRoutine());
+        }
+
+        private IEnumerator HideTransitionScreenRoutine()
+        {
+            yield return Helpers.GetWait(BUFFER_SECONDS_TO_WAIT_BEFORE_STARTING_LOBBY);
+            
+            TransitionScreenSystem.Instance.Hide();
+            yield return new WaitUntil(() => TransitionScreenSystem.Instance.IsHidden);
         }
     }
 }

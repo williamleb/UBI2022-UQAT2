@@ -54,7 +54,7 @@ namespace Canvases.Animations
         
         public void FadeOut()
         {
-            if (!CanPlayLeaveAnimation())
+            if (!CanPlayFadeOutAnimation())
                 return;
             
             animationsToPlay.Enqueue(Animations.FadeOut);
@@ -72,7 +72,7 @@ namespace Canvases.Animations
             return true;
         }
         
-        private bool CanPlayLeaveAnimation()
+        private bool CanPlayFadeOutAnimation()
         {
             if (animationsToPlay.Any() && (animationsToPlay.Last() == Animations.FadeOut))
                 return false;

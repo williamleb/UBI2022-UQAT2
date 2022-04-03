@@ -8,8 +8,10 @@ namespace Scriptables
     {
         [SerializeField] private NetworkObject playerPrefab;
         [SerializeField] private NetworkObject teamPrefab;
+        [SerializeField] private GameObject transitionScreenPrefab;
 
         public NetworkObject PlayerPrefab => playerPrefab;
         public NetworkObject TeamPrefab => teamPrefab;
+        public GameObject TransitionScreenPrefab => transitionScreenPrefab;
     }
 }

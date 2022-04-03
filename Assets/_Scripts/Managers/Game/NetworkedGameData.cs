@@ -8,6 +8,7 @@ namespace Managers.Game
     {
         public event Action OnPhaseTotalHomeworkChanged;
         public event Action<GameState> OnGameStateChanged;
+        public event Action OnStartedLoadingLobby;
 
         [Networked(OnChanged = nameof(HandlePhaseTotalHomeworkChanged))] public int PhaseTotalHomework { get; set; }
         [Networked(OnChanged = nameof(HandleGameStateChanged))] public bool GameIsStarted { get; set; }
@@ -25,6 +26,18 @@ namespace Managers.Game
             GameIsEnded = false;
             GameIsStarted = false;
             GameIsOvertime = false;
+        }
+        
+        public void NotifyStartedLoadingLobby()
+        {
+            if (Object.HasStateAuthority)
+                RPC_NotifyStartedLoadingLobbyOnAllClients();
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_NotifyStartedLoadingLobbyOnAllClients()
+        {
+            OnStartedLoadingLobby?.Invoke();
         }
 
         private static void HandlePhaseTotalHomeworkChanged(Changed<NetworkedGameData> changed)

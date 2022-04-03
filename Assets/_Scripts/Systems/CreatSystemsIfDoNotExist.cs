@@ -1,4 +1,5 @@
-﻿using Systems.Level;
+﻿using Canvases.TransitionScreen;
+using Systems.Level;
 using Systems.Network;
 using Systems.Sound;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace Systems.Settings
             RumbleSystem.CreateIfDoesNotExist();
             SettingsSystem.CreateIfDoesNotExist();
             SoundSystem.CreateIfDoesNotExist();
+            TransitionScreenSystem.CreateIfDoesNotExist();
         }
     }
 }
