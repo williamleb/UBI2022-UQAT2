@@ -1,4 +1,5 @@
 using Cinemachine;
+using Fusion;
 using Sirenix.OdinInspector;
 using Systems.Settings;
 using UnityEngine;
@@ -32,6 +33,15 @@ namespace Units.Camera
 
         public void Init(PlayerSettings.PlayerCameraSettings cameraSettings)
         {
+            SetCameraBounds();
+
+            data = cameraSettings;
+            initialized = true;
+            UpdateCamera();
+        }
+
+        public void SetCameraBounds(NetworkRunner _ = null)
+        {
             var cameraBoundsObject = GameObject.FindWithTag(Tags.CAMERABOUNDS);
             if (!cameraBoundsObject)
             {
@@ -43,10 +53,6 @@ namespace Units.Camera
             {
                 cameraBounds = cameraBoundsObject.GetComponent<CameraBounds>();
             }
-            
-            data = cameraSettings;
-            initialized = true;
-            UpdateCamera();
         }
 
         private void UpdateCamera()

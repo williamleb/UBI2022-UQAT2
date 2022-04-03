@@ -12,24 +12,17 @@ namespace Ingredients.Stations
     {
         private Interaction interaction;
 
-        private void Awake()
-        {
-            interaction = GetComponent<Interaction>();
-        }
+        private void Awake() => interaction = GetComponent<Interaction>();
 
-        private void Start()
-        {
-            interaction.OnInstantFeedback += StartCustomization;
-        }
+        private void Start() => interaction.OnInstantFeedback += StartCustomization;
 
         private void StartCustomization(Interacter interacter)
         {
-            if (!interacter.gameObject.IsAPlayer())
-                return;
+            if (!interacter.gameObject.IsAPlayer()) return;
 
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
-            if (!player)
-                return;
+            
+            if (!player) return;
 
             SoundSystem.Instance.PlayInteractWorldElementSound();
             player.StartCustomization();

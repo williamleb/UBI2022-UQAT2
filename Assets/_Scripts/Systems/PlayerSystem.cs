@@ -205,10 +205,11 @@ namespace Systems
 
 			if (player == localPlayer)
 				localPlayer = null;
-			
+
+			PlayerRef playerRef = player.Object.InputAuthority;
 			player.TriggerDespawn();
 			playersEntity.Remove(player);
-			playersJoined.Remove(player.Object.InputAuthority); //TODO fix null reference
+			playersJoined.Remove(playerRef);
 			Debug.Log("Player removed " + player.PlayerId);
 		}
 

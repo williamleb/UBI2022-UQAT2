@@ -1,8 +1,10 @@
-﻿using Ingredients.Homework;
+﻿using System.Collections;
+using Ingredients.Homework;
 using Managers.Interactions;
 using Managers.Score;
 using Units.Player;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -76,9 +78,15 @@ namespace Units.AI
                 HandHomework(interacter, inventory.HeldHomeworkDefinition);
             
             PlayInteractSound(interacter);
-            
-            inventory.RemoveHomework();
+
+            StartCoroutine(RemoveHomeworkNextFrame(inventory));
             entityThatHasGivenHomeworkThisFrame = interacter;
+        }
+        
+        private IEnumerator RemoveHomeworkNextFrame(Inventory inventory)
+        {
+            yield return Helpers.GetWait(0.1f);
+            inventory.RemoveHomework();
         }
         
         private void PlayInstantFeedbackSound(Interacter interacter)
@@ -106,13 +114,12 @@ namespace Units.AI
 
         private void HandHomework(Interacter interacter, HomeworkDefinition homeworkDefinition)
         {
-            if (!ScoreManager.HasInstance)
-                return;
-            
             var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
-            player.PlayGiveHomeworkAnim();
+            player.SetGiving();
             Debug.Assert(player, $"An interacter with the tag {Tags.PLAYER} should have a {nameof(PlayerEntity)}");
-            ScoreManager.Instance.HandHomework(player, homeworkDefinition);
+            
+            if (ScoreManager.HasInstance)
+                ScoreManager.Instance.HandHomework(player, homeworkDefinition);
         }
         
         private void LateUpdate()

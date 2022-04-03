@@ -4,32 +4,35 @@ using Systems.Sound;
 using Units.Player;
 using UnityEngine;
 
-public class ArchetypeStation : MonoBehaviour
+namespace Ingredients.Stations
 {
-    private Interaction interaction;
-    [SerializeField] private Archetype archetypeTypeStation;
-
-    private void Awake()
+    public class ArchetypeStation : MonoBehaviour
     {
-        interaction = GetComponent<Interaction>();
-        interaction.OnInteractedWith += OnInteractedWith;
-        interaction.OnInstantFeedback += OnInstantFeedback;
-    }
+        private Interaction interaction;
+        [SerializeField] private Archetype archetypeTypeStation;
 
-    private void OnDestroy()
-    {
-        interaction.OnInteractedWith -= OnInteractedWith;
-        interaction.OnInstantFeedback -= OnInstantFeedback;
-    }
+        private void Awake()
+        {
+            interaction = GetComponent<Interaction>();
+            interaction.OnInteractedWith += OnInteractedWith;
+            interaction.OnInstantFeedback += OnInstantFeedback;
+        }
 
-    private void OnInstantFeedback(Interacter interacter)
-    {
-        SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
-    }
+        private void OnDestroy()
+        {
+            interaction.OnInteractedWith -= OnInteractedWith;
+            interaction.OnInstantFeedback -= OnInstantFeedback;
+        }
 
-    private void OnInteractedWith(Interacter interacter)
-    {
-        var playerEntity = interacter.GetComponent<PlayerEntity>();
-        playerEntity.AssignArchetype(archetypeTypeStation);
+        private void OnInstantFeedback(Interacter interacter)
+        {
+            SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
+        }
+
+        private void OnInteractedWith(Interacter interacter)
+        {
+            var playerEntity = interacter.GetComponent<PlayerEntity>();
+            playerEntity.AssignArchetype(archetypeTypeStation);
+        }
     }
 }

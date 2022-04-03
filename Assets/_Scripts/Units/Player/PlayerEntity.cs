@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Canvases.Menu;
 using Fusion;
-using Interfaces;
 using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
@@ -24,13 +23,13 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(PlayerCustomization))]
-    public partial class PlayerEntity : NetworkBehaviour, IVelocityObject
+    public partial class PlayerEntity : NetworkBehaviour
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnArchetypeChanged;
         public event Action OnTeamChanged;
-        
+
         private PlayerSettings data;
         private PlayerInteracter interacter;
         private Inventory inventory;
@@ -40,9 +39,13 @@ namespace Units.Player
         private NetworkBool isImmune;
 
         public int PlayerId { get; private set; }
+        [Networked] private NetworkInputData Inputs { get; set; }
         public PlayerCustomization Customization => customization;
 
-        [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))] [Capacity(128)] public string TeamId { get; set; }
+        [Networked(OnChanged = nameof(OnNetworkTeamIdChanged))]
+        [Capacity(128)]
+        public string TeamId { get; set; }
+
         [Networked] public int PlayerScore { get; set; }
         [Networked] private bool InCustomization { get; set; }
         [Networked] private bool InMenu { get; set; }
@@ -50,7 +53,13 @@ namespace Units.Player
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
 
-        private bool IsGameFinished => GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
+        private bool IsGameFinished =>
+            GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
+
+        private void Awake()
+        {
+            //TODO Hide player model while loading everything
+        }
 
         private void OnAwake()
         {
@@ -61,8 +70,8 @@ namespace Units.Player
 
             inventory.AssignVelocityObject(this);
 
-            AssignBaseArchetype();
-            
+            AssignArchetype(Archetype.Base);
+
             MovementAwake();
             RagdollAwake();
             SoundAwake();
@@ -75,12 +84,12 @@ namespace Units.Player
             if (GameManager.HasInstance)
                 GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
-        
+
         private void OnDisable()
         {
-            if(LevelSystem.HasInstance)
+            if (LevelSystem.HasInstance)
                 LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
-            
+
             if (GameManager.HasInstance)
                 GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
         }
@@ -89,12 +98,6 @@ namespace Units.Player
         {
             if (state == GameState.Finished)
                 DeactivateMenuAndCustomization();
-        }
-
-        private void AssignBaseArchetype()
-        {
-            if (Object.HasStateAuthority)
-                Archetype = Archetype.Base;
         }
 
         public void AssignArchetype(Archetype archetype)
@@ -113,6 +116,9 @@ namespace Units.Player
             InitCamera();
             InitSound();
             InitReady();
+            InitAnim();
+
+            //TODO show player after everything is loaded
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
@@ -126,7 +132,7 @@ namespace Units.Player
             {
                 TeamSystem.Instance.AssignTeam(this);
             }
-            
+
             NetworkSystem.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
             NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
         }
@@ -134,12 +140,12 @@ namespace Units.Player
         private async void OnSceneLoadDoneEvent(NetworkRunner runner)
         {
             await Task.Delay(500);
-            UnmakeImmune();
+            SetImmunity(false);
         }
 
         private void OnSceneLoadStartEvent(NetworkRunner runner)
         {
-            MakeImmune();
+            SetImmunity(true);
             inventory.DropEverything();
         }
 
@@ -152,332 +158,319 @@ namespace Units.Player
 
         public override void FixedUpdateNetwork()
         {
-            if (IsGameFinished)
-                return;
-            
+            if (IsGameFinished) return;
+
             ThrowUpdateOnAllClients();
-            
+
             if (GetInput(out NetworkInputData inputData))
             {
-                MoveUpdate(inputData);
-                DashUpdate(inputData);
-                ThrowUpdate(inputData);
-                ReadyUpdate(inputData);
+                Inputs = inputData;
+            }
 
-                if (Runner.IsForward)
+            MoveUpdate();
+            DashUpdate();
+            ThrowUpdate();
+            ReadyUpdate();
+
+            if (Runner.IsForward)
+            {
+                if (Inputs.IsInteractOnce && !InMenu && !InCustomization && !IsDashing)
                 {
-                    if (inputData.IsInteractOnce && !InMenu && !InCustomization && !IsDashing)
-                    {
-                        interacter.InteractWithClosestInteraction();
-                    }
-
-                    if (inputData.IsDanceOnce && !InMenu && !InCustomization)
-                    {
-                        PlayDancingAnim();
-                    }
-
-                    if (inputData.IsMenu && !InCustomization && Object.HasInputAuthority)
-                    {
-                        if (InMenu)
-                            CloseMenu();
-                        else 
-                            OpenMenu();
-                    }
-
-                    if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
+                    interacter.InteractWithClosestInteraction();
                 }
 
-                AnimationUpdate();
-                RagdollUpdate();
+                if (!InMenu && !InCustomization)
+                {
+                    IsDancing = Inputs.IsDanceOnce;
+                }
+
+                if (Inputs.IsMenu && !InCustomization && Object.HasInputAuthority)
+                {
+                    if (InMenu)
+                        CloseMenu();
+                    else
+                        OpenMenu();
+                }
+
+                if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
             }
+
+            AnimationUpdate();
+            RagdollUpdate();
         }
 
-        public async void TriggerDespawn()
+    public async void TriggerDespawn()
+    {
+        if (Object == null)
         {
-            //await Task.Delay(300); // wait for effects
+            return;
+        }
 
-            if (Object == null)
+        if (Object.HasStateAuthority)
+        {
+            Runner.Despawn(Object);
+        }
+        else if (Runner.IsSharedModeMasterClient)
+        {
+            Object.RequestStateAuthority();
+
+            while (Object.HasStateAuthority == false)
             {
-                return;
+                await Task.Delay(100); // wait for Auth transfer
             }
 
             if (Object.HasStateAuthority)
             {
                 Runner.Despawn(Object);
             }
-            else if (Runner.IsSharedModeMasterClient)
-            {
-                Object.RequestStateAuthority();
-
-                while (Object.HasStateAuthority == false)
-                {
-                    await Task.Delay(100); // wait for Auth transfer
-                }
-
-                if (Object.HasStateAuthority)
-                {
-                    Runner.Despawn(Object);
-                }
-            }
-
-            NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
-            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
         }
 
-        public void ExternalHit(float overrideHitDuration = -1f)
+        NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
+        NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
+    }
+
+    public void ExternalHit(float overrideHitDuration = -1f)
+    {
+        RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied, overrideHitDuration);
+    }
+
+    [Rpc]
+    private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer,
+        Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
+    {
+        var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
+        Inventory inv;
+        if (isPlayer)
         {
-            RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied, overrideHitDuration);
-        }
+            var player = networkObject.GetComponentInChildren<PlayerEntity>();
+            if (player.isImmune) return;
+            inv = player.inventory;
+            player.ResetVelocity();
 
-        [Rpc] 
-        private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer, Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
+            player.Hit(forceDirection, forceMagnitude, overrideHitDuration);
+
+            player.immunityTimer = TickTimer.CreateFromSeconds(Runner, data.ImmunityTime);
+            player.isImmune = true;
+        }
+        else
         {
-            var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
-            Inventory inv;
-            if (isPlayer)
-            {
-                var player = networkObject.GetComponentInChildren<PlayerEntity>();
-                if (player.isImmune) return;
-                inv = player.inventory;
-                player.ResetVelocity();
-
-                player.Hit(forceDirection, forceMagnitude, overrideHitDuration);
-
-                player.immunityTimer = TickTimer.CreateFromSeconds(Runner,data.ImmunityTime);
-                player.isImmune = true;
-            }
-            else
-            {
-                var aiEntity = networkObject.GetComponentInEntity<AIEntity>();
-                Debug.Assert(aiEntity);
-                inv = aiEntity.Inventory;
-                aiEntity.Hit(gameObject, overrideHitDuration);
-            }
-
-            Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
-            inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
-            
-            if (Object.HasStateAuthority && entityNetworkId != Object.Id)
-                RPC_DetectSuccessfulHitOnAllClients();
+            var aiEntity = networkObject.GetComponentInEntity<AIEntity>();
+            Debug.Assert(aiEntity);
+            if (aiEntity.IsImmune) return;
+            inv = aiEntity.Inventory;
+            aiEntity.Hit(gameObject, overrideHitDuration);
+            aiEntity.IsImmune = true;
         }
 
-        private void UpdateArchetype()
-        {
-            data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
-            OnArchetypeChanged?.Invoke();
-        }
-        
-        private void UpdateTeam()
-        {
-            OnTeamChanged?.Invoke();
-        }
-        
-        private void DeactivateMenuAndCustomization()
-        {
-            if (!Object)
-                return;
+        Debug.Assert(inv, $"A player or an AI should have an {nameof(Inventory)}");
+        inv.DropEverything(Velocity.normalized + Vector3.up * 0.5f, 1f);
 
-            if (!Object.HasInputAuthority)
-                return;
-            
-            CloseMenu();
-            StopCustomization();
-        }
+        if (Object.HasStateAuthority && entityNetworkId != Object.Id)
+            RPC_DetectSuccessfulHitOnAllClients();
+    }
 
-        public void OpenMenu()
-        {
-            if (InMenu)
-                return;
-            
-            if (!MenuManager.HasInstance)
-                return;
+    private void UpdateArchetype()
+    {
+        data = SettingsSystem.Instance.GetPlayerSettings(Archetype);
+        OnArchetypeChanged?.Invoke();
+    }
 
-            if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Game, this))
-                return;
-            
-            RPC_ChangeInMenu(true);
-            ResetReady();
-        }
+    private void UpdateTeam() => OnTeamChanged?.Invoke();
 
-        public void CloseMenu()
-        {
-            if (!InMenu)
-                return;
-            
-            if (!MenuManager.HasInstance)
-                return;
+    private void DeactivateMenuAndCustomization()
+    {
+        if (!Object)
+            return;
 
-            var gameInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Game);
-            var optionsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Options);
-            var controlsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Controls);
-            if (gameInTransition || optionsInTransition || controlsInTransition)
-                return;
+        if (!Object.HasInputAuthority)
+            return;
 
-            MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
-            MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
-            MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
-            RPC_ChangeInMenu(false);
-        }
+        CloseMenu();
+        StopCustomization();
+    }
 
-        public void StartCustomization()
-        {
-            if (InCustomization)
-                return;
+    private void OpenMenu()
+    {
+        if (InMenu)
+            return;
 
-            if (!MenuManager.HasInstance)
-                return;
+        if (!MenuManager.HasInstance)
+            return;
 
-            if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this))
-                return;
-            
-            CloseMenu();
+        if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Game, this))
+            return;
 
-            ResetReady();
-            RPC_ChangeInCustomization(true);
-            customizationCamera.Activate();
-        }
+        RPC_ChangeInMenu(true);
+        ResetReady();
+    }
 
-        public void StopCustomization()
-        {
-            if (!InCustomization)
-                return;
-            
-            if (!MenuManager.HasInstance)
-                return;
+    public void CloseMenu()
+    {
+        if (!InMenu)
+            return;
 
-            if (!MenuManager.Instance.HideMenu(MenuManager.Menu.Customization))
-                return;
+        if (!MenuManager.HasInstance)
+            return;
 
-            RPC_ChangeInCustomization(false);
-            mainCamera.Activate();
-        }
+        var gameInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Game);
+        var optionsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Options);
+        var controlsInTransition = MenuManager.Instance.IsInTransition(MenuManager.Menu.Controls);
+        if (gameInTransition || optionsInTransition || controlsInTransition)
+            return;
 
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_ChangeInCustomization(NetworkBool inCustomization)
-        {
-            InCustomization = inCustomization;
-            if (inCustomization)
-            {
-                MakeImmune();
-            }
-            else
-            {
-                UnmakeImmune();
-            }
-        }
-        
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_ChangeInMenu(NetworkBool inMenu)
-        {
-            InMenu = inMenu;
-        }
-        
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_DetectSuccessfulHitOnAllClients()
-        {
-            if (Object.HasInputAuthority)
-                PlayDashCollisionSoundLocally();
-            else 
-                StopDashSoundLocally();
-        }
-        
-        private void ResetPlayerState()
-        {
-            ResetThrowState();
-        }
+        MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
+        MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
+        MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
+        RPC_ChangeInMenu(false);
+    }
 
-        private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed)
-        {
-            changed.Behaviour.UpdateArchetype();
-        }
-        
-        private static void OnNetworkTeamIdChanged(Changed<PlayerEntity> changed)
-        {
-            changed.Behaviour.UpdateTeam();
-        }
-        private void OnDestroy()
-        {
-            NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
-            NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
-        }
+    public void StartCustomization()
+    {
+        if (InCustomization)
+            return;
+
+        if (!MenuManager.HasInstance)
+            return;
+
+        if (!MenuManager.Instance.ShowMenuForPlayer(MenuManager.Menu.Customization, this))
+            return;
+
+        CloseMenu();
+
+        ResetReady();
+        RPC_ChangeInCustomization(true);
+        customizationCamera.Activate();
+    }
+
+    public void StopCustomization()
+    {
+        if (!InCustomization)
+            return;
+
+        if (!MenuManager.HasInstance)
+            return;
+
+        if (!MenuManager.Instance.HideMenu(MenuManager.Menu.Customization))
+            return;
+
+        RPC_ChangeInCustomization(false);
+        mainCamera.Activate();
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_ChangeInCustomization(NetworkBool inCustomization)
+    {
+        InCustomization = inCustomization;
+        SetImmunity(inCustomization);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_ChangeInMenu(NetworkBool inMenu)
+    {
+        InMenu = inMenu;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_DetectSuccessfulHitOnAllClients()
+    {
+        if (Object.HasInputAuthority)
+            PlayDashCollisionSoundLocally();
+        else
+            StopDashSoundLocally();
+    }
+
+    private void ResetPlayerState() => ResetThrowState();
+
+    private static void OnNetworkArchetypeChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateArchetype();
+
+    private static void OnNetworkTeamIdChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateTeam();
+
+    private void OnDestroy()
+    {
+        AnimOnDestroy();
+        ReadyOnDestroy();
+        NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
+        NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
+    }
 
 #if UNITY_EDITOR
-        private void OnValidate()
+    private void OnValidate()
+    {
+        if (!Application.isPlaying)
+            EditorApplication.delayCall += AssignTagAndLayer;
+    }
+
+    private void AssignTagAndLayer()
+    {
+        if (this == null)
+            return;
+
+        var thisGameObject = gameObject;
+
+        if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
+            Debug.LogWarning(
+                $"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
+
+        if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.PLAYER))
+            Debug.LogWarning(
+                $"Player {thisGameObject.name} should have the layer {Layers.PLAYER} ({Layers.NAME_PLAYER}). Instead, it has {thisGameObject.layer}");
+    }
+
+    private bool showDebugMenu;
+
+    [Button("ToggleDebugMenu")]
+    private void ToggleDebugMenu()
+    {
+        showDebugMenu = !showDebugMenu;
+    }
+
+    private void OnGUI()
+    {
+        if (Runner.IsRunning && Object.HasInputAuthority && showDebugMenu)
         {
-            if (!Application.isPlaying)
-                EditorApplication.delayCall += AssignTagAndLayer;
-        }
-
-        private void AssignTagAndLayer()
-        {
-            if (this == null)
-                return;
-
-            var thisGameObject = gameObject;
-
-            if (!thisGameObject.AssignTagIfDoesNotHaveIt(Tags.PLAYER))
-                Debug.LogWarning(
-                    $"Player {thisGameObject.name} should have the tag {Tags.PLAYER}. Instead, it has {thisGameObject.tag}");
-
-            if (!thisGameObject.AssignLayerIfDoesNotHaveIt(Layers.PLAYER))
-                Debug.LogWarning(
-                    $"Player {thisGameObject.name} should have the layer {Layers.PLAYER} ({Layers.NAME_PLAYER}). Instead, it has {thisGameObject.layer}");
-        }
-
-        private bool showDebugMenu;
-        
-        [Button("ToggleDebugMenu")]
-        private void ToggleDebugMenu()
-        {
-            showDebugMenu = !showDebugMenu;
-        }
-
-        private void OnGUI()
-        {
-            if (Runner.IsRunning && Object.HasInputAuthority && showDebugMenu)
+            if (GUI.Button(new Rect(0, 0, 200, 40), "Base"))
             {
-                if (GUI.Button(new Rect(0, 0, 200, 40), "Base"))
-                {
-                    RPC_DebugChangeArchetypeOnHost(Archetype.Base);
-                }
+                RPC_DebugChangeArchetypeOnHost(Archetype.Base);
+            }
 
-                if (GUI.Button(new Rect(0, 40, 200, 40), "Runner"))
-                {
-                    RPC_DebugChangeArchetypeOnHost(Archetype.Runner);
-                }
+            if (GUI.Button(new Rect(0, 40, 200, 40), "Runner"))
+            {
+                RPC_DebugChangeArchetypeOnHost(Archetype.Runner);
+            }
 
-                if (GUI.Button(new Rect(0, 80, 200, 40), "Thrower"))
-                {
-                    RPC_DebugChangeArchetypeOnHost(Archetype.Thrower);
-                }
+            if (GUI.Button(new Rect(0, 80, 200, 40), "Thrower"))
+            {
+                RPC_DebugChangeArchetypeOnHost(Archetype.Thrower);
+            }
 
-                if (GUI.Button(new Rect(0, 120, 200, 40), "Dasher"))
-                {
-                    RPC_DebugChangeArchetypeOnHost(Archetype.Dasher);
-                }
-                
-                if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
-                {
-                    TeamSystem.Instance.AssignTeam(this);
-                }
-                
-                if (GUI.Button(new Rect(0, 200, 200, 40), "Custom on"))
-                {
-                    customizationCamera.Activate(); 
-                }
-                
-                if (GUI.Button(new Rect(0, 240, 200, 40), "Custom off"))
-                {
-                    mainCamera.Activate();
-                }
+            if (GUI.Button(new Rect(0, 120, 200, 40), "Dasher"))
+            {
+                RPC_DebugChangeArchetypeOnHost(Archetype.Dasher);
+            }
+
+            if (GUI.Button(new Rect(0, 160, 200, 40), "New Team"))
+            {
+                TeamSystem.Instance.AssignTeam(this);
+            }
+
+            if (GUI.Button(new Rect(0, 200, 200, 40), "Custom on"))
+            {
+                customizationCamera.Activate();
+            }
+
+            if (GUI.Button(new Rect(0, 240, 200, 40), "Custom off"))
+            {
+                mainCamera.Activate();
             }
         }
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_DebugChangeArchetypeOnHost(Archetype archetype)
-        {
-            Archetype = archetype;
-        }
-#endif
     }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_DebugChangeArchetypeOnHost(Archetype archetype)
+    {
+        Archetype = archetype;
+    }
+#endif
+}
+
 }
