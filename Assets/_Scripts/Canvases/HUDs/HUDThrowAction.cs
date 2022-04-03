@@ -23,7 +23,7 @@ namespace Canvases.HUDs
 
         private HUDSettings settings;
 
-        void Start()
+        private void Start()
         {
             settings = SettingsSystem.HUDSettings;
 
@@ -36,9 +36,11 @@ namespace Canvases.HUDs
                 return;
 
             throwTextColorFull = new Color(throwText.color.r, throwText.color.g, throwText.color.b, 1);
-            throwTextColorSemi = new Color(throwText.color.r, throwText.color.g, throwText.color.b, settings.DeactivatedActionOpacity);
+            throwTextColorSemi = new Color(throwText.color.r, throwText.color.g, throwText.color.b,
+                settings.DeactivatedActionOpacity);
             throwButtonColorFull = new Color(throwButton.color.r, throwButton.color.g, throwButton.color.b, 1);
-            throwButtonColorSemi = new Color(throwButton.color.r, throwButton.color.g, throwButton.color.b, settings.DeactivatedActionOpacity);
+            throwButtonColorSemi = new Color(throwButton.color.r, throwButton.color.g, throwButton.color.b,
+                settings.DeactivatedActionOpacity);
         }
 
         private void OnGameStateChanged(GameState gameState)
@@ -64,11 +66,10 @@ namespace Canvases.HUDs
             if (localPlayerEntity == null)
             {
                 Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
-                return;
             }
         }
 
-        void Update()
+        private void Update()
         {
             if (localPlayerEntity == null || throwText == null || throwButton == null)
                 return;

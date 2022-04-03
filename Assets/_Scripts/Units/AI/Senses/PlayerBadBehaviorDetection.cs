@@ -1,5 +1,4 @@
-﻿using System;
-using Systems.Settings;
+﻿using Systems.Settings;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
@@ -14,9 +13,9 @@ namespace Units.AI.Senses
         private AIEntity aiEntity;
         private AISettings settings;
 
-        private bool deactivateUntilNextPoll = false;
+        private bool deactivateUntilNextPoll;
 
-        private PlayerEntity playerThatHadBadBehavior = null;
+        private PlayerEntity playerThatHadBadBehavior;
 
         public bool HasSeenPlayerWithBadBehavior => PlayerThatHadBadBehavior != null;
         public PlayerEntity PlayerThatHadBadBehavior

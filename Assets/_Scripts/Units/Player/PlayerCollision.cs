@@ -16,6 +16,8 @@ namespace Units.Player
         
         private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
+            if (isImmune) return;
+
             ResetPlayerState();
             if (hitCoroutine != null)
             {
@@ -26,20 +28,18 @@ namespace Units.Player
             hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude, overrideHitDuration));
         }
 
+        private int KnockOutTime => (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+        
         private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration)
         {
             CanMove = false;
             
             var delay = 
-                overrideHitDuration > 0f ? overrideHitDuration : 
-                (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+                overrideHitDuration > 0f ? overrideHitDuration : KnockOutTime;
             delay = Mathf.Max(2, delay);
 
             if (Object.HasStateAuthority)
             {
-                IsGettingUpB = false;
-                IsGettingUpF = false;
-                
                 if (forceDirection != default)
                 {
                     RPC_ToggleRagdoll(true, forceDirection, forceMagnitude);
@@ -56,15 +56,8 @@ namespace Units.Player
 
             if (Object.HasStateAuthority)
             {
-                IsGettingUpB = Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
-                IsGettingUpF = !IsGettingUpB;
                 RPC_ToggleRagdoll(false);
             }
-        }
-
-        public void IsUpAnimEvent()
-        {
-            CanMove = true;
         }
 
         private void OnCollisionStay(Collision collision)

@@ -424,10 +424,6 @@ MonoBehaviour:
   backgroundImage: {fileID: 4133098235639022172}
   fillImage: {fileID: 4133098235388272530}
   frame: {fileID: 4133098234262331515}
-  onSelectSound:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
 --- !u!1 &4133098233930666647
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,7 +1738,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6121581226062954637}
-  - component: {fileID: 6121581226062954634}
+  - component: {fileID: 1445786780}
   m_Layer: 5
   m_Name: OvertimeStatus
   m_TagString: Untagged
@@ -1770,7 +1766,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -219}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6121581226062954634
+--- !u!114 &1445786780
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1782,6 +1778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747424bf06e2a3a44ad1a01f4794f0b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overtimeText: {fileID: 1655239569}
 --- !u!1 &6121581226334766177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,10 +1885,6 @@ MonoBehaviour:
   backgroundImage: {fileID: 4133098233672323436}
   fillImage: {fileID: 4133098234940368905}
   frame: {fileID: 4133098234756142415}
-  onSelectSound:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 0}
 --- !u!1 &6121581226522047018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,9 +2067,8 @@ GameObject:
   - component: {fileID: 6121581227427733583}
   - component: {fileID: 6121581227427733581}
   - component: {fileID: 6121581227427733580}
-  - component: {fileID: 6121581227427733579}
-  - component: {fileID: 6121581227427733578}
-  - component: {fileID: 6121581227427733576}
+  - component: {fileID: 1655239574}
+  - component: {fileID: 1655239569}
   m_Layer: 5
   m_Name: Overtime
   m_TagString: Untagged
@@ -2200,19 +2192,26 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!225 &6121581227427733579
-CanvasGroup:
+--- !u!95 &1655239574
+Animator:
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6121581227427733582}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
---- !u!114 &6121581227427733578
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d10a4b6811db69447b4fa71c9451cde4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1655239569
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2221,26 +2220,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6121581227427733582}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 956ce05dbf9a4ee7b14e82dff2d6e455, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ada56085a7124b408ce17c57a82242d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameStatesToDisplayFor: 02000000
---- !u!111 &6121581227427733576
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6121581227427733582}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: e2c0f1336d9a5064f8e30d9c1ff78bf0, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: e2c0f1336d9a5064f8e30d9c1ff78bf0, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
+  text: {fileID: 6121581227427733580}
 --- !u!1 &6121581227628359051
 GameObject:
   m_ObjectHideFlags: 0

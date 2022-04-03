@@ -2,26 +2,38 @@
 using Canvases.Markers;
 using Fusion;
 using Systems;
-using Systems.Network;
 using UnityEngine;
 
 namespace Units.Player
 {
     public partial class PlayerEntity
     {
-        [Header("Throw")] 
-        [SerializeField] private AnimationCurve lowFrequencyThrowRumbleCurve;
+        [Header("Throw")] [SerializeField] private AnimationCurve lowFrequencyThrowRumbleCurve;
         [SerializeField] private AnimationCurve highFrequencyThrowRumbleCurve;
         [SerializeField] private ThrowChargeMarkerReceptor throwMarker;
 
         private RumbleKey throwRumbleKey;
         public bool CanThrow;
-        
-        [Networked(OnChanged = nameof(OnIsAimingChanged))] private NetworkBool IsAiming { get; set; } = false;
-        [Networked] private NetworkBool IsThrowing { get; set; } = false;
+
+        [Networked(OnChanged = nameof(OnAimChangedCallback))]
+        private NetworkBool IsAiming { get; set; } = false;
+
+        [Networked(OnChanged = nameof(OnThrowChangedCallback))]
+        private NetworkBool IsThrowing { get; set; } = false;
 
         [Networked] private float ThrowForcePercent { get; set; }
         [Networked] private float ThrowForceTimer { get; set; }
+
+        private static void OnAimChangedCallback(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.UpdateAimingSound();
+            changed.Behaviour.OnAimChanged(changed.Behaviour.IsAiming);
+        }
+
+        private static void OnThrowChangedCallback(Changed<PlayerEntity> changed)
+        {
+            changed.Behaviour.OnThrowChanged(changed.Behaviour.IsThrowing);
+        }
 
         private void InitThrow()
         {
@@ -41,38 +53,38 @@ namespace Units.Player
             if (throwMarker)
                 throwMarker.ChargeAmount = ThrowForcePercent;
         }
-        
-        private void ThrowUpdate(NetworkInputData inputData)
+
+        private void ThrowUpdate()
         {
             if (!Runner.IsForward) return;
 
             UpdateCanThrow();
 
-            if (!CanThrow)
+            if (CanThrow)
             {
-                if (IsAiming || IsThrowing || RumbleSystem.Instance.HasRumble)
-                    CancelAimingAndThrowing();
-
-                return;
-            }
-
-            if (inputData.IsThrow && !InMenu)
-            {
-                UpdateAim();
+                if (Inputs.IsThrow && !IsThrowing)
+                {
+                    UpdateAim();
+                }
+                else
+                {
+                    if (IsAiming)
+                    {
+                        UpdateThrowState();
+                    }
+                }
             }
             else
             {
-                if (IsAiming)
-                {
-                    UpdateThrowState();
-                }
+                if (IsAiming || IsThrowing || RumbleSystem.Instance.HasRumble)
+                    CancelAimingAndThrowing();
             }
         }
 
         private void ResetThrowState()
         {
             CancelAimingAndThrowing();
-        } 
+        }
 
         private void UpdateAim()
         {
@@ -80,31 +92,28 @@ namespace Units.Player
 
             ThrowForceTimer = Math.Min(ThrowForceTimer + Runner.DeltaTime, data.SecondsBeforeMaxThrowForce);
 
-            ThrowForcePercent = data.SecondsBeforeMaxThrowForce != 0 ? ThrowForceTimer / data.SecondsBeforeMaxThrowForce : 1f;
-            RumbleSystem.Instance.SetRumble(throwRumbleKey, lowFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent), highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent));
-            
+            ThrowForcePercent = data.SecondsBeforeMaxThrowForce != 0
+                ? ThrowForceTimer / data.SecondsBeforeMaxThrowForce
+                : 1f;
+
+            RumbleSystem.Instance.SetRumble(throwRumbleKey, 
+                lowFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent),
+                highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent));
+
             if (Object.HasInputAuthority)
                 SetAimSoundChargePercentValueLocally(ThrowForcePercent);
         }
 
-        public void UpdateCanThrow()
+        private void UpdateCanThrow()
         {
-            if (!inventory.HasHomework || IsDashing || isRagdoll)
-            {
-                CanThrow = false;
-            }
-            else
-            {
-                CanThrow = true;
-            }
+            CanThrow = inventory.HasHomework && !IsDashing && !isRagdoll && !InMenu;
         }
 
         private void StartAiming()
         {
             ThrowForceTimer = 0f;
-            IsAiming = true;
-            IsThrowing = false;
             ThrowForcePercent = 0f;
+            IsAiming = true;
         }
 
         private void CancelAimingAndThrowing()
@@ -149,15 +158,10 @@ namespace Units.Player
             {
                 if (!IsThrowing)
                     StopAimHoldSoundLocally();
-                
+
                 if (throwMarker)
                     throwMarker.Deactivate();
             }
-        }
-
-        private static void OnIsAimingChanged(Changed<PlayerEntity> changed)
-        {
-            changed.Behaviour.UpdateAimingSound();
         }
     }
 }

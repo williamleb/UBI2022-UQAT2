@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using Systems.Camera;
+using Systems.Network;
 using Units.Camera;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ namespace Units.Player
                 customizationCamera.enabled = false;
                 return;
             }
+
+            NetworkSystem.OnSceneLoadDoneEvent += cameraStrategy.SetCameraBounds;
 
             cameraStrategy.Init(data.PlayerCameraSetting);
             mainCamera.Activate();

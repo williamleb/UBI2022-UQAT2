@@ -80,7 +80,7 @@ namespace Ingredients.Homework
             if (!homeworkMarker)
                 return;
 
-            if (interaction.Possible || HomeworkState == State.Free)
+            if (interaction.Possible || IsFree)
             {
                 homeworkMarker.Deactivate();
             }
@@ -98,17 +98,16 @@ namespace Ingredients.Homework
 
         private void OnInteractedWith(Interacter interacter)
         {
-            if (HomeworkState == State.Taken)
-                return;
+            if (IsTaken) return;
             
             PlayInteractSound(interacter);
             PlayGrabAnim(interacter);
-
-            var inventory = interacter.GetComponent<Inventory>();
-            if (!inventory)
+            
+            if (!interacter.TryGetComponent(out Inventory inventory))
             {
                 Debug.LogWarning("Homework collected by an interacter without an inventory. Reverting to free state.");
                 HomeworkState = State.InWorld;
+                return;
             }
 
             HomeworkState = State.Taken;
@@ -130,7 +129,7 @@ namespace Ingredients.Homework
             if (interacter.gameObject.IsAPlayer())
             {
                 var player = interacter.gameObject.GetComponentInEntity<PlayerEntity>();
-                player.PlayGrabHomeworkAnim();
+                player.SetGrabbing();
             }
         }
 
@@ -162,8 +161,7 @@ namespace Ingredients.Homework
 
         public void Activate(Transform transformToActivateTo)
         {
-            if (HomeworkState != State.Free)
-                return;
+            if (!IsFree) return;
 
             HomeworkState = State.InWorld;
             holdingTransform = null;
@@ -181,8 +179,7 @@ namespace Ingredients.Homework
 
         public void DropInWorld(Vector3 velocity)
         {
-            if (HomeworkState != State.Taken)
-                return;
+            if (!IsTaken) return;
             
             HomeworkState = State.InWorld;
             holdingTransform = null;
@@ -216,15 +213,15 @@ namespace Ingredients.Homework
 
         private void UpdateForCurrentState()
         {
-            visual.SetActive(HomeworkState != State.Free);
-            interaction.InteractionEnabled = HomeworkState == State.InWorld;
+            visual.SetActive(!IsFree);
+            interaction.InteractionEnabled = IsInWorld;
             foreach (var colliderComponent in colliders)
             {
-                colliderComponent.enabled = HomeworkState == State.InWorld;
+                colliderComponent.enabled = IsInWorld;
             }
 
-            rb.isKinematic = HomeworkState != State.InWorld;
-            animator.SetBool(IsSpawned, HomeworkState != State.Free);
+            rb.isKinematic = !IsInWorld;
+            animator.SetBool(IsSpawned, !IsFree);
             
             UpdateHomeworkMarkerVisibility();     
             EventOnStateChanged?.Invoke(this);
@@ -232,6 +229,7 @@ namespace Ingredients.Homework
 
         public override void FixedUpdateNetwork()
         {
+            base.FixedUpdateNetwork();
             if (holdingTransform)
             {
                 var thisTransform = transform;

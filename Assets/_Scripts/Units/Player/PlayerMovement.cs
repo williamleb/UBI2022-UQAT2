@@ -1,12 +1,14 @@
+using System.Collections;
 using Fusion;
-using Systems.Network;
+using Interfaces;
 using UnityEngine;
+using Utilities;
 using Utilities.Extensions;
 using VFX;
 
 namespace Units.Player
 {
-    public partial class PlayerEntity
+    public partial class PlayerEntity : IVelocityObject
     {
         [Header("Movement")] 
         [SerializeField] private DustTrailController dustTrailController;
@@ -18,27 +20,27 @@ namespace Units.Player
         public Vector3 Velocity => nRb.Rigidbody.velocity;
         public float WalkMaxSpeed => data.MoveMaximumSpeed;
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
-        public float CurrentSpeed => velocity;
-
+        [Networked (OnChanged = nameof(OnCurrentSpeedChanged)), Accuracy(0.5f)] public float CurrentSpeed { get; private set; }
+        private static void OnCurrentSpeedChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateMoveAnim();
+        
+        
         private Vector3 cameraPointOffset;
         private float currentMaxMoveSpeed;
-        private float velocity;
         private Vector3 lastMoveDirection = Vector3.zero;
         private bool HasMoveInput => MoveDirection.sqrMagnitude > 0.05;
-        private bool IsMovingFast => velocity >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
+        private bool IsMovingFast => CurrentSpeed >= data.SprintFumbleThreshold * data.SprintMaximumSpeed;
+        private bool CanRotate => IsDashing || isRagdoll || lastMoveDirection == Vector3.zero;
+        private float SpeedOnMaxSpeed => (1 + CurrentSpeed) / data.MoveMaximumSpeed;
 
-        private void MovementAwake()
-        {
-            nRb = GetComponent<NetworkRigidbody>();
-        }
+        private void MovementAwake() => nRb = GetComponent<NetworkRigidbody>();
 
-        private void MoveUpdate(NetworkInputData inputData)
+        private void MoveUpdate()
         {
-            HandleMoveInput(inputData);
+            HandleMoveInput();
             CalculateVelocity();
             MovePlayer();
             RotatePlayer();
-            dustTrailController.UpdateDustTrail(velocity / data.SprintMaximumSpeed, isRagdoll);
+            dustTrailController.UpdateDustTrail(CurrentSpeed / data.SprintMaximumSpeed, isRagdoll);
             UpdateCameraPointPosition();
         }
 
@@ -52,16 +54,16 @@ namespace Units.Player
             cameraPoint.position = transform.position + cameraPointOffset;
         }
 
-        private void HandleMoveInput(NetworkInputData inputData)
+        private void HandleMoveInput()
         {
-            MoveDirection = CanMove ? inputData.Move.V2ToFlatV3() : Vector3.zero;
+            MoveDirection = CanMove ? Inputs.Move.V2ToFlatV3() : Vector3.zero;
 
             if (!IsDashing && !InMenu && !InCustomization)
             {
                 if (HasMoveInput) lastMoveDirection = MoveDirection.normalized;
                 //I don't want to use normalize since I want the magnitude to be smaller than 1 sometimes 
                 MoveDirection = Vector3.ClampMagnitude(MoveDirection, 1);
-                ChangeMoveSpeed(inputData.IsSprint);
+                ChangeMoveSpeed(Inputs.IsSprint);
             }
 
             if (InMenu || InCustomization)
@@ -77,8 +79,7 @@ namespace Units.Player
             {
                 if (!IsAiming)
                 {
-                    bool canSprint = isSprinting && !inventory.HasHomework && velocity >= data.MoveMaximumSpeed;
-                    //Add other speed related logic. Boosters, slow when holding golden homework?
+                    bool canSprint = isSprinting && !inventory.HasHomework && CurrentSpeed >= data.MoveMaximumSpeed;
                     float maxMoveSpeed = canSprint ? data.SprintMaximumSpeed : data.MoveMaximumSpeed;
                     float sprintAcceleration =
                         (canSprint ? data.SprintAcceleration : data.SprintBraking) * Runner.DeltaTime;
@@ -100,53 +101,54 @@ namespace Units.Player
         {
             if (CanMove && HasMoveInput && !IsDashing)
             {
-                velocity += data.MoveAcceleration * Runner.DeltaTime;
-                velocity = Mathf.Min(velocity, currentMaxMoveSpeed * MoveDirection.magnitude);
+                CurrentSpeed += data.MoveAcceleration * Runner.DeltaTime;
+                CurrentSpeed = Mathf.Min(CurrentSpeed, currentMaxMoveSpeed * MoveDirection.magnitude);
             }
             else
             {
-                velocity = Mathf.MoveTowards(velocity, 0, data.MoveDeceleration * Runner.DeltaTime);
+                CurrentSpeed = Mathf.MoveTowards(CurrentSpeed, 0, data.MoveDeceleration * Runner.DeltaTime);
             }
         }
 
         private void MovePlayer()
         {
             if (isRagdoll) return;
-            nRb.Rigidbody.velocity = transform.forward * velocity;
+            Vector3 vel = nRb.Rigidbody.rotation * Vector3.forward * CurrentSpeed;
+            vel.y = nRb.Rigidbody.velocity.y;
+            nRb.Rigidbody.velocity = vel;
         }
-
+        
         private void RotatePlayer()
         {
-            if (IsDashing || isRagdoll || lastMoveDirection == Vector3.zero) return;
-            float turnRateDivider = Mathf.Max(1, velocity - data.MoveMaximumSpeed);
+            if (CanRotate) return;
+            float turnRateDivider = Mathf.Max(1, CurrentSpeed - data.MoveMaximumSpeed);
             float turnRate = data.TurnRotationSpeed * Runner.DeltaTime / turnRateDivider;
-            transform.forward = velocity < data.MoveMaximumSpeed / 2f
+            transform.forward = CurrentSpeed < data.MoveMaximumSpeed / 2f
                 ? lastMoveDirection
                 : Vector3.RotateTowards(transform.forward, lastMoveDirection, turnRate, 0);
         }
 
+        private IEnumerator AfterGetUp(bool isGettingUpBackDown)
+        {
+            yield return Helpers.GetWait(isGettingUpBackDown ? 0.6f : 0.533f);
+            CanMove = true;
+            immunityTimer = TickTimer.CreateFromSeconds(Runner, data.ImmunityTime);
+            ResetGetUp();
+        }
+
         private void ResetVelocity()
         {
-            velocity = 0;
+            CurrentSpeed = 0;
             currentMaxMoveSpeed = data.MoveMaximumSpeed;
         }
 
-        private void MakeImmune()
+        private void SetImmunity(bool immune)
         {
             ResetVelocity();
-            nRb.Rigidbody.isKinematic = true;
-            nRb.Rigidbody.detectCollisions = false;
-            isImmune = true;
-            CanMove = false;
-        }
-
-        private void UnmakeImmune()
-        {
-            ResetVelocity();
-            nRb.Rigidbody.isKinematic = false;
-            nRb.Rigidbody.detectCollisions = true;
-            isImmune = false;
-            CanMove = true;
+            nRb.Rigidbody.isKinematic = immune;
+            nRb.Rigidbody.detectCollisions = !immune;
+            isImmune = immune;
+            CanMove = !immune;
         }
     }
 }

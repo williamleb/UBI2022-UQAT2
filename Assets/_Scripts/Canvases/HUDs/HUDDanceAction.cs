@@ -64,7 +64,6 @@ namespace Canvases.HUDs
             if (localPlayerEntity == null)
             {
                 Debug.LogWarning("Cannot retrieve local player entity. Not updating dash charge.");
-                return;
             }
         }
 
