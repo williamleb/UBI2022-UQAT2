@@ -6,6 +6,10 @@ namespace Units.Customization
     [RequireComponent(typeof(CustomizationBase))]
     public class OutlineUpdater : MonoBehaviour
     {
+        [SerializeField] private Outline.Mode outlineMode = Outline.Mode.OutlineAndSilhouette;
+        [SerializeField] private float outlineWidth = 1.5f;
+        [SerializeField] private bool matchColorWithClothes = true;
+        
         private CustomizationBase customization;
 
         private void Awake()
@@ -17,7 +21,9 @@ namespace Units.Customization
         {
             customization.OnHeadChangedEvent += RefreshOutline;
             customization.OnEyesChangedEvent += RefreshOutline;
-            customization.OnClothesColorChangedEvent += ChangeOutlineColor;
+            
+            if (matchColorWithClothes) 
+                customization.OnClothesColorChangedEvent += ChangeOutlineColor;
             
             RefreshOutline();
         }
@@ -31,7 +37,15 @@ namespace Units.Customization
 
         private void RefreshOutline(int _ = 0)
         {
-            ChangeOutlineColor(customization.ClothesColor);
+            foreach (var outlineCustomizer in GetComponentsInChildren<OutlineCustomizer>())
+            {
+                outlineCustomizer.EnableOutline();
+                outlineCustomizer.OutlineMode = outlineMode;
+                outlineCustomizer.OutlineWidth = outlineWidth;
+            }
+            
+            if (matchColorWithClothes) 
+                ChangeOutlineColor(customization.ClothesColor);
         }
 
         private void ChangeOutlineColor(int color)
@@ -39,7 +53,6 @@ namespace Units.Customization
             var newColor = SettingsSystem.CustomizationSettings.GetColor(color);
             foreach (var outlineCustomizer in GetComponentsInChildren<OutlineCustomizer>())
             {
-                outlineCustomizer.EnableOutline();
                 outlineCustomizer.ChangeColor(newColor);
             }
         }

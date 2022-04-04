@@ -9,6 +9,18 @@ namespace Units.Customization
     {
         [SerializeField, Required] private Outline outline;
 
+        public Outline.Mode OutlineMode
+        {
+            get => outline.OutlineMode;
+            set => outline.OutlineMode = value;
+        }
+
+        public float OutlineWidth
+        {
+            get => outline.OutlineWidth;
+            set => outline.OutlineWidth = value;
+        }
+        
         private void Awake()
         {
             if (!outline) outline = GetComponent<Outline>();
