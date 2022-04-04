@@ -66,7 +66,7 @@ namespace Systems.Teams
             if (!playerList.Contains(playerRef))
                 playerList.Add(playerRef);
             else
-                Debug.LogWarning($"Player {playerRef} was already assigned to team {TeamId}");
+                Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
         }

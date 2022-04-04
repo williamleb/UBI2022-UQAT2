@@ -117,16 +117,23 @@ namespace Systems.Teams
             if (!teams.Any() || !areTeamsCreated)
                 CreateTeams();
 
-            if (!string.IsNullOrEmpty(playerEntity.TeamId))
+            if (!string.IsNullOrEmpty(playerEntity.TeamId) && string.IsNullOrEmpty(teamId))
                 return AssignNewTeam(playerEntity);
 
             if (string.IsNullOrEmpty(teamId))
                 return AssignFirstSmallestTeam(playerEntity);
 
             Team team = GetTeam(teamId);
+            Team currentTeam = !string.IsNullOrEmpty(playerEntity.TeamId) ? GetTeam(playerEntity.TeamId) : null;
 
             if (team != null)
             {
+                if (PlayerSystem.Instance.AllPlayers.Count > 1 && currentTeam != null && currentTeam.PlayerCount == 1)
+                {
+                    Debug.Log("Cannot change team because there will be no player left in the team.");
+                    return team;
+                }
+
                 team.RPC_AssignPlayer(playerEntity);
                 Debug.Log(
                     $"Team {team.Name} assigned to player {playerEntity.Object.InputAuthority}. [From AssignTeam with specified teamId.]");
@@ -173,6 +180,12 @@ namespace Systems.Teams
 
             int teamIndex = GetTeamIndex(playerEntity.TeamId);
             Team currentTeam = GetTeam(playerEntity.TeamId);
+
+            if (PlayerSystem.Instance.AllPlayers.Count > 1 && currentTeam.PlayerCount == 1)
+            {
+                Debug.Log("Cannot change team because there will be no player left in the team.");
+                return currentTeam;
+            }
 
             if (currentTeam != null)
                 currentTeam.RPC_RemovePlayer(playerEntity.Object.InputAuthority);
