@@ -21,6 +21,7 @@ namespace Canvases.Markers
 
         private bool justActivated;
         private bool isOutsideCamera;
+        private bool showOutsideCameraBorders;
         private FloatTween insideOutsideCameraTransitionTween;
 
         public bool IsActivated => release != null;
@@ -32,7 +33,12 @@ namespace Canvases.Markers
             set => worldPosition = value;
         }
         
-        public bool ShowOutsideCameraBorders { get; set; }
+        public bool ShowOutsideCameraBorders
+        {
+            get => showOutsideCameraBorders && (!MarkerManager.HasInstance || !MarkerManager.Instance.HideMarkersOutsideView);
+            set => showOutsideCameraBorders = value;
+        }
+        
         public Vector2 Padding { get; set; } = new Vector2(10f, 10f);
 
         public float DefaultScale

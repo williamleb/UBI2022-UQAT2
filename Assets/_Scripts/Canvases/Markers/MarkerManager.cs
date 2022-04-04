@@ -7,6 +7,7 @@ using Utilities.Singleton;
 
 namespace Canvases.Markers
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class MarkerManager : Singleton<MarkerManager>
     {
         [SerializeField, Required] private MarkerManagerData data;
@@ -19,6 +20,7 @@ namespace Canvases.Markers
         public float GeneralScale => generalScale;
         public float OutsideCameraScale => outsideCameraScale;
         public float SecondsOfTransitionsInsideOutsideCamera => secondsOfTransitionsInsideOutsideCamera;
+        public bool HideMarkersOutsideView { get; set; }
 
         /// <summary>
         /// After calling this method to get a marker, you must release the marker when you no longer need it with
