@@ -39,8 +39,8 @@ namespace Units.Customization
             var newColor = SettingsSystem.CustomizationSettings.GetColor(color);
             foreach (var outlineCustomizer in GetComponentsInChildren<OutlineCustomizer>())
             {
-                // outlineCustomizer.EnableOutline();
-                // outlineCustomizer.ChangeColor(newColor);
+                outlineCustomizer.EnableOutline();
+                outlineCustomizer.ChangeColor(newColor);
             }
         }
     }
