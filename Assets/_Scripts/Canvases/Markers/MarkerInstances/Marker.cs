@@ -14,6 +14,7 @@ namespace Canvases.Markers
         private Camera currentCamera;
 
         private Vector3 worldPosition = Vector3.zero;
+        private float defaultScale = 1.0f;
         private float scale = 1.0f;
 
         private Action<Marker> release;
@@ -23,6 +24,7 @@ namespace Canvases.Markers
         private FloatTween insideOutsideCameraTransitionTween;
 
         public bool IsActivated => release != null;
+        public bool IsTransitioning => insideOutsideCameraTransitionTween != null;
 
         public Vector3 Position
         {
@@ -33,6 +35,12 @@ namespace Canvases.Markers
         public bool ShowOutsideCameraBorders { get; set; }
         public Vector2 Padding { get; set; } = new Vector2(10f, 10f);
 
+        public float DefaultScale
+        {
+            get => defaultScale;
+            set => defaultScale = value;
+        }
+        
         public float Scale
         {
             get => scale;
@@ -182,7 +190,7 @@ namespace Canvases.Markers
         {
             if (ShowOutsideCameraBorders && !IsInsideCamera())
             {
-                return MarkerManager.HasInstance ? MarkerManager.Instance.OutsideCameraScale : 1f;
+                return MarkerManager.HasInstance ? MarkerManager.Instance.OutsideCameraScale * (scale / defaultScale) : 1f;
             }
             
             var cameraDistance = Vector3.Distance(currentCamera.transform.position, worldPosition);
