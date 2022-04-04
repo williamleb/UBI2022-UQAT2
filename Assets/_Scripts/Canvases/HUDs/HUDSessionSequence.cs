@@ -12,7 +12,13 @@ public class HUDSessionSequence : MonoBehaviour
 
     void Start()
     {
-         sessionName = NetworkSystem.Instance.NetworkRunner.SessionInfo.Name.Split('-').ToList();
+        if(NetworkSystem.Instance.NetworkRunner == null || NetworkSystem.Instance.NetworkRunner.SessionInfo == null || NetworkSystem.Instance.NetworkRunner.SessionInfo.Name == null)
+        {
+            Debug.LogWarning("Error retreiving session info. The lobby name will not be displayed.");
+            return;
+        }
+
+        sessionName = NetworkSystem.Instance.NetworkRunner.SessionInfo.Name.Split('-').ToList();
 
         if (!elements.Any() || sessionName == null)
         {
