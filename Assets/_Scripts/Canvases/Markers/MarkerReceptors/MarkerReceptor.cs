@@ -12,6 +12,7 @@ namespace Canvases.Markers
         [SerializeField] private bool showOutsideCameraBorders;
         [SerializeField] private bool activateOnStart;
         [SerializeField, ShowIf(nameof(showOutsideCameraBorders))] private Vector2 padding = new Vector2(10f, 10f);
+        [SerializeField, Tooltip("Will set this marker on top of others. Use sparingly.")] private bool important;
 
         [SerializeField] private bool animate;
         [SerializeField, ShowIf(nameof(animate))] private AnimationCurve animationCurve = new AnimationCurve();
@@ -63,6 +64,7 @@ namespace Canvases.Markers
             currentMarker.ShowOutsideCameraBorders = showOutsideCameraBorders;
             currentMarker.Padding = padding;
             currentMarker.Activate();
+            if(important) currentMarker.transform.SetAsLastSibling();
             OnActivated();
         }
 
