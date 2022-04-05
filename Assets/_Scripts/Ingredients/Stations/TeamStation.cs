@@ -10,12 +10,12 @@ namespace Ingredients.Stations
     [RequireComponent(typeof(Interacter))]
     public class TeamStation : MonoBehaviour
     {
-
         [SerializeField, Required] private Material flagMaterial;
-
+        
         private Interaction interaction;
-
-        public Team associatedTeam;
+        
+        public Team AssociatedTeam { get; set; }
+        private Color Color => flagMaterial.color;
 
         private void Awake()
         {
@@ -27,20 +27,27 @@ namespace Ingredients.Stations
         private void OnInteractedWith(Interacter interacter)
         {
             var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
 
-            if (associatedTeam == null)
+            if (AssociatedTeam == null)
             {
                 TeamSystem.Instance.AssignTeam(playerEntity);
             }
             else
             {
-                TeamSystem.Instance.AssignTeam(playerEntity,associatedTeam.TeamId);
+                TeamSystem.Instance.AssignTeam(playerEntity, AssociatedTeam.TeamId);
             }
+            
+            playerEntity.PlayTeamSwapFXOnOtherClients(Color);
         }
 
         private void OnInstantFeedback(Interacter interacter)
         {
+            var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
+            
             SoundSystem.Instance.PlayInteractWorldElementSound();
+            playerEntity.PlayTeamSwapFXLocally(Color);
         }
 
         public void ChangeFlagColor(Color color)

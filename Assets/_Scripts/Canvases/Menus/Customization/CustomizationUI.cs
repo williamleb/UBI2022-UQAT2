@@ -1,5 +1,4 @@
 ﻿using Canvases.Components;
-using Canvases.Animations;
 using Sirenix.OdinInspector;
 using Units.Player;
 using UnityEngine;

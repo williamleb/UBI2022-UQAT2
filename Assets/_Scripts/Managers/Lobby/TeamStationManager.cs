@@ -34,11 +34,11 @@ namespace Managers.Lobby
             if (TeamSystem.Instance.Teams.Count != 2)
                 return;
 
-            leftTeamStation.associatedTeam = TeamSystem.Instance.Teams[0];
-            leftTeamStation.associatedTeam.OnColorChanged += UpdateColor;
+            leftTeamStation.AssociatedTeam = TeamSystem.Instance.Teams[0];
+            leftTeamStation.AssociatedTeam.OnColorChanged += UpdateColor;
 
-            rightTeamStation.associatedTeam = TeamSystem.Instance.Teams[1];
-            rightTeamStation.associatedTeam.OnColorChanged += UpdateColor;
+            rightTeamStation.AssociatedTeam = TeamSystem.Instance.Teams[1];
+            rightTeamStation.AssociatedTeam.OnColorChanged += UpdateColor;
 
             UpdateColor(0);
         }
@@ -52,14 +52,14 @@ namespace Managers.Lobby
                 return;
             }
 
-            if (leftTeamStation.associatedTeam == null || rightTeamStation.associatedTeam == null)
+            if (leftTeamStation.AssociatedTeam == null || rightTeamStation.AssociatedTeam == null)
             {
                 Debug.LogWarning("Attempted to update the color of the flag, but a reference to one of the two teams is missing. Not updating flag color.");
                 return;
             }
             
-            leftTeamStation.ChangeFlagColor(SettingsSystem.CustomizationSettings.GetColor(leftTeamStation.associatedTeam.Color));
-            rightTeamStation.ChangeFlagColor(SettingsSystem.CustomizationSettings.GetColor(rightTeamStation.associatedTeam.Color));
+            leftTeamStation.ChangeFlagColor(SettingsSystem.CustomizationSettings.GetColor(leftTeamStation.AssociatedTeam.Color));
+            rightTeamStation.ChangeFlagColor(SettingsSystem.CustomizationSettings.GetColor(rightTeamStation.AssociatedTeam.Color));
         }
     }
 }

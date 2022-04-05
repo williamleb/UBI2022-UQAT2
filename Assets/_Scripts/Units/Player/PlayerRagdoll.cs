@@ -80,7 +80,10 @@ namespace Units.Player
             }
 
             if (isActivate)
+            {
                 PlayFumbleSoundLocally();
+                PlayHitFXLocally();
+            }
         }
         
         
