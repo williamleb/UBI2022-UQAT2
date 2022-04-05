@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Fusion;
+using Systems;
 using UnityEngine;
 using Utilities;
 using Utilities.Extensions;
@@ -11,8 +12,14 @@ namespace Units.Player
     {
         // forceDirection : direction in which the hit acts on the player
         // forceMagnitude : magnitude of the force that acts on the player. Default = network rigidbody velocity
-
+        
         private Coroutine hitCoroutine;
+        private RumbleKey collisionRumbleKey;
+
+        private void InitCollision()
+        {
+            collisionRumbleKey = new RumbleKey(this);
+        }
         
         private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
         {
@@ -33,7 +40,7 @@ namespace Units.Player
         private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration)
         {
             CanMove = false;
-            
+            RumbleSystem.Instance.SetRumbleIfUsingController(collisionRumbleKey, 1, 1, IsUsingGamePad);
             var delay = 
                 overrideHitDuration > 0f ? overrideHitDuration : KnockOutTime;
             delay = Mathf.Max(2, delay);
@@ -50,8 +57,10 @@ namespace Units.Player
                 }
             }
 
-            yield return Helpers.GetWait(delay - 1);
-
+            yield return Helpers.GetWait((delay - 1) * 0.25f); 
+            RumbleSystem.Instance.StopRumble(collisionRumbleKey);
+            yield return Helpers.GetWait((delay - 1) * 0.75f);
+            
             transform.position = ragdollTransform.position.Flat();
 
             if (Object.HasStateAuthority)

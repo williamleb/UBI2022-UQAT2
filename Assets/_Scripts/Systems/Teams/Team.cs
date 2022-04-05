@@ -66,14 +66,16 @@ namespace Systems.Teams
             if (!playerList.Contains(playerRef))
                 playerList.Add(playerRef);
             else
-                Debug.LogWarning($"Player {playerRef} was already assigned to team {TeamId}");
+                Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        public void RPC_RemovePlayer(PlayerRef playerRef)
+        public void RPC_RemovePlayer(PlayerEntity playerEntity)
         {
+            var playerRef = playerEntity.Object.InputAuthority;
+
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);

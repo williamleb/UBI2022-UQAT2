@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Fusion;
+using Systems;
 using UnityEngine;
 using Utilities.Extensions;
 using Utilities.Unity;
@@ -29,16 +30,40 @@ namespace Units.Player
 
         private TickTimer dashTimer;
         private TickTimer dashCooldown;
+        private TickTimer rumbleCooldown;
         private bool hasHitSomeone;
+        private RumbleKey dashRumbleKey;
+        
+        private float dashRumbleLowFrequency;
+        private float dashRumbleHighFrequency = 0.3f;
 
         private readonly List<LagCompensatedHit> hits = new List<LagCompensatedHit>();
         private readonly List<LagCompensatedHit> collisions = new List<LagCompensatedHit>();
 
+        private void InitDash()
+        {
+            dashRumbleKey = RumbleSystem.Instance.GenerateNewRumbleKeyFromBehaviour(this);
+        }
+        
         private void DashUpdate()
         {
             HandleDashInput();
-            if (IsDashing) DetectCollision();
+            if (IsDashing)
+            {
+                DetectCollision();
+                RumbleSystem.Instance.SetRumbleIfUsingController(dashRumbleKey, dashRumbleLowFrequency, dashRumbleHighFrequency, IsUsingGamePad);
+            }
+            else if (rumbleCooldown.ExpiredOrNotRunning(Runner))
+            {
+                RumbleSystem.Instance.StopRumble(dashRumbleKey);
+            }
+
             if (dashTimer.Expired(Runner)) OnHitNothing();
+            if (rumbleCooldown.Expired(Runner))
+            {
+                dashRumbleLowFrequency = 0f;
+                dashRumbleHighFrequency = 0.3f;
+            }
         }
 
         private void HandleDashInput()
@@ -189,8 +214,8 @@ namespace Units.Player
         private void DetectCollision()
         {
             if (Runner.LagCompensation.OverlapSphere(tacklePoint.position, data.DashDetectionSphereRadius,
-                    Object.InputAuthority, collisions,
-                    options: HitOptions.IncludePhysX) <= 0) return;
+                    Object.InputAuthority, collisions, options: HitOptions.IncludePhysX, 
+                    queryTriggerInteraction:QueryTriggerInteraction.Ignore) <= 0) return;
             
             Transform t = transform;
             LagCompensatedHit closestHit = FindClosestHit();
@@ -200,18 +225,27 @@ namespace Units.Player
                 
             if (go.IsAPlayerOrAI())
             {
+                dashRumbleLowFrequency = 0.7f;
+                rumbleCooldown = TickTimer.CreateFromSeconds(Runner,0.2f);
                 OnHitOtherEntity(go);
             }
             else if (go.CompareTag(Tags.COLLIDABLE))
             {
                     
-                Runner.GetPhysicsScene().Raycast(tacklePoint.position, t.forward, out RaycastHit info);
-                if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.71)
+                Runner.GetPhysicsScene().Raycast(tacklePoint.position, go.transform.position - t.position, out RaycastHit info, 
+                    queryTriggerInteraction:QueryTriggerInteraction.Ignore);
+                
+                if (Mathf.Abs(Vector3.Dot(info.normal, t.forward)) < 0.8)
                 {
                     t.forward = Vector3.Reflect(t.forward, info.normal);
+                    dashRumbleLowFrequency = 0.3f;
+                    rumbleCooldown = TickTimer.CreateFromSeconds(Runner,0.2f);
                 }
                 else
                 {
+                    dashRumbleLowFrequency = 1f;
+                    dashRumbleHighFrequency = 1f;
+                    rumbleCooldown = TickTimer.CreateFromSeconds(Runner,0.5f);
                     OnHitObject();
                 }
             }

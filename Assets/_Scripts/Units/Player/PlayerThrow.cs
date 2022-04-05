@@ -96,9 +96,10 @@ namespace Units.Player
                 ? ThrowForceTimer / data.SecondsBeforeMaxThrowForce
                 : 1f;
 
-            RumbleSystem.Instance.SetRumble(throwRumbleKey, 
+            RumbleSystem.Instance.SetRumbleIfUsingController(throwRumbleKey,
                 lowFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent),
-                highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent));
+                highFrequencyThrowRumbleCurve.Evaluate(ThrowForcePercent),
+                IsUsingGamePad);
 
             if (Object.HasInputAuthority)
                 SetAimSoundChargePercentValueLocally(ThrowForcePercent);
