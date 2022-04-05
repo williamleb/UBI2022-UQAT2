@@ -53,6 +53,7 @@ namespace Units.AI.Actions
                     return TaskStatus.Success;
                 
                 SeekNextPoint();
+                ForceUpdateDestination();
             }
             
             UpdateHallwayProgress();
