@@ -48,12 +48,6 @@ namespace Units.Player
                 RPC_PlayArchetypeSwapFXOnOtherClients(archetype);
         }
 
-        public void PlayHitFXOnOtherClients()
-        {
-            if (Object.HasStateAuthority)
-                RPC_PlayHitFXOnOtherClients();
-        }
-        
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_PlayTeamSwapFXOnOtherClients(Color color)
         {
@@ -66,13 +60,6 @@ namespace Units.Player
         {
             if (!Object.HasInputAuthority)
                 PlayArchetypeSwapFXLocally(archetype);
-        }
-
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_PlayHitFXOnOtherClients()
-        {
-            if (!Object.HasInputAuthority)
-                PlayHitFXLocally();
         }
 
         private ParticleSystem GetFXFor(Archetype archetype)
