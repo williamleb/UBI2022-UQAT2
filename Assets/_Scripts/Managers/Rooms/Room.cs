@@ -2,11 +2,13 @@ using System.Collections;
 using Canvases.Markers;
 using Fusion;
 using Interfaces;
+using Managers.Game;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using Utilities.Extensions;
 using Utilities.Mesh;
+using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -39,6 +41,20 @@ namespace Managers.Rooms
             if (RoomManager.HasInstance)
                 RoomManager.Instance.RegisterRoom(this);
 
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            
+            UpdatePositionAndRotationCache();
+        }
+
+        private void OnGameStateChanged(GameState _)
+        {
+            UpdatePositionAndRotationCache();   
+        }
+
+        [Button("Update")]
+        private void UpdatePositionAndRotationCache()
+        {
             var thisTransform = transform;
             rotationAngles = new Vector3(0f, thisTransform.eulerAngles.y, 0f);
             lowerLeftPosition = thisTransform.position + offset.V2ToFlatV3().RotateAround(Vector3.up,rotationAngles);
@@ -48,6 +64,9 @@ namespace Managers.Rooms
         {
             if (RoomManager.HasInstance)
                 RoomManager.Instance.UnregisterRoom(this);
+            
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
             
             StopActivateRoomMarkerRoutine();
         }
@@ -104,7 +123,7 @@ namespace Managers.Rooms
 
             var boundingPosition = new Vector3(randomX, transform.position.y, randomZ);
 
-            return boundingPosition.RotateAround(lowerLeftPosition, rotationAngles) + lowerLeftPosition;
+            return (boundingPosition + lowerLeftPosition).RotateAround(lowerLeftPosition, rotationAngles);
         }
 
 #if UNITY_EDITOR
