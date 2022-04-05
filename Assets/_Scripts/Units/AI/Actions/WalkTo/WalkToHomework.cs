@@ -10,6 +10,8 @@ namespace Units.AI.Actions
     public class WalkToHomework : WalkToTransform
     {
         private Homework homeworkToWalkTo = null;
+
+        private bool invalidPathDetected = false;
         
         public override void OnStart()
         {
@@ -24,6 +26,9 @@ namespace Units.AI.Actions
         
         protected override TaskStatus OnUpdateImplementation()
         {
+            if (invalidPathDetected)
+                return TaskStatus.Failure;
+            
             if (!homeworkToWalkTo)
                 return TaskStatus.Failure;
 
@@ -42,6 +47,13 @@ namespace Units.AI.Actions
             
             if (Brain.TaskSensor)
                 Brain.TaskSensor.CanReceiveTask = true;
+
+            invalidPathDetected = false;
+        }
+
+        protected override void OnPathInvalidDetected()
+        {
+            invalidPathDetected = true;
         }
     }
 }

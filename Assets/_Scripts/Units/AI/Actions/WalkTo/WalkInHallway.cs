@@ -53,6 +53,7 @@ namespace Units.AI.Actions
                     return TaskStatus.Success;
                 
                 SeekNextPoint();
+                ForceUpdateDestination();
             }
             
             UpdateHallwayProgress();
@@ -119,6 +120,11 @@ namespace Units.AI.Actions
             endsOnFirstHallwayPointReached = false;
             regroup = true;
             randomHallway = false;
+        }
+
+        protected override void OnPathInvalidDetected()
+        {
+            SeekNextPoint();
         }
     }
 }

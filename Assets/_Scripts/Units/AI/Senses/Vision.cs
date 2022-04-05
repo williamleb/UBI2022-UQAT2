@@ -11,6 +11,8 @@ namespace Units.AI.Senses
 {
     public class Vision : NetworkBehaviour
     {
+        private const int RAYCAST_MASK = ~0 & ~Layers.IGNORE_RAYCAST_MASK & ~Layers.PLAYER_MASK & ~Layers.AI_MASK & ~Layers.INTERACTION_MASK;
+
         private readonly List<PlayerEntity> playersInSight = new List<PlayerEntity>();
         private readonly List<AIEntity> aisInSight = new List<AIEntity>();
         private readonly List<Interaction> interactionsInSight = new List<Interaction>();
@@ -58,8 +60,9 @@ namespace Units.AI.Senses
         
         private bool IsInViewAngle(Collider other)
         {
-            Vector3 dirToOther = (other.transform.position - transform.position).normalized;
-            return Vector3.Angle(transform.forward,dirToOther) < data.VisionViewAngle;
+            var thisTransform = transform;
+            var dirToOther = (other.transform.position - thisTransform.position).normalized;
+            return Vector3.Angle(thisTransform.forward,dirToOther) < data.VisionViewAngle;
         }
 
         private bool IsInInstantDetectRange(Collider other)
@@ -104,17 +107,19 @@ namespace Units.AI.Senses
             
             interactionsInSight.Add(interaction);
         }
-
+        
         private RaycastHit hit;
         private bool IsVisible(Collider objectCollider)
         {
-            if (Runner == null || !Runner.GetPhysicsScene().Raycast(transform.position + Vector3.up, objectCollider.transform.position - transform.position, out hit))
+            if (Runner == null)
                 return false;
+            
+            var thisPosition = transform.position + Vector3.up;
+            var objectPosition = objectCollider.transform.position;
+            if (!Runner.GetPhysicsScene().Raycast(thisPosition, objectPosition - transform.position, out hit, Vector3.Distance(thisPosition, objectPosition), RAYCAST_MASK))
+                return true;
 
-            if (!objectCollider.gameObject.CompareEntities(hit.collider.gameObject))
-                return false;
-
-            return true;
+            return false;
         }
 
 #if UNITY_EDITOR

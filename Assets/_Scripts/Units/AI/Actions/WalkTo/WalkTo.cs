@@ -11,6 +11,9 @@ namespace Units.AI.Actions
     {
         [SerializeField] private SharedBool overrideSpeed = false;        
         [SerializeField] private SharedFloat speed = 0f;        
+        [SerializeField] private SharedFloat destinationUpdateRate = 0.2f;        
+        
+        private float updateCountdown;
         
         protected abstract Vector3 Destination { get; }
         protected virtual bool EndsOnDestinationReached => true;
@@ -29,13 +32,23 @@ namespace Units.AI.Actions
                 Brain.SetSpeed(speed.Value);
             
             if (SetDestinationOnStart)
-                Brain.SetDestination(Destination);
+                SetDestination();
+        }
+
+        protected void ForceUpdateDestination()
+        {
+            SetDestination();
+        }
+
+        private void SetDestination()
+        {
+            Brain.SetDestination(Destination);
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (UpdateDestination)
-                Brain.SetDestination(Destination);
+            ManagePathIncompleteOrInvalid();
+            ManageUpdateDestination();
 
             var implementationUpdateResult = OnUpdateImplementation();
             if (implementationUpdateResult != TaskStatus.Running)
@@ -45,6 +58,29 @@ namespace Units.AI.Actions
                 return Brain.HasReachedItsDestination ? TaskStatus.Success : TaskStatus.Running;
 
             return TaskStatus.Running;
+        }
+
+        private void ManagePathIncompleteOrInvalid()
+        {
+            if (!Brain.IsPathValid())
+            {
+                OnPathInvalidDetected();
+            }
+        }
+        
+        protected virtual void OnPathInvalidDetected() {}
+
+        private void ManageUpdateDestination()
+        {
+            if (UpdateDestination)
+            {
+                updateCountdown += Time.deltaTime;
+                if (updateCountdown > destinationUpdateRate.Value)
+                {
+                    SetDestination();
+                    updateCountdown = 0f;
+                }
+            }
         }
 
         public override void OnEnd()

@@ -412,6 +412,22 @@ namespace Units.AI
                 Debug.LogWarning(
                     $"Player {thisGameObject.name} should have the layer {Layers.AI} ({Layers.NAME_AI}). Instead, it has {thisGameObject.layer}");
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!Agent || !Agent.enabled)
+                return;
+
+            var path = Agent.path;
+
+            Gizmos.color = Color.white;
+            for (var i = 0; i < path.corners.Length - 1; ++i)
+            {
+                var one = path.corners[i];
+                var two = path.corners[i + 1];
+                Gizmos.DrawLine(one, two);
+            }
+        }
 #endif
     }
 }

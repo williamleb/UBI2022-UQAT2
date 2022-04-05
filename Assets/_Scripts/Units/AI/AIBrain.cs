@@ -3,6 +3,7 @@ using BehaviorDesigner.Runtime;
 using Managers.Hallway;
 using Units.AI.Senses;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Units.AI
 {
@@ -42,6 +43,14 @@ namespace Units.AI
         {
             if(entity.Agent.enabled)
                 entity.Agent.SetDestination(target);
+        }
+
+        public bool IsPathValid()
+        {
+            if (!entity.Agent.enabled)
+                return true;
+
+            return entity.Agent.path.status == NavMeshPathStatus.PathComplete;
         }
 
         public void StopMoving()
