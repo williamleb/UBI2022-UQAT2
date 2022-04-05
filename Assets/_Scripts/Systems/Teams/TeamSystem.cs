@@ -114,7 +114,6 @@ namespace Systems.Teams
             if (!NetworkSystem.Instance.IsHost)
                 return null;
 
-            Debug.Log("PlayerEntity TeamId" + playerEntity.TeamId + "teamId" + teamId);
 
             if (!teams.Any() || !areTeamsCreated)
                 CreateTeams();
@@ -124,6 +123,9 @@ namespace Systems.Teams
 
             if (string.IsNullOrEmpty(teamId))
                 return AssignFirstSmallestTeam(playerEntity);
+
+            if (!string.IsNullOrEmpty(playerEntity.TeamId) && playerEntity.TeamId.Equals(teamId))
+                return null;
 
             Team team = GetTeam(teamId);
             Team currentTeam = !string.IsNullOrEmpty(playerEntity.TeamId) ? GetTeam(playerEntity.TeamId) : null;
