@@ -78,5 +78,10 @@ namespace Units.AI.Actions
             base.OnReset();
             roomTarget = null;
         }
+
+        protected override void OnPathInvalidDetected()
+        {
+            SetNewDestination();
+        }
     }
 }
