@@ -1,4 +1,5 @@
-﻿using Systems.Settings;
+﻿using Sirenix.OdinInspector;
+using Systems.Settings;
 using UnityEngine;
 
 namespace Units.Customization
@@ -9,6 +10,7 @@ namespace Units.Customization
         [SerializeField] private Outline.Mode outlineMode = Outline.Mode.OutlineAndSilhouette;
         [SerializeField] private float outlineWidth = 1.5f;
         [SerializeField] private bool matchColorWithClothes = true;
+        [SerializeField, HideIf(nameof(matchColorWithClothes))] private Color outlineColor;
         
         private CustomizationBase customization;
 
@@ -46,14 +48,21 @@ namespace Units.Customization
             
             if (matchColorWithClothes) 
                 ChangeOutlineColor(customization.ClothesColor);
+            else
+                ChangeOutlineColor(outlineColor);
         }
 
         private void ChangeOutlineColor(int color)
         {
             var newColor = SettingsSystem.CustomizationSettings.GetColor(color);
+            ChangeOutlineColor(newColor);
+        }
+
+        private void ChangeOutlineColor(Color color)
+        {
             foreach (var outlineCustomizer in GetComponentsInChildren<OutlineCustomizer>())
             {
-                outlineCustomizer.ChangeColor(newColor);
+                outlineCustomizer.ChangeColor(color);
             }
         }
     }
