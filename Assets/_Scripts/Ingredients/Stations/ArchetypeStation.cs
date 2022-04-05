@@ -26,13 +26,20 @@ namespace Ingredients.Stations
 
         private void OnInstantFeedback(Interacter interacter)
         {
+            var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
+            
             SoundSystem.Instance.PlayCharacterSelectSound(archetypeTypeStation);
+            playerEntity.PlayArchetypeSwapFXLocally(archetypeTypeStation);
         }
 
         private void OnInteractedWith(Interacter interacter)
         {
             var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
+
             playerEntity.AssignArchetype(archetypeTypeStation);
+            playerEntity.PlayArchetypeSwapFXOnOtherClients(archetypeTypeStation);
         }
     }
 }

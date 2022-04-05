@@ -12,10 +12,11 @@ namespace Ingredients.Stations
     {
 
         [SerializeField, Required] private Material flagMaterial;
+        [SerializeField] private Team associatedTeam;
 
         private Interaction interaction;
 
-        public Team associatedTeam;
+        private Color Color => flagMaterial.color;
 
         private void Awake()
         {
@@ -27,6 +28,7 @@ namespace Ingredients.Stations
         private void OnInteractedWith(Interacter interacter)
         {
             var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
 
             if (associatedTeam == null)
             {
@@ -36,11 +38,17 @@ namespace Ingredients.Stations
             {
                 TeamSystem.Instance.AssignTeam(playerEntity,associatedTeam.TeamId);
             }
+            
+            playerEntity.PlayTeamSwapFXOnOtherClients(Color);
         }
 
         private void OnInstantFeedback(Interacter interacter)
         {
+            var playerEntity = interacter.GetComponent<PlayerEntity>();
+            Debug.Assert(playerEntity);
+            
             SoundSystem.Instance.PlayInteractWorldElementSound();
+            playerEntity.PlayTeamSwapFXLocally(Color);
         }
 
         public void ChangeFlagColor(Color color)
