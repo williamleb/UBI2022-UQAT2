@@ -72,8 +72,10 @@ namespace Systems.Teams
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        public void RPC_RemovePlayer(PlayerRef playerRef)
+        public void RPC_RemovePlayer(PlayerEntity playerEntity)
         {
+            var playerRef = playerEntity.Object.InputAuthority;
+
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);

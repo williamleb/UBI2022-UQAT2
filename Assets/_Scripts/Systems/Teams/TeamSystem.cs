@@ -114,6 +114,8 @@ namespace Systems.Teams
             if (!NetworkSystem.Instance.IsHost)
                 return null;
 
+            Debug.Log("PlayerEntity TeamId" + playerEntity.TeamId + "teamId" + teamId);
+
             if (!teams.Any() || !areTeamsCreated)
                 CreateTeams();
 
@@ -133,6 +135,9 @@ namespace Systems.Teams
                     Debug.Log("Cannot change team because there will be no player left in the team.");
                     return team;
                 }
+
+                if (currentTeam != null)
+                    currentTeam.RPC_RemovePlayer(playerEntity);
 
                 team.RPC_AssignPlayer(playerEntity);
                 Debug.Log(
@@ -160,7 +165,6 @@ namespace Systems.Teams
                 }
             }
 
-            playerEntity.TeamId = smallestTeam.TeamId;
             smallestTeam.RPC_AssignPlayer(playerEntity);
 
             Debug.Log(
@@ -188,7 +192,7 @@ namespace Systems.Teams
             }
 
             if (currentTeam != null)
-                currentTeam.RPC_RemovePlayer(playerEntity.Object.InputAuthority);
+                currentTeam.RPC_RemovePlayer(playerEntity);
 
             if (teamIndex == -1)
             {
@@ -204,7 +208,6 @@ namespace Systems.Teams
                 newTeam = Teams[0];
 
             newTeam.RPC_AssignPlayer(playerEntity);
-            playerEntity.TeamId = newTeam.TeamId;
 
             Debug.Log($"Team {newTeam.Name} assigned to player {playerEntity.Object.InputAuthority}");
 
@@ -281,7 +284,7 @@ namespace Systems.Teams
 
             if (playerEntity && !string.IsNullOrEmpty(playerEntity.TeamId))
             {
-                GetTeam(playerEntity.TeamId).RPC_RemovePlayer(networkObject.InputAuthority);
+                GetTeam(playerEntity.TeamId).RPC_RemovePlayer(playerEntity);
             }
             else
             {
@@ -289,7 +292,7 @@ namespace Systems.Teams
                 {
                     if (team.ContainPlayer(networkObject.InputAuthority))
                     {
-                        team.RPC_RemovePlayer(networkObject.InputAuthority);
+                        team.RPC_RemovePlayer(playerEntity);
                     }
                 }
             }
