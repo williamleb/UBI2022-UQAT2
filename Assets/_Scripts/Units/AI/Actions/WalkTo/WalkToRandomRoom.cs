@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using Managers.Rooms;
@@ -7,6 +8,7 @@ using Utilities.Extensions;
 
 namespace Units.AI.Actions
 {
+    [Serializable]
     [TaskCategory("AI/Walk To")]
     [TaskDescription("Make the AI walk towards a random room.")]
     public class WalkToRandomRoom : WalkTo

@@ -32,10 +32,28 @@ namespace Units.AI.Actions
                 Brain.SetDestination(Destination);
         }
 
+        protected void ForceUpdateDestination()
+        {
+            Brain.SetDestination(Destination);
+        }
+
+        private void ResetDestination()
+        {
+            
+        }
+
+        private float updateCountdown;
         public override TaskStatus OnUpdate()
         {
             if (UpdateDestination)
-                Brain.SetDestination(Destination);
+            {
+                updateCountdown += Time.deltaTime;
+                if (updateCountdown > 0.2f)
+                {
+                    Brain.SetDestination(Destination);
+                    updateCountdown = 0f;
+                }
+            }
 
             var implementationUpdateResult = OnUpdateImplementation();
             if (implementationUpdateResult != TaskStatus.Running)
