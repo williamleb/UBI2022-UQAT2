@@ -97,7 +97,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 678589921940732248}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 3.69, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8203543040726202992}
@@ -120,6 +120,50 @@ MonoBehaviour:
   showOutsideCameraBorders: 1
   activateOnStart: 1
   padding: {x: 10, y: 10}
+  important: 1
+  animate: 1
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 6.022141
+      outSlope: 6.022141
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.2064198
+    - serializedVersion: 3
+      time: 0.25
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.75
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 6.9928246
+      outSlope: 6.9928246
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13369322
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   sprite: {fileID: 21300000, guid: c61364184f1b1da429de448ac5ecee87, type: 3}
 --- !u!1 &5237196859020158890
 GameObject:
@@ -146,7 +190,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5237196859020158890}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 2.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8203543040726202992}
@@ -169,6 +213,14 @@ MonoBehaviour:
   showOutsideCameraBorders: 0
   activateOnStart: 0
   padding: {x: 10, y: 10}
+  important: 0
+  animate: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   actionReference: {fileID: -8964356537790128568, guid: 4f878948d09c1d74bb22b3dcaca44dcf, type: 3}
 --- !u!1001 &5426051021941435440
 PrefabInstance:
@@ -827,11 +879,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d717c61f4c207cd4185e7073ee862c10, type: 3}
+--- !u!1 &5155598435020951905 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d717c61f4c207cd4185e7073ee862c10, type: 3}
+  m_PrefabInstance: {fileID: 5426051021941435440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &1884652050918560161 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: d717c61f4c207cd4185e7073ee862c10, type: 3}
   m_PrefabInstance: {fileID: 5426051021941435440}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1131592295742646457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5155598435020951905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 3
+  outlineColor: {r: 1, g: 0.5411765, b: 0, a: 1}
+  outlineWidth: 1.5
+  precomputeOutline: 1
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &6841636434422561190
 PrefabInstance:
   m_ObjectHideFlags: 0

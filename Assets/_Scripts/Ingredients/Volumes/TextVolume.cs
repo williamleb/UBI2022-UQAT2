@@ -1,40 +1,19 @@
-﻿using System;
-using Canvases.Markers;
-using Sirenix.OdinInspector;
+﻿using Canvases.Markers;
 using UnityEngine;
 
 namespace Ingredients.Volumes
 {
     [RequireComponent(typeof(LocalPlayerDetection))]
-    public class TextVolume : MonoBehaviour
+    public class TextVolume : LocalPlayerVolume
     {
         [SerializeField] private TextMarkerReceptor textMarker;
 
-        private LocalPlayerDetection detection;
-
-        private void Awake()
-        {
-            detection = GetComponent<LocalPlayerDetection>();
-        }
-
-        private void Start()
-        {
-            detection.OnLocalPlayerEntered += Activate;
-            detection.OnLocalPlayerLeft += Deactivate;
-        }
-
-        private void OnDestroy()
-        {
-            detection.OnLocalPlayerEntered -= Activate;
-            detection.OnLocalPlayerLeft -= Deactivate;
-        }
-
-        private void Activate()
+        protected override void ActivateImplementation()
         {
             if (textMarker) textMarker.Activate();
         }
 
-        private void Deactivate()
+        protected override void DeactivateImplementation()
         {
             if (textMarker) textMarker.Deactivate();
         }
