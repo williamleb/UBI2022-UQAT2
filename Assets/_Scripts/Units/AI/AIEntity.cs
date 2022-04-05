@@ -413,21 +413,14 @@ namespace Units.AI
                     $"Player {thisGameObject.name} should have the layer {Layers.AI} ({Layers.NAME_AI}). Instead, it has {thisGameObject.layer}");
         }
 
-        private void Update()
+        private void OnDrawGizmosSelected()
         {
-            var path = Agent.path;
-            if (Object && IsJanitor)
-            {
-                Debug.Log($"Status: {path.status}; Path: {string.Join(", ",path.corners)}");
-            }
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (!Agent.enabled)
+            if (!Agent || !Agent.enabled)
                 return;
 
             var path = Agent.path;
+
+            Gizmos.color = Color.white;
             for (var i = 0; i < path.corners.Length - 1; ++i)
             {
                 var one = path.corners[i];

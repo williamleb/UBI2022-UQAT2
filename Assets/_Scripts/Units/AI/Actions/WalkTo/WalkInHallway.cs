@@ -121,5 +121,10 @@ namespace Units.AI.Actions
             regroup = true;
             randomHallway = false;
         }
+
+        protected override void OnPathInvalidDetected()
+        {
+            SeekNextPoint();
+        }
     }
 }
