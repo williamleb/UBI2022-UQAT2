@@ -11,7 +11,7 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="702482391" Language="SFX" Hash="1731291241">
+		<SoundBank Id="702482391" Language="SFX" Hash="3992588096">
 			<ObjectPath>\SoundBanks\Default Work Unit\Game</ObjectPath>
 			<ShortName>Game</ShortName>
 			<Path>Game.bnk</Path>
@@ -44,11 +44,11 @@
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="196949612" Name="CharacterSelect_Dasher" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect_Dasher" DurationType="OneShot" DurationMin="0.558685" DurationMax="0.558685">
+				<Event Id="196949612" Name="CharacterSelect_Dasher" ObjectPath="\Events\Default Work Unit\UI Sounds\CharacterSelect_Dasher" DurationType="OneShot" DurationMin="2.558685" DurationMax="2.558685">
 					<IncludedMemoryFiles>
-						<File Id="87799180" Language="SFX">
-							<ShortName>CharacterSelectNew_Dasher.wav</ShortName>
-							<Path>SFX\CharacterSelectNew_Dasher_10C4C929.wem</Path>
+						<File Id="461729673" Language="SFX">
+							<ShortName>CharacterSelectDasher_Redo3.wav</ShortName>
+							<Path>SFX\CharacterSelectDasher_Redo3_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
@@ -376,7 +376,7 @@
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="2578587127" Name="InteractWorldElement" ObjectPath="\Events\Default Work Unit\PlayerInteraction\InteractWorldElement" MaxAttenuation="100." DurationType="OneShot" DurationMin="0.4261" DurationMax="0.4261">
+				<Event Id="2578587127" Name="InteractWorldElement" ObjectPath="\Events\Default Work Unit\PlayerInteraction\InteractWorldElement" DurationType="OneShot" DurationMin="0.4261" DurationMax="0.4261">
 					<IncludedMemoryFiles>
 						<File Id="268522528" Language="SFX">
 							<ShortName>InteractWorldElement.wav</ShortName>
@@ -494,15 +494,6 @@
 								<File Id="784548392"/>
 							</Media>
 						</SwitchContainer>
-						<SwitchContainer SwitchValue="{B6E07D6F-3DF5-4E8E-A174-10FBBEA84C64}">
-							<Media>
-								<File Id="95050089"/>
-								<File Id="202968481"/>
-								<File Id="435168690"/>
-								<File Id="502905553"/>
-								<File Id="784548392"/>
-							</Media>
-						</SwitchContainer>
 						<SwitchContainer SwitchValue="{CE8C7FE1-5E95-43BC-BD50-E05D382CD30A}">
 							<Media>
 								<File Id="266851828"/>
@@ -535,6 +526,14 @@
 						<File Id="266955091" Language="SFX">
 							<ShortName>Countdown 1-001.wav</ShortName>
 							<Path>SFX\Countdown 1-001_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2485540374" Name="OvertimeAlert" ObjectPath="\Events\Default Work Unit\GeneralGameSounds\OvertimeAlert" DurationType="OneShot" DurationMin="2.933016" DurationMax="2.933016">
+					<IncludedMemoryFiles>
+						<File Id="1007894119" Language="SFX">
+							<ShortName>OvertimeAlert.wav</ShortName>
+							<Path>SFX\OvertimeAlert_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
@@ -620,11 +619,10 @@
 				<StateGroup Id="3103015060" Name="MusicStates" ObjectPath="\States\Default Work Unit\MusicStates" GUID="{3006730C-B620-4487-99E1-6B6D54D6E7A3}">
 					<States>
 						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\MusicStates\None" GUID="{DC4B40FA-7EC9-433F-B695-4CBD8241B634}"/>
-						<State Id="2607556080" Name="Menu" ObjectPath="\States\Default Work Unit\MusicStates\Menu" GUID="{B6E07D6F-3DF5-4E8E-A174-10FBBEA84C64}"/>
 						<State Id="984691642" Name="InGame" ObjectPath="\States\Default Work Unit\MusicStates\InGame" GUID="{8CBD7669-89C7-422B-82FE-138F88098C9F}"/>
 						<State Id="2061091536" Name="HoldingHomework" ObjectPath="\States\Default Work Unit\MusicStates\HoldingHomework" GUID="{CE8C7FE1-5E95-43BC-BD50-E05D382CD30A}"/>
 						<State Id="4009139500" Name="Overtime" ObjectPath="\States\Default Work Unit\MusicStates\Overtime" GUID="{971282BA-21BA-49A1-9906-365BDDAA2562}"/>
-						<State Id="290285391" Name="Lobby" ObjectPath="\States\Default Work Unit\MusicStates\Lobby" GUID="{3D98D95B-73E0-4C02-A860-78025B762673}"/>
+						<State Id="247455768" Name="MenuLobby" ObjectPath="\States\Default Work Unit\MusicStates\MenuLobby" GUID="{3D98D95B-73E0-4C02-A860-78025B762673}"/>
 						<State Id="2324114151" Name="Scorecard" ObjectPath="\States\Default Work Unit\MusicStates\Scorecard" GUID="{292BF8AB-539C-4E70-815F-FD63917E4315}"/>
 					</States>
 				</StateGroup>
