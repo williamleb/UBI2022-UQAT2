@@ -28,7 +28,7 @@ namespace Units.Player
 
         private void OnInventoryChangedCallBack()
         {
-            AnimationSetBool(IsHolding, inventory.HasHomework);
+            AnimationSetBool(IsHolding, inventory.HasHomework || IsGiving);
             if (!inventory.HasHomework)
             {
                 if (Object.HasInputAuthority)
