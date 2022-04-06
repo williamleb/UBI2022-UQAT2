@@ -127,7 +127,6 @@ using Utilities.Singleton;
         public void SetInGame() => wwiseObjects.InGameState.SetValue();
         public void SetInScoreboard() => wwiseObjects.InScoreboardState.SetValue();
         public void SetInOvertime() => wwiseObjects.InOvertimeState.SetValue();
-        public void SetHoldingHomework() => wwiseObjects.HoldingHomeworkState.SetValue();
 
         private void OnDestroy()
         {
