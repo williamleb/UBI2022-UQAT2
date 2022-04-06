@@ -66,6 +66,8 @@ namespace Units.Player
         private bool IsGameFinished =>
             GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
 
+        private bool CanInteract => !InMenu && !InCustomization && !IsDashing && !isRagdoll && CanMove;
+
         private bool IsUsingGamePad => currentDeviceName == "Gamepad";
 
         private void Awake()
@@ -165,6 +167,7 @@ namespace Units.Player
         {
             SetImmunity(true);
             inventory.DropEverything();
+            StopCustomization();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -192,7 +195,7 @@ namespace Units.Player
 
             if (Runner.IsForward)
             {
-                if (Inputs.IsInteractOnce && !InMenu && !InCustomization && !IsDashing)
+                if (Inputs.IsInteractOnce && CanInteract)
                 {
                     interacter.InteractWithClosestInteraction();
                     CancelAimingAndThrowing();
@@ -369,7 +372,7 @@ namespace Units.Player
         if (!MenuManager.HasInstance)
             return;
 
-        if (!MenuManager.Instance.HideMenu(MenuManager.Menu.Customization))
+        if (MenuManager.Instance.HasMenu(MenuManager.Menu.Customization) && !MenuManager.Instance.HideMenu(MenuManager.Menu.Customization))
             return;
 
         RPC_ChangeInCustomization(false);
