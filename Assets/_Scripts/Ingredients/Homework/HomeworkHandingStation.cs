@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using Ingredients.Homework;
+﻿using Ingredients.Homework;
 using Managers.Interactions;
 using Managers.Score;
 using Units.Player;
 using UnityEngine;
-using Utilities;
 using Utilities.Extensions;
 using Utilities.Unity;
 
@@ -79,16 +77,10 @@ namespace Units.AI
             
             PlayInteractSound(interacter);
 
-            StartCoroutine(RemoveHomeworkNextFrame(inventory));
+            inventory.RemoveHomework();
             entityThatHasGivenHomeworkThisFrame = interacter;
         }
-        
-        private IEnumerator RemoveHomeworkNextFrame(Inventory inventory)
-        {
-            yield return Helpers.GetWait(0.1f);
-            inventory.RemoveHomework();
-        }
-        
+
         private void PlayInstantFeedbackSound(Interacter interacter)
         {
             if (interacter.gameObject.IsAPlayer())
