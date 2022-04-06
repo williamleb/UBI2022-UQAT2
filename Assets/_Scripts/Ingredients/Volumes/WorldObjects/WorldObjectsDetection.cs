@@ -14,6 +14,9 @@ namespace Ingredients.Volumes.WorldObjects
     [RequireComponent(typeof(Collider))]
     public class WorldObjectsDetection : MonoBehaviour
     {
+        private const float SECONDS_BETWEEN_UPDATES = 1f;
+
+
         public event Action<IWorldObject> OnWorldObjectEntered;
         public event Action<IWorldObject> OnWorldObjectLeft;
         
@@ -36,6 +39,8 @@ namespace Ingredients.Volumes.WorldObjects
             AIEntity.OnAIDespawned += RemoveWorldObject;
             Homework.Homework.OnHomeworkSpawned += AddWorldObject;
             Homework.Homework.OnHomeworkDespawned += RemoveWorldObject;
+            
+            InvokeRepeating(nameof(UpdateWorldObjectState),SECONDS_BETWEEN_UPDATES, SECONDS_BETWEEN_UPDATES);
         }
 
         private void OnDestroy()
@@ -91,7 +96,7 @@ namespace Ingredients.Volumes.WorldObjects
             worldObjects.Remove(worldObject);
         }
 
-        private void Update()
+        private void UpdateWorldObjectState()
         {
             foreach (var worldObject in worldObjects.ToList())
             {
