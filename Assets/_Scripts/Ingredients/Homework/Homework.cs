@@ -5,11 +5,13 @@ using Ingredients.Volumes.WorldObjects;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using Systems.Settings;
 using Units;
 using Units.AI;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Ingredients.Homework
 {
@@ -38,6 +40,8 @@ namespace Ingredients.Homework
         private Rigidbody rb;
         private Collider[] colliders;
         private Animator animator;
+
+        private float respawnNotOnGroundTimer;
 
         private Transform holdingTransform;
 
@@ -245,6 +249,33 @@ namespace Ingredients.Homework
                 var thisTransform = transform;
                 thisTransform.position = holdingTransform.position;
                 thisTransform.rotation = holdingTransform.rotation;
+            }
+            
+            if (Object.HasStateAuthority)
+                UpdateRespawnNotOnGroundTimer(Runner.DeltaTime);
+        }
+
+        private void UpdateRespawnNotOnGroundTimer(float deltaTime)
+        {
+            if (!IsInWorld)
+            {
+                respawnNotOnGroundTimer = 0f;
+                return;
+            }
+
+            var isNearGround = Physics.Raycast(transform.position, Vector3.down, 1f, Layers.FLOOR_MASK);
+            if (isNearGround)
+            {
+                respawnNotOnGroundTimer = 0f;
+                return;
+            }
+
+            respawnNotOnGroundTimer += deltaTime;
+            Debug.Log($"{gameObject.name}: {respawnNotOnGroundTimer}");
+            if (respawnNotOnGroundTimer > SettingsSystem.HomeworkSettings.SecondsOfNotTouchingGroundToRespawn)
+            {
+                respawnNotOnGroundTimer = 0f;
+                Free();
             }
         }
 
