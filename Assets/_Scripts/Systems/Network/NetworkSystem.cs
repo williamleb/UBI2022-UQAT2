@@ -94,9 +94,16 @@ namespace Systems.Network
                 return false;
             
             Debug.Log($"Creating game with session name {sessionName}");
+            
+            if (NetworkRunner != null)
+                LeaveSession();
 
-            NetworkRunner = gameObject.AddComponent<NetworkRunner>();
+            GameObject go = new GameObject("Session");
+            DontDestroyOnLoad(go);
+            
+            NetworkRunner = go.AddComponent<NetworkRunner>();
             NetworkRunner.ProvideInput = true;
+            NetworkRunner.AddCallbacks(this);
 
             var result = await NetworkRunner.StartGame(new StartGameArgs()
             {
@@ -126,8 +133,15 @@ namespace Systems.Network
             
             Debug.Log($"Trying to join game with session name : {sessionName}");
 
-            NetworkRunner = gameObject.AddComponent<NetworkRunner>();
+            if (NetworkRunner != null)
+                LeaveSession();
+
+            GameObject go = new GameObject("Session");
+            DontDestroyOnLoad(go);
+            
+            NetworkRunner = go.AddComponent<NetworkRunner>();
             NetworkRunner.ProvideInput = true;
+            NetworkRunner.AddCallbacks(this);
 
             var result = await NetworkRunner.StartGame(new StartGameArgs()
             {
@@ -152,6 +166,12 @@ namespace Systems.Network
             }
         }
 
+        private void LeaveSession()
+        {
+            if (NetworkRunner != null)
+                NetworkRunner.Shutdown();
+        }
+
         public async void Disconnect()
         {
             if (NetworkRunner != null)
@@ -161,11 +181,21 @@ namespace Systems.Network
         }
 
         public void OnConnectedToServer(NetworkRunner runner) => OnConnectedToServerEvent?.Invoke(runner);
-        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) => OnConnectFailedEvent?.Invoke(runner,remoteAddress,reason);
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+        {
+            LeaveSession();
+            OnConnectFailedEvent?.Invoke(runner, remoteAddress, reason);
+        }
+
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) => OnConnectRequestEvent?.Invoke(runner,request,token);
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) => OnCustomAuthenticationResponseEvent?.Invoke(runner,data);
         public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { } //TODO HOST MIGRATION
-        public void OnDisconnectedFromServer(NetworkRunner runner) => OnDisconnectedFromServerEvent?.Invoke(runner);
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            LeaveSession();
+            OnDisconnectedFromServerEvent?.Invoke(runner);
+        }
+
         public void OnInput(NetworkRunner runner, NetworkInput input) => OnInputEvent?.Invoke(runner,input);
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) => OnInputMissingEvent?.Invoke(runner,player,input);
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) => OnPlayerJoinedEvent?.Invoke(runner,player);
@@ -174,7 +204,15 @@ namespace Systems.Network
         public void OnSceneLoadDone(NetworkRunner runner) => OnSceneLoadDoneEvent?.Invoke(runner);
         public void OnSceneLoadStart(NetworkRunner runner) => OnSceneLoadStartEvent?.Invoke(runner);
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) => OnSessionListUpdateEvent?.Invoke(runner,sessionList);
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) => OnShutdownEvent?.Invoke(runner,shutdownReason);
+        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            if (NetworkRunner)
+                Destroy(NetworkRunner.gameObject);
+
+            NetworkRunner = null;
+            OnShutdownEvent?.Invoke(runner, shutdownReason);
+        }
+
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) => OnUserSimulationMessageEvent?.Invoke(runner,message);
     }
 }

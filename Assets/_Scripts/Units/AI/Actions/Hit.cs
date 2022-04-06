@@ -40,9 +40,9 @@ namespace _Scripts.Units.AI.Actions
             Debug.Assert(playerEntity);
             
             if (overrideImmobilizationTime.Value)
-                playerEntity.ExternalHit(immobilizationTime.Value);
+                playerEntity.ExternalHit(immobilizationTime.Value, transform.forward);
             else
-                playerEntity.ExternalHit();
+                playerEntity.ExternalHit(direction : transform.forward);
         }
 
         private void HitAI(GameObject aiGameObject)

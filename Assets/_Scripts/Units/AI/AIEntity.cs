@@ -61,6 +61,7 @@ namespace Units.AI
         private AIBrain brain;
 
         private Collider aiCollider;
+        private Rigidbody aiRigidbody;
 
         private AISettings settings;
         private Coroutine hitCoroutine;
@@ -107,6 +108,7 @@ namespace Units.AI
 
             inventory.AssignVelocityObject(this);
             aiCollider = GetComponent<CapsuleCollider>();
+            aiRigidbody = GetComponent<Rigidbody>();
 
             // We disable the agent until the AI is spawned so it doesn't teleport at the origin when it is spawned
             agent.enabled = false;
@@ -152,11 +154,15 @@ namespace Units.AI
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
-            if (isRagdoll)
+            if (isRagdoll && ragdollTransform != null)
             {
                 // ReSharper disable Unity.InefficientPropertyAccess
-                transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
-                ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+                if (Vector3.Distance(transform.position, ragdollTransform.position.Flat()) > 1.0f)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+                    ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+                }
+                
             }
 
             if (!IsImmune && !networkAnimator.Animator.enabled)
@@ -269,15 +275,19 @@ namespace Units.AI
 
             if (Object.HasStateAuthority)
                 agent.enabled = !isActivate;
+
             Animator.enabled = false;
 
-            if (aiCollider)
-                aiCollider.enabled = !isActivate;
+            if (aiCollider != null)
+                aiCollider.isTrigger = isRagdoll;
+
+            if (aiRigidbody != null)
+                aiRigidbody.isKinematic = isRagdoll;
 
             foreach (BodyPart bp in ragdollColliders)
             {
-                bp.Collider.isTrigger = !isActivate;
-                bp.Rb.isKinematic = !isActivate;
+                bp.Collider.isTrigger = !isRagdoll;
+                bp.Rb.isKinematic = !isRagdoll;
 
                 if (isActivate && forceDirection != default)
                     bp.Rb.AddForce(
