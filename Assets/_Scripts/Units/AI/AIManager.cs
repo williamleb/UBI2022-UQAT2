@@ -9,6 +9,7 @@ using Systems.Level;
 using Units.AI.Senses;
 using Units.Customization;
 using UnityEngine;
+using Utilities.Extensions;
 using Utilities.Singleton;
 
 namespace Units.AI
@@ -29,8 +30,7 @@ namespace Units.AI
 
         public void RegisterTeacher(AIEntity teacherAI)
         {
-            Debug.Assert(!teacher,
-                "Trying to assign a teacher when there is already another teacher (there can only be one teacher)");
+            Debug.Assert(!teacher, "Trying to assign a teacher when there is already another teacher (there can only be one teacher)");
             teacher = teacherAI;
 
             UpdateAISpawned(teacherAI);
@@ -120,6 +120,15 @@ namespace Units.AI
             
             StopAllCoroutines();
             base.OnDestroy();
+        }
+
+        public Vector3 GetRandomSpawnPosition()
+        {
+            var allSpawnLocations = FindObjectsOfType<AISpawnLocation>();
+            if (allSpawnLocations == null || allSpawnLocations.Length == 0)
+                return Vector3.zero;
+
+            return allSpawnLocations.RandomElement().transform.position;
         }
 
         private void SpawnAIsFromSpawnLocations()

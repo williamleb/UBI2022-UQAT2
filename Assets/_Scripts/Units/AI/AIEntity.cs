@@ -394,7 +394,21 @@ namespace Units.AI
         
         public void OnEscapedWorld()
         {
-            // TODO
+            if (!Object || !Object.HasStateAuthority)
+                return;
+
+            if (!AIManager.HasInstance)
+                return;
+
+            var positionToRespawnTo = AIManager.Instance.GetRandomSpawnPosition();
+            if (Agent.enabled)
+            {
+                Agent.Warp(positionToRespawnTo);
+            }
+            else
+            {
+                transform.position = positionToRespawnTo;
+            }
         }
 
 #if UNITY_EDITOR
