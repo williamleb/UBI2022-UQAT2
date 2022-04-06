@@ -1955,6 +1955,9 @@
 							</ChildrenList>
 						</Folder>
 						<Sound Name="InteractWorldElement" ID="{40A7C600-7625-4102-88AC-DBF5DAE2D4D0}" ShortID="490702212">
+							<PropertyList>
+								<Property Name="EnableAttenuation" Type="bool" Value="False"/>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Attenuation">
 									<ObjectRef Name="DistanceFootsteps" ID="{3964A58C-5A37-4E50-AD45-BC8E2CFD8E61}" WorkUnitID="{B54F2779-4EA1-473B-B314-68979E10AE28}"/>
@@ -2059,7 +2062,7 @@
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+									<ObjectRef Name="Environmental" ID="{FF34DB0D-CC8A-4062-8B7F-228F23899AFD}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -2099,36 +2102,13 @@
 								<ActiveSource Name="CharacterSelectNew_Thrower" ID="{7755B679-0BA5-4CAD-8DCA-EE9317F06606}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
-						<Sound Name="CharacterSelectNew_Dasher" ID="{A31DBDE2-AA4D-4F01-9F0D-41B177BA40DC}" ShortID="975065040">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="CharacterSelectNew_Dasher" ID="{30A5E3E2-64FC-46AA-B152-C7F89280FE4C}">
-									<Language>SFX</Language>
-									<AudioFile>CharacterSelectNew_Dasher.wav</AudioFile>
-									<MediaIDList>
-										<MediaID ID="87799180"/>
-									</MediaIDList>
-								</AudioFileSource>
-							</ChildrenList>
-							<ObjectLists/>
-							<ActiveSourceList>
-								<ActiveSource Name="CharacterSelectNew_Dasher" ID="{30A5E3E2-64FC-46AA-B152-C7F89280FE4C}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
 						<Sound Name="CharacterSelectNew_Runner" ID="{F38289AC-FFB6-4E4D-B802-8C9E657FA1E7}" ShortID="705750249">
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
 								</Reference>
 								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+									<ObjectRef Name="Environmental" ID="{FF34DB0D-CC8A-4062-8B7F-228F23899AFD}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
@@ -2143,6 +2123,29 @@
 							<ObjectLists/>
 							<ActiveSourceList>
 								<ActiveSource Name="CharacterSelectNew_Runner" ID="{F63C9BBB-B99E-4B11-AEC5-66CCEC429739}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="CharacterSelectDasher_Redo3" ID="{C26AA315-E83A-4FB7-A75A-74CF606DEA76}" ShortID="134821561">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Environmental" ID="{FF34DB0D-CC8A-4062-8B7F-228F23899AFD}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="CharacterSelectDasher_Redo3" ID="{2419EDAB-C096-4EDC-83AD-6DCF43A4BD75}">
+									<Language>SFX</Language>
+									<AudioFile>CharacterSelectDasher_Redo3.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="461729673"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists/>
+							<ActiveSourceList>
+								<ActiveSource Name="CharacterSelectDasher_Redo3" ID="{2419EDAB-C096-4EDC-83AD-6DCF43A4BD75}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>
@@ -2312,6 +2315,29 @@
 							<ObjectLists/>
 							<ActiveSourceList>
 								<ActiveSource Name="JanitorcaughtAlert" ID="{C722713B-D6DE-4265-B30E-8567C31C5128}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="OvertimeAlert" ID="{C8BBC232-B44F-4491-AE5C-362597105FB2}" ShortID="531846205">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{0E5DB412-9C88-4C51-8172-1CA66B23F5E3}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Environmental" ID="{FF34DB0D-CC8A-4062-8B7F-228F23899AFD}" WorkUnitID="{992A30BB-7BB6-4356-B0A0-8356A33D3E93}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="OvertimeAlert" ID="{C74AB330-17A0-425D-B033-ADAFB20E0A12}">
+									<Language>SFX</Language>
+									<AudioFile>OvertimeAlert.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1007894119"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ObjectLists/>
+							<ActiveSourceList>
+								<ActiveSource Name="OvertimeAlert" ID="{C74AB330-17A0-425D-B033-ADAFB20E0A12}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>
