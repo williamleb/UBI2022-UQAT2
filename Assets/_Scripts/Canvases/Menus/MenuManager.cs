@@ -101,6 +101,15 @@ namespace Canvases.Menu
                 menus.Add(menuType, menu);
             }
         }
+
+        public void UnfocusEverything()
+        {
+            foreach (var menu in menus)
+            {
+                if (menu.Value) menu.Value.Unfocus();
+            }
+            menusToReturnTo.Clear();
+        }
         
         public void PushMenuToReturnTo(AbstractMenu menu)
         {

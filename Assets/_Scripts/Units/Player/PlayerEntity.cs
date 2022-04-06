@@ -352,6 +352,7 @@ namespace Units.Player
         MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
         MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
         MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
+        MenuManager.Instance.UnfocusEverything();
         RPC_ChangeInMenu(false);
     }
 
