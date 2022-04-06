@@ -6,10 +6,6 @@
 				<SoundcasterSession Name="GameTest" ID="{DCE27E34-0B21-4A1F-AF33-FB3F46ADA31D}">
 					<ModuleList>
 						<Module>
-							<ObjectRef Name="Test Music" ID="{A562517D-08B3-4C38-8AEC-91391201965D}" WorkUnitID="{1BC8ED1C-F8BF-4D89-87B0-2CAC6228097E}"/>
-							<Position X="0" Y="0"/>
-						</Module>
-						<Module>
 							<ObjectRef Name="AimCharge" ID="{7CC0E257-24DC-425A-A22B-FB8195EC2901}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
 							<Position X="0" Y="1"/>
 						</Module>
@@ -42,22 +38,18 @@
 							<Position X="3" Y="0"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="DashCollision" ID="{155081FA-73A2-4AD9-8D82-62E50D4C514A}" WorkUnitID="{C2FF5CAF-77F4-4F60-B6ED-C9E97A321A4D}"/>
+							<ObjectRef Name="JanitorcaughtAlert" ID="{2CD9CB65-212E-415A-9524-F8E6C1381D6C}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
 							<Position X="3" Y="1"/>
 						</Module>
 						<Module>
-							<ObjectRef Name="JanitorcaughtAlert" ID="{2CD9CB65-212E-415A-9524-F8E6C1381D6C}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-							<Position X="3" Y="2"/>
-						</Module>
-						<Module>
 							<ObjectRef Name="AimRelease_Redo" ID="{C66A2972-FF26-48DC-A131-5395EDAE9132}" WorkUnitID="{328FC0F8-1705-4F8B-9911-116983961226}"/>
-							<Position X="3" Y="3"/>
+							<Position X="3" Y="2"/>
 						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
 							<GameParameterRef Name="AimCharge" ID="{3CE93858-A3A0-4571-9AAA-7B7C0E01707D}"/>
-							<Value>0</Value>
+							<Value>100</Value>
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="SFXVolume" ID="{16F1C36D-85AE-494F-AA24-22B2207F34A5}"/>
@@ -73,8 +65,7 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Menu" ID="{B6E07D6F-3DF5-4E8E-A174-10FBBEA84C64}"/>
-						<CurrentStateRef Name="None" ID="{65A1A17A-6F42-4194-8CFE-49B1DA54C7A9}"/>
+						<CurrentStateRef Name="InGame" ID="{8CBD7669-89C7-422B-82FE-138F88098C9F}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
 						<CurrentSwitchRef Name="BelowMax" ID="{CC1761DC-5D4C-4604-883A-B3DE0331EABD}"/>
