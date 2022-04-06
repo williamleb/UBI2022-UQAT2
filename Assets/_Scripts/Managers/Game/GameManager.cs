@@ -290,7 +290,7 @@ namespace Managers.Game
                         EndGame();
                     }
 
-                    //The winning team scores one point (winning team wins)
+                    //The game was a draw OR the winning team scores one point (winning team wins)
                     if (endGameOnScore || (overTimeFavoriteTeam != null && team.Equals(overTimeFavoriteTeam)))
                     {
                         EndGame();
