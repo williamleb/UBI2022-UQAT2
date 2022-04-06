@@ -124,6 +124,10 @@ using Utilities.Singleton;
 
         public void SetInMenu() => wwiseObjects.InMenuState.SetValue();
         public void SetInGame() => wwiseObjects.InGameState.SetValue();
+        public void SetInLobby() => wwiseObjects.InLobbyState.SetValue();
+        public void SetInScoreboard() => wwiseObjects.InScoreboardState.SetValue();
+        public void SetInOvertime() => wwiseObjects.InOvertimeState.SetValue();
+        public void SetHoldingHomework() => wwiseObjects.HoldingHomeworkState.SetValue();
 
         private void OnDestroy()
         {

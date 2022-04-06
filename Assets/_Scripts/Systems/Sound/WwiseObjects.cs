@@ -56,6 +56,10 @@ namespace Systems.Sound
         [Header("States")] 
         [SerializeField] private State inMenu;
         [SerializeField] private State inGame;
+        [SerializeField] private State inLobby;
+        [SerializeField] private State inScoreboard;
+        [SerializeField] private State inOvertime;
+        [SerializeField] private State holdingHomeworkState;
         
         public GameObject SoundBankPrefab => soundBankPrefab;
         
@@ -93,5 +97,9 @@ namespace Systems.Sound
         
         public State InMenuState => inMenu;
         public State InGameState => inGame;
+        public State InLobbyState => inLobby;
+        public State InScoreboardState => inScoreboard;
+        public State InOvertimeState => inOvertime;
+        public State HoldingHomeworkState => holdingHomeworkState;
     }
 }
