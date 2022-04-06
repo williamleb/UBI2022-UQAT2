@@ -42,7 +42,10 @@ public class HUDActions : MonoBehaviour
         if (GameManager.HasInstance)
             GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
 
-        PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+        if(PlayerSystem.Instance.LocalPlayer == null)
+            PlayerSystem.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+        else
+            SetLocalPlayer(PlayerSystem.Instance.LocalPlayer);
 
         textColorFull = new Color(dashText.color.r, dashText.color.g, dashText.color.b, 1);
         textColorSemi = new Color(dashText.color.r, dashText.color.g, dashText.color.b, settings.DeactivatedActionOpacity);
@@ -96,6 +99,9 @@ public class HUDActions : MonoBehaviour
 
     private void OnDashAvailableChanged(bool isAvailable)
     {
+        if (localPlayerEntity == null || dashChargeMarker == null || dashText == null || dashPrompt == null)
+            return;
+
         if (isAvailable)
         {
             dashChargeMarker.gameObject.SetActive(false);

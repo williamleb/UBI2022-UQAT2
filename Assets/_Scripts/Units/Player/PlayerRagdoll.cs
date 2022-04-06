@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 using Utilities.Extensions;
@@ -15,12 +16,16 @@ namespace Units.Player
         [Header("Ragdoll")] [SerializeField]
         private Transform ragdollTransform; //Used to set playerEntity transform after ragdoll.
 
+        [SerializeField] private Transform transformToAdjustPosition;
+
         [Networked(OnChanged = nameof(OnGetUpFChangedCallback))]
         private bool GetUpF { get; set; }
 
         [Networked(OnChanged = nameof(OnGetUpBChangedCallback))]
         private bool GetUpB { get; set; }
         private bool IsFacingUp => Vector3.Dot(ragdollTransform.forward, Vector3.up) > 0;
+        private Collider playerCollider;
+        private Rigidbody playerRigidbody;
         
         private void RagdollAwake()
         {
@@ -29,11 +34,14 @@ namespace Units.Player
 
         private void RagdollUpdate()
         {
-            if (isRagdoll)
+            if (isRagdoll && ragdollTransform != null)
             {
-                // ReSharper disable Unity.InefficientPropertyAccess
-                transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
-                ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+                if (Vector3.Distance(transform.position, ragdollTransform.position.Flat()) > 1.0f)
+                {
+                    // ReSharper disable Unity.InefficientPropertyAccess
+                    transform.position = Vector3.MoveTowards(transform.position, ragdollTransform.position.Flat(), 0.1f);
+                    ragdollTransform.position = Vector3.MoveTowards(ragdollTransform.position, transform.position, 0.1f);
+                }
             }
         }
 
@@ -42,7 +50,12 @@ namespace Units.Player
             Collider[] collidersInPlayer = GetComponentsInChildren<Collider>();
             foreach (Collider col in collidersInPlayer)
             {
-                if (col.transform.gameObject == transform.gameObject) continue;
+                if (col.transform.gameObject == transform.gameObject)
+                {
+                    playerCollider = col;
+                    playerRigidbody = playerCollider.GetComponent<Rigidbody>();
+                    continue;
+                }
 
                 Transform colTransform = col.transform;
                 ragdollColliders.Add(new BodyPart
@@ -59,6 +72,12 @@ namespace Units.Player
 
             networkAnimator.Animator.enabled = false;
 
+            if (playerCollider != null)
+                playerCollider.isTrigger = isRagdoll;
+
+            if(playerRigidbody != null)
+                playerRigidbody.isKinematic = isRagdoll;
+
             if (!isActivate)
             {
                 GetUpB = IsFacingUp;
@@ -69,23 +88,22 @@ namespace Units.Player
                 transform.eulerAngles = euler;
                 lastMoveDirection = transform.forward;
             }
-            
+
             foreach (BodyPart bp in ragdollColliders)
             {
-                bp.Collider.isTrigger = !isActivate;
-                bp.Rb.isKinematic = !isActivate;
+                bp.Collider.isTrigger = !isRagdoll;
+                bp.Rb.isKinematic = !isRagdoll;
 
-                if (isActivate && forceDirection != default)
+                if (isRagdoll && forceDirection != default)
                     bp.Rb.AddForce(forceDirection.normalized * (forceMagnitude == 0 ? Velocity.magnitude : forceMagnitude), ForceMode.Impulse);
             }
 
-            if (isActivate)
+            if (isRagdoll)
             {
                 PlayFumbleSoundLocally();
                 PlayHitFXLocally();
             }
         }
-        
         
         private void ResetGetUp()
         {
