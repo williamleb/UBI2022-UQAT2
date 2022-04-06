@@ -112,7 +112,10 @@ namespace Units.Player
         private void OnGameStateChanged(GameState state)
         {
             if (state == GameState.Finished)
+            {
                 DeactivateMenuAndCustomization();
+                SetImmunity(true);
+            }
         }
 
         public void AssignArchetype(Archetype archetype)
@@ -161,6 +164,8 @@ namespace Units.Player
         {
             await Task.Delay(500);
             SetImmunity(false);
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
         private void OnSceneLoadStartEvent(NetworkRunner runner)
@@ -168,6 +173,8 @@ namespace Units.Player
             SetImmunity(true);
             inventory.DropEverything();
             StopCustomization();
+            if (GameManager.HasInstance)
+                GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
