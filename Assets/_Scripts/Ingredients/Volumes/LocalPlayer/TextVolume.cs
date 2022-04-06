@@ -1,7 +1,7 @@
 ﻿using Canvases.Markers;
 using UnityEngine;
 
-namespace Ingredients.Volumes
+namespace Ingredients.Volumes.LocalPlayer
 {
     [RequireComponent(typeof(LocalPlayerDetection))]
     public class TextVolume : LocalPlayerVolume

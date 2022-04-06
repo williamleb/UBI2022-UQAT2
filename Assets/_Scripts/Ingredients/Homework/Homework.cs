@@ -1,20 +1,23 @@
 ﻿using System;
 using Canvases.Markers;
 using Fusion;
+using Ingredients.Volumes.WorldObjects;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
+using Systems.Settings;
 using Units;
 using Units.AI;
 using Units.Player;
 using UnityEngine;
 using Utilities.Extensions;
+using Utilities.Unity;
 
 namespace Ingredients.Homework
 {
     [RequireComponent(typeof(Interaction))]
     [RequireComponent(typeof(Rigidbody))]
-    public class Homework : NetworkBehaviour
+    public class Homework : NetworkBehaviour, IWorldObject
     {
         private static readonly int IsSpawned = Animator.StringToHash("IsSpawned");
 
@@ -24,6 +27,9 @@ namespace Ingredients.Homework
             Taken,
             Free
         }
+        
+        public static event Action<Homework> OnHomeworkSpawned;
+        public static event Action<Homework> OnHomeworkDespawned;
 
         public event Action<Homework> EventOnStateChanged;
 
@@ -34,6 +40,8 @@ namespace Ingredients.Homework
         private Rigidbody rb;
         private Collider[] colliders;
         private Animator animator;
+
+        private float respawnNotOnGroundTimer;
 
         private Transform holdingTransform;
 
@@ -47,6 +55,7 @@ namespace Ingredients.Homework
         public bool IsFree => HomeworkState == State.Free;
         public bool IsInWorld => HomeworkState == State.InWorld;
         public bool IsTaken => HomeworkState == State.Taken;
+        public Vector3 Position => transform.position;
 
         private void Awake()
         {
@@ -155,6 +164,7 @@ namespace Ingredients.Homework
 
         public void Free()
         {
+            rb.velocity = Vector3.zero;
             HomeworkState = State.Free;
             holdingTransform = null;
         }
@@ -201,6 +211,8 @@ namespace Ingredients.Homework
             }
 
             UpdateHomeworkMarkerVisibility();
+            
+            OnHomeworkSpawned?.Invoke(this);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -209,6 +221,8 @@ namespace Ingredients.Homework
             {
                 HomeworkManager.Instance.UnregisterHomework(this);
             }
+            
+            OnHomeworkDespawned?.Invoke(this);
         }
 
         private void UpdateForCurrentState()
@@ -236,11 +250,49 @@ namespace Ingredients.Homework
                 thisTransform.position = holdingTransform.position;
                 thisTransform.rotation = holdingTransform.rotation;
             }
+            
+            if (Object.HasStateAuthority)
+                UpdateRespawnNotOnGroundTimer(Runner.DeltaTime);
+        }
+
+        private void UpdateRespawnNotOnGroundTimer(float deltaTime)
+        {
+            if (!IsInWorld)
+            {
+                respawnNotOnGroundTimer = 0f;
+                return;
+            }
+
+            var isNearGround = Physics.Raycast(transform.position, Vector3.down, 1f, Layers.FLOOR_MASK);
+            if (isNearGround)
+            {
+                respawnNotOnGroundTimer = 0f;
+                return;
+            }
+
+            respawnNotOnGroundTimer += deltaTime;
+            Debug.Log($"{gameObject.name}: {respawnNotOnGroundTimer}");
+            if (respawnNotOnGroundTimer > SettingsSystem.HomeworkSettings.SecondsOfNotTouchingGroundToRespawn)
+            {
+                respawnNotOnGroundTimer = 0f;
+                Free();
+            }
         }
 
         private static void OnStateChanged(Changed<Homework> changed)
         {
             changed.Behaviour.UpdateForCurrentState();
+        }
+        
+        public void OnEscapedWorld()
+        {
+            if (!Object || !Object.HasStateAuthority)
+                return;
+
+            if (IsFree)
+                return;
+            
+            Free(); 
         }
     }
 }

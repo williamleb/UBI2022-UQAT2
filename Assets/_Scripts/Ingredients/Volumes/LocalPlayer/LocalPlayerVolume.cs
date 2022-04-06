@@ -1,7 +1,6 @@
-﻿using Canvases.Markers;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Ingredients.Volumes
+namespace Ingredients.Volumes.LocalPlayer
 {
     [RequireComponent(typeof(LocalPlayerDetection))]
     public abstract class LocalPlayerVolume : MonoBehaviour

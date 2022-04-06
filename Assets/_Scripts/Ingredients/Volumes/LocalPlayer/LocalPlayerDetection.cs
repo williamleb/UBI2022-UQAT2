@@ -2,7 +2,7 @@
 using Systems;
 using UnityEngine;
 
-namespace Ingredients.Volumes
+namespace Ingredients.Volumes.LocalPlayer
 {
     [RequireComponent(typeof(Collider))]
     public class LocalPlayerDetection : MonoBehaviour
