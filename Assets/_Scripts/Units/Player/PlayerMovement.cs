@@ -175,6 +175,7 @@ namespace Units.Player
         {
             CurrentSpeed = 0;
             currentMaxMoveSpeed = data.MoveMaximumSpeed;
+            nRb.Rigidbody.velocity = Vector3.zero;
         }
 
         private void SetImmunity(bool immune)

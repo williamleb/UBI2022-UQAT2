@@ -240,9 +240,9 @@ namespace Units.Player
         NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
     }
 
-    public void ExternalHit(float overrideHitDuration = -1f)
+    public void ExternalHit(float overrideHitDuration = -1f, Vector3 direction = default)
     {
-        RPC_GetHitAndDropItems(Object.Id, true, transform.forward, data.DashForceApplied, overrideHitDuration);
+        RPC_GetHitAndDropItems(Object.Id, true, direction, data.DashForceApplied, overrideHitDuration);
     }
 
     [Rpc]
