@@ -248,7 +248,7 @@ namespace Managers.Game
 
             if (ScoreManager.HasInstance)
             {
-                if (TeamSystem.Instance.Teams[0].ScoreValue == TeamSystem.Instance.Teams[1].ScoreValue)
+                if (ScoreManager.Instance.AreScoresEqual())
                 {
                     endGameOnScore = true;
                     Debug.Log("Both teams have the same score, overtime starts.");
@@ -278,22 +278,26 @@ namespace Managers.Game
             OnReset?.Invoke();
         }
 
-        public void OnTeamScoreChanged(Team team)
+        public void OnTeamScoreChanged(Team team, int scoreChange)
         {
             if (currentState == GameState.Overtime)
             {
-                if (endGameOnScore)
+                if (scoreChange > 0)
                 {
-                    EndGame();
-                }
+                    //The losing team catches up (other team's points + 1) with the winning team (losing team wins)
+                    if (overTimeFavoriteTeam != null && !team.Equals(overTimeFavoriteTeam) && team.ScoreValue > overTimeFavoriteTeam.ScoreValue)
+                    {
+                        EndGame();
+                    }
 
-                if (overTimeFavoriteTeam != null &&  team.Equals(overTimeFavoriteTeam))
-                {
-                    EndGame();
+                    //The winning team scores one point (winning team wins)
+                    if (endGameOnScore || (overTimeFavoriteTeam != null && team.Equals(overTimeFavoriteTeam)))
+                    {
+                        EndGame();
+                    }
                 }
             }
-
-            if (currentState == GameState.Running && team.ScoreValue >= settings.NumberOfHomeworksToFinishGame)
+            else if(team.ScoreValue >= settings.NumberOfHomeworksToFinishGame)
             {
                 EndGame();
             }

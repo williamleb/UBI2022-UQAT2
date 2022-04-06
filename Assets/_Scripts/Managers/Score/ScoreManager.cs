@@ -12,7 +12,7 @@ namespace Managers.Score
 {
     public class ScoreManager : Singleton<ScoreManager>
     {
-        public static event Action<Team> OnTeamScoreChanged;
+        public static event Action<Team, int> OnTeamScoreChanged;
 
         public void HandHomework(PlayerEntity playerEntity, HomeworkDefinition handedHomeworkDefinition)
         {
@@ -31,7 +31,7 @@ namespace Managers.Score
             team.IncrementScore(handedHomeworkDefinition.Points);
             playerEntity.PlayerScore += handedHomeworkDefinition.Points;
 
-            OnTeamScoreChanged?.Invoke(team);
+            OnTeamScoreChanged?.Invoke(team, handedHomeworkDefinition.Points);
         }
 
         public void DecrementScore(PlayerEntity playerEntity, int numberOfPointsToLose)
@@ -45,7 +45,7 @@ namespace Managers.Score
             team.DecrementScore(numberOfPointsToLose);
             playerEntity.PlayerScore -= numberOfPointsToLose;
 
-            OnTeamScoreChanged?.Invoke(team);
+            OnTeamScoreChanged?.Invoke(team, -numberOfPointsToLose);
         }
 
         public PlayerEntity FindPlayerWithHighestScore()
