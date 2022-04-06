@@ -25,6 +25,8 @@ namespace Units.AI
         public IEnumerable<AIEntity> Janitors => janitors;
         public IEnumerable<AIEntity> Students => students;
 
+        public IEnumerable<AIEntity> AllAIs => Teacher ? students.Concat(janitors).Concat(new[] { teacher }) : students.Concat(janitors);
+
         public void RegisterTeacher(AIEntity teacherAI)
         {
             Debug.Assert(!teacher,

@@ -1,6 +1,7 @@
 ﻿using System;
 using Canvases.Markers;
 using Fusion;
+using Ingredients.Volumes.WorldObjects;
 using Managers.Interactions;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -14,7 +15,7 @@ namespace Ingredients.Homework
 {
     [RequireComponent(typeof(Interaction))]
     [RequireComponent(typeof(Rigidbody))]
-    public class Homework : NetworkBehaviour
+    public class Homework : NetworkBehaviour, IWorldObject
     {
         private static readonly int IsSpawned = Animator.StringToHash("IsSpawned");
 
@@ -24,6 +25,9 @@ namespace Ingredients.Homework
             Taken,
             Free
         }
+        
+        public static event Action<Homework> OnHomeworkSpawned;
+        public static event Action<Homework> OnHomeworkDespawned;
 
         public event Action<Homework> EventOnStateChanged;
 
@@ -47,6 +51,7 @@ namespace Ingredients.Homework
         public bool IsFree => HomeworkState == State.Free;
         public bool IsInWorld => HomeworkState == State.InWorld;
         public bool IsTaken => HomeworkState == State.Taken;
+        public Vector3 Position => transform.position;
 
         private void Awake()
         {
@@ -201,6 +206,8 @@ namespace Ingredients.Homework
             }
 
             UpdateHomeworkMarkerVisibility();
+            
+            OnHomeworkSpawned?.Invoke(this);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -209,6 +216,8 @@ namespace Ingredients.Homework
             {
                 HomeworkManager.Instance.UnregisterHomework(this);
             }
+            
+            OnHomeworkDespawned?.Invoke(this);
         }
 
         private void UpdateForCurrentState()
@@ -241,6 +250,11 @@ namespace Ingredients.Homework
         private static void OnStateChanged(Changed<Homework> changed)
         {
             changed.Behaviour.UpdateForCurrentState();
+        }
+        
+        public void OnEscapedWorld()
+        {
+            // TODO
         }
     }
 }

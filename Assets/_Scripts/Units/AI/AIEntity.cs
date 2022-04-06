@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
+using Ingredients.Volumes.WorldObjects;
 using Interfaces;
 using Managers.Hallway;
 using Systems.Settings;
@@ -21,7 +22,7 @@ namespace Units.AI
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(AIInteracter))]
     [RequireComponent(typeof(AkGameObj))]
-    public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject
+    public class AIEntity : NetworkBehaviour, IVelocityObject, IAudioObject, IWorldObject
     {
         private static readonly int SpeedParam = Animator.StringToHash("Speed");
         private static readonly int IsHoldingHomeworkParam = Animator.StringToHash("IsHoldingHomework");
@@ -67,6 +68,7 @@ namespace Units.AI
         [Networked, Capacity(8)] private AIType Type { get; set; }
         private bool IsTeacher => Type == AIType.Teacher;
         private bool IsJanitor => Type == AIType.Janitor;
+        public Vector3 Position => transform.position;
 
         [Networked, Capacity(8)] public HallwayColor AssignedHallway { get; private set; }
 
@@ -388,6 +390,11 @@ namespace Units.AI
             {
                 alertParticleEffect.Stop();
             }
+        }
+        
+        public void OnEscapedWorld()
+        {
+            // TODO
         }
 
 #if UNITY_EDITOR

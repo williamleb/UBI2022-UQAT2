@@ -1,6 +1,6 @@
 ﻿using Canvases.Markers;
 
-namespace Ingredients.Volumes
+namespace Ingredients.Volumes.LocalPlayer
 {
     // There must be only one of those in the world. Else, it could create problems with markers not showing up forever.
     public class HideMarkersOutsideCameraVolume : LocalPlayerVolume

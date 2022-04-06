@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Canvases.Menu;
 using Fusion;
+using Ingredients.Volumes.WorldObjects;
 using Managers.Game;
 using Sirenix.OdinInspector;
 using Systems;
@@ -23,7 +24,7 @@ namespace Units.Player
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(Inventory))]
     [RequireComponent(typeof(PlayerCustomization))]
-    public partial class PlayerEntity : NetworkBehaviour
+    public partial class PlayerEntity : NetworkBehaviour, IWorldObject
     {
         public static event Action<NetworkObject> OnPlayerSpawned;
         public static event Action<NetworkObject> OnPlayerDespawned;
@@ -54,6 +55,7 @@ namespace Units.Player
 
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
+        public Vector3 Position => transform.position;
 
         private bool IsGameFinished =>
             GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
@@ -406,6 +408,11 @@ namespace Units.Player
         NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
         NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
     }
+    
+    public void OnEscapedWorld()
+    {
+        // TODO
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -485,6 +492,6 @@ namespace Units.Player
         Archetype = archetype;
     }
 #endif
-}
+    }
 
 }
