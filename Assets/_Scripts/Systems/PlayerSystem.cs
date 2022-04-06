@@ -131,9 +131,10 @@ namespace Systems
 		{
 			while (playerSpawnPoints.Length == 0)
 			{
-				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 				await Task.Delay(10);
+				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 			}
+
 			var spawnPosition = playersEntity.Count < playerSpawnPoints.Length
 				? playerSpawnPoints[playersEntity.Count].transform.position
 				: Vector3.zero;
@@ -158,11 +159,14 @@ namespace Systems
 
 		public async void SetPlayersPositionToSpawn()
 		{
+			if (!NetworkSystem.Instance.IsHost)
+				return;
+
 			Debug.Log("Setting players to spawn position...");
 			while (playerSpawnPoints.Length == 0)
 			{
-				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 				await Task.Delay(10);
+				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 			}
 
 			foreach (var playerEntity in playersEntity)
