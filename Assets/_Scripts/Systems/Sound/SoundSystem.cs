@@ -92,6 +92,7 @@ using Utilities.Singleton;
         public void PlayMenuElementSelectSound() => wwiseObjects.MenuElementSelectEvent.Post(gameObject);
         public void PlayMenuElementForwardSound() => wwiseObjects.MenuElementForwardEvent.Post(gameObject);
         public void PlayMenuElementBackwardSound() => wwiseObjects.MenuElementBackwardEvent.Post(gameObject);
+        public void PlayOvertimeStartSound() => wwiseObjects.OvertimeStartEvent.Post(gameObject);
 
         public float GetMasterVolume() => wwiseObjects.MasterVolumeParameter.GetGlobalValue() / 100f;
         public float GetMusicVolume() => wwiseObjects.MusicVolumeParameter.GetGlobalValue() / 100f;
@@ -124,6 +125,8 @@ using Utilities.Singleton;
 
         public void SetInMenu() => wwiseObjects.InMenuState.SetValue();
         public void SetInGame() => wwiseObjects.InGameState.SetValue();
+        public void SetInScoreboard() => wwiseObjects.InScoreboardState.SetValue();
+        public void SetInOvertime() => wwiseObjects.InOvertimeState.SetValue();
 
         private void OnDestroy()
         {

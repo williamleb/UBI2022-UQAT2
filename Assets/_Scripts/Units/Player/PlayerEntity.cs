@@ -30,6 +30,12 @@ namespace Units.Player
         public static event Action<NetworkObject> OnPlayerDespawned;
         public event Action OnArchetypeChanged;
         public event Action OnTeamChanged;
+        
+        public event Action OnInventoryChanged
+        {
+            add => inventory.OnInventoryChanged += value;
+            remove => inventory.OnInventoryChanged -= value;
+        }
 
         private PlayerSettings data;
         private PlayerInteracter interacter;
@@ -56,6 +62,8 @@ namespace Units.Player
         [Networked(OnChanged = nameof(OnNetworkArchetypeChanged))]
         public Archetype Archetype { get; private set; }
         public Vector3 Position => transform.position;
+
+        public bool IsHoldingHomework => inventory.HasHomework;
 
         private bool IsGameFinished =>
             GameManager.HasInstance && GameManager.Instance.CurrentState == GameState.Finished;
