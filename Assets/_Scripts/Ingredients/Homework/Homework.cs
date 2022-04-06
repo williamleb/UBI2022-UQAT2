@@ -160,6 +160,7 @@ namespace Ingredients.Homework
 
         public void Free()
         {
+            rb.velocity = Vector3.zero;
             HomeworkState = State.Free;
             holdingTransform = null;
         }
@@ -254,7 +255,13 @@ namespace Ingredients.Homework
         
         public void OnEscapedWorld()
         {
-            // TODO
+            if (!Object || !Object.HasStateAuthority)
+                return;
+
+            if (IsFree)
+                return;
+            
+            Free(); 
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Ingredients.Homework;
 using Systems;
@@ -92,7 +93,7 @@ namespace Ingredients.Volumes.WorldObjects
 
         private void Update()
         {
-            foreach (var worldObject in worldObjects)
+            foreach (var worldObject in worldObjects.ToList())
             {
                 SetIsIn(worldObject.Key, col.bounds.Contains(worldObject.Key.Position));
             }
