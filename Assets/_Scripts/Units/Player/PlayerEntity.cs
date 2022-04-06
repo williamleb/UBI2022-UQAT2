@@ -125,7 +125,6 @@ namespace Units.Player
             InitReady();
             InitAnim();
 
-            //TODO show player after everything is loaded
 
             PlayerId = Object.InputAuthority.PlayerId;
             gameObject.name = $"Player{Object.InputAuthority.PlayerId}";
@@ -139,9 +138,13 @@ namespace Units.Player
             {
                 TeamSystem.Instance.AssignTeam(this);
             }
-            playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
+            if (Object.HasInputAuthority)
+                playerInputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
             NetworkSystem.OnSceneLoadStartEvent += OnSceneLoadStartEvent;
             NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDoneEvent;
+            
+            //TODO show player after everything is loaded
+            
         }
 
         private async void OnSceneLoadDoneEvent(NetworkRunner runner)
@@ -398,7 +401,8 @@ namespace Units.Player
     {
         AnimOnDestroy();
         ReadyOnDestroy();
-        playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
+        if (Object && Object.HasInputAuthority)
+            playerInputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
         NetworkSystem.OnSceneLoadStartEvent -= OnSceneLoadStartEvent;
         NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDoneEvent;
     }

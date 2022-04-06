@@ -71,7 +71,7 @@ namespace Canvases.Menu.End
 
         public bool IsPlayerReadyToReplay(PlayerRef player)
         {
-            return PlayersReadyToReplay.Contains(player);
+            return Object && PlayersReadyToReplay.Contains(player);
         }
 
         private void UpdatePlayersReadyToReplay()
