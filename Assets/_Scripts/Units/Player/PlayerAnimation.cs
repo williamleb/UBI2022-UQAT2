@@ -26,7 +26,21 @@ namespace Units.Player
 
         private void AnimOnDestroy() => inventory.OnInventoryChanged -= OnInventoryChangedCallBack;
 
-        private void OnInventoryChangedCallBack() => AnimationSetBool(IsHolding, inventory.HasHomework);
+        private void OnInventoryChangedCallBack()
+        {
+            AnimationSetBool(IsHolding, inventory.HasHomework);
+            if (!inventory.HasHomework)
+            {
+                if (Object.HasInputAuthority)
+                {
+                    networkAnimator.Animator.ResetTrigger(Aiming);
+                    networkAnimator.Animator.ResetTrigger(Throwing);
+                    networkAnimator.Animator.ResetTrigger(Grabbing);
+                    networkAnimator.Animator.ResetTrigger(Giving);
+                }
+            }
+        }
+
         private void OnThrowChanged(bool val) => AnimationSetTrigger(Throwing, val);
         private void OnAimChanged(bool val) => AnimationSetTrigger(Aiming, val);
 
