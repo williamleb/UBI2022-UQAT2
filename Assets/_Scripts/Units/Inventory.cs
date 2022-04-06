@@ -90,7 +90,10 @@ namespace Units
         {
             var homework = GetCurrentHomework();
             if (!homework)
+            {
+                RemoveHomework();
                 return;
+            }
 
             var impactContribution = impactDirection.normalized * impactForce * SettingsSystem.HomeworkSettings.ImpactContributionToHomeworkFalling;
             var launchVelocity = impactContribution + VelocityContribution;
