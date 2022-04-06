@@ -11,6 +11,8 @@ namespace Managers.Game
         private PlayerEntity localPlayer;
         
         private GameState GameState => GameManager.HasInstance ? GameManager.Instance.CurrentState : GameState.Running;
+
+        private bool hasPlayedOvertimeSound;
         
         private void Start()
         {
@@ -71,7 +73,16 @@ namespace Managers.Game
         {
             if (GameState == GameState.Overtime)
             {
-                if (SoundSystem.HasInstance) SoundSystem.Instance.SetInOvertime();
+                if (SoundSystem.HasInstance)
+                {
+                    SoundSystem.Instance.SetInOvertime();
+
+                    if (!hasPlayedOvertimeSound)
+                    {
+                        SoundSystem.Instance.PlayOvertimeStartSound();
+                        hasPlayedOvertimeSound = true;
+                    }
+                }
             }
             else if (GameState == GameState.Finished)
             {
@@ -79,6 +90,7 @@ namespace Managers.Game
             }
             else
             {
+                hasPlayedOvertimeSound = false;
                 if (SoundSystem.HasInstance) SoundSystem.Instance.SetInGame();
             }
         }

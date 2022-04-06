@@ -5,7 +5,7 @@ namespace Systems.Sound
 {
     public class StartMusic : MonoBehaviour
     {
-        private enum State {Menu, Game, Lobby}
+        private enum State {Menu, Game}
 
         [SerializeField] private State state;
 
@@ -24,9 +24,6 @@ namespace Systems.Sound
                     break;
                 case State.Game:
                     SoundSystem.Instance.SetInGame();
-                    break;
-                case State.Lobby:
-                    SoundSystem.Instance.SetInLobby();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
