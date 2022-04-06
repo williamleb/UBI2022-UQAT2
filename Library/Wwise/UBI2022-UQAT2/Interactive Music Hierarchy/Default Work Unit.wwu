@@ -8,6 +8,11 @@
 						<MusicSwitchContainer Name="OSTFinal" ID="{C4F4D536-4002-4178-87CA-24F3736A461D}" ShortID="704439366">
 							<PropertyList>
 								<Property Name="Tempo" Type="Real64" Value="160"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-3</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -2022,6 +2027,18 @@
 											<PropertyList>
 												<Property Name="ExitSourceAt" Type="int16" Value="5"/>
 											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+										<MusicTransition Name="Transition" ID="{7D4EFB2C-C950-42C8-A0B3-BBAA3F62CE1A}">
+											<PropertyList>
+												<Property Name="DestinationContextType" Type="int16" Value="2"/>
+												<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="DestinationContextObject">
+													<ObjectRef Name="Overtime" ID="{906A3BF6-337F-4E8F-878D-D15670131B02}" WorkUnitID="{1BC8ED1C-F8BF-4D89-87B0-2CAC6228097E}"/>
+												</Reference>
+											</ReferenceList>
 											<TransitionInfo/>
 										</MusicTransition>
 									</ChildrenList>
