@@ -411,7 +411,13 @@ namespace Units.Player
     
     public void OnEscapedWorld()
     {
-        // TODO
+        if (!Object || !Object.HasStateAuthority)
+            return;
+        
+        if (!PlayerSystem.HasInstance)
+            return;
+        
+        PlayerSystem.Instance.SetPlayerPositionToSpawn(this);
     }
 
 #if UNITY_EDITOR

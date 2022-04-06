@@ -164,11 +164,18 @@ namespace Systems
 				playerSpawnPoints = FindObjectsOfType<PlayerSpawnLocation>();
 				await Task.Delay(10);
 			}
-			for (int i = 0; i < playersEntity.Count; i++)
+
+			foreach (var playerEntity in playersEntity)
 			{
-				PlayerEntity playerEntity = playersEntity[i];
-				playerEntity.gameObject.transform.position = i < playerSpawnPoints.Length ? playerSpawnPoints[i].transform.position : Vector3.zero;
+				SetPlayerPositionToSpawn(playerEntity);
 			}
+		}
+
+		public void SetPlayerPositionToSpawn(PlayerEntity playerEntity)
+		{
+			var indexOfPlayer = playersEntity.IndexOf(playerEntity);
+			Debug.Assert(indexOfPlayer != -1);
+			playerEntity.gameObject.transform.position = indexOfPlayer < playerSpawnPoints.Length ? playerSpawnPoints[indexOfPlayer].transform.position : Vector3.zero;
 		}
 
 		public PlayerEntity GetPlayerEntity(PlayerRef playerRef)
