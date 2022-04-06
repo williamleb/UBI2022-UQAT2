@@ -80,6 +80,11 @@
 						</Bus>
 						<Bus Name="Music" ID="{3EC1907E-C84D-411A-8584-520F2263C67F}">
 							<PropertyList>
+								<Property Name="BusVolume" Type="Real64">
+									<ValueList>
+										<Value>-3</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<RTPCList>
 										<RTPC Name="" ID="{9498F03A-DCEA-427D-A23C-EB0036A1A0CE}" ShortID="652532035">
@@ -109,6 +114,11 @@
 									</RTPCList>
 								</Property>
 							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Effect0" PluginName="Wwise Peak Limiter" CompanyID="0" PluginID="110" PluginType="3">
+									<ObjectRef Name="New_Wwise_Peak_Limiter" ID="{C965D7A9-A92D-4791-A814-071DF3F9D4EB}" WorkUnitID="{854D8AF9-FAEB-4A74-B508-7FE2856BE5A4}"/>
+								</Reference>
+							</ReferenceList>
 							<ObjectLists/>
 						</Bus>
 					</ChildrenList>

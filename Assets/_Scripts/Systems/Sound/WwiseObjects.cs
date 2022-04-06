@@ -42,8 +42,9 @@ namespace Systems.Sound
         [SerializeField] private Event menuElementSelect;
         [SerializeField] private Event menuElementForward;
         [SerializeField] private Event menuElementBackward;
-
         
+        [SerializeField] private Event overTimeStart;
+
         [Header("RTCP")] 
         [SerializeField] private RTPC masterVolume;
         [SerializeField] private RTPC musicVolume;
@@ -56,6 +57,8 @@ namespace Systems.Sound
         [Header("States")] 
         [SerializeField] private State inMenu;
         [SerializeField] private State inGame;
+        [SerializeField] private State inScoreboard;
+        [SerializeField] private State inOvertime;
         
         public GameObject SoundBankPrefab => soundBankPrefab;
         
@@ -83,6 +86,7 @@ namespace Systems.Sound
         public Event MenuElementSelectEvent => menuElementSelect;
         public Event MenuElementForwardEvent => menuElementForward;
         public Event MenuElementBackwardEvent => menuElementBackward;
+        public Event OvertimeStartEvent => overTimeStart;
 
         public RTPC MasterVolumeParameter => masterVolume;
         public RTPC MusicVolumeParameter => musicVolume;
@@ -93,5 +97,7 @@ namespace Systems.Sound
         
         public State InMenuState => inMenu;
         public State InGameState => inGame;
+        public State InScoreboardState => inScoreboard;
+        public State InOvertimeState => inOvertime;
     }
 }
