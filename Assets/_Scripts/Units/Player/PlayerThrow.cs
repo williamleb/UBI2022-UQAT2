@@ -38,6 +38,15 @@ namespace Units.Player
         private void InitThrow()
         {
             throwRumbleKey = RumbleSystem.Instance.GenerateNewRumbleKeyFromBehaviour(this);
+            inventory.OnInventoryChanged += ThrowOnInventoryChanged;
+        }
+
+        private void ThrowOnInventoryChanged()
+        {
+            if (!inventory.HasHomework)
+            {
+                ResetThrowState();
+            }
         }
 
         private void ThrowUpdateOnAllClients()
