@@ -225,6 +225,11 @@ namespace Systems.Teams
             return -1;
         }
 
+        public bool TeamExists(string teamId)
+        {
+            return teams.ContainsKey(teamId);
+        }
+
         public Team GetTeam(string teamId)
         {
             if (string.IsNullOrEmpty(teamId))
@@ -286,7 +291,8 @@ namespace Systems.Teams
 
             if (playerEntity && !string.IsNullOrEmpty(playerEntity.TeamId))
             {
-                GetTeam(playerEntity.TeamId).RPC_RemovePlayer(playerEntity);
+                if (TeamExists(playerEntity.TeamId))
+                    GetTeam(playerEntity.TeamId).RPC_RemovePlayer(playerEntity);
             }
             else
             {
