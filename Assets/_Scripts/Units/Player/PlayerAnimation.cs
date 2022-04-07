@@ -28,17 +28,30 @@ namespace Units.Player
 
         private void OnInventoryChangedCallBack()
         {
-            AnimationSetBool(IsHolding, inventory.HasHomework || IsGiving);
-            if (!inventory.HasHomework)
+            if (IsGiving)
             {
-                if (Object.HasInputAuthority)
+                StartCoroutine(SetInventoryBoolWithDelay());
+            }
+            else
+            {
+                AnimationSetBool(IsHolding, inventory.HasHomework);
+                if (!inventory.HasHomework)
                 {
-                    networkAnimator.Animator.ResetTrigger(Aiming);
-                    networkAnimator.Animator.ResetTrigger(Throwing);
-                    networkAnimator.Animator.ResetTrigger(Grabbing);
-                    networkAnimator.Animator.ResetTrigger(Giving);
+                    if (Object.HasInputAuthority)
+                    {
+                        networkAnimator.Animator.ResetTrigger(Aiming);
+                        networkAnimator.Animator.ResetTrigger(Throwing);
+                        networkAnimator.Animator.ResetTrigger(Grabbing);
+                        networkAnimator.Animator.ResetTrigger(Giving);
+                    }
                 }
             }
+        }
+
+        private IEnumerator SetInventoryBoolWithDelay()
+        {
+            yield return Helpers.GetWait(0.5f);
+            AnimationSetBool(IsHolding,inventory.HasHomework);
         }
 
         private void OnThrowChanged(bool val) => AnimationSetTrigger(Throwing, val);
@@ -53,8 +66,12 @@ namespace Units.Player
         [Networked(OnChanged = nameof(OnGivingChangedCallback))]
         private bool IsGiving { get; set; }
 
-        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed) =>
+        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed)
+        {
             changed.Behaviour.AnimationSetTrigger(Giving, changed.Behaviour.IsGiving);
+            if (!changed.Behaviour.IsGiving)
+                changed.Behaviour.AnimationSetBool(IsHolding, changed.Behaviour.inventory.HasHomework);
+        }
 
         [Networked(OnChanged = nameof(OnGrabbingChangedCallback))]
         private bool IsGrabbing { get; set; }
