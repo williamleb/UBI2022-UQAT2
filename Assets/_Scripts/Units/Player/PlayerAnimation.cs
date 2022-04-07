@@ -53,8 +53,11 @@ namespace Units.Player
         [Networked(OnChanged = nameof(OnGivingChangedCallback))]
         private bool IsGiving { get; set; }
 
-        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed) =>
+        private static void OnGivingChangedCallback(Changed<PlayerEntity> changed)
+        {
             changed.Behaviour.AnimationSetTrigger(Giving, changed.Behaviour.IsGiving);
+            changed.Behaviour.AnimationSetBool(IsHolding, changed.Behaviour.inventory.HasHomework);
+        }
 
         [Networked(OnChanged = nameof(OnGrabbingChangedCallback))]
         private bool IsGrabbing { get; set; }
