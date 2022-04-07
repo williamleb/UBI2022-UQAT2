@@ -13,6 +13,7 @@ namespace Systems.Teams
     {
         public static event Action<Team> OnTeamSpawned;
         public static event Action<Team> OnTeamDespawned;
+        public event Action<int> OnPlayerCountChanged;
         public event Action<int> OnScoreChanged;
         public event Action<int> OnScoreIncrement;
         public event Action<int> OnScoreDecrement;
@@ -69,6 +70,7 @@ namespace Systems.Teams
                 Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
+            OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -79,6 +81,7 @@ namespace Systems.Teams
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);
+                OnPlayerCountChanged?.Invoke(playerList.Count);
             }
         }
 

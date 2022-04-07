@@ -12,10 +12,12 @@ namespace Canvases.HUDs
     {
         [Header("Left team")]
         [SerializeField, Required] private TextMeshProUGUI leftTeamName;
+        [SerializeField, Required] private TextMeshProUGUI leftTeamPlayerCount;
         [SerializeField, Required] private Image leftScratch;
 
         [Header("Right team")]
         [SerializeField, Required] private TextMeshProUGUI rightTeamName;
+        [SerializeField, Required] private TextMeshProUGUI rightTeamPlayerCount;
         [SerializeField, Required] private Image rightScratch;
 
         [Space]
@@ -44,26 +46,28 @@ namespace Canvases.HUDs
 
             leftTeam = TeamSystem.Instance.Teams[0];
             leftTeam.OnNameChanged += UpdateName;
+            leftTeam.OnPlayerCountChanged += PlayerCountChanged;
             leftTeam.OnColorChanged += UpdateColor;
 
             rightTeam = TeamSystem.Instance.Teams[1];
             rightTeam.OnNameChanged += UpdateName;
+            rightTeam.OnPlayerCountChanged += PlayerCountChanged;
             rightTeam.OnColorChanged += UpdateColor;
 
             UpdateColor(0);
             UpdateName(null);
         }
 
-        private void UpdateName(string _)
+        private void PlayerCountChanged(int _)
         {
-            if (!rightTeamName || !leftTeamName || !rightTeam || !leftTeam)
+            if (!leftTeamPlayerCount || !rightTeamPlayerCount || !rightTeam || !leftTeam)
             {
                 Debug.LogWarning("Missing component(s), teams name UI will not be updated.");
                 return;
             }
-
-            rightTeamName.text = rightTeam.Name;
-            leftTeamName.text = leftTeam.Name;
+            
+            rightTeamPlayerCount.text = rightTeam.PlayerCount.ToString() + (rightTeam.PlayerCount > 1 ? " players" : " player");
+            leftTeamPlayerCount.text = leftTeam.PlayerCount.ToString() + (leftTeam.PlayerCount > 1 ? " players" : " player");
         }
 
         private void UpdateColor(int _)
@@ -90,17 +94,32 @@ namespace Canvases.HUDs
             leftScratch.color = new Color(leftTeamColor.r, leftTeamColor.g, leftTeamColor.b, scratchAlpha);
         }
 
+        private void UpdateName(string _)
+        {
+
+            if (!rightTeamName || !leftTeamName || !rightTeam || !leftTeam)
+            {
+                Debug.LogWarning("Missing component(s), teams name UI will not be updated.");
+                return;
+            }
+
+            rightTeamName.text = rightTeam.Name;
+            leftTeamName.text = leftTeam.Name;
+        }
+
         private void OnDestroy()
         {
             if (leftTeam)
             {
                 leftTeam.OnNameChanged -= UpdateName;
+                leftTeam.OnPlayerCountChanged -= PlayerCountChanged;
                 leftTeam.OnColorChanged -= UpdateColor;
             }
 
             if (rightTeam)
             {
                 rightTeam.OnNameChanged -= UpdateName;
+                rightTeam.OnPlayerCountChanged -= PlayerCountChanged;
                 rightTeam.OnColorChanged -= UpdateColor;
             }
 
