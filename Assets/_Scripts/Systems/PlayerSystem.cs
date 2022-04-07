@@ -92,8 +92,7 @@ namespace Systems
 
 		private void OnDestroy()
 		{
-			if (LevelSystem.HasInstance)
-				LevelSystem.OnLobbyLoad -= SpawnPlayers;
+			LevelSystem.OnLobbyLoad -= SpawnPlayers;
 			PlayerEntity.OnReadyChanged -= TriggerOnAnyPlayerReadyChanged;
 		}
 
