@@ -35,15 +35,15 @@ namespace Units.Player
             else
             {
                 AnimationSetBool(IsHolding, inventory.HasHomework);
-            }
-            if (!inventory.HasHomework)
-            {
-                if (Object.HasInputAuthority)
+                if (!inventory.HasHomework)
                 {
-                    networkAnimator.Animator.ResetTrigger(Aiming);
-                    networkAnimator.Animator.ResetTrigger(Throwing);
-                    networkAnimator.Animator.ResetTrigger(Grabbing);
-                    networkAnimator.Animator.ResetTrigger(Giving);
+                    if (Object.HasInputAuthority)
+                    {
+                        networkAnimator.Animator.ResetTrigger(Aiming);
+                        networkAnimator.Animator.ResetTrigger(Throwing);
+                        networkAnimator.Animator.ResetTrigger(Grabbing);
+                        networkAnimator.Animator.ResetTrigger(Giving);
+                    }
                 }
             }
         }
