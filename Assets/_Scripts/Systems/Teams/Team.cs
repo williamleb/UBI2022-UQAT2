@@ -13,6 +13,7 @@ namespace Systems.Teams
     {
         public static event Action<Team> OnTeamSpawned;
         public static event Action<Team> OnTeamDespawned;
+        public event Action<int> OnPlayerCountChanged;
         public event Action<int> OnScoreChanged;
         public event Action<int> OnScoreIncrement;
         public event Action<int> OnScoreDecrement;
@@ -24,7 +25,7 @@ namespace Systems.Teams
         //since RPCs are not part of the network state. 
         private readonly List<PlayerRef> playerList = new List<PlayerRef>();
 
-        public int PlayerCount => playerList.Count;
+        [Networked] public int PlayerCount { get; private set; }
         public List<PlayerRef> PlayerList => playerList;
 
         [Networked] [Capacity(128)] public string TeamId { get; private set; }
@@ -64,11 +65,16 @@ namespace Systems.Teams
             var playerRef = playerEntity.Object.InputAuthority;
 
             if (!playerList.Contains(playerRef))
-                playerList.Add(playerRef);
+                playerList.Add(playerRef);  
             else
                 Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
+
+            if (NetworkSystem.Instance.IsHost)
+                PlayerCount = playerList.Count;
+
+            OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -79,6 +85,11 @@ namespace Systems.Teams
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);
+
+                if (NetworkSystem.Instance.IsHost)
+                    PlayerCount = playerList.Count;
+
+                OnPlayerCountChanged?.Invoke(playerList.Count);
             }
         }
 
@@ -156,6 +167,11 @@ namespace Systems.Teams
         public void RPC_ClearPlayerList()
         {
             playerList.Clear();
+
+            if (NetworkSystem.Instance.IsHost)
+                PlayerCount = playerList.Count;
+
+            OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
         private static void OnValueChanged(Changed<Team> changed)
