@@ -86,7 +86,6 @@ namespace Systems
 
 		private void Start()
 		{
-			Debug.Log($"LevelSystem-PlayerSystem=== Subscribing to levelSystem {LevelSystem.Instance.id}");
 			LevelSystem.OnLobbyLoad += SpawnPlayers;
 			PlayerEntity.OnReadyChanged += TriggerOnAnyPlayerReadyChanged;
         }

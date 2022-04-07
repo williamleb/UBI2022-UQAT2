@@ -21,14 +21,11 @@ namespace Systems.Network
         private void Start()
         {
             settings = SettingsSystem.NetworkSettings;
-            LevelSystem.Instance.SubscribeNetworkEvents();
             PlayerSystem.Instance.SubscribeNetworkEvents();
         }
 
         private void OnDestroy()
         {
-            if (LevelSystem.HasInstance)
-                LevelSystem.Instance.UnsubscribeNetworkEvents();
             if (PlayerSystem.HasInstance)
                 PlayerSystem.Instance.UnsubscribeNetworkEvents(); 
         }
@@ -77,12 +74,6 @@ namespace Systems.Network
                     GUI.TextField(new Rect(10, 10, 40, 20), NetworkRunner.GameMode == GameMode.Host ? "Host" : "Client");
                 }
             }
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            Debug.Log($"LevelSystem-NetworkSystem.Awake===");
         }
 
         async void StartGame(GameMode mode)
@@ -217,7 +208,6 @@ namespace Systems.Network
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) => OnReliableDataEvent?.Invoke(runner,player,data);
         public void OnSceneLoadDone(NetworkRunner runner)
         {
-            Debug.Log($"LevelSystem-NetworkSystem.OnSceneLoadDone===");
             OnSceneLoadDoneEvent?.Invoke(runner);
         }
 

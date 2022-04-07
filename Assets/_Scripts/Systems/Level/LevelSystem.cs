@@ -3,7 +3,6 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BehaviorDesigner.Runtime.Tasks.Unity.UnityParticleSystem;
 using Scriptables;
 using Systems.Network;
 using Trisibo;
@@ -20,9 +19,6 @@ namespace Systems.Level
     public class LevelSystem : PersistentSingleton<LevelSystem>
     {
         private const string SCENES_FOLDER_PATH = "Game";
-
-        private static int newId = 0;
-        public int id;
 
         public static event Action OnMainMenuStartLoad;
         public static event Action OnLobbyStartLoad;
@@ -67,11 +63,7 @@ namespace Systems.Level
         {
             base.Awake();
 
-            id = newId;
-            newId++;
-            
             CreateNetworkManager();
-            Debug.Log($"LevelSystem.Awake{id}=== Assign new active scene {SceneManager.GetActiveScene().buildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = SceneManager.GetActiveScene().buildIndex;
             LoadScenes();
             
@@ -100,28 +92,11 @@ namespace Systems.Level
             scenes = sceneResources.First();
         }
 
-        // Since the NetworkRunner is deleted after a connection error (idk why),
-        // called by the runner to re-register actions
-        public void SubscribeNetworkEvents()
-        {
-            // Debug.Log($"LevelSystem.SubscribeNetworkEvents{id}===");
-            // NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDone;
-            //
-            // // Necessary because the network system even may have already been played
-            // ChangeLevelState();
-        }
-        public void UnsubscribeNetworkEvents()
-        {
-            // Debug.Log($"LevelSystem.UnsubscribeNetworkEvents{id}===");
-            // NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone;
-        }
-        
         public void LoadLobby()
         {
             State = LevelState.Transition;
 
             Debug.Log("Loading lobby scene.");
-            Debug.Log($"LevelSystem.LoadLobby{id}=== Assign new active scene {LobbyScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = LobbyScene.BuildIndex;
             OnBeforeUnload?.Invoke();
             ClearEventMemory();
@@ -134,7 +109,6 @@ namespace Systems.Level
             State = LevelState.Transition;
 
             Debug.Log($"Loading scene with index {GameScene.BuildIndex}");
-            Debug.Log($"LevelSystem.LoadGame{id}=== Assign new active scene {GameScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = GameScene.BuildIndex;
             OnBeforeUnload?.Invoke();
             ClearEventMemory();
@@ -158,7 +132,6 @@ namespace Systems.Level
 
         private IEnumerator LoadMainMenuRoutine()
         {
-            Debug.Log($"LevelSystem.LoadMainMenuRoutine{id}=== Assign new active scene {MainMenuScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = MainMenuScene.BuildIndex;
             OnMainMenuStartLoad?.Invoke();
             
@@ -185,23 +158,16 @@ namespace Systems.Level
 
         private void OnSceneLoadDone(NetworkRunner networkRunner)
         {
-            Debug.Log($"OnSceneLoadDone{id}=== Destroy"); 
             ChangeLevelState();
         }
 
         private void OnDestroy()
         {
-            Debug.Log($"LevelSystem{id}=== Destroy"); 
             NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone; 
         }
 
         private void ChangeLevelState()
         {
-            var truc = ActiveSceneIndex == LobbyScene.BuildIndex ? "Lobby" :
-                ActiveSceneIndex == GameScene.BuildIndex ? "Game" :
-                ActiveSceneIndex == MainMenuScene.BuildIndex ? "Main menu" : "Wat";
-            Debug.Log($"LevelSystem{id}=== Loaded build index: {ActiveSceneIndex}, it is {truc}");
-
             var state = GetStateFromSceneIndex();
             if (State == state)
                 return;
@@ -287,7 +253,6 @@ namespace Systems.Level
                 // Delay one frame
                 yield return null;
                 
-                Debug.Log($"LevelSystem.SwitchScene{Instance.id}=== Assign new active scene {(int) newScene} (was {Instance.ActiveSceneIndex})");
                 Instance.ActiveSceneIndex = newScene;
 
                 Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
