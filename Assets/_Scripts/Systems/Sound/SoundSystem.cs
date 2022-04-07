@@ -29,6 +29,12 @@ using Utilities.Singleton;
             LoadAllVolumes();
         }
 
+        private void Update()
+        {
+            AkSoundEngine.WakeupFromSuspend();
+            AkSoundEngine.RenderAudio();
+        }
+
         private void LoadSoundEvents()
         {
             var soundEvents = Resources.LoadAll<WwiseObjects>(SOUNDS_FOLDER_PATH);

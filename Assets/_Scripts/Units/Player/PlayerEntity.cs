@@ -215,12 +215,19 @@ namespace Units.Player
                     IsDancing = Inputs.IsDanceOnce;
                 }
 
-                if (Inputs.IsMenu && !InCustomization && Object.HasInputAuthority)
+                if (Inputs.IsMenu && Object.HasInputAuthority)
                 {
-                    if (InMenu)
-                        CloseMenu();
+                    if (!InCustomization)
+                    {
+                        if (InMenu)
+                            CloseMenu();
+                        else
+                            OpenMenu();
+                    }
                     else
-                        OpenMenu();
+                    {
+                        StopCustomization();
+                    }
                 }
 
                 if (immunityTimer.Expired(Runner)) ImmunityTimerOnTimerEnd();
@@ -352,6 +359,7 @@ namespace Units.Player
         MenuManager.Instance.HideMenu(MenuManager.Menu.Game);
         MenuManager.Instance.HideMenu(MenuManager.Menu.Options);
         MenuManager.Instance.HideMenu(MenuManager.Menu.Controls);
+        MenuManager.Instance.UnfocusEverything();
         RPC_ChangeInMenu(false);
     }
 

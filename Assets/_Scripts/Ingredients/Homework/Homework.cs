@@ -271,7 +271,6 @@ namespace Ingredients.Homework
             }
 
             respawnNotOnGroundTimer += deltaTime;
-            Debug.Log($"{gameObject.name}: {respawnNotOnGroundTimer}");
             if (respawnNotOnGroundTimer > SettingsSystem.HomeworkSettings.SecondsOfNotTouchingGroundToRespawn)
             {
                 respawnNotOnGroundTimer = 0f;
