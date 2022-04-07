@@ -70,7 +70,10 @@ namespace Systems.Teams
                 Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
-            PlayerCount = playerList.Count;
+
+            if (NetworkSystem.Instance.IsHost)
+                PlayerCount = playerList.Count;
+
             OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
@@ -82,7 +85,10 @@ namespace Systems.Teams
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);
-                PlayerCount = playerList.Count;
+
+                if (NetworkSystem.Instance.IsHost)
+                    PlayerCount = playerList.Count;
+
                 OnPlayerCountChanged?.Invoke(playerList.Count);
             }
         }
@@ -161,7 +167,10 @@ namespace Systems.Teams
         public void RPC_ClearPlayerList()
         {
             playerList.Clear();
-            PlayerCount = playerList.Count;
+
+            if (NetworkSystem.Instance.IsHost)
+                PlayerCount = playerList.Count;
+
             OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
