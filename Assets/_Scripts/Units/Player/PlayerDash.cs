@@ -75,7 +75,7 @@ namespace Units.Player
         {
             if (IsDashing || InCustomization || InMenu || !CanMove || inventory.HasHomework)
             {
-                if (CanDash)
+                if (CanDash || dashCooldown.ExpiredOrNotRunning(Runner))
                 {
                     OnDashAvailableChanged?.Invoke(false);
                 }
