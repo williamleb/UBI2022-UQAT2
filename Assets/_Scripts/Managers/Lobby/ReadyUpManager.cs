@@ -131,7 +131,7 @@ namespace Managers.Lobby
 
         private void UpdateReadyForAll()
         {
-            if (!networkData.Object.HasStateAuthority)
+            if (!networkData && !networkData.Object && !networkData.Object.HasStateAuthority)
                 return;
 
             if (isLoadingGame)
