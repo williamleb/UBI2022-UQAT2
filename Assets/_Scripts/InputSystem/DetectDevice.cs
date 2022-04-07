@@ -18,7 +18,6 @@ namespace InputSystem
 
         public DetectDevice(InputActionMap inputActionMap)
         {
-            Debug.Log($"Action map {inputActionMap} =======================");
             foreach (InputControlScheme inputControlScheme in inputActionMap.controlSchemes)
             {
                 foreach (InputControlScheme.DeviceRequirement deviceRequirement in

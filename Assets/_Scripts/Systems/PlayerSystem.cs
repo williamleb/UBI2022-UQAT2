@@ -30,10 +30,13 @@ namespace Systems
 
 		private PlayerSpawnLocation[] playerSpawnPoints = Array.Empty<PlayerSpawnLocation>();
 
+		private List<PlayerRef> playersBeingSpawned = new List<PlayerRef>();
+
+		
 		[CanBeNull] public PlayerEntity LocalPlayer => localPlayer;
 		public List<PlayerEntity> AllPlayers => playersEntity;
 		public int NumberOfPlayers => playersEntity.Count;
-
+		
 		protected override void Awake()
 		{
 			base.Awake();
@@ -43,8 +46,8 @@ namespace Systems
 
 		private void OnEnable()
 		{
-			LevelSystem.Instance.OnMainMenuStartLoad += OnMainMenuLoad;
-			LevelSystem.Instance.OnLobbyLoad += OnLobyLoad;
+			LevelSystem.OnMainMenuStartLoad += OnMainMenuLoad; 
+			LevelSystem.OnLobbyLoad += OnLobbyLoad;
 			NetworkSystem.OnSceneLoadStartEvent += ResetSpawnPoints;
 		}
 
@@ -52,8 +55,8 @@ namespace Systems
 		{
 			if (LevelSystem.HasInstance)
 			{
-				LevelSystem.Instance.OnMainMenuStartLoad -= OnMainMenuLoad;
-				LevelSystem.Instance.OnLobbyLoad -= OnLobyLoad;
+				LevelSystem.OnMainMenuStartLoad -= OnMainMenuLoad;
+				LevelSystem.OnLobbyLoad -= OnLobbyLoad;
 				NetworkSystem.OnSceneLoadStartEvent -= ResetSpawnPoints;
 			}
 		}
@@ -63,7 +66,7 @@ namespace Systems
 			ResetPlayerSystem();
 		}
 
-		private void OnLobyLoad()
+		private void OnLobbyLoad()
         {
 			SetPlayersPositionToSpawn();
         }
@@ -83,14 +86,15 @@ namespace Systems
 
 		private void Start()
 		{
-			LevelSystem.Instance.OnLobbyLoad += SpawnPlayers;
+			Debug.Log($"LevelSystem-PlayerSystem=== Subscribing to levelSystem {LevelSystem.Instance.id}");
+			LevelSystem.OnLobbyLoad += SpawnPlayers;
 			PlayerEntity.OnReadyChanged += TriggerOnAnyPlayerReadyChanged;
         }
 
 		private void OnDestroy()
 		{
 			if (LevelSystem.HasInstance)
-				LevelSystem.Instance.OnLobbyLoad -= SpawnPlayers;
+				LevelSystem.OnLobbyLoad -= SpawnPlayers;
 			PlayerEntity.OnReadyChanged -= TriggerOnAnyPlayerReadyChanged;
 		}
 
@@ -106,6 +110,11 @@ namespace Systems
 			NetworkSystem.Instance.OnPlayerJoinedEvent += PlayerJoined;
 			NetworkSystem.Instance.OnPlayerLeftEvent += PlayerLeft;
 		}
+		public void UnsubscribeNetworkEvents()
+		{
+			NetworkSystem.Instance.OnPlayerJoinedEvent -= PlayerJoined;
+			NetworkSystem.Instance.OnPlayerLeftEvent -= PlayerLeft;
+		}
 
 		private void PlayerJoined(NetworkRunner runner, PlayerRef playerRef)
 		{
@@ -116,8 +125,15 @@ namespace Systems
 			// - check number of player in game (rejoin?)
 			if (LevelSystem.Instance.State != LevelSystem.LevelState.Transition)
 			{
-				SpawnPlayer(runner, playerRef);
+				var alreadySpawnedPlayers = GetAlreadySpawnedPlayers();
+				if (!alreadySpawnedPlayers.Contains(playerRef))
+					SpawnPlayer(runner, playerRef);
 			}
+		}
+
+		private IEnumerable<PlayerRef> GetAlreadySpawnedPlayers()
+		{
+			return playersEntity.Select(entity => entity.Object.InputAuthority).Where(player => player);
 		}
 
 		private void PlayerLeft(NetworkRunner runner, PlayerRef playerRef)
@@ -129,6 +145,9 @@ namespace Systems
 
 		private async void SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
 		{
+			if (playersBeingSpawned.Contains(playerRef))
+				return;
+			
 			while (playerSpawnPoints.Length == 0)
 			{
 				await Task.Delay(10);
@@ -140,6 +159,7 @@ namespace Systems
 				: Vector3.zero;
 
 			Debug.Log($"Spawning {playerRef}");
+			playersBeingSpawned.Add(playerRef);
 			runner.Spawn(prefabs.PlayerPrefab,
 						spawnPosition,
 						Quaternion.identity,
@@ -149,7 +169,7 @@ namespace Systems
 		private void SpawnPlayers()
         {
 			Debug.Log("Spawning players...");
-			var alreadySpawnedPlayers = playersEntity.Select(entity => entity.Object.InputAuthority).Where(player => player);
+			var alreadySpawnedPlayers = GetAlreadySpawnedPlayers();
 			playersJoined.ToList().ForEach(keyValuePair =>
 			{
 				if (!alreadySpawnedPlayers.Contains(keyValuePair.Key))
@@ -207,6 +227,7 @@ namespace Systems
 			}
 			
 			playersEntity.Add(playerEntity);
+			playersBeingSpawned.Remove(playerEntity.Object.InputAuthority);
 		}
 
 		public void RemovePlayer(PlayerEntity player)

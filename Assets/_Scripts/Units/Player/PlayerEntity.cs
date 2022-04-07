@@ -96,7 +96,7 @@ namespace Units.Player
 
         private void OnEnable()
         {
-            LevelSystem.Instance.OnGameLoad += DeactivateMenuAndCustomization;
+            LevelSystem.OnGameLoad += DeactivateMenuAndCustomization;
 
             if (GameManager.HasInstance)
                 GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
@@ -104,8 +104,7 @@ namespace Units.Player
 
         private void OnDisable()
         {
-            if (LevelSystem.HasInstance)
-                LevelSystem.Instance.OnGameLoad -= DeactivateMenuAndCustomization;
+            LevelSystem.OnGameLoad -= DeactivateMenuAndCustomization;
 
             if (GameManager.HasInstance)
                 GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;

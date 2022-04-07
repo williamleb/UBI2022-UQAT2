@@ -25,6 +25,14 @@ namespace Systems.Network
             PlayerSystem.Instance.SubscribeNetworkEvents();
         }
 
+        private void OnDestroy()
+        {
+            if (LevelSystem.HasInstance)
+                LevelSystem.Instance.UnsubscribeNetworkEvents();
+            if (PlayerSystem.HasInstance)
+                PlayerSystem.Instance.UnsubscribeNetworkEvents(); 
+        }
+
         #region Events
 
         public event Action<NetworkRunner, NetworkInput> OnInputEvent;
@@ -69,6 +77,12 @@ namespace Systems.Network
                     GUI.TextField(new Rect(10, 10, 40, 20), NetworkRunner.GameMode == GameMode.Host ? "Host" : "Client");
                 }
             }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Debug.Log($"LevelSystem-NetworkSystem.Awake===");
         }
 
         async void StartGame(GameMode mode)
@@ -201,7 +215,12 @@ namespace Systems.Network
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) => OnPlayerJoinedEvent?.Invoke(runner,player);
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) => OnPlayerLeftEvent?.Invoke(runner,player);
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) => OnReliableDataEvent?.Invoke(runner,player,data);
-        public void OnSceneLoadDone(NetworkRunner runner) => OnSceneLoadDoneEvent?.Invoke(runner);
+        public void OnSceneLoadDone(NetworkRunner runner)
+        {
+            Debug.Log($"LevelSystem-NetworkSystem.OnSceneLoadDone===");
+            OnSceneLoadDoneEvent?.Invoke(runner);
+        }
+
         public void OnSceneLoadStart(NetworkRunner runner) => OnSceneLoadStartEvent?.Invoke(runner);
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) => OnSessionListUpdateEvent?.Invoke(runner,sessionList);
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

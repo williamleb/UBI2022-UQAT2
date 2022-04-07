@@ -3,6 +3,7 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BehaviorDesigner.Runtime.Tasks.Unity.UnityParticleSystem;
 using Scriptables;
 using Systems.Network;
 using Trisibo;
@@ -20,13 +21,16 @@ namespace Systems.Level
     {
         private const string SCENES_FOLDER_PATH = "Game";
 
-        public event Action OnMainMenuStartLoad;
-        public event Action OnLobbyStartLoad;
-        public event Action OnGameStartLoad;
+        private static int newId = 0;
+        public int id;
+
+        public static event Action OnMainMenuStartLoad;
+        public static event Action OnLobbyStartLoad;
+        public static event Action OnGameStartLoad;
         
-        public MemoryEvent OnMainMenuLoad;
-        public MemoryEvent OnLobbyLoad;
-        public MemoryEvent OnGameLoad;
+        public static MemoryEvent OnMainMenuLoad;
+        public static MemoryEvent OnLobbyLoad;
+        public static MemoryEvent OnGameLoad;
 
         public event Action OnBeforeUnload;
         
@@ -62,10 +66,17 @@ namespace Systems.Level
         protected override void Awake()
         {
             base.Awake();
+
+            id = newId;
+            newId++;
             
             CreateNetworkManager();
+            Debug.Log($"LevelSystem.Awake{id}=== Assign new active scene {SceneManager.GetActiveScene().buildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = SceneManager.GetActiveScene().buildIndex;
             LoadScenes();
+            
+            NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDone;
+            ChangeLevelState();
         }
 
         private void CreateNetworkManager()
@@ -93,7 +104,16 @@ namespace Systems.Level
         // called by the runner to re-register actions
         public void SubscribeNetworkEvents()
         {
-            NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDone;
+            // Debug.Log($"LevelSystem.SubscribeNetworkEvents{id}===");
+            // NetworkSystem.OnSceneLoadDoneEvent += OnSceneLoadDone;
+            //
+            // // Necessary because the network system even may have already been played
+            // ChangeLevelState();
+        }
+        public void UnsubscribeNetworkEvents()
+        {
+            // Debug.Log($"LevelSystem.UnsubscribeNetworkEvents{id}===");
+            // NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone;
         }
         
         public void LoadLobby()
@@ -101,8 +121,10 @@ namespace Systems.Level
             State = LevelState.Transition;
 
             Debug.Log("Loading lobby scene.");
+            Debug.Log($"LevelSystem.LoadLobby{id}=== Assign new active scene {LobbyScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = LobbyScene.BuildIndex;
             OnBeforeUnload?.Invoke();
+            ClearEventMemory();
             OnLobbyStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(LobbyScene.BuildIndex);
         }
@@ -112,8 +134,10 @@ namespace Systems.Level
             State = LevelState.Transition;
 
             Debug.Log($"Loading scene with index {GameScene.BuildIndex}");
+            Debug.Log($"LevelSystem.LoadGame{id}=== Assign new active scene {GameScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = GameScene.BuildIndex;
             OnBeforeUnload?.Invoke();
+            ClearEventMemory();
             OnGameStartLoad?.Invoke();
             NetworkSystem.Instance.NetworkRunner.SetActiveScene(GameScene.BuildIndex);
         }
@@ -128,11 +152,13 @@ namespace Systems.Level
             
             State = LevelState.Transition;
             OnBeforeUnload?.Invoke();
+            ClearEventMemory();
             StartCoroutine(LoadMainMenuRoutine());
         }
 
         private IEnumerator LoadMainMenuRoutine()
         {
+            Debug.Log($"LevelSystem.LoadMainMenuRoutine{id}=== Assign new active scene {MainMenuScene.BuildIndex} (was {Instance.ActiveSceneIndex})");
             ActiveSceneIndex = MainMenuScene.BuildIndex;
             OnMainMenuStartLoad?.Invoke();
             
@@ -159,42 +185,72 @@ namespace Systems.Level
 
         private void OnSceneLoadDone(NetworkRunner networkRunner)
         {
+            Debug.Log($"OnSceneLoadDone{id}=== Destroy"); 
             ChangeLevelState();
         }
 
         private void OnDestroy()
         {
+            Debug.Log($"LevelSystem{id}=== Destroy"); 
             NetworkSystem.OnSceneLoadDoneEvent -= OnSceneLoadDone; 
         }
 
         private void ChangeLevelState()
         {
-            OnLobbyLoad.ClearMemory();
-            OnGameLoad.ClearMemory();
-            OnMainMenuLoad.ClearMemory();
-            
-            if (ActiveSceneIndex == LobbyScene.BuildIndex)
+            var truc = ActiveSceneIndex == LobbyScene.BuildIndex ? "Lobby" :
+                ActiveSceneIndex == GameScene.BuildIndex ? "Game" :
+                ActiveSceneIndex == MainMenuScene.BuildIndex ? "Main menu" : "Wat";
+            Debug.Log($"LevelSystem{id}=== Loaded build index: {ActiveSceneIndex}, it is {truc}");
+
+            var state = GetStateFromSceneIndex();
+            if (State == state)
+                return;
+
+            ClearEventMemory();
+
+            State = state;
+            if (State == LevelState.Lobby)
             {
                 Debug.Log("Invoking spawn player");
-                State = LevelState.Lobby;
                 OnLobbyLoad.InvokeWithMemory();
             }
-            else if (ActiveSceneIndex == GameScene.BuildIndex || NetworkSystem.Instance.DebugMode)
+            else if (State == LevelState.Game || NetworkSystem.Instance.DebugMode)
             {
-                State = LevelState.Game;
                 OnGameLoad.InvokeWithMemory();
             }
-            else if (ActiveSceneIndex == MainMenuScene.BuildIndex)
+            else if (State == LevelState.MainMenu)
             {
-                State = LevelState.MainMenu;
                 OnMainMenuLoad.InvokeWithMemory();
-            }
-            else
-            {
-                State = LevelState.Transition;
             }
 
             PlayerInputHandler.FetchInput = true;
+        }
+
+        private void ClearEventMemory()
+        {
+            OnLobbyLoad.ClearMemory();
+            OnGameLoad.ClearMemory();
+            OnMainMenuLoad.ClearMemory();
+        }
+
+        private LevelState GetStateFromSceneIndex()
+        {
+            if (ActiveSceneIndex == LobbyScene.BuildIndex)
+            {
+                return LevelState.Lobby;
+            }
+
+            if (ActiveSceneIndex == GameScene.BuildIndex || NetworkSystem.Instance.DebugMode)
+            {
+                return LevelState.Game;
+            }
+
+            if (ActiveSceneIndex == MainMenuScene.BuildIndex)
+            {
+                return LevelState.MainMenu;
+            }
+
+            return LevelState.Transition;
         }
 
         public class NetworkSceneManager : NetworkSceneManagerBase
@@ -231,6 +287,7 @@ namespace Systems.Level
                 // Delay one frame
                 yield return null;
                 
+                Debug.Log($"LevelSystem.SwitchScene{Instance.id}=== Assign new active scene {(int) newScene} (was {Instance.ActiveSceneIndex})");
                 Instance.ActiveSceneIndex = newScene;
 
                 Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");

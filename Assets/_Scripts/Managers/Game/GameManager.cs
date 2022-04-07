@@ -84,7 +84,7 @@ namespace Managers.Game
             networkedData.OnGameStateChanged += HandleGameStateChanged;
             networkedData.OnStartedLoadingLobby += ShowTransitionScreen;
             gameTimer.OnTimerExpired += EndGame;
-            LevelSystem.Instance.OnGameLoad += OnGameLoaded;
+            LevelSystem.OnGameLoad += OnGameLoaded;
             ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
 
             StartCoroutine(HideTransitionScreenRoutine());
@@ -104,11 +104,8 @@ namespace Managers.Game
             networkedData.OnGameStateChanged -= HandleGameStateChanged;
             networkedData.OnStartedLoadingLobby -= ShowTransitionScreen;
             gameTimer.OnTimerExpired -= EndGame;
-
-            if (LevelSystem.HasInstance)
-            {
-                LevelSystem.Instance.OnGameLoad -= OnGameLoaded;
-            }
+            LevelSystem.OnGameLoad -= OnGameLoaded;
+            ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
 
             if (spawnAndStartGameCoroutine != null)
             {
