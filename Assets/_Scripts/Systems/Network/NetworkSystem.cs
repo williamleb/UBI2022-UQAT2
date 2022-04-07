@@ -21,8 +21,13 @@ namespace Systems.Network
         private void Start()
         {
             settings = SettingsSystem.NetworkSettings;
-            LevelSystem.Instance.SubscribeNetworkEvents();
             PlayerSystem.Instance.SubscribeNetworkEvents();
+        }
+
+        private void OnDestroy()
+        {
+            if (PlayerSystem.HasInstance)
+                PlayerSystem.Instance.UnsubscribeNetworkEvents(); 
         }
 
         #region Events
@@ -201,7 +206,11 @@ namespace Systems.Network
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) => OnPlayerJoinedEvent?.Invoke(runner,player);
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) => OnPlayerLeftEvent?.Invoke(runner,player);
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) => OnReliableDataEvent?.Invoke(runner,player,data);
-        public void OnSceneLoadDone(NetworkRunner runner) => OnSceneLoadDoneEvent?.Invoke(runner);
+        public void OnSceneLoadDone(NetworkRunner runner)
+        {
+            OnSceneLoadDoneEvent?.Invoke(runner);
+        }
+
         public void OnSceneLoadStart(NetworkRunner runner) => OnSceneLoadStartEvent?.Invoke(runner);
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) => OnSessionListUpdateEvent?.Invoke(runner,sessionList);
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

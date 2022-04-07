@@ -183,6 +183,9 @@ namespace Canvases.Menu.End
 
         private void UpdateReadyToLeave()
         {
+            if (!networkData.Object)
+                return;
+            
             var settings = SettingsSystem.GameSettings;
             replayReadyText.Color = networkData.IsPlayerReadyToReplay(player.Object.InputAuthority) ? settings.ReplayReadyColor : replayNotReadyColor;
             

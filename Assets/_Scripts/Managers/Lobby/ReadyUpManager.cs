@@ -44,7 +44,7 @@ namespace Managers.Lobby
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyForAll;
             playerSystem.OnAnyPlayerReadyChanged += UpdateReadyUpMessage;
             
-            LevelSystem.Instance.OnLobbyLoad += OnLobbyLoaded;
+            LevelSystem.OnLobbyLoad += OnLobbyLoaded;
         }
 
         protected override void OnDestroy()
@@ -55,10 +55,7 @@ namespace Managers.Lobby
                 playerSystem.OnAnyPlayerReadyChanged -= UpdateReadyUpMessage;
             }
 
-            if (LevelSystem.HasInstance)
-            {
-                LevelSystem.Instance.OnLobbyLoad -= OnLobbyLoaded;
-            }
+            LevelSystem.OnLobbyLoad -= OnLobbyLoaded;
             
             StopAllCoroutines();
             base.OnDestroy();

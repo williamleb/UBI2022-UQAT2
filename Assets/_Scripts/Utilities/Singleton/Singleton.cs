@@ -94,7 +94,7 @@ namespace Utilities.Singleton
 
         public static void CreateIfDoesNotExist()
         {
-            if (!HasInstance)
+            if (!HasInstance && Application.isPlaying)
             {
                 CreateInstance();
             }

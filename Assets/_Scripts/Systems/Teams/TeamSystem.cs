@@ -65,15 +65,12 @@ namespace Systems.Teams
         
         private void OnEnable()
         {
-            LevelSystem.Instance.OnMainMenuStartLoad += OnReturnToMainMenu;
+            LevelSystem.OnMainMenuStartLoad += OnReturnToMainMenu;
         }
 
         private void OnDisable()
         {
-            if (LevelSystem.HasInstance)
-            {
-                LevelSystem.Instance.OnMainMenuStartLoad -= OnReturnToMainMenu;
-            }
+            LevelSystem.OnMainMenuStartLoad -= OnReturnToMainMenu;
         }
 
         private void CreateTeams()
