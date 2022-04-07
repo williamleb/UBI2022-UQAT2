@@ -274,7 +274,7 @@ namespace Units.Player
 
     [Rpc]
     private void RPC_GetHitAndDropItems(NetworkId entityNetworkId, NetworkBool isPlayer,
-        Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
+        Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f, NetworkBool fumble = default)
     {
         var networkObject = NetworkSystem.Instance.FindObject(entityNetworkId);
         Inventory inv;
@@ -285,7 +285,7 @@ namespace Units.Player
             inv = player.inventory;
             player.ResetVelocity();
 
-            player.Hit(forceDirection, forceMagnitude, overrideHitDuration);
+            player.Hit(forceDirection, forceMagnitude, overrideHitDuration, fumble);
 
             player.immunityTimer = TickTimer.CreateFromSeconds(Runner, data.ImmunityTime);
             player.isImmune = true;

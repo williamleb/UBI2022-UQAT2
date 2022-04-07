@@ -172,10 +172,14 @@ namespace Units.Player
         private void OnHitNothing()
         {
             if (!IsDashing) return;
-            if (!hasHitSomeone)
+            print("Hit nothing");
+            if (hasHitSomeone) //success dash
             {
-                print("Hit nothing");
-                if (ragdollOnDashMiss) Hit(transform.forward);
+                if (data.RagdollOnSuccessDashEnd) Hit(transform.forward);
+            }
+            else //failed dash
+            {
+                if (data.RagdollOnFailedDashEnd) Hit(transform.forward);
             }
             IsDashing = false;
         }
@@ -184,7 +188,16 @@ namespace Units.Player
         {
             print("Hit Object");
             ResetVelocity();
-            Hit(-transform.forward);
+
+            if (hasHitSomeone)
+            {
+                if (data.RagdollOnSuccessDashWallHit) Hit(-transform.forward);
+            }
+            else
+            {
+                Hit(-transform.forward);   
+            }
+            
             IsDashing = false;
         }
 
@@ -201,7 +214,7 @@ namespace Units.Player
                 pushAnimTimer = TickTimer.CreateFromSeconds(Runner,0.533f);
             }
             RPC_GetHitAndDropItems(networkObject.Id, otherEntity.IsAPlayer(), transform.forward, data.DashForceApplied);
-            if (Archetype != Archetype.Dasher)
+            if (!data.CanMultiHitWithDash)
             {
                 ResetVelocity();
                 IsDashing = false;
