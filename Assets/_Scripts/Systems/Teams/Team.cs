@@ -65,15 +65,12 @@ namespace Systems.Teams
             var playerRef = playerEntity.Object.InputAuthority;
 
             if (!playerList.Contains(playerRef))
-            {
-                playerList.Add(playerRef);
-                PlayerCount = playerList.Count;
-            }
-                
+                playerList.Add(playerRef);  
             else
                 Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
             playerEntity.TeamId = TeamId;
+            PlayerCount = playerList.Count;
             OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
