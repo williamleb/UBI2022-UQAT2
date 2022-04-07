@@ -25,7 +25,7 @@ namespace Systems.Teams
         //since RPCs are not part of the network state. 
         private readonly List<PlayerRef> playerList = new List<PlayerRef>();
 
-        public int PlayerCount => playerList.Count;
+        [Networked] public int PlayerCount { get; private set; }
         public List<PlayerRef> PlayerList => playerList;
 
         [Networked] [Capacity(128)] public string TeamId { get; private set; }
@@ -65,7 +65,11 @@ namespace Systems.Teams
             var playerRef = playerEntity.Object.InputAuthority;
 
             if (!playerList.Contains(playerRef))
+            {
                 playerList.Add(playerRef);
+                PlayerCount = playerList.Count;
+            }
+                
             else
                 Debug.Log($"Player {playerRef} was already assigned to team {TeamId}");
 
@@ -81,6 +85,7 @@ namespace Systems.Teams
             if (playerList.Contains(playerRef))
             {
                 playerList.Remove(playerRef);
+                PlayerCount = playerList.Count;
                 OnPlayerCountChanged?.Invoke(playerList.Count);
             }
         }
@@ -159,6 +164,8 @@ namespace Systems.Teams
         public void RPC_ClearPlayerList()
         {
             playerList.Clear();
+            PlayerCount = playerList.Count;
+            OnPlayerCountChanged?.Invoke(playerList.Count);
         }
 
         private static void OnValueChanged(Changed<Team> changed)
