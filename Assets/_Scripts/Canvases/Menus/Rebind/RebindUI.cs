@@ -87,6 +87,7 @@ namespace Canvases.Menu.Rebind
         {
             playerInputActionRef.RemoveAllBindingOverrides();
             UpdateAllRebindUI();
+            if (playerInputHandler) playerInputHandler.UpdateBindings();
         }
 
         private void AddBindingsButton(string deviceName)
