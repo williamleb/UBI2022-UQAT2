@@ -58,7 +58,7 @@ namespace Canvases.Menu.Modal
             if (IsShown)
                 return false;
             
-            text.Text = textString;
+            text.Text = textString.Replace("\\n", "\n");
             header.Text = headerString.ToUpper();
             showCoroutine = StartCoroutine(ShowRoutine(numberOfSeconds));
             return true;
