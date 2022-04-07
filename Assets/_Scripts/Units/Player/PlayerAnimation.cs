@@ -56,7 +56,8 @@ namespace Units.Player
         private static void OnGivingChangedCallback(Changed<PlayerEntity> changed)
         {
             changed.Behaviour.AnimationSetTrigger(Giving, changed.Behaviour.IsGiving);
-            changed.Behaviour.AnimationSetBool(IsHolding, changed.Behaviour.inventory.HasHomework);
+            if (!changed.Behaviour.IsGiving)
+                changed.Behaviour.AnimationSetBool(IsHolding, changed.Behaviour.inventory.HasHomework);
         }
 
         [Networked(OnChanged = nameof(OnGrabbingChangedCallback))]
