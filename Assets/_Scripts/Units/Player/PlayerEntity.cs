@@ -126,7 +126,11 @@ namespace Units.Player
                 Archetype = archetype;
         }
 
-        private void ImmunityTimerOnTimerEnd() => isImmune = false;
+        private void ImmunityTimerOnTimerEnd()
+        {
+            isImmune = false;
+            immunityTimer = TickTimer.None;
+        }
 
         public override async void Spawned()
         {
