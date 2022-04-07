@@ -95,9 +95,12 @@ namespace Canvases.Menu.Rebind
         {
             if (actionLabel == null) return;
 
-            actionLabel.Text = action.bindings[mainBindingReferences.Index].isPartOfComposite
+            string actionLabelText = action.bindings[mainBindingReferences.Index].isPartOfComposite
                 ? action.bindings[mainBindingReferences.Index].name.Capitalize()
                 : action.name;
+
+            if (actionLabelText.Equals("Dash")) actionLabelText = "Tackle";
+            actionLabel.Text = actionLabelText;
         }
 
         public void UpdateBindingDisplay(bool shouldCallEvent = true)
