@@ -95,11 +95,11 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 897101527581652324}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8ec58f63c487c0646b2aea108e68faa5, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.8, y: 0.8, z: 0.8}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &897101527581652329
 MonoBehaviour:
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc61007f2dc094da9d5839564e313f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  associatedTeam: {fileID: 0}
+  flagMaterial: {fileID: 0}
 --- !u!114 &5885126429402880928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +216,14 @@ MonoBehaviour:
   showOutsideCameraBorders: 0
   activateOnStart: 0
   padding: {x: 10, y: 10}
+  important: 0
+  animate: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   actionReference: {fileID: -8964356537790128568, guid: 4f878948d09c1d74bb22b3dcaca44dcf, type: 3}
 --- !u!1 &897101529089541400
 GameObject:
@@ -265,6 +273,14 @@ MonoBehaviour:
   showOutsideCameraBorders: 0
   activateOnStart: 1
   padding: {x: 10, y: 10}
+  important: 0
+  animate: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   text: 'Change
 
     Team'
