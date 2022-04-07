@@ -238,7 +238,7 @@ namespace Systems.Teams
             if (teams.TryGetValue(teamId, out Team team))
                 return team;
 
-            Debug.LogError($"Error. No team found with TeamId {teamId}");
+            Debug.LogWarning($"Warning. Tried to get team with TeamId {teamId}, but it does not exist yet on this input authority.");
             return null;
         }
 
