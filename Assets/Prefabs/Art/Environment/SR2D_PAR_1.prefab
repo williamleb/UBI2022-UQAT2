@@ -48,6 +48,14 @@ MonoBehaviour:
   showOutsideCameraBorders: 1
   activateOnStart: 0
   padding: {x: 10, y: 10}
+  important: 0
+  animate: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   sprite: {fileID: 21300000, guid: 4c5c658bf7aba1a41a8a49c266844bec, type: 3}
 --- !u!1 &1745871823434180869
 GameObject:
@@ -288,11 +296,11 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AoiMode: 0
-  DefaultPropertyGroups: []
+  ObjectInterest: 0
+  DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
   AllowStateAuthorityOverride: 0
-  AoiPosition: {fileID: 0}
+  AoiPositionSource: {fileID: 0}
   Flags: 2305
   NetworkGuid:
     RawGuidValue: ce3fd47b7299dd34b81abdb120d62412
@@ -317,9 +325,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _interpolationTarget: {fileID: 0}
-  DetachInterpTarget: 0
-  SyncParent: 1
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 0}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -331,8 +338,6 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
-  SyncScale: 0
-  Space: 0
 --- !u!114 &-80202125955237747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1144,6 +1149,14 @@ PrefabInstance:
       propertyPath: NetworkedBehaviours.Array.data[0]
       value: 
       objectReference: {fileID: 7620069566515447798}
+    - target: {fileID: 5199562810905625754, guid: ff9f62341d1f92e47985218d8535134d, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199562810905625754, guid: ff9f62341d1f92e47985218d8535134d, type: 3}
+      propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5795405397247797471, guid: ff9f62341d1f92e47985218d8535134d, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1162,7 +1175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8953615118326529469, guid: ff9f62341d1f92e47985218d8535134d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.001506935
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 8953615118326529469, guid: ff9f62341d1f92e47985218d8535134d, type: 3}
       propertyPath: m_LocalPosition.z
