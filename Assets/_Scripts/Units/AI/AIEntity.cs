@@ -5,6 +5,7 @@ using Fusion;
 using Ingredients.Volumes.WorldObjects;
 using Interfaces;
 using Managers.Hallway;
+using Systems.Network;
 using Systems.Settings;
 using Systems.Sound;
 using Units.AI.Senses;
@@ -144,6 +145,7 @@ namespace Units.AI
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
+            if (!NetworkSystem.Instance.IsHost) return;
             UnregisterToManager();
             OnAIDespawned?.Invoke(this);
 
