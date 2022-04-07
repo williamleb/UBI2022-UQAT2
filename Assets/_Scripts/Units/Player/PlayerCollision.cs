@@ -21,7 +21,7 @@ namespace Units.Player
             collisionRumbleKey = new RumbleKey(this);
         }
         
-        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f)
+        private void Hit(Vector3 forceDirection = default, float forceMagnitude = default, float overrideHitDuration = -1f, bool fumble = false)
         {
             if (isImmune) return;
 
@@ -32,17 +32,18 @@ namespace Units.Player
                 hitCoroutine = null;
             }
 
-            hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude, overrideHitDuration));
+            hitCoroutine = StartCoroutine(HitCoroutine(forceDirection, forceMagnitude, overrideHitDuration, fumble));
         }
 
         private int KnockOutTime => (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.KnockOutTimeInSeconds);
+        private int FumbleKnockOutTime => (int) (currentMaxMoveSpeed / data.MoveMaximumSpeed * data.FumbleKnockOutTimeInSeconds);
         
-        private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration)
+        private IEnumerator HitCoroutine(Vector3 forceDirection, float forceMagnitude, float overrideHitDuration, bool fumble)
         {
             CanMove = false;
             RumbleSystem.Instance.SetRumbleIfUsingController(collisionRumbleKey, 1, 1, IsUsingGamePad);
             var delay = 
-                overrideHitDuration > 0f ? overrideHitDuration : KnockOutTime;
+                overrideHitDuration > 0f ? overrideHitDuration : fumble ? FumbleKnockOutTime : KnockOutTime;
             delay = Mathf.Max(2, delay);
 
             if (Object.HasStateAuthority)
@@ -85,18 +86,19 @@ namespace Units.Player
                 if (!(collisionDot > 0.65)) return;
 
                 //Hit a wall or other collidable
-                if (collision.gameObject.CompareTag(Tags.COLLIDABLE))
+                if (collision.gameObject.CompareTag(Tags.COLLIDABLE) && data.CanFumble)
                 {
                     Debug.Log("Hit a wall");
                     ResetVelocity();
-                    Hit(-f);
+                    Hit(-f, fumble: true);
                 }
                 //Hit another player or AI
                 else if (collision.gameObject.IsAPlayerOrAI())
                 {
                     NetworkObject no = collision.gameObject.GetComponentInParent<NetworkObject>();
-                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f);
-                    RPC_GetHitAndDropItems(Object.Id, true, -f);
+                    RPC_GetHitAndDropItems(no.Id, collision.gameObject.IsAPlayer(),f, fumble: true);
+                    if (data.CanFumble)
+                        RPC_GetHitAndDropItems(Object.Id, true, -f, fumble: true);
                 }
             }
             else

@@ -38,6 +38,15 @@ namespace Systems.Settings
         [Tooltip("% of the sprint maximum speed the player need to go to trigger a fumble")]
         private float sprintFumbleThreshold = 0.75f;
 
+        [SerializeField]
+        [Tooltip("Allows the class to fumble when hitting a wall or other AI")]
+        private bool canFumble = true;
+        
+        [Tooltip("Time in seconds that the player is knockOut either by fumble" +
+                 "This is increased by the speed of the player. The faster you go the longer the knockout time")]
+        [SerializeField]
+        private float fumbleKnockOutTimeInSeconds = 0.5f;
+
         [Space]
         [Header("Turn config")]
         [Tooltip("Rotation speed to turn towards new direction, " +
@@ -59,7 +68,7 @@ namespace Systems.Settings
         [Tooltip("Time in seconds before the player can dash again")] [SerializeField]
         private float dashCoolDown = 1.5f;
 
-        [Tooltip("Time in seconds that the player is knockOut either by fumble or getting hit. " +
+        [Tooltip("Time in seconds that the player is knockOut either by getting hit. " +
                  "This is increased by the speed of the player. The faster you go the longer the knockout time")]
         [SerializeField]
         private float knockOutTimeInSeconds = 0.5f;
@@ -87,6 +96,16 @@ namespace Systems.Settings
         [SerializeField]
         [MinValue(0)]
         private float dashDetectionSphereRadius = 0.5f;
+        [SerializeField] [Tooltip("Can multi hit with the dash")]
+        private bool canMultiHitWithDash;
+        [SerializeField] [Tooltip("Allows the class to fumble at the end of the dash if they didn't hit anyone")] 
+        private bool ragdollOnFailedDashEnd;
+        
+        [Header("On successful dash")]
+        [SerializeField] [Tooltip("Allows the class to fumble at the end of the dash even if they hit someone")] 
+        private bool ragdollOnSuccessDashEnd;
+        [SerializeField] [Tooltip("Allows the class to fumble when hitting a wall even if they hit someone")] 
+        private bool ragdollOnSuccessDashWallHit;
 
         [Space] 
         [Header("Throw config")] 
@@ -137,6 +156,7 @@ namespace Systems.Settings
         public float DashForce => dashForce;
         public float DashDuration => dashDuration;
         public float KnockOutTimeInSeconds => knockOutTimeInSeconds;
+        public float FumbleKnockOutTimeInSeconds => fumbleKnockOutTimeInSeconds;
         public float TurnRotationSpeed => turnRotationSpeed;
         public float SprintBraking => sprintBraking;
         public float SprintAcceleration => sprintAcceleration;
@@ -157,6 +177,11 @@ namespace Systems.Settings
         public float CameraPointSpeed => playerCameraSettings.CameraPointSpeed;
         public Vector3 CameraPointOffset => playerCameraSettings.CameraPointOffset;
         public float DashDetectionSphereRadius => dashDetectionSphereRadius;
+        public bool CanFumble => canFumble;
+        public bool RagdollOnSuccessDashEnd => ragdollOnSuccessDashEnd;
+        public bool RagdollOnSuccessDashWallHit => ragdollOnSuccessDashWallHit;
+        public bool RagdollOnFailedDashEnd => ragdollOnFailedDashEnd;
+        public bool CanMultiHitWithDash => canMultiHitWithDash;
 
         [Serializable]
         public class PlayerCameraSettings
