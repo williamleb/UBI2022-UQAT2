@@ -56,6 +56,7 @@ namespace Canvases.HUDs
 
             UpdateColor(0);
             UpdateName(null);
+            PlayerCountChanged(0);
         }
 
         private void PlayerCountChanged(int _)
