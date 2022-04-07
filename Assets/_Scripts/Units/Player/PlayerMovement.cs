@@ -22,7 +22,7 @@ namespace Units.Player
         public float SprintMaxSpeed => data.SprintMaximumSpeed;
         [Networked] public NetworkBool CanSprint {get; set;} = true;
 
-        [Networked (OnChanged = nameof(OnCurrentSpeedChanged)), Accuracy(0.5f)] public float CurrentSpeed { get; private set; }
+        [Networked (OnChanged = nameof(OnCurrentSpeedChanged))] public float CurrentSpeed { get; private set; }
         private static void OnCurrentSpeedChanged(Changed<PlayerEntity> changed) => changed.Behaviour.UpdateMoveAnim();
         
         
