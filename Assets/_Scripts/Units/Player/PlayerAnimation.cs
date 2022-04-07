@@ -28,7 +28,14 @@ namespace Units.Player
 
         private void OnInventoryChangedCallBack()
         {
-            AnimationSetBool(IsHolding, inventory.HasHomework || IsGiving);
+            if (IsGiving)
+            {
+                StartCoroutine(SetInventoryBoolWithDelay());
+            }
+            else
+            {
+                AnimationSetBool(IsHolding, inventory.HasHomework);
+            }
             if (!inventory.HasHomework)
             {
                 if (Object.HasInputAuthority)
@@ -39,6 +46,12 @@ namespace Units.Player
                     networkAnimator.Animator.ResetTrigger(Giving);
                 }
             }
+        }
+
+        private IEnumerator SetInventoryBoolWithDelay()
+        {
+            yield return Helpers.GetWait(0.5f);
+            AnimationSetBool(IsHolding,inventory.HasHomework);
         }
 
         private void OnThrowChanged(bool val) => AnimationSetTrigger(Throwing, val);
