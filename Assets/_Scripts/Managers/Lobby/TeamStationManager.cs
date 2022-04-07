@@ -29,6 +29,11 @@ namespace Managers.Lobby
             }
         }
 
+        private void OnDestroy()
+        {
+            TeamSystem.OnTeamRegistered -= OnTeamRegistered;
+        }
+
         private void OnTeamRegistered(Team team)
         {
             if (TeamSystem.Instance.Teams.Count != 2)

@@ -85,7 +85,7 @@ namespace Units.AI.Senses
                 }
 
                 var speedToConsiderBadBehavior = settings.PercentOfDashConsideredBadBehavior * (player.SprintMaxSpeed - player.WalkMaxSpeed) + player.WalkMaxSpeed;
-                if (player.CurrentSpeed > speedToConsiderBadBehavior)
+                if (player && player.CurrentSpeed > speedToConsiderBadBehavior)
                 {
                     PlayerThatHadBadBehavior = player;
                     return;

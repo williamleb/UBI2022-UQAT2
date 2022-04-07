@@ -40,7 +40,6 @@ namespace Units.AI
         {
             if (teacher != teacherAI)
             {
-                Debug.LogWarning("Trying to unregister a teacher that was not the current teacher");
                 return;
             }
             teacher = null;
