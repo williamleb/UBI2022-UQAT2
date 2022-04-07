@@ -105,7 +105,7 @@ namespace Managers.Game
             networkedData.OnStartedLoadingLobby -= ShowTransitionScreen;
             gameTimer.OnTimerExpired -= EndGame;
             LevelSystem.OnGameLoad -= OnGameLoaded;
-            ScoreManager.OnTeamScoreChanged += OnTeamScoreChanged;
+            ScoreManager.OnTeamScoreChanged -= OnTeamScoreChanged;
 
             if (spawnAndStartGameCoroutine != null)
             {
