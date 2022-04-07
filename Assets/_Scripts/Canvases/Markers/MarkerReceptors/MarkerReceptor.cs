@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -109,6 +110,11 @@ namespace Canvases.Markers
             {
                 animationTime = 0f;
             }
+        }
+
+        private void OnDestroy()
+        {
+            Deactivate();
         }
     }
 }
