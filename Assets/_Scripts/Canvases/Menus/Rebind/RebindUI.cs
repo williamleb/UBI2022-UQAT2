@@ -42,6 +42,13 @@ namespace Canvases.Menu.Rebind
                 GameManager.Instance.OnGameStateChanged += InitOnGameStart;
         }
 
+        private void Start()
+        {
+            // We need to try to init the rebind UI at start, because we could be in the lobby (no GameManager)
+            // and the players could already been spawned (returning from a game)
+            InitWithSpawnedPlayers();
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -61,7 +68,7 @@ namespace Canvases.Menu.Rebind
 
         private void Init(NetworkObject player)
         {
-            if (player.HasInputAuthority && !isInitialized)
+            if (player && player.HasInputAuthority && !isInitialized)
             {
                 isInitialized = true;
                 playerInputHandler = player.GetComponentInChildren<PlayerInputHandler>();
@@ -74,12 +81,17 @@ namespace Canvases.Menu.Rebind
         private void InitOnGameStart(GameState newState)
         {
             if (newState == GameState.Running)
+            {  
+                InitWithSpawnedPlayers();
+            }
+        }
+
+        private void InitWithSpawnedPlayers()
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag(Tags.PLAYER);
+            foreach (GameObject player in players)
             {
-                GameObject[] players = GameObject.FindGameObjectsWithTag(Tags.PLAYER);
-                foreach (GameObject player in players)
-                {
-                    Init(player.GetComponentInParent<NetworkObject>());
-                }
+                Init(player.GetComponentInParent<NetworkObject>());
             }
         }
 
