@@ -12,6 +12,9 @@ using UnityEngine.Timeline;
 using System;
 using ICSharpCode.NRefactory.Ast;
 using System.Security.Policy;
+using Scriptables;
+using UnityEditor.VersionControl;
+using System.Reflection;
 
 namespace TechArt.Tools
 {
@@ -46,7 +49,7 @@ namespace TechArt.Tools
             EditorGUILayout.LabelField("Selection Count: " + currentSelectionCount.ToString(), EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
-            sourceObject = (GameObject)EditorGUILayout.ObjectField("Replace Object: ", sourceObject, typeof(GameObject), true);
+            sourceObject = (GameObject)EditorGUILayout.ObjectField("Replace Object: ", sourceObject, typeof(GameObject), false);
             if(GUILayout.Button("Replace Selected Objects", GUILayout.ExpandWidth(true), GUILayout.Height(40)))
             {
                 ReplaceSelected();
@@ -88,6 +91,17 @@ namespace TechArt.Tools
             currentSelectionCount = Selection.gameObjects.Length;
         }
 
+        Bounds GetRenderBounds(GameObject target)
+        {
+            Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+            Renderer render = target.GetComponent<Renderer>();
+            if (render != null)
+            {
+                return render.bounds;
+            }
+            return bounds;
+        }
+
         Bounds GetBounds(GameObject target)
         {
             Bounds bounds;
@@ -112,29 +126,6 @@ namespace TechArt.Tools
             return bounds;
         }
 
-        Bounds GetRenderBounds(GameObject target)
-        {
-            Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
-            Renderer render = target.GetComponent<Renderer>();
-            if (render != null)
-            {
-                return render.bounds;
-            }
-            return bounds;
-        }
-
-        Vector3 OverridePosition(Vector3 target, Vector3 value)
-        {
-            if (enableOverridePosition[0])
-            {
-                if (enableOverridePosition[1]) { target.x = value.x; }
-                if (enableOverridePosition[2]) { target.y = value.y; }
-                if (enableOverridePosition[3]) { target.z = value.z; }
-            }
-
-            return target;
-        }
-
         Vector3 GetOffset(Bounds source)
         {
             Vector3 result = source.extents;
@@ -150,93 +141,67 @@ namespace TechArt.Tools
             return result;
         }
 
-        GameObject InstantiateRelativeToTransform(Transform origin, GameObject target)
+        GameObject InstantiateRelativeToTransform(GameObject target, Vector3 pos, Quaternion rot)
         {
             Bounds sourceBounds = GetBounds(target);
 
-            Vector3 pos = origin.position + GetOffset(sourceBounds);
-            Quaternion rot = origin.rotation;
+            Vector3 pos_override = pos;
+            pos += GetOffset(sourceBounds);
 
-            pos = OverridePosition(pos, origin.position);
+            if (enableOverridePosition[0])
+            {
+                if (enableOverridePosition[1]) { pos.x = pos_override.x; }
+                if (enableOverridePosition[2]) { pos.y = pos_override.y; }
+                if (enableOverridePosition[3]) { pos.z = pos_override.z; }
+            }
 
-            GameObject newObject = Instantiate(target);
+            GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(target);
             newObject.transform.position = pos;
             // Rotate object while keeping position in the center
-            newObject.transform.RotateAround(origin.position, Vector3.right, rot.eulerAngles.x);
-            newObject.transform.RotateAround(origin.position, Vector3.up, rot.eulerAngles.y);
-            newObject.transform.RotateAround(origin.position, Vector3.forward, rot.eulerAngles.z);
+            newObject.transform.RotateAround(pos, Vector3.right, rot.eulerAngles.x);
+            newObject.transform.RotateAround(pos, Vector3.up, rot.eulerAngles.y);
+            newObject.transform.RotateAround(pos, Vector3.forward, rot.eulerAngles.z);
             newObject.transform.localScale = target.transform.localScale;
 
             return newObject;
         }
 
-        void InstantiateRelativeToTransform(int[] count, GameObject zone, GameObject target) 
+        GameObject InstantiateRelativeToTransform(GameObject target, Vector3 pos, Quaternion rot, Vector3 pos_override)
         {
-            Transform origin = zone.transform;
-            Vector3 old_position = origin.position;
-            Quaternion old_rotation = origin.rotation;
-            Vector3 old_scale = origin.localScale;
+            Bounds sourceBounds = GetBounds(target);
 
-            Transform t = origin;
-            Vector3 p = t.position;
-            Vector3 size = GetBounds(target).extents * 2;
-            Vector3 zoneSize = GetBounds(zone).extents;
-            Debug.Log(count[0].ToString() + " | " + count[1].ToString() + " | " + count[2].ToString());
-            for (int xindex = 0; xindex < count[0]; xindex++)
+            pos += GetOffset(sourceBounds);
+
+            if (enableOverridePosition[0])
             {
-                for (int yindex = 0; yindex < count[1]; yindex++)
-                {
-                    for (int zindex = 0; zindex < count[2]; zindex++)
-                    {
-                        Debug.Log(xindex.ToString() + " | " + yindex.ToString() + " | " + zindex.ToString());
-                        float tx = size.x * xindex - zoneSize.x;
-                        float ty = size.y * yindex - zoneSize.y;
-                        float tz = size.z * zindex - zoneSize.z;
-                        t.position = new Vector3(tx, ty, tz) + p;
-                        InstantiateRelativeToTransform(t, target);
-                    }
-                }
-            }
-            // Set back to original transform, keeps moving for some reason??
-            origin.position = old_position;
-            origin.rotation = old_rotation;
-            origin.localScale = old_scale;
-        }
-
-        static Vector3 VDivide(Vector3 dividend, Vector3 divisor, bool isFloor = false)
-        {
-            Vector3 result;
-
-            result.x = dividend.x / divisor.x;
-            result.y = dividend.y / divisor.y;
-            result.z = dividend.z / divisor.z;
-
-            if (isFloor)
-            {
-                result = VFloor(result);
+                if (enableOverridePosition[1]) { pos.x = pos_override.x; }
+                if (enableOverridePosition[2]) { pos.y = pos_override.y; }
+                if (enableOverridePosition[3]) { pos.z = pos_override.z; }
             }
 
-            return result;
-        }
-        
-        static Vector3 VFloor(Vector3 target)
-        {
-            target.x = (float)Math.Floor(target.x);
-            target.y = (float)Math.Floor(target.y);
-            target.z = (float)Math.Floor(target.z);
-            return target;
+            GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(target);
+            newObject.transform.position = pos;
+            // Rotate object while keeping position in the center
+            newObject.transform.RotateAround(pos, Vector3.right, rot.eulerAngles.x);
+            newObject.transform.RotateAround(pos, Vector3.up, rot.eulerAngles.y);
+            newObject.transform.RotateAround(pos, Vector3.forward, rot.eulerAngles.z);
+            newObject.transform.localScale = target.transform.localScale;
+
+            return newObject;
         }
 
         int[] RussianBounds(Bounds outer, Bounds inner)
         {
-            int[] result = new int[3];
-
             Vector3 outerSize = outer.extents * 2;
             Vector3 innerSize = inner.extents * 2;
 
-            Vector3 diff = VDivide(outerSize, innerSize, true);
+            Vector3 diff; // = VDivide(outerSize, innerSize, true);
+            diff.x = (float)Math.Abs(Math.Floor(outerSize.x / innerSize.x));
+            diff.y = (float)Math.Abs(Math.Floor(outerSize.y / innerSize.y));
+            diff.z = (float)Math.Abs(Math.Floor(outerSize.z / innerSize.z));
+            if (diff.y <= 0) { diff.y = 1; }
 
-            result = new int[] { 
+            int[] result = new int[3] { 
                 (int)diff.x,
                 (int)diff.y,
                 (int)diff.z 
@@ -267,18 +232,20 @@ namespace TechArt.Tools
             GameObject[] selectedObjects = Selection.gameObjects;
             for(int i = 0; i < selectedObjects.Length; i++)
             {
+                GameObject zoneParent = new GameObject(sourceObject.name + "_Zone" + i.ToString().PadLeft(2, (char)0));
+                Vector3 newPos = selectedObjects[i].transform.position;
+                Quaternion newRot = selectedObjects[i].transform.rotation;
+                Vector3 oldPos = zoneParent.transform.position;
+                Quaternion oldRot = zoneParent.transform.rotation;
+
+                selectedObjects[i].transform.rotation = zoneParent.transform.rotation; // set temporary transform for correct reading of bounds
+
                 GameObject zone = selectedObjects[i];
                 Bounds zoneBounds = GetBounds(zone);
-                Transform zoneTransform = zone.transform;
                 int[] count = RussianBounds(zoneBounds, sourceBounds);
 
-                Transform t = zoneTransform;
-                Vector3 pos = zoneTransform.position;
-                Quaternion rot = zoneTransform.rotation;
-                Vector3 scale = zoneTransform.localScale;
-
                 Vector3 sourceSize = sourceBounds.extents * 2;
-                Vector3 zoneSize = zoneBounds.extents * (float)0.5;
+
                 Debug.Log(count[0].ToString() + " | " + count[1].ToString() + " | " + count[2].ToString());
                 for (int xindex = 0; xindex < count[0]; xindex++)
                 {
@@ -287,22 +254,20 @@ namespace TechArt.Tools
                         for (int zindex = 0; zindex < count[2]; zindex++)
                         {
                             Debug.Log(xindex.ToString() + " | " + yindex.ToString() + " | " + zindex.ToString());
-                            float tx = sourceSize.x * xindex - zoneSize.x;
-                            float ty = sourceSize.y * yindex - zoneSize.y;
-                            float tz = sourceSize.z * zindex - zoneSize.z - 1;
-                            t.position = pos + new Vector3(tx, ty, tz);
-                            InstantiateRelativeToTransform(t, sourceObject);
+                            float px = sourceSize.x * xindex;
+                            float py = sourceSize.y * yindex;
+                            float pz = sourceSize.z * zindex;
+                            Vector3 p = oldPos + new Vector3(px, py, pz);
+                            GameObject newPrefab = InstantiateRelativeToTransform(sourceObject, p, oldRot);
+                            newPrefab.transform.SetParent(zoneParent.transform);
                         }
                     }
                 }
-                // Set back to original transform, keeps moving for some reason??
-                zoneTransform.position = pos;
-                zoneTransform.rotation = rot;
-                zoneTransform.localScale = scale;
-                //GameObject newObject = InstantiateRelativeToTransform(current.transform, sourceObject);
+                zoneParent.transform.position = newPos;
+                zoneParent.transform.rotation = newRot;
 
-                //DestroyImmediate(selectedObjects[i]);
-                //selectedObjects[i].SetActive(false);
+                //DestroyImmediate(selectedObjects[i]); // Get rid of the original (Destructive)
+                //selectedObjects[i].SetActive(false); // Get rid of the original (Safe)
             }
 
         }
